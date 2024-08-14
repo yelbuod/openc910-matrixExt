@@ -105,7 +105,7 @@ else
           SIMULATOR_LOG := 
         else
             ifeq ($(SIM), verilator)
-              SIMULATOR_OPT := -Os -x-assign 0 -Wno-fatal --threads ${THREADS}
+              SIMULATOR_OPT := -Os -x-assign 0 -Wno-fatal --threads ${THREADS} --notiming
               SIMULATOR_DEF := -cc --exe --top-module top 
               SIMULATOR_LOG := 
             else

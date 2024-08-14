@@ -115,6 +115,9 @@ module top(
     rst_bCnt = rst_bCnt + 1;
     if(rst_bCnt > 10 && rst_bCnt < 20) rst_b = 0;
     else if(rst_bCnt > 20) rst_b = 1;
+
+    if(rst_bCnt == 20) 
+      $display("------------------reset finish , ready to start------------------");
   end
   
   integer jrstCnt;
