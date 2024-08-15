@@ -20,6 +20,7 @@
 #include "hart_exec.h"
 #include <readline/readline.h>
 #include <readline/history.h>
+
 static int is_batch_mode = false;
 
 extern void init_regex();

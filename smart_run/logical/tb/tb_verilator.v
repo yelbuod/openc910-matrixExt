@@ -260,11 +260,11 @@ module top(
   begin
     if(!rst_b) //reset to zero
       retire_inst_in_period[31:0] <= 32'b0;
-    else if( (cycle_count[31:0] % `LAST_CYCLE) == 0)//check and reset retire_inst_in_period every 50000 cycles
+    else if( (cycle_count[31:0] % `LAST_CYCLE) == 0 && cycle_count[31:0] != 0)//check and reset retire_inst_in_period every 50000 cycles
     begin
       if(retire_inst_in_period[31:0] == 0)begin
         $display("*************************************************************");
-        $display("* Error: There is no instructions retired in the last %d cycles! *", `LAST_CYCLE);
+        $display("* Error: There is no instructions retired in the last %d cycles! *", cycle_count);
         $display("*              Simulation Fail and Finished!                *");
         $display("*************************************************************");
         //#10;

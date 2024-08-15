@@ -4,7 +4,6 @@
 #include "difftest.h"
 #include "hart_exec.h"
 #include "utils.h"
-#include "instTrace.h"
 #include "sdb.h"
 #include <macro.h>
 
@@ -111,24 +110,19 @@ extern "C" void hart_commitInst(
   }
 }
 
-void difftest_and_trigcheck() {
-  // IFDEF(CONFIG_DIFFTEST, difftest_step(cpu.pc));
-
-  // traverse all watchpoint elements in head link array
+// traverse all watchpoint elements in head link array
+void WP_trigcheck() {
   bool trigger = traverse_check_trigger();
   if (trigger == true) {
     sim_state.state = SIM_STOP;
   }
 }
 
-void exec_once_cycle() {
-  /* cycle execute */
-  cycle_step();
-}
-
 void execute() {
   while(1) {
-    exec_once_cycle();
+    /* cycle execute */
+    cycle_step();
+    WP_trigcheck();
     if (sim_state.state != SIM_RUNNING) break;
   }
 }

@@ -1,7 +1,6 @@
 #ifndef __REG_H__
 #define __REG_H__
 #include "common.h"
-#include "instTrace.h"
 
 extern "C" void set_gpr_ptr(const svOpenArrayHandle r);
 

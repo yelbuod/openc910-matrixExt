@@ -1,25 +1,30 @@
 #include "common.h"
-// #include "Vtop.h" // ../build_verilate/obj_dir/
-
 #include "difftest.h"
 #include "hart_exec.h"
 #include "reg.h"
 #include "debug.h"
 #include "macro.h"
 #include "sdb.h"
+#include "utils.h"
 
-extern int is_exit_status_bad();
 extern void sdb_set_batch_mode();
-
 extern void init_log(const char *log_file);
 extern void init_sdb();
 extern void init_disasm(const char *triple);
 extern void init_ftrace(const char *elfFile);
 
+SIMState sim_state = { .state = SIM_STOP };
+
+int is_exit_status_bad() {
+  int good = (sim_state.state == SIM_END && sim_state.halt_ret == 0) ||
+    (sim_state.state == SIM_QUIT);
+  return !good;
+}
+
 static char *diff_so_file = NULL;
 static char *log_file = NULL;
 static char *elf_file = NULL;
-static int difftest_port = 1234; // no use, set for unified interface
+static int difftest_port = 1234; // for qemu debug port
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
@@ -53,18 +58,15 @@ int main(int argc, char *argv[]) {
 
   parse_args(argc, argv);
 
-  // init_log(log_file);
+  init_log(log_file);
 
   sim_init();
 
   IFDEF(CONFIG_DIFFTEST, init_difftest(diff_so_file, img_size, difftest_port));
 
   init_sdb();
-  // init_device();
 
   IFDEF(CONFIG_ITRACE, init_disasm("riscv64-pc-linux-gnu"));
-
-  IFDEF(CONFIG_FTRACE, init_ftrace(elf_file));
 
   sdb_mainloop();
   

@@ -4,8 +4,6 @@
 #include <debug.h>
 #include <ftrace.h>
 
-#ifdef CONFIG_FTRACE
-
 /* -------------------------------- ELF ANALYSIS -------------------------------- */
 
 /* Binary tree builds a linker list of structures constructed by function name and its address, 
@@ -177,6 +175,3 @@ void traverse_ftracelink() {
 }
 
 /* -------------------------------- FTRACE -------------------------------- */
-
-
-#endif
