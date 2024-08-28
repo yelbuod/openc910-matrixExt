@@ -3,5 +3,5 @@
 +incdir+.+
 
 -y /home/minus/project/WenXuanMat/openc910/smart_run/logical/tb/
-/home/minus/project/WenXuanMat/openc910/smart_run/logical/tb/tb_verilator.v
+/home/minus/project/WenXuanMat/openc910/smart_run/logical/tb/tb_verilator.sv
 /home/minus/project/WenXuanMat/openc910/smart_run/logical/tb/sim_main.cpp

@@ -8,7 +8,7 @@
 
 /* Binary tree builds a linker list of structures constructed by function name and its address, 
    making it easy to look up function names when a function call is encountered. */
-
+#ifdef CONFIG_FTRACE
 symbol_link root_symbol_bst = NULL;
 
 symbol_link make_symbol_node(uint64_t value, uint64_t size, char *name) {
@@ -175,3 +175,4 @@ void traverse_ftracelink() {
 }
 
 /* -------------------------------- FTRACE -------------------------------- */
+#endif

@@ -54,7 +54,7 @@ $(BUILD_V): $(BUILD_V_CSRCS)
 	--top-module $(TOPNAME) $(SIM_FILELIST) $^ \
 	$(addprefix -CFLAGS , $(BUIlD_V_CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-DTOP_NAME="\"V$(TOPNAME)\"" \
-	--Mdir $(BUILD_V_OBJ_DIR)
+	--Mdir $(BUILD_V_OBJ_DIR) --exe -o $(abspath $(BUILD_V)) 
 
 #-o $(abspath $(BUILD_V)) 
 

@@ -53,7 +53,7 @@ limitations under the License.
 `define APB_BASE_ADDR       40'hb0000000
 
 import "DPI-C" function void hart_commitInst(
-  uint64_t retire_pc
+  longint unsigned retire_pc
 );
 
 module top(
@@ -280,17 +280,23 @@ module top(
       retire_inst_in_period[31:0] <= 32'b0;
     end
     else if(`tb_retire0 || `tb_retire1 || `tb_retire2)
+      // if(`tb_retire0) 
+      //   $display("retire0 pc %x", `retire0_pc);
+      // if(`tb_retire1)
+      //   $display("retire1 pc %x", `retire1_pc);
+      // if(`tb_retire2)
+      //   $display("retire2 pc %x", `retire2_pc);
       retire_inst_in_period[31:0] <= retire_inst_in_period[31:0] + 1'b1;
   end
   
   always @(posedge clk)
   begin
       if(`tb_retire0) 
-        hart_commitInst(`retire0_pc);
+        hart_commitInst({14'b0, `retire0_pc});
       if(`tb_retire1)
-        hart_commitInst(`retire1_pc);
+        hart_commitInst({14'b0, `retire1_pc});
       if(`tb_retire2)
-        hart_commitInst(`retire2_pc);
+        hart_commitInst({14'b0, `retire2_pc});
   end
   
   reg [31:0] cpu_awaddr;

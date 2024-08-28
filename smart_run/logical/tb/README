@@ -1,0 +1,5 @@
+temporary command
+1. make 
+generate executable file in the "build_verilate" directory
+2. cd build_verilate && ./top
+exe file "top" will be executed and automatically read the image of helloworld software in the same directory
