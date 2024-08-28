@@ -52,6 +52,10 @@ limitations under the License.
 // `define APB_BASE_ADDR       40'h4000000000
 `define APB_BASE_ADDR       40'hb0000000
 
+import "DPI-C" function void hart_commitInst(
+  uint64_t retire_pc
+);
+
 module top(
   input wire clk
 );
@@ -279,7 +283,15 @@ module top(
       retire_inst_in_period[31:0] <= retire_inst_in_period[31:0] + 1'b1;
   end
   
-  
+  always @(posedge clk)
+  begin
+      if(`tb_retire0) 
+        hart_commitInst(`retire0_pc);
+      if(`tb_retire1)
+        hart_commitInst(`retire1_pc);
+      if(`tb_retire2)
+        hart_commitInst(`retire2_pc);
+  end
   
   reg [31:0] cpu_awaddr;
   reg [3:0]  cpu_awlen;

@@ -102,10 +102,11 @@ extern "C" void illegal(uint64_t pc) {
 }
 
 extern "C" void hart_commitInst(
-
+  uint64_t retire_pc
 ){
-
+  Log("[Hart] Instruction of PC %08llx retired", retire_pc);
   if(!is_batch_mode) { // no batch mode, single instruction step then STOP
+    Log("[Simulation] single step mode: STOP");
     sim_state.state = SIM_STOP;
   }
 }
