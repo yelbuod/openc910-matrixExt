@@ -223,7 +223,7 @@ word_t eval(int p, int q) {
       return (word_t)strtol(tokens[p].str, NULL, 16);
     else if (tokens[p].type == TK_REG_NAME) {
       bool success;
-      word_t reg_val = 0; //reg_str2val(tokens[p].str+1, &success); // +1 for ignoring character '$' in reg name
+      word_t reg_val = reg_str2val(tokens[p].str+1, &success); // // +1 for ignoring character '$' in reg name
       if(success)
         return reg_val;
       else {

@@ -13,31 +13,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "DPI-C" function void sync_fp_rename_table(
+  int unsigned arch_regIdx,
+  int unsigned phy_regIdx
+);
+
 // &ModuleBeg; @27
-module ct_rtu_pst_preg_entry(
+module ct_rtu_pst_vreg_entry#(parameter PHY_REG_IDX = 0)(
   cp0_rtu_icg_en,
   cp0_yy_clk_en,
   cpurst_b,
   dealloc_vld_for_gateclk,
-  forever_cpuclk,
-  idu_rtu_pst_dis_inst0_dst_reg,
-  idu_rtu_pst_dis_inst0_preg_iid,
-  idu_rtu_pst_dis_inst0_rel_preg,
-  idu_rtu_pst_dis_inst1_dst_reg,
-  idu_rtu_pst_dis_inst1_preg_iid,
-  idu_rtu_pst_dis_inst1_rel_preg,
-  idu_rtu_pst_dis_inst2_dst_reg,
-  idu_rtu_pst_dis_inst2_preg_iid,
-  idu_rtu_pst_dis_inst2_rel_preg,
-  idu_rtu_pst_dis_inst3_dst_reg,
-  idu_rtu_pst_dis_inst3_preg_iid,
-  idu_rtu_pst_dis_inst3_rel_preg,
+  idu_rtu_pst_dis_inst0_dstv_reg,
+  idu_rtu_pst_dis_inst0_rel_vreg,
+  idu_rtu_pst_dis_inst0_vreg_iid,
+  idu_rtu_pst_dis_inst1_dstv_reg,
+  idu_rtu_pst_dis_inst1_rel_vreg,
+  idu_rtu_pst_dis_inst1_vreg_iid,
+  idu_rtu_pst_dis_inst2_dstv_reg,
+  idu_rtu_pst_dis_inst2_rel_vreg,
+  idu_rtu_pst_dis_inst2_vreg_iid,
+  idu_rtu_pst_dis_inst3_dstv_reg,
+  idu_rtu_pst_dis_inst3_rel_vreg,
+  idu_rtu_pst_dis_inst3_vreg_iid,
   ifu_xx_sync_reset,
   pad_yy_icg_scan_en,
   retire_pst_async_flush,
-  retire_pst_wb_retire_inst0_preg_vld,
-  retire_pst_wb_retire_inst1_preg_vld,
-  retire_pst_wb_retire_inst2_preg_vld,
+  retire_pst_wb_retire_inst0_vreg_vld,
+  retire_pst_wb_retire_inst1_vreg_vld,
+  retire_pst_wb_retire_inst2_vreg_vld,
   rob_pst_retire_inst0_gateclk_vld,
   rob_pst_retire_inst0_iid_updt_val,
   rob_pst_retire_inst1_gateclk_vld,
@@ -45,14 +49,16 @@ module ct_rtu_pst_preg_entry(
   rob_pst_retire_inst2_gateclk_vld,
   rob_pst_retire_inst2_iid_updt_val,
   rtu_yy_xx_flush,
+  vreg_top_clk,
   x_create_vld,
+  x_cur_state_alloc_release,
   x_cur_state_dealloc,
   x_dealloc_mask,
   x_dealloc_vld,
   x_dreg,
-  x_rel_preg_expand,
+  x_rel_vreg_expand,
   x_release_vld,
-  x_reset_dst_reg,
+  x_reset_dstv_reg,
   x_reset_mapped,
   x_retired_released_wb,
   x_wb_vld
@@ -63,25 +69,24 @@ input           cp0_rtu_icg_en;
 input           cp0_yy_clk_en;                      
 input           cpurst_b;                           
 input           dealloc_vld_for_gateclk;            
-input           forever_cpuclk;                     
-input   [4 :0]  idu_rtu_pst_dis_inst0_dst_reg;      
-input   [6 :0]  idu_rtu_pst_dis_inst0_preg_iid;     
-input   [6 :0]  idu_rtu_pst_dis_inst0_rel_preg;     
-input   [4 :0]  idu_rtu_pst_dis_inst1_dst_reg;      
-input   [6 :0]  idu_rtu_pst_dis_inst1_preg_iid;     
-input   [6 :0]  idu_rtu_pst_dis_inst1_rel_preg;     
-input   [4 :0]  idu_rtu_pst_dis_inst2_dst_reg;      
-input   [6 :0]  idu_rtu_pst_dis_inst2_preg_iid;     
-input   [6 :0]  idu_rtu_pst_dis_inst2_rel_preg;     
-input   [4 :0]  idu_rtu_pst_dis_inst3_dst_reg;      
-input   [6 :0]  idu_rtu_pst_dis_inst3_preg_iid;     
-input   [6 :0]  idu_rtu_pst_dis_inst3_rel_preg;     
+input   [4 :0]  idu_rtu_pst_dis_inst0_dstv_reg;     
+input   [5 :0]  idu_rtu_pst_dis_inst0_rel_vreg;     
+input   [6 :0]  idu_rtu_pst_dis_inst0_vreg_iid;     
+input   [4 :0]  idu_rtu_pst_dis_inst1_dstv_reg;     
+input   [5 :0]  idu_rtu_pst_dis_inst1_rel_vreg;     
+input   [6 :0]  idu_rtu_pst_dis_inst1_vreg_iid;     
+input   [4 :0]  idu_rtu_pst_dis_inst2_dstv_reg;     
+input   [5 :0]  idu_rtu_pst_dis_inst2_rel_vreg;     
+input   [6 :0]  idu_rtu_pst_dis_inst2_vreg_iid;     
+input   [4 :0]  idu_rtu_pst_dis_inst3_dstv_reg;     
+input   [5 :0]  idu_rtu_pst_dis_inst3_rel_vreg;     
+input   [6 :0]  idu_rtu_pst_dis_inst3_vreg_iid;     
 input           ifu_xx_sync_reset;                  
 input           pad_yy_icg_scan_en;                 
 input           retire_pst_async_flush;             
-input           retire_pst_wb_retire_inst0_preg_vld; 
-input           retire_pst_wb_retire_inst1_preg_vld; 
-input           retire_pst_wb_retire_inst2_preg_vld; 
+input           retire_pst_wb_retire_inst0_vreg_vld; 
+input           retire_pst_wb_retire_inst1_vreg_vld; 
+input           retire_pst_wb_retire_inst2_vreg_vld; 
 input           rob_pst_retire_inst0_gateclk_vld;   
 input   [6 :0]  rob_pst_retire_inst0_iid_updt_val;  
 input           rob_pst_retire_inst1_gateclk_vld;   
@@ -89,27 +94,29 @@ input   [6 :0]  rob_pst_retire_inst1_iid_updt_val;
 input           rob_pst_retire_inst2_gateclk_vld;   
 input   [6 :0]  rob_pst_retire_inst2_iid_updt_val;  
 input           rtu_yy_xx_flush;                    
+input           vreg_top_clk;                       
 input   [3 :0]  x_create_vld;                       
 input           x_dealloc_mask;                     
 input           x_dealloc_vld;                      
 input           x_release_vld;                      
-input   [4 :0]  x_reset_dst_reg;                    
+input   [4 :0]  x_reset_dstv_reg;                   
 input           x_reset_mapped;                     
 input           x_wb_vld;                           
+output          x_cur_state_alloc_release;          
 output          x_cur_state_dealloc;                
 output  [31:0]  x_dreg;                             
-output  [95:0]  x_rel_preg_expand;                  
+output  [63:0]  x_rel_vreg_expand;                  
 output          x_retired_released_wb;              
 
 // &Regs; @29
-reg     [4 :0]  create_dst_reg;                     
+reg     [4 :0]  create_dstv_reg;                    
 reg     [6 :0]  create_iid;                         
-reg     [6 :0]  create_rel_preg;                    
-reg     [4 :0]  dst_reg;                            
+reg     [5 :0]  create_rel_vreg;                    
+reg     [4 :0]  dstv_reg;                           
 reg     [6 :0]  iid;                                
 reg     [4 :0]  lifecycle_cur_state;                
 reg     [4 :0]  lifecycle_next_state;               
-reg     [6 :0]  rel_preg;                           
+reg     [5 :0]  rel_vreg;                           
 reg             retire_inst0_iid_match;             
 reg             retire_inst1_iid_match;             
 reg             retire_inst2_iid_match;             
@@ -124,28 +131,27 @@ wire            cp0_yy_clk_en;
 wire            cpurst_b;                           
 wire            create_vld;                         
 wire            dealloc_vld_for_gateclk;            
-wire    [31:0]  dst_reg_expand;                     
-wire            forever_cpuclk;                     
-wire    [4 :0]  idu_rtu_pst_dis_inst0_dst_reg;      
-wire    [6 :0]  idu_rtu_pst_dis_inst0_preg_iid;     
-wire    [6 :0]  idu_rtu_pst_dis_inst0_rel_preg;     
-wire    [4 :0]  idu_rtu_pst_dis_inst1_dst_reg;      
-wire    [6 :0]  idu_rtu_pst_dis_inst1_preg_iid;     
-wire    [6 :0]  idu_rtu_pst_dis_inst1_rel_preg;     
-wire    [4 :0]  idu_rtu_pst_dis_inst2_dst_reg;      
-wire    [6 :0]  idu_rtu_pst_dis_inst2_preg_iid;     
-wire    [6 :0]  idu_rtu_pst_dis_inst2_rel_preg;     
-wire    [4 :0]  idu_rtu_pst_dis_inst3_dst_reg;      
-wire    [6 :0]  idu_rtu_pst_dis_inst3_preg_iid;     
-wire    [6 :0]  idu_rtu_pst_dis_inst3_rel_preg;     
+wire    [31:0]  dstv_reg_expand;                    
+wire    [4 :0]  idu_rtu_pst_dis_inst0_dstv_reg;     
+wire    [5 :0]  idu_rtu_pst_dis_inst0_rel_vreg;     
+wire    [6 :0]  idu_rtu_pst_dis_inst0_vreg_iid;     
+wire    [4 :0]  idu_rtu_pst_dis_inst1_dstv_reg;     
+wire    [5 :0]  idu_rtu_pst_dis_inst1_rel_vreg;     
+wire    [6 :0]  idu_rtu_pst_dis_inst1_vreg_iid;     
+wire    [4 :0]  idu_rtu_pst_dis_inst2_dstv_reg;     
+wire    [5 :0]  idu_rtu_pst_dis_inst2_rel_vreg;     
+wire    [6 :0]  idu_rtu_pst_dis_inst2_vreg_iid;     
+wire    [4 :0]  idu_rtu_pst_dis_inst3_dstv_reg;     
+wire    [5 :0]  idu_rtu_pst_dis_inst3_rel_vreg;     
+wire    [6 :0]  idu_rtu_pst_dis_inst3_vreg_iid;     
 wire            ifu_xx_sync_reset;                  
 wire            lifecycle_cur_state_alloc;          
 wire            lifecycle_cur_state_dealloc;        
 wire            lifecycle_cur_state_release;        
 wire            lifecycle_cur_state_retire;         
 wire            pad_yy_icg_scan_en;                 
-wire    [95:0]  rel_preg_expand;                    
 wire            rel_retire_vld;                     
+wire    [63:0]  rel_vreg_expand;                    
 wire    [4 :0]  reset_lifecycle_state;              
 wire            reset_wb_state;                     
 wire            retire_gateclk_vld;                 
@@ -154,9 +160,9 @@ wire            retire_inst1_iid_match_updt_val;
 wire            retire_inst2_iid_match_updt_val;    
 wire            retire_inst_iid_match_gateclk_en;   
 wire            retire_pst_async_flush;             
-wire            retire_pst_wb_retire_inst0_preg_vld; 
-wire            retire_pst_wb_retire_inst1_preg_vld; 
-wire            retire_pst_wb_retire_inst2_preg_vld; 
+wire            retire_pst_wb_retire_inst0_vreg_vld; 
+wire            retire_pst_wb_retire_inst1_vreg_vld; 
+wire            retire_pst_wb_retire_inst2_vreg_vld; 
 wire            retire_vld;                         
 wire            rob_pst_retire_inst0_gateclk_vld;   
 wire    [6 :0]  rob_pst_retire_inst0_iid_updt_val;  
@@ -167,16 +173,18 @@ wire    [6 :0]  rob_pst_retire_inst2_iid_updt_val;
 wire            rtu_yy_xx_flush;                    
 wire            sm_clk;                             
 wire            sm_clk_en;                          
+wire            vreg_top_clk;                       
 wire            wb_cur_state_wb;                    
 wire            wb_cur_state_wb_masked;             
 wire    [3 :0]  x_create_vld;                       
+wire            x_cur_state_alloc_release;          
 wire            x_cur_state_dealloc;                
 wire            x_dealloc_mask;                     
 wire            x_dealloc_vld;                      
 wire    [31:0]  x_dreg;                             
-wire    [95:0]  x_rel_preg_expand;                  
+wire    [63:0]  x_rel_vreg_expand;                  
 wire            x_release_vld;                      
-wire    [4 :0]  x_reset_dst_reg;                    
+wire    [4 :0]  x_reset_dstv_reg;                   
 wire            x_reset_mapped;                     
 wire            x_retired_released_wb;              
 wire            x_wb_vld;                           
@@ -213,7 +221,7 @@ assign sm_clk_en = rtu_yy_xx_flush
                       && wb_cur_state_wb;
 // &Instance("gated_clk_cell", "x_sm_gated_clk"); @61
 gated_clk_cell  x_sm_gated_clk (
-  .clk_in             (forever_cpuclk    ),
+  .clk_in             (vreg_top_clk      ),
   .clk_out            (sm_clk            ),
   .external_en        (1'b0              ),
   .global_en          (cp0_yy_clk_en     ),
@@ -222,7 +230,7 @@ gated_clk_cell  x_sm_gated_clk (
   .pad_yy_icg_scan_en (pad_yy_icg_scan_en)
 );
 
-// &Connect(.clk_in      (forever_cpuclk), @62
+// &Connect(.clk_in      (vreg_top_clk), @62
 //          .external_en (1'b0), @63
 //          .global_en   (cp0_yy_clk_en), @64
 //          .module_en   (cp0_rtu_icg_en), @65
@@ -233,7 +241,7 @@ assign alloc_clk_en = ifu_xx_sync_reset
                       || create_vld;
 // &Instance("gated_clk_cell", "x_alloc_gated_clk"); @71
 gated_clk_cell  x_alloc_gated_clk (
-  .clk_in             (forever_cpuclk    ),
+  .clk_in             (vreg_top_clk      ),
   .clk_out            (alloc_clk         ),
   .external_en        (1'b0              ),
   .global_en          (cp0_yy_clk_en     ),
@@ -242,7 +250,7 @@ gated_clk_cell  x_alloc_gated_clk (
   .pad_yy_icg_scan_en (pad_yy_icg_scan_en)
 );
 
-// &Connect(.clk_in      (forever_cpuclk), @72
+// &Connect(.clk_in      (vreg_top_clk), @72
 //          .external_en (1'b0), @73
 //          .global_en   (cp0_yy_clk_en), @74
 //          .module_en   (cp0_rtu_icg_en), @75
@@ -250,20 +258,20 @@ gated_clk_cell  x_alloc_gated_clk (
 //          .clk_out     (alloc_clk)); @77
 
 //==========================================================
-//               Preg Lifecycle State Machine
+//               Vreg Lifecycle State Machine
 //==========================================================
 assign reset_lifecycle_state[4:0] = (x_reset_mapped) ? RETIRE : DEALLOC;
 
 //----------------------------------------------------------
-//                  FSM of Preg liftcycle                  
+//                  FSM of Vreg liftcycle                  
 //----------------------------------------------------------
 // State Description:
-// DEALLOC    : preg is released and written back, could
+// DEALLOC    : vreg is released and written back, could
 //              allocate to new producer
-// WF_ALLOC   : preg is in allocate preg register
-// ALLOC      : preg is allocated to producer
-// RETIRE     : producer is retired but preg is not released
-// RELEASE    : preg is released
+// WF_ALLOC   : vreg is in allocate vreg register
+// ALLOC      : vreg is allocated to producer
+// RETIRE     : producer is retired but vreg is not released
+// RELEASE    : vreg is released
 
 always @(posedge sm_clk or negedge cpurst_b)
 begin
@@ -329,18 +337,20 @@ assign lifecycle_cur_state_retire   = lifecycle_cur_state[3];
 assign lifecycle_cur_state_release  = lifecycle_cur_state[4];
 
 assign x_cur_state_dealloc          = lifecycle_cur_state_dealloc;
+assign x_cur_state_alloc_release    = lifecycle_cur_state_alloc
+                                      || lifecycle_cur_state_release;
 
 //==========================================================
-//               Preg Write Back State Machine
+//               Vreg Write Back State Machine
 //==========================================================
 assign reset_wb_state = (x_reset_mapped) ? WB : IDLE;
 
 //----------------------------------------------------------
-//                 FSM of Preg write back                 
+//                 FSM of Vreg write back                 
 //----------------------------------------------------------
 // State Description:
-// IDLE       : preg is not written back
-// WB         : preg is written back
+// IDLE       : vreg is not written back
+// WB         : vreg is written back
 
 always @(posedge sm_clk or negedge cpurst_b)
 begin
@@ -356,7 +366,7 @@ begin
     wb_cur_state <= wb_next_state;
 end
 
-// &CombBeg; @177
+// &CombBeg; @179
 always @( lifecycle_cur_state_dealloc
        or x_wb_vld
        or wb_cur_state)
@@ -372,7 +382,7 @@ begin
                    wb_next_state = WB;
     default    :   wb_next_state = IDLE;
   endcase
-// &CombEnd; @189
+// &CombEnd; @191
 end
 
 //----------------------------------------------------------
@@ -382,55 +392,55 @@ assign wb_cur_state_wb        = (wb_cur_state == WB);
 assign wb_cur_state_wb_masked = (wb_cur_state == WB) && !x_dealloc_mask;
 
 //==========================================================
-//                    Preg information
+//                    Vreg information
 //==========================================================
 //----------------------------------------------------------
 //              Prepare allocate create data
 //----------------------------------------------------------
 assign create_vld = |x_create_vld[3:0];
-// &CombBeg; @204
-always @( idu_rtu_pst_dis_inst3_preg_iid[6:0]
-       or idu_rtu_pst_dis_inst3_dst_reg[4:0]
-       or idu_rtu_pst_dis_inst0_rel_preg[6:0]
-       or idu_rtu_pst_dis_inst3_rel_preg[6:0]
-       or idu_rtu_pst_dis_inst1_preg_iid[6:0]
-       or idu_rtu_pst_dis_inst2_rel_preg[6:0]
-       or idu_rtu_pst_dis_inst1_rel_preg[6:0]
-       or idu_rtu_pst_dis_inst1_dst_reg[4:0]
+// &CombBeg; @206
+always @( idu_rtu_pst_dis_inst2_dstv_reg[4:0]
+       or idu_rtu_pst_dis_inst0_dstv_reg[4:0]
+       or idu_rtu_pst_dis_inst1_vreg_iid[6:0]
+       or idu_rtu_pst_dis_inst0_vreg_iid[6:0]
+       or idu_rtu_pst_dis_inst3_dstv_reg[4:0]
+       or idu_rtu_pst_dis_inst0_rel_vreg[5:0]
+       or idu_rtu_pst_dis_inst2_vreg_iid[6:0]
+       or idu_rtu_pst_dis_inst2_rel_vreg[5:0]
+       or idu_rtu_pst_dis_inst3_vreg_iid[6:0]
        or x_create_vld[3:0]
-       or idu_rtu_pst_dis_inst0_preg_iid[6:0]
-       or idu_rtu_pst_dis_inst2_preg_iid[6:0]
-       or idu_rtu_pst_dis_inst0_dst_reg[4:0]
-       or idu_rtu_pst_dis_inst2_dst_reg[4:0])
+       or idu_rtu_pst_dis_inst1_dstv_reg[4:0]
+       or idu_rtu_pst_dis_inst3_rel_vreg[5:0]
+       or idu_rtu_pst_dis_inst1_rel_vreg[5:0])
 begin
   case (x_create_vld[3:0])
     4'h1   : begin
-               create_iid[6:0]      = idu_rtu_pst_dis_inst0_preg_iid[6:0];
-               create_dst_reg[4:0]  = idu_rtu_pst_dis_inst0_dst_reg[4:0];
-               create_rel_preg[6:0] = idu_rtu_pst_dis_inst0_rel_preg[6:0];
+               create_iid[6:0]      = idu_rtu_pst_dis_inst0_vreg_iid[6:0];
+               create_dstv_reg[4:0] = idu_rtu_pst_dis_inst0_dstv_reg[4:0];
+               create_rel_vreg[5:0] = idu_rtu_pst_dis_inst0_rel_vreg[5:0];
              end
     4'h2   : begin
-               create_iid[6:0]      = idu_rtu_pst_dis_inst1_preg_iid[6:0];
-               create_dst_reg[4:0]  = idu_rtu_pst_dis_inst1_dst_reg[4:0];
-               create_rel_preg[6:0] = idu_rtu_pst_dis_inst1_rel_preg[6:0];
+               create_iid[6:0]      = idu_rtu_pst_dis_inst1_vreg_iid[6:0];
+               create_dstv_reg[4:0] = idu_rtu_pst_dis_inst1_dstv_reg[4:0];
+               create_rel_vreg[5:0] = idu_rtu_pst_dis_inst1_rel_vreg[5:0];
              end
     4'h4   : begin
-               create_iid[6:0]      = idu_rtu_pst_dis_inst2_preg_iid[6:0];
-               create_dst_reg[4:0]  = idu_rtu_pst_dis_inst2_dst_reg[4:0];
-               create_rel_preg[6:0] = idu_rtu_pst_dis_inst2_rel_preg[6:0];
+               create_iid[6:0]      = idu_rtu_pst_dis_inst2_vreg_iid[6:0];
+               create_dstv_reg[4:0] = idu_rtu_pst_dis_inst2_dstv_reg[4:0];
+               create_rel_vreg[5:0] = idu_rtu_pst_dis_inst2_rel_vreg[5:0];
              end
     4'h8   : begin
-               create_iid[6:0]      = idu_rtu_pst_dis_inst3_preg_iid[6:0];
-               create_dst_reg[4:0]  = idu_rtu_pst_dis_inst3_dst_reg[4:0];
-               create_rel_preg[6:0] = idu_rtu_pst_dis_inst3_rel_preg[6:0];
+               create_iid[6:0]      = idu_rtu_pst_dis_inst3_vreg_iid[6:0];
+               create_dstv_reg[4:0] = idu_rtu_pst_dis_inst3_dstv_reg[4:0];
+               create_rel_vreg[5:0] = idu_rtu_pst_dis_inst3_rel_vreg[5:0];
              end
     default: begin
                create_iid[6:0]      = {7{1'bx}};
-               create_dst_reg[4:0]  = {5{1'bx}};
-               create_rel_preg[6:0] = {7{1'bx}};
+               create_dstv_reg[4:0] = {5{1'bx}};
+               create_rel_vreg[5:0] = {6{1'bx}};
              end
   endcase
-// &CombEnd; @232
+// &CombEnd; @234
 end
 
 //----------------------------------------------------------
@@ -440,23 +450,23 @@ always @(posedge alloc_clk or negedge cpurst_b)
 begin
   if(!cpurst_b) begin
     iid[6:0]      <= 7'd0;
-    dst_reg[4:0]  <= 5'd0;
-    rel_preg[6:0] <= 7'd0;
+    dstv_reg[4:0] <= 5'd0;
+    rel_vreg[5:0] <= 6'd0;
   end 
   else if(ifu_xx_sync_reset) begin
     iid[6:0]      <= 7'd0;
-    dst_reg[4:0]  <= x_reset_dst_reg[4:0];
-    rel_preg[6:0] <= 7'd0;
+    dstv_reg[4:0] <= x_reset_dstv_reg[4:0];
+    rel_vreg[5:0] <= 6'd0;
   end 
   else if(create_vld) begin
     iid[6:0]      <= create_iid[6:0];
-    dst_reg[4:0]  <= create_dst_reg[4:0];
-    rel_preg[6:0] <= create_rel_preg[6:0];
+    dstv_reg[4:0] <= create_dstv_reg[4:0];
+    rel_vreg[5:0] <= create_rel_vreg[5:0];
   end
   else begin
     iid[6:0]      <= iid[6:0];
-    dst_reg[4:0]  <= dst_reg[4:0];
-    rel_preg[6:0] <= rel_preg[6:0];
+    dstv_reg[4:0] <= dstv_reg[4:0];
+    rel_vreg[5:0] <= rel_vreg[5:0];
   end
 end
 
@@ -518,46 +528,51 @@ end
 //==========================================================
 //                       Retire signal
 //==========================================================
-assign retire_vld = retire_pst_wb_retire_inst0_preg_vld
+assign retire_vld = retire_pst_wb_retire_inst0_vreg_vld
                     && retire_inst0_iid_match
-                 || retire_pst_wb_retire_inst1_preg_vld
+                 || retire_pst_wb_retire_inst1_vreg_vld
                     && retire_inst1_iid_match
-                 || retire_pst_wb_retire_inst2_preg_vld
+                 || retire_pst_wb_retire_inst2_vreg_vld
                     && retire_inst2_iid_match;
-
-assign retire_gateclk_vld = retire_pst_wb_retire_inst0_preg_vld
-                         || retire_pst_wb_retire_inst1_preg_vld
-                         || retire_pst_wb_retire_inst2_preg_vld;
+assign retire_gateclk_vld = retire_pst_wb_retire_inst0_vreg_vld
+                         || retire_pst_wb_retire_inst1_vreg_vld
+                         || retire_pst_wb_retire_inst2_vreg_vld;
 
 //==========================================================
 //                      Release signal
 //==========================================================
-// &ConnRule(s/^x_num/rel_preg/); @333
-// &Instance("ct_rtu_expand_96","x_ct_rtu_expand_96_rel_preg"); @334
-ct_rtu_expand_96  x_ct_rtu_expand_96_rel_preg (
-  .x_num           (rel_preg       ),
-  .x_num_expand    (rel_preg_expand)
+// &ConnRule(s/^x_num/rel_vreg/); @334
+// &Instance("ct_rtu_expand_64","x_ct_rtu_expand_64_rel_vreg"); @335
+ct_rtu_expand_64  x_ct_rtu_expand_64_rel_vreg (
+  .x_num           (rel_vreg       ),
+  .x_num_expand    (rel_vreg_expand)
 );
 
 //iid match is already AND with cur state alloc
 assign rel_retire_vld = lifecycle_cur_state_alloc && retire_vld;
 
-assign x_rel_preg_expand[95:0] = 
-         {96{rel_retire_vld}} & rel_preg_expand[95:0];
+assign x_rel_vreg_expand[63:0] = 
+         {64{rel_retire_vld}} & rel_vreg_expand[63:0];
 
 //==========================================================
 //              Rename Table Recovery signal
 //==========================================================
-// &ConnRule(s/^x_num/dst_reg/); @344
-// &Instance("ct_rtu_expand_32","x_ct_rtu_expand_32_dst_reg"); @345
-ct_rtu_expand_32  x_ct_rtu_expand_32_dst_reg (
-  .x_num          (dst_reg       ),
-  .x_num_expand   (dst_reg_expand)
+// &ConnRule(s/^x_num/dstv_reg/); @345
+// &Instance("ct_rtu_expand_32","x_ct_rtu_expand_32_dstv_reg"); @346
+ct_rtu_expand_32  x_ct_rtu_expand_32_dstv_reg (
+  .x_num           (dstv_reg       ),
+  .x_num_expand    (dstv_reg_expand)
 );
 
 
 assign x_dreg[31:0] = {32{lifecycle_cur_state_retire}}
-                      & dst_reg_expand[31:0];
+                      & dstv_reg_expand[31:0];
+
+always @( x_dreg[31:0] ) begin
+  if(|x_dreg[31:0]) begin
+    sync_fp_rename_table(dstv_reg, PHY_REG_IDX);
+  end
+end
 
 //==========================================================
 //          Fast Retired Instruction Write Back
@@ -571,7 +586,7 @@ assign x_retired_released_wb = (lifecycle_cur_state_alloc
                                ? wb_cur_state_wb : 1'b1;
 
 
-// &ModuleEnd; @373
+// &ModuleEnd; @374
 endmodule
 
 

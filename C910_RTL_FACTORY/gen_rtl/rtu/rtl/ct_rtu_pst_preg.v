@@ -1414,8 +1414,8 @@ assign preg0_retired_released_wb   = 1'b1;
 //              GPR Physical Regsiters (Preg)
 //----------------------------------------------------------
 // &ConnRule(s/^x_/preg1_/); @65
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg1"); @66
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg1 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(1))","x_ct_rtu_pst_entry_preg1"); @66
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(1))  x_ct_rtu_pst_entry_preg1 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1460,8 +1460,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg1 (
 );
 
 // &ConnRule(s/^x_/preg2_/); @67
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg2"); @68
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg2 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(2))","x_ct_rtu_pst_entry_preg2"); @68
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(2))  x_ct_rtu_pst_entry_preg2 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1506,8 +1506,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg2 (
 );
 
 // &ConnRule(s/^x_/preg3_/); @69
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg3"); @70
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg3 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(3))","x_ct_rtu_pst_entry_preg3"); @70
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(3))  x_ct_rtu_pst_entry_preg3 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1552,8 +1552,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg3 (
 );
 
 // &ConnRule(s/^x_/preg4_/); @71
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg4"); @72
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg4 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(4))","x_ct_rtu_pst_entry_preg4"); @72
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(4))  x_ct_rtu_pst_entry_preg4 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1598,8 +1598,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg4 (
 );
 
 // &ConnRule(s/^x_/preg5_/); @73
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg5"); @74
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg5 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(5))","x_ct_rtu_pst_entry_preg5"); @74
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(5))  x_ct_rtu_pst_entry_preg5 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1644,8 +1644,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg5 (
 );
 
 // &ConnRule(s/^x_/preg6_/); @75
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg6"); @76
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg6 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(6))","x_ct_rtu_pst_entry_preg6"); @76
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(6))  x_ct_rtu_pst_entry_preg6 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1690,8 +1690,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg6 (
 );
 
 // &ConnRule(s/^x_/preg7_/); @77
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg7"); @78
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg7 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(7))","x_ct_rtu_pst_entry_preg7"); @78
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(7))  x_ct_rtu_pst_entry_preg7 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1736,8 +1736,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg7 (
 );
 
 // &ConnRule(s/^x_/preg8_/); @79
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg8"); @80
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg8 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(8))","x_ct_rtu_pst_entry_preg8"); @80
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(8))  x_ct_rtu_pst_entry_preg8 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1782,8 +1782,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg8 (
 );
 
 // &ConnRule(s/^x_/preg9_/); @81
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg9"); @82
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg9 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(9))","x_ct_rtu_pst_entry_preg9"); @82
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(9))  x_ct_rtu_pst_entry_preg9 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1828,8 +1828,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg9 (
 );
 
 // &ConnRule(s/^x_/preg10_/); @83
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg10"); @84
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg10 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(10))","x_ct_rtu_pst_entry_preg10"); @84
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(10))  x_ct_rtu_pst_entry_preg10 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1874,8 +1874,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg10 (
 );
 
 // &ConnRule(s/^x_/preg11_/); @85
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg11"); @86
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg11 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(11))","x_ct_rtu_pst_entry_preg11"); @86
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(11))  x_ct_rtu_pst_entry_preg11 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1920,8 +1920,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg11 (
 );
 
 // &ConnRule(s/^x_/preg12_/); @87
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg12"); @88
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg12 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(12))","x_ct_rtu_pst_entry_preg12"); @88
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(12))  x_ct_rtu_pst_entry_preg12 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1966,8 +1966,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg12 (
 );
 
 // &ConnRule(s/^x_/preg13_/); @89
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg13"); @90
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg13 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(13))","x_ct_rtu_pst_entry_preg13"); @90
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(13))  x_ct_rtu_pst_entry_preg13 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2012,8 +2012,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg13 (
 );
 
 // &ConnRule(s/^x_/preg14_/); @91
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg14"); @92
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg14 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(14))","x_ct_rtu_pst_entry_preg14"); @92
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(14))  x_ct_rtu_pst_entry_preg14 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2058,8 +2058,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg14 (
 );
 
 // &ConnRule(s/^x_/preg15_/); @93
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg15"); @94
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg15 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(15))","x_ct_rtu_pst_entry_preg15"); @94
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(15))  x_ct_rtu_pst_entry_preg15 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2104,8 +2104,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg15 (
 );
 
 // &ConnRule(s/^x_/preg16_/); @95
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg16"); @96
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg16 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(16))","x_ct_rtu_pst_entry_preg16"); @96
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(16))  x_ct_rtu_pst_entry_preg16 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2150,8 +2150,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg16 (
 );
 
 // &ConnRule(s/^x_/preg17_/); @97
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg17"); @98
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg17 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(17))","x_ct_rtu_pst_entry_preg17"); @98
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(17))  x_ct_rtu_pst_entry_preg17 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2196,8 +2196,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg17 (
 );
 
 // &ConnRule(s/^x_/preg18_/); @99
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg18"); @100
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg18 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(18))","x_ct_rtu_pst_entry_preg18"); @100
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(18))  x_ct_rtu_pst_entry_preg18 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2242,8 +2242,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg18 (
 );
 
 // &ConnRule(s/^x_/preg19_/); @101
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg19"); @102
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg19 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(19))","x_ct_rtu_pst_entry_preg19"); @102
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(19))  x_ct_rtu_pst_entry_preg19 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2288,8 +2288,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg19 (
 );
 
 // &ConnRule(s/^x_/preg20_/); @103
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg20"); @104
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg20 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(20))","x_ct_rtu_pst_entry_preg20"); @104
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(20))  x_ct_rtu_pst_entry_preg20 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2334,8 +2334,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg20 (
 );
 
 // &ConnRule(s/^x_/preg21_/); @105
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg21"); @106
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg21 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(21))","x_ct_rtu_pst_entry_preg21"); @106
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(21))  x_ct_rtu_pst_entry_preg21 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2380,8 +2380,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg21 (
 );
 
 // &ConnRule(s/^x_/preg22_/); @107
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg22"); @108
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg22 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(22))","x_ct_rtu_pst_entry_preg22"); @108
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(22))  x_ct_rtu_pst_entry_preg22 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2426,8 +2426,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg22 (
 );
 
 // &ConnRule(s/^x_/preg23_/); @109
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg23"); @110
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg23 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(23))","x_ct_rtu_pst_entry_preg23"); @110
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(23))  x_ct_rtu_pst_entry_preg23 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2472,8 +2472,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg23 (
 );
 
 // &ConnRule(s/^x_/preg24_/); @111
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg24"); @112
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg24 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(24))","x_ct_rtu_pst_entry_preg24"); @112
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(24))  x_ct_rtu_pst_entry_preg24 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2518,8 +2518,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg24 (
 );
 
 // &ConnRule(s/^x_/preg25_/); @113
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg25"); @114
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg25 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(25))","x_ct_rtu_pst_entry_preg25"); @114
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(25))  x_ct_rtu_pst_entry_preg25 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2564,8 +2564,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg25 (
 );
 
 // &ConnRule(s/^x_/preg26_/); @115
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg26"); @116
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg26 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(26))","x_ct_rtu_pst_entry_preg26"); @116
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(26))  x_ct_rtu_pst_entry_preg26 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2610,8 +2610,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg26 (
 );
 
 // &ConnRule(s/^x_/preg27_/); @117
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg27"); @118
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg27 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(27))","x_ct_rtu_pst_entry_preg27"); @118
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(27))  x_ct_rtu_pst_entry_preg27 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2656,8 +2656,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg27 (
 );
 
 // &ConnRule(s/^x_/preg28_/); @119
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg28"); @120
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg28 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(28))","x_ct_rtu_pst_entry_preg28"); @120
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(28))  x_ct_rtu_pst_entry_preg28 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2702,8 +2702,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg28 (
 );
 
 // &ConnRule(s/^x_/preg29_/); @121
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg29"); @122
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg29 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(29))","x_ct_rtu_pst_entry_preg29"); @122
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(29))  x_ct_rtu_pst_entry_preg29 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2748,8 +2748,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg29 (
 );
 
 // &ConnRule(s/^x_/preg30_/); @123
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg30"); @124
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg30 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(30))","x_ct_rtu_pst_entry_preg30"); @124
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(30))  x_ct_rtu_pst_entry_preg30 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2794,8 +2794,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg30 (
 );
 
 // &ConnRule(s/^x_/preg31_/); @125
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg31"); @126
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg31 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(31))","x_ct_rtu_pst_entry_preg31"); @126
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(31))  x_ct_rtu_pst_entry_preg31 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2840,8 +2840,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg31 (
 );
 
 // &ConnRule(s/^x_/preg32_/); @127
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg32"); @128
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg32 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(32))","x_ct_rtu_pst_entry_preg32"); @128
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(32))  x_ct_rtu_pst_entry_preg32 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2886,8 +2886,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg32 (
 );
 
 // &ConnRule(s/^x_/preg33_/); @129
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg33"); @130
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg33 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(33))","x_ct_rtu_pst_entry_preg33"); @130
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(33))  x_ct_rtu_pst_entry_preg33 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2932,8 +2932,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg33 (
 );
 
 // &ConnRule(s/^x_/preg34_/); @131
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg34"); @132
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg34 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(34))","x_ct_rtu_pst_entry_preg34"); @132
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(34))  x_ct_rtu_pst_entry_preg34 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2978,8 +2978,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg34 (
 );
 
 // &ConnRule(s/^x_/preg35_/); @133
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg35"); @134
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg35 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(35))","x_ct_rtu_pst_entry_preg35"); @134
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(35))  x_ct_rtu_pst_entry_preg35 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3024,8 +3024,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg35 (
 );
 
 // &ConnRule(s/^x_/preg36_/); @135
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg36"); @136
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg36 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(36))","x_ct_rtu_pst_entry_preg36"); @136
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(36))  x_ct_rtu_pst_entry_preg36 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3070,8 +3070,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg36 (
 );
 
 // &ConnRule(s/^x_/preg37_/); @137
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg37"); @138
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg37 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(37))","x_ct_rtu_pst_entry_preg37"); @138
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(37))  x_ct_rtu_pst_entry_preg37 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3116,8 +3116,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg37 (
 );
 
 // &ConnRule(s/^x_/preg38_/); @139
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg38"); @140
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg38 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(38))","x_ct_rtu_pst_entry_preg38"); @140
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(38))  x_ct_rtu_pst_entry_preg38 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3162,8 +3162,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg38 (
 );
 
 // &ConnRule(s/^x_/preg39_/); @141
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg39"); @142
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg39 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(39))","x_ct_rtu_pst_entry_preg39"); @142
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(39))  x_ct_rtu_pst_entry_preg39 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3208,8 +3208,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg39 (
 );
 
 // &ConnRule(s/^x_/preg40_/); @143
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg40"); @144
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg40 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(40))","x_ct_rtu_pst_entry_preg40"); @144
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(40))  x_ct_rtu_pst_entry_preg40 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3254,8 +3254,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg40 (
 );
 
 // &ConnRule(s/^x_/preg41_/); @145
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg41"); @146
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg41 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(41))","x_ct_rtu_pst_entry_preg41"); @146
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(41))  x_ct_rtu_pst_entry_preg41 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3300,8 +3300,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg41 (
 );
 
 // &ConnRule(s/^x_/preg42_/); @147
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg42"); @148
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg42 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(42))","x_ct_rtu_pst_entry_preg42"); @148
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(42))  x_ct_rtu_pst_entry_preg42 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3346,8 +3346,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg42 (
 );
 
 // &ConnRule(s/^x_/preg43_/); @149
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg43"); @150
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg43 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(43))","x_ct_rtu_pst_entry_preg43"); @150
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(43))  x_ct_rtu_pst_entry_preg43 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3392,8 +3392,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg43 (
 );
 
 // &ConnRule(s/^x_/preg44_/); @151
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg44"); @152
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg44 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(44))","x_ct_rtu_pst_entry_preg44"); @152
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(44))  x_ct_rtu_pst_entry_preg44 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3438,8 +3438,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg44 (
 );
 
 // &ConnRule(s/^x_/preg45_/); @153
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg45"); @154
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg45 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(45))","x_ct_rtu_pst_entry_preg45"); @154
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(45))  x_ct_rtu_pst_entry_preg45 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3484,8 +3484,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg45 (
 );
 
 // &ConnRule(s/^x_/preg46_/); @155
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg46"); @156
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg46 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(46))","x_ct_rtu_pst_entry_preg46"); @156
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(46))  x_ct_rtu_pst_entry_preg46 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3530,8 +3530,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg46 (
 );
 
 // &ConnRule(s/^x_/preg47_/); @157
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg47"); @158
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg47 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(47))","x_ct_rtu_pst_entry_preg47"); @158
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(47))  x_ct_rtu_pst_entry_preg47 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3576,8 +3576,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg47 (
 );
 
 // &ConnRule(s/^x_/preg48_/); @159
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg48"); @160
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg48 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(48))","x_ct_rtu_pst_entry_preg48"); @160
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(48))  x_ct_rtu_pst_entry_preg48 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3622,8 +3622,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg48 (
 );
 
 // &ConnRule(s/^x_/preg49_/); @161
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg49"); @162
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg49 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(49))","x_ct_rtu_pst_entry_preg49"); @162
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(49))  x_ct_rtu_pst_entry_preg49 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3668,8 +3668,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg49 (
 );
 
 // &ConnRule(s/^x_/preg50_/); @163
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg50"); @164
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg50 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(50))","x_ct_rtu_pst_entry_preg50"); @164
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(50))  x_ct_rtu_pst_entry_preg50 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3714,8 +3714,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg50 (
 );
 
 // &ConnRule(s/^x_/preg51_/); @165
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg51"); @166
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg51 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(51))","x_ct_rtu_pst_entry_preg51"); @166
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(51))  x_ct_rtu_pst_entry_preg51 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3760,8 +3760,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg51 (
 );
 
 // &ConnRule(s/^x_/preg52_/); @167
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg52"); @168
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg52 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(52))","x_ct_rtu_pst_entry_preg52"); @168
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(52))  x_ct_rtu_pst_entry_preg52 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3806,8 +3806,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg52 (
 );
 
 // &ConnRule(s/^x_/preg53_/); @169
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg53"); @170
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg53 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(53))","x_ct_rtu_pst_entry_preg53"); @170
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(53))  x_ct_rtu_pst_entry_preg53 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3852,8 +3852,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg53 (
 );
 
 // &ConnRule(s/^x_/preg54_/); @171
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg54"); @172
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg54 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(54))","x_ct_rtu_pst_entry_preg54"); @172
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(54))  x_ct_rtu_pst_entry_preg54 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3898,8 +3898,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg54 (
 );
 
 // &ConnRule(s/^x_/preg55_/); @173
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg55"); @174
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg55 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(55))","x_ct_rtu_pst_entry_preg55"); @174
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(55))  x_ct_rtu_pst_entry_preg55 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3944,8 +3944,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg55 (
 );
 
 // &ConnRule(s/^x_/preg56_/); @175
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg56"); @176
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg56 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(56))","x_ct_rtu_pst_entry_preg56"); @176
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(56))  x_ct_rtu_pst_entry_preg56 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3990,8 +3990,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg56 (
 );
 
 // &ConnRule(s/^x_/preg57_/); @177
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg57"); @178
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg57 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(57))","x_ct_rtu_pst_entry_preg57"); @178
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(57))  x_ct_rtu_pst_entry_preg57 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4036,8 +4036,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg57 (
 );
 
 // &ConnRule(s/^x_/preg58_/); @179
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg58"); @180
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg58 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(58))","x_ct_rtu_pst_entry_preg58"); @180
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(58))  x_ct_rtu_pst_entry_preg58 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4082,8 +4082,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg58 (
 );
 
 // &ConnRule(s/^x_/preg59_/); @181
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg59"); @182
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg59 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(59))","x_ct_rtu_pst_entry_preg59"); @182
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(59))  x_ct_rtu_pst_entry_preg59 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4128,8 +4128,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg59 (
 );
 
 // &ConnRule(s/^x_/preg60_/); @183
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg60"); @184
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg60 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(60))","x_ct_rtu_pst_entry_preg60"); @184
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(60))  x_ct_rtu_pst_entry_preg60 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4174,8 +4174,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg60 (
 );
 
 // &ConnRule(s/^x_/preg61_/); @185
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg61"); @186
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg61 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(61))","x_ct_rtu_pst_entry_preg61"); @186
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(61))  x_ct_rtu_pst_entry_preg61 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4220,8 +4220,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg61 (
 );
 
 // &ConnRule(s/^x_/preg62_/); @187
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg62"); @188
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg62 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(62))","x_ct_rtu_pst_entry_preg62"); @188
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(62))  x_ct_rtu_pst_entry_preg62 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4266,8 +4266,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg62 (
 );
 
 // &ConnRule(s/^x_/preg63_/); @189
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg63"); @190
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg63 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(63))","x_ct_rtu_pst_entry_preg63"); @190
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(63))  x_ct_rtu_pst_entry_preg63 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4312,8 +4312,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg63 (
 );
 
 // &ConnRule(s/^x_/preg64_/); @191
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg64"); @192
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg64 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(64))","x_ct_rtu_pst_entry_preg64"); @192
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(64))  x_ct_rtu_pst_entry_preg64 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4358,8 +4358,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg64 (
 );
 
 // &ConnRule(s/^x_/preg65_/); @193
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg65"); @194
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg65 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(65))","x_ct_rtu_pst_entry_preg65"); @194
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(65))  x_ct_rtu_pst_entry_preg65 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4404,8 +4404,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg65 (
 );
 
 // &ConnRule(s/^x_/preg66_/); @195
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg66"); @196
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg66 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(66))","x_ct_rtu_pst_entry_preg66"); @196
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(66))  x_ct_rtu_pst_entry_preg66 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4450,8 +4450,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg66 (
 );
 
 // &ConnRule(s/^x_/preg67_/); @197
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg67"); @198
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg67 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(67))","x_ct_rtu_pst_entry_preg67"); @198
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(67))  x_ct_rtu_pst_entry_preg67 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4496,8 +4496,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg67 (
 );
 
 // &ConnRule(s/^x_/preg68_/); @199
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg68"); @200
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg68 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(68))","x_ct_rtu_pst_entry_preg68"); @200
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(68))  x_ct_rtu_pst_entry_preg68 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4542,8 +4542,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg68 (
 );
 
 // &ConnRule(s/^x_/preg69_/); @201
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg69"); @202
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg69 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(69))","x_ct_rtu_pst_entry_preg69"); @202
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(69))  x_ct_rtu_pst_entry_preg69 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4588,8 +4588,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg69 (
 );
 
 // &ConnRule(s/^x_/preg70_/); @203
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg70"); @204
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg70 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(70))","x_ct_rtu_pst_entry_preg70"); @204
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(70))  x_ct_rtu_pst_entry_preg70 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4634,8 +4634,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg70 (
 );
 
 // &ConnRule(s/^x_/preg71_/); @205
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg71"); @206
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg71 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(71))","x_ct_rtu_pst_entry_preg71"); @206
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(71))  x_ct_rtu_pst_entry_preg71 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4680,8 +4680,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg71 (
 );
 
 // &ConnRule(s/^x_/preg72_/); @207
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg72"); @208
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg72 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(72))","x_ct_rtu_pst_entry_preg72"); @208
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(72))  x_ct_rtu_pst_entry_preg72 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4726,8 +4726,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg72 (
 );
 
 // &ConnRule(s/^x_/preg73_/); @209
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg73"); @210
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg73 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(73))","x_ct_rtu_pst_entry_preg73"); @210
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(73))  x_ct_rtu_pst_entry_preg73 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4772,8 +4772,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg73 (
 );
 
 // &ConnRule(s/^x_/preg74_/); @211
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg74"); @212
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg74 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(74))","x_ct_rtu_pst_entry_preg74"); @212
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(74))  x_ct_rtu_pst_entry_preg74 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4818,8 +4818,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg74 (
 );
 
 // &ConnRule(s/^x_/preg75_/); @213
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg75"); @214
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg75 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(75))","x_ct_rtu_pst_entry_preg75"); @214
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(75))  x_ct_rtu_pst_entry_preg75 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4864,8 +4864,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg75 (
 );
 
 // &ConnRule(s/^x_/preg76_/); @215
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg76"); @216
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg76 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(76))","x_ct_rtu_pst_entry_preg76"); @216
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(76))  x_ct_rtu_pst_entry_preg76 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4910,8 +4910,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg76 (
 );
 
 // &ConnRule(s/^x_/preg77_/); @217
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg77"); @218
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg77 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(77))","x_ct_rtu_pst_entry_preg77"); @218
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(77))  x_ct_rtu_pst_entry_preg77 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4956,8 +4956,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg77 (
 );
 
 // &ConnRule(s/^x_/preg78_/); @219
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg78"); @220
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg78 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(78))","x_ct_rtu_pst_entry_preg78"); @220
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(78))  x_ct_rtu_pst_entry_preg78 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5002,8 +5002,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg78 (
 );
 
 // &ConnRule(s/^x_/preg79_/); @221
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg79"); @222
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg79 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(79))","x_ct_rtu_pst_entry_preg79"); @222
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(79))  x_ct_rtu_pst_entry_preg79 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5048,8 +5048,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg79 (
 );
 
 // &ConnRule(s/^x_/preg80_/); @223
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg80"); @224
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg80 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(80))","x_ct_rtu_pst_entry_preg80"); @224
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(80))  x_ct_rtu_pst_entry_preg80 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5094,8 +5094,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg80 (
 );
 
 // &ConnRule(s/^x_/preg81_/); @225
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg81"); @226
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg81 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(81))","x_ct_rtu_pst_entry_preg81"); @226
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(81))  x_ct_rtu_pst_entry_preg81 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5140,8 +5140,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg81 (
 );
 
 // &ConnRule(s/^x_/preg82_/); @227
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg82"); @228
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg82 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(82))","x_ct_rtu_pst_entry_preg82"); @228
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(82))  x_ct_rtu_pst_entry_preg82 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5186,8 +5186,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg82 (
 );
 
 // &ConnRule(s/^x_/preg83_/); @229
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg83"); @230
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg83 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(83))","x_ct_rtu_pst_entry_preg83"); @230
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(83))  x_ct_rtu_pst_entry_preg83 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5232,8 +5232,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg83 (
 );
 
 // &ConnRule(s/^x_/preg84_/); @231
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg84"); @232
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg84 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(84))","x_ct_rtu_pst_entry_preg84"); @232
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(84))  x_ct_rtu_pst_entry_preg84 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5278,8 +5278,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg84 (
 );
 
 // &ConnRule(s/^x_/preg85_/); @233
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg85"); @234
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg85 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(85))","x_ct_rtu_pst_entry_preg85"); @234
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(85))  x_ct_rtu_pst_entry_preg85 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5324,8 +5324,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg85 (
 );
 
 // &ConnRule(s/^x_/preg86_/); @235
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg86"); @236
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg86 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(86))","x_ct_rtu_pst_entry_preg86"); @236
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(86))  x_ct_rtu_pst_entry_preg86 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5370,8 +5370,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg86 (
 );
 
 // &ConnRule(s/^x_/preg87_/); @237
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg87"); @238
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg87 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(87))","x_ct_rtu_pst_entry_preg87"); @238
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(87))  x_ct_rtu_pst_entry_preg87 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5416,8 +5416,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg87 (
 );
 
 // &ConnRule(s/^x_/preg88_/); @239
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg88"); @240
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg88 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(88))","x_ct_rtu_pst_entry_preg88"); @240
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(88))  x_ct_rtu_pst_entry_preg88 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5462,8 +5462,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg88 (
 );
 
 // &ConnRule(s/^x_/preg89_/); @241
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg89"); @242
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg89 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(89))","x_ct_rtu_pst_entry_preg89"); @242
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(89))  x_ct_rtu_pst_entry_preg89 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5508,8 +5508,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg89 (
 );
 
 // &ConnRule(s/^x_/preg90_/); @243
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg90"); @244
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg90 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(90))","x_ct_rtu_pst_entry_preg90"); @244
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(90))  x_ct_rtu_pst_entry_preg90 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5554,8 +5554,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg90 (
 );
 
 // &ConnRule(s/^x_/preg91_/); @245
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg91"); @246
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg91 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(91))","x_ct_rtu_pst_entry_preg91"); @246
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(91))  x_ct_rtu_pst_entry_preg91 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5600,8 +5600,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg91 (
 );
 
 // &ConnRule(s/^x_/preg92_/); @247
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg92"); @248
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg92 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(92))","x_ct_rtu_pst_entry_preg92"); @248
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(92))  x_ct_rtu_pst_entry_preg92 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5646,8 +5646,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg92 (
 );
 
 // &ConnRule(s/^x_/preg93_/); @249
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg93"); @250
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg93 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(93))","x_ct_rtu_pst_entry_preg93"); @250
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(93))  x_ct_rtu_pst_entry_preg93 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5692,8 +5692,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg93 (
 );
 
 // &ConnRule(s/^x_/preg94_/); @251
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg94"); @252
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg94 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(94))","x_ct_rtu_pst_entry_preg94"); @252
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(94))  x_ct_rtu_pst_entry_preg94 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -5738,8 +5738,8 @@ ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg94 (
 );
 
 // &ConnRule(s/^x_/preg95_/); @253
-// &Instance("ct_rtu_pst_preg_entry","x_ct_rtu_pst_entry_preg95"); @254
-ct_rtu_pst_preg_entry  x_ct_rtu_pst_entry_preg95 (
+// &Instance("ct_rtu_pst_preg_entry#(.PHY_REG_IDX(95))","x_ct_rtu_pst_entry_preg95"); @254
+ct_rtu_pst_preg_entry#(.PHY_REG_IDX(95))  x_ct_rtu_pst_entry_preg95 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),

@@ -13,8 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "DPI-C" function void write_fp_phyRegfile(
+  longint unsigned idx,
+  longint unsigned value
+);
+
 // &ModuleBeg; @27
-module ct_idu_rf_prf_gated_vreg(
+module ct_idu_rf_prf_gated_vreg#(parameter IDX = 0)(
   cp0_idu_icg_en,
   cp0_yy_clk_en,
   lsu_idu_wb_pipe3_wb_vreg_data,
@@ -106,8 +111,10 @@ end
 //==========================================================
 always @(posedge vreg_clk)
 begin
-  if(write_en)
+  if(write_en) begin
     reg_dout[VEC_MSB:0] <= write_data[VEC_MSB:0];
+    write_fp_phyRegfile(IDX, write_data[63:0]);
+  end
   else
     reg_dout[VEC_MSB:0] <= reg_dout[VEC_MSB:0];
 end

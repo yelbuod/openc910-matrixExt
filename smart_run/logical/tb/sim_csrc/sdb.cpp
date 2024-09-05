@@ -98,9 +98,8 @@ static int cmd_info(char *args) {
     return 0;
   }
   if(args[0] == 'r'){
-    
+    dump_all_reg();
   }
-    // dump_gpr();
   // else if (args[0] == 'w')
 	// TODO:
   //   info_watchpoint();

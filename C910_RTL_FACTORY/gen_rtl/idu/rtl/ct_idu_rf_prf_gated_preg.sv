@@ -13,8 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "DPI-C" function void write_int_phyRegfile(
+  longint unsigned idx,
+  longint unsigned value
+);
+
 // &ModuleBeg; @27
-module ct_idu_rf_prf_gated_preg(
+module ct_idu_rf_prf_gated_preg#(parameter IDX = 0)(
   cp0_idu_icg_en,
   cp0_yy_clk_en,
   forever_cpuclk,
@@ -103,8 +108,10 @@ end
 //==========================================================
 always @(posedge preg_clk)
 begin
-  if(write_en)
+  if(write_en) begin
     reg_dout[63:0] <= write_data[63:0];
+    write_int_phyRegfile(IDX, write_data[63:0]);  
+  end
   else
     reg_dout[63:0] <= reg_dout[63:0];
 end

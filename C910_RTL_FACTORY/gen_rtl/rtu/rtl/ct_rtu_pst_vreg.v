@@ -1130,8 +1130,8 @@ gated_clk_cell  x_vreg_gated_clk (
 //              VGPR Physical Regsiters (Vreg)
 //----------------------------------------------------------
 // &ConnRule(s/^x_/vreg0_/); @65
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg0"); @66
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg0 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(0))","x_ct_rtu_pst_entry_vreg0"); @66
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(0))  x_ct_rtu_pst_entry_vreg0 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1177,8 +1177,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg0 (
 );
 
 // &ConnRule(s/^x_/vreg1_/); @67
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg1"); @68
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg1 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(1))","x_ct_rtu_pst_entry_vreg1"); @68
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(1))  x_ct_rtu_pst_entry_vreg1 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1224,8 +1224,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg1 (
 );
 
 // &ConnRule(s/^x_/vreg2_/); @69
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg2"); @70
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg2 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(2))","x_ct_rtu_pst_entry_vreg2"); @70
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(2))  x_ct_rtu_pst_entry_vreg2 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1271,8 +1271,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg2 (
 );
 
 // &ConnRule(s/^x_/vreg3_/); @71
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg3"); @72
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg3 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(3))","x_ct_rtu_pst_entry_vreg3"); @72
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(3))  x_ct_rtu_pst_entry_vreg3 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1318,8 +1318,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg3 (
 );
 
 // &ConnRule(s/^x_/vreg4_/); @73
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg4"); @74
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg4 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(4))","x_ct_rtu_pst_entry_vreg4"); @74
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(4))  x_ct_rtu_pst_entry_vreg4 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1365,8 +1365,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg4 (
 );
 
 // &ConnRule(s/^x_/vreg5_/); @75
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg5"); @76
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg5 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(5))","x_ct_rtu_pst_entry_vreg5"); @76
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(5))  x_ct_rtu_pst_entry_vreg5 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1412,8 +1412,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg5 (
 );
 
 // &ConnRule(s/^x_/vreg6_/); @77
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg6"); @78
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg6 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(6))","x_ct_rtu_pst_entry_vreg6"); @78
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(6))  x_ct_rtu_pst_entry_vreg6 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1459,8 +1459,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg6 (
 );
 
 // &ConnRule(s/^x_/vreg7_/); @79
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg7"); @80
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg7 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(7))","x_ct_rtu_pst_entry_vreg7"); @80
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(7))  x_ct_rtu_pst_entry_vreg7 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1506,8 +1506,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg7 (
 );
 
 // &ConnRule(s/^x_/vreg8_/); @81
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg8"); @82
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg8 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(8))","x_ct_rtu_pst_entry_vreg8"); @82
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(8))  x_ct_rtu_pst_entry_vreg8 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1553,8 +1553,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg8 (
 );
 
 // &ConnRule(s/^x_/vreg9_/); @83
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg9"); @84
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg9 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(9))","x_ct_rtu_pst_entry_vreg9"); @84
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(9))  x_ct_rtu_pst_entry_vreg9 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1600,8 +1600,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg9 (
 );
 
 // &ConnRule(s/^x_/vreg10_/); @85
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg10"); @86
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg10 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(10))","x_ct_rtu_pst_entry_vreg10"); @86
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(10))  x_ct_rtu_pst_entry_vreg10 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1647,8 +1647,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg10 (
 );
 
 // &ConnRule(s/^x_/vreg11_/); @87
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg11"); @88
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg11 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(11))","x_ct_rtu_pst_entry_vreg11"); @88
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(11))  x_ct_rtu_pst_entry_vreg11 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1694,8 +1694,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg11 (
 );
 
 // &ConnRule(s/^x_/vreg12_/); @89
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg12"); @90
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg12 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(12))","x_ct_rtu_pst_entry_vreg12"); @90
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(12))  x_ct_rtu_pst_entry_vreg12 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1741,8 +1741,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg12 (
 );
 
 // &ConnRule(s/^x_/vreg13_/); @91
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg13"); @92
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg13 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(13))","x_ct_rtu_pst_entry_vreg13"); @92
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(13))  x_ct_rtu_pst_entry_vreg13 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1788,8 +1788,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg13 (
 );
 
 // &ConnRule(s/^x_/vreg14_/); @93
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg14"); @94
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg14 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(14))","x_ct_rtu_pst_entry_vreg14"); @94
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(14))  x_ct_rtu_pst_entry_vreg14 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1835,8 +1835,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg14 (
 );
 
 // &ConnRule(s/^x_/vreg15_/); @95
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg15"); @96
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg15 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(15))","x_ct_rtu_pst_entry_vreg15"); @96
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(15))  x_ct_rtu_pst_entry_vreg15 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1882,8 +1882,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg15 (
 );
 
 // &ConnRule(s/^x_/vreg16_/); @97
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg16"); @98
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg16 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(16))","x_ct_rtu_pst_entry_vreg16"); @98
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(16))  x_ct_rtu_pst_entry_vreg16 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1929,8 +1929,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg16 (
 );
 
 // &ConnRule(s/^x_/vreg17_/); @99
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg17"); @100
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg17 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(17))","x_ct_rtu_pst_entry_vreg17"); @100
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(17))  x_ct_rtu_pst_entry_vreg17 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -1976,8 +1976,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg17 (
 );
 
 // &ConnRule(s/^x_/vreg18_/); @101
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg18"); @102
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg18 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(18))","x_ct_rtu_pst_entry_vreg18"); @102
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(18))  x_ct_rtu_pst_entry_vreg18 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2023,8 +2023,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg18 (
 );
 
 // &ConnRule(s/^x_/vreg19_/); @103
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg19"); @104
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg19 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(19))","x_ct_rtu_pst_entry_vreg19"); @104
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(19))  x_ct_rtu_pst_entry_vreg19 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2070,8 +2070,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg19 (
 );
 
 // &ConnRule(s/^x_/vreg20_/); @105
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg20"); @106
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg20 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(20))","x_ct_rtu_pst_entry_vreg20"); @106
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(20))  x_ct_rtu_pst_entry_vreg20 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2117,8 +2117,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg20 (
 );
 
 // &ConnRule(s/^x_/vreg21_/); @107
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg21"); @108
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg21 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(21))","x_ct_rtu_pst_entry_vreg21"); @108
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(21))  x_ct_rtu_pst_entry_vreg21 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2164,8 +2164,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg21 (
 );
 
 // &ConnRule(s/^x_/vreg22_/); @109
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg22"); @110
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg22 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(22))","x_ct_rtu_pst_entry_vreg22"); @110
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(22))  x_ct_rtu_pst_entry_vreg22 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2211,8 +2211,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg22 (
 );
 
 // &ConnRule(s/^x_/vreg23_/); @111
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg23"); @112
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg23 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(23))","x_ct_rtu_pst_entry_vreg23"); @112
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(23))  x_ct_rtu_pst_entry_vreg23 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2258,8 +2258,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg23 (
 );
 
 // &ConnRule(s/^x_/vreg24_/); @113
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg24"); @114
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg24 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(24))","x_ct_rtu_pst_entry_vreg24"); @114
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(24))  x_ct_rtu_pst_entry_vreg24 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2305,8 +2305,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg24 (
 );
 
 // &ConnRule(s/^x_/vreg25_/); @115
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg25"); @116
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg25 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(25))","x_ct_rtu_pst_entry_vreg25"); @116
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(25))  x_ct_rtu_pst_entry_vreg25 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2352,8 +2352,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg25 (
 );
 
 // &ConnRule(s/^x_/vreg26_/); @117
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg26"); @118
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg26 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(26))","x_ct_rtu_pst_entry_vreg26"); @118
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(26))  x_ct_rtu_pst_entry_vreg26 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2399,8 +2399,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg26 (
 );
 
 // &ConnRule(s/^x_/vreg27_/); @119
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg27"); @120
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg27 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(27))","x_ct_rtu_pst_entry_vreg27"); @120
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(27))  x_ct_rtu_pst_entry_vreg27 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2446,8 +2446,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg27 (
 );
 
 // &ConnRule(s/^x_/vreg28_/); @121
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg28"); @122
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg28 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(28))","x_ct_rtu_pst_entry_vreg28"); @122
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(28))  x_ct_rtu_pst_entry_vreg28 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2493,8 +2493,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg28 (
 );
 
 // &ConnRule(s/^x_/vreg29_/); @123
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg29"); @124
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg29 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(29))","x_ct_rtu_pst_entry_vreg29"); @124
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(29))  x_ct_rtu_pst_entry_vreg29 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2540,8 +2540,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg29 (
 );
 
 // &ConnRule(s/^x_/vreg30_/); @125
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg30"); @126
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg30 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(30))","x_ct_rtu_pst_entry_vreg30"); @126
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(30))  x_ct_rtu_pst_entry_vreg30 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2587,8 +2587,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg30 (
 );
 
 // &ConnRule(s/^x_/vreg31_/); @127
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg31"); @128
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg31 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(31))","x_ct_rtu_pst_entry_vreg31"); @128
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(31))  x_ct_rtu_pst_entry_vreg31 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2634,8 +2634,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg31 (
 );
 
 // &ConnRule(s/^x_/vreg32_/); @129
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg32"); @130
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg32 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(32))","x_ct_rtu_pst_entry_vreg32"); @130
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(32))  x_ct_rtu_pst_entry_vreg32 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2681,8 +2681,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg32 (
 );
 
 // &ConnRule(s/^x_/vreg33_/); @131
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg33"); @132
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg33 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(33))","x_ct_rtu_pst_entry_vreg33"); @132
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(33))  x_ct_rtu_pst_entry_vreg33 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2728,8 +2728,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg33 (
 );
 
 // &ConnRule(s/^x_/vreg34_/); @133
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg34"); @134
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg34 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(34))","x_ct_rtu_pst_entry_vreg34"); @134
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(34))  x_ct_rtu_pst_entry_vreg34 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2775,8 +2775,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg34 (
 );
 
 // &ConnRule(s/^x_/vreg35_/); @135
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg35"); @136
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg35 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(35))","x_ct_rtu_pst_entry_vreg35"); @136
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(35))  x_ct_rtu_pst_entry_vreg35 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2822,8 +2822,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg35 (
 );
 
 // &ConnRule(s/^x_/vreg36_/); @137
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg36"); @138
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg36 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(36))","x_ct_rtu_pst_entry_vreg36"); @138
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(36))  x_ct_rtu_pst_entry_vreg36 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2869,8 +2869,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg36 (
 );
 
 // &ConnRule(s/^x_/vreg37_/); @139
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg37"); @140
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg37 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(37))","x_ct_rtu_pst_entry_vreg37"); @140
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(37))  x_ct_rtu_pst_entry_vreg37 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2916,8 +2916,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg37 (
 );
 
 // &ConnRule(s/^x_/vreg38_/); @141
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg38"); @142
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg38 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(38))","x_ct_rtu_pst_entry_vreg38"); @142
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(38))  x_ct_rtu_pst_entry_vreg38 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -2963,8 +2963,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg38 (
 );
 
 // &ConnRule(s/^x_/vreg39_/); @143
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg39"); @144
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg39 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(39))","x_ct_rtu_pst_entry_vreg39"); @144
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(39))  x_ct_rtu_pst_entry_vreg39 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3010,8 +3010,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg39 (
 );
 
 // &ConnRule(s/^x_/vreg40_/); @145
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg40"); @146
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg40 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(40))","x_ct_rtu_pst_entry_vreg40"); @146
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(40))  x_ct_rtu_pst_entry_vreg40 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3057,8 +3057,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg40 (
 );
 
 // &ConnRule(s/^x_/vreg41_/); @147
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg41"); @148
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg41 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(41))","x_ct_rtu_pst_entry_vreg41"); @148
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(41))  x_ct_rtu_pst_entry_vreg41 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3104,8 +3104,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg41 (
 );
 
 // &ConnRule(s/^x_/vreg42_/); @149
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg42"); @150
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg42 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(42))","x_ct_rtu_pst_entry_vreg42"); @150
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(42))  x_ct_rtu_pst_entry_vreg42 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3151,8 +3151,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg42 (
 );
 
 // &ConnRule(s/^x_/vreg43_/); @151
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg43"); @152
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg43 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(43))","x_ct_rtu_pst_entry_vreg43"); @152
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(43))  x_ct_rtu_pst_entry_vreg43 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3198,8 +3198,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg43 (
 );
 
 // &ConnRule(s/^x_/vreg44_/); @153
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg44"); @154
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg44 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(44))","x_ct_rtu_pst_entry_vreg44"); @154
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(44))  x_ct_rtu_pst_entry_vreg44 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3245,8 +3245,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg44 (
 );
 
 // &ConnRule(s/^x_/vreg45_/); @155
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg45"); @156
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg45 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(45))","x_ct_rtu_pst_entry_vreg45"); @156
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(45))  x_ct_rtu_pst_entry_vreg45 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3292,8 +3292,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg45 (
 );
 
 // &ConnRule(s/^x_/vreg46_/); @157
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg46"); @158
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg46 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(46))","x_ct_rtu_pst_entry_vreg46"); @158
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(46))  x_ct_rtu_pst_entry_vreg46 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3339,8 +3339,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg46 (
 );
 
 // &ConnRule(s/^x_/vreg47_/); @159
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg47"); @160
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg47 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(47))","x_ct_rtu_pst_entry_vreg47"); @160
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(47))  x_ct_rtu_pst_entry_vreg47 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3386,8 +3386,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg47 (
 );
 
 // &ConnRule(s/^x_/vreg48_/); @161
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg48"); @162
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg48 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(48))","x_ct_rtu_pst_entry_vreg48"); @162
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(48))  x_ct_rtu_pst_entry_vreg48 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3433,8 +3433,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg48 (
 );
 
 // &ConnRule(s/^x_/vreg49_/); @163
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg49"); @164
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg49 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(49))","x_ct_rtu_pst_entry_vreg49"); @164
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(49))  x_ct_rtu_pst_entry_vreg49 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3480,8 +3480,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg49 (
 );
 
 // &ConnRule(s/^x_/vreg50_/); @165
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg50"); @166
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg50 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(50))","x_ct_rtu_pst_entry_vreg50"); @166
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(50))  x_ct_rtu_pst_entry_vreg50 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3527,8 +3527,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg50 (
 );
 
 // &ConnRule(s/^x_/vreg51_/); @167
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg51"); @168
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg51 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(51))","x_ct_rtu_pst_entry_vreg51"); @168
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(51))  x_ct_rtu_pst_entry_vreg51 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3574,8 +3574,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg51 (
 );
 
 // &ConnRule(s/^x_/vreg52_/); @169
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg52"); @170
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg52 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(52))","x_ct_rtu_pst_entry_vreg52"); @170
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(52))  x_ct_rtu_pst_entry_vreg52 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3621,8 +3621,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg52 (
 );
 
 // &ConnRule(s/^x_/vreg53_/); @171
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg53"); @172
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg53 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(53))","x_ct_rtu_pst_entry_vreg53"); @172
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(53))  x_ct_rtu_pst_entry_vreg53 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3668,8 +3668,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg53 (
 );
 
 // &ConnRule(s/^x_/vreg54_/); @173
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg54"); @174
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg54 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(54))","x_ct_rtu_pst_entry_vreg54"); @174
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(54))  x_ct_rtu_pst_entry_vreg54 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3715,8 +3715,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg54 (
 );
 
 // &ConnRule(s/^x_/vreg55_/); @175
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg55"); @176
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg55 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(55))","x_ct_rtu_pst_entry_vreg55"); @176
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(55))  x_ct_rtu_pst_entry_vreg55 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3762,8 +3762,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg55 (
 );
 
 // &ConnRule(s/^x_/vreg56_/); @177
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg56"); @178
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg56 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(56))","x_ct_rtu_pst_entry_vreg56"); @178
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(56))  x_ct_rtu_pst_entry_vreg56 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3809,8 +3809,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg56 (
 );
 
 // &ConnRule(s/^x_/vreg57_/); @179
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg57"); @180
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg57 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(57))","x_ct_rtu_pst_entry_vreg57"); @180
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(57))  x_ct_rtu_pst_entry_vreg57 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3856,8 +3856,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg57 (
 );
 
 // &ConnRule(s/^x_/vreg58_/); @181
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg58"); @182
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg58 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(58))","x_ct_rtu_pst_entry_vreg58"); @182
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(58))  x_ct_rtu_pst_entry_vreg58 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3903,8 +3903,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg58 (
 );
 
 // &ConnRule(s/^x_/vreg59_/); @183
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg59"); @184
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg59 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(59))","x_ct_rtu_pst_entry_vreg59"); @184
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(59))  x_ct_rtu_pst_entry_vreg59 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3950,8 +3950,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg59 (
 );
 
 // &ConnRule(s/^x_/vreg60_/); @185
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg60"); @186
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg60 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(60))","x_ct_rtu_pst_entry_vreg60"); @186
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(60))  x_ct_rtu_pst_entry_vreg60 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -3997,8 +3997,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg60 (
 );
 
 // &ConnRule(s/^x_/vreg61_/); @187
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg61"); @188
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg61 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(61))","x_ct_rtu_pst_entry_vreg61"); @188
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(61))  x_ct_rtu_pst_entry_vreg61 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4044,8 +4044,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg61 (
 );
 
 // &ConnRule(s/^x_/vreg62_/); @189
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg62"); @190
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg62 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(62))","x_ct_rtu_pst_entry_vreg62"); @190
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(62))  x_ct_rtu_pst_entry_vreg62 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4091,8 +4091,8 @@ ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg62 (
 );
 
 // &ConnRule(s/^x_/vreg63_/); @191
-// &Instance("ct_rtu_pst_vreg_entry","x_ct_rtu_pst_entry_vreg63"); @192
-ct_rtu_pst_vreg_entry  x_ct_rtu_pst_entry_vreg63 (
+// &Instance("ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(63))","x_ct_rtu_pst_entry_vreg63"); @192
+ct_rtu_pst_vreg_entry#(.PHY_REG_IDX(63))  x_ct_rtu_pst_entry_vreg63 (
   .cp0_rtu_icg_en                      (cp0_rtu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),

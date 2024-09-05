@@ -61,45 +61,45 @@ void sim_exit() {
 /* ------------------ execute ------------------ */
 
 void assert_fail_msg() {
-	// dump_gpr();
+	dump_all_reg();
 }
 
-extern "C" void ebreak(uint64_t pc) {
-  sim_state.state = SIM_END;
-  sim_state.halt_pc = pc;
-  sim_state.halt_ret = read_gpr(10);
-}
+// extern "C" void ebreak(uint64_t pc) {
+//   sim_state.state = SIM_END;
+//   sim_state.halt_pc = pc;
+//   sim_state.halt_ret = read_gpr(10);
+// }
 
-extern "C" void invalid(uint64_t pc) {
-  sim_state.state = SIM_ABORT;
-  sim_state.halt_pc = pc;
-  sim_state.halt_ret = -1;
-}
+// extern "C" void invalid(uint64_t pc) {
+//   sim_state.state = SIM_ABORT;
+//   sim_state.halt_pc = pc;
+//   sim_state.halt_ret = -1;
+// }
 
-extern "C" void illegal(uint64_t pc) {
-  sim_state.state = SIM_ABORT;
-  sim_state.halt_pc = pc;
-  sim_state.halt_ret = -1;
+// extern "C" void illegal(uint64_t pc) {
+//   sim_state.state = SIM_ABORT;
+//   sim_state.halt_pc = pc;
+//   sim_state.halt_ret = -1;
 
-  // uint32_t temp[2];
-  // pmem_read(pc, temp[0]);
-  // pmem_read(pc, temp[1]);
+//   // uint32_t temp[2];
+//   // pmem_read(pc, temp[0]);
+//   // pmem_read(pc, temp[1]);
 
-  // uint8_t *p = (uint8_t *)temp;
-  // printf("invalid opcode(PC = " FMT_WORD "):\n"
-  //     "\t%02x %02x %02x %02x %02x %02x %02x %02x ...\n"
-  //     "\t%08x %08x...\n",
-  //     pc, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], temp[0], temp[1]);
+//   // uint8_t *p = (uint8_t *)temp;
+//   // printf("invalid opcode(PC = " FMT_WORD "):\n"
+//   //     "\t%02x %02x %02x %02x %02x %02x %02x %02x ...\n"
+//   //     "\t%08x %08x...\n",
+//   //     pc, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], temp[0], temp[1]);
 
-  // printf("There are two cases which will trigger this unexpected exception:\n"
-  //     "1. The instruction at PC = " FMT_WORD " is not implemented.\n"
-  //     "2. Something is implemented incorrectly.\n", pc);
-  // printf("Find this PC(" FMT_WORD ") in the disassembling result to distinguish which case it is.\n\n", pc);
-  // printf(ANSI_FMT("If it is the first case, see\nriscv-64 manual\nfor more details.\n\n"
-  //       "If it is the second case, remember:\n"
-  //       "* The machine is always right!\n"
-  //       "* Every line of untested code is always wrong!\n\n", ANSI_FG_RED));
-}
+//   // printf("There are two cases which will trigger this unexpected exception:\n"
+//   //     "1. The instruction at PC = " FMT_WORD " is not implemented.\n"
+//   //     "2. Something is implemented incorrectly.\n", pc);
+//   // printf("Find this PC(" FMT_WORD ") in the disassembling result to distinguish which case it is.\n\n", pc);
+//   // printf(ANSI_FMT("If it is the first case, see\nriscv-64 manual\nfor more details.\n\n"
+//   //       "If it is the second case, remember:\n"
+//   //       "* The machine is always right!\n"
+//   //       "* Every line of untested code is always wrong!\n\n", ANSI_FG_RED));
+// }
 
 extern "C" void hart_commitInst(
   uint64_t retire_pc
@@ -153,7 +153,7 @@ void hart_exec(uint64_t inst_num) {
         sim_state.halt_pc);
     // fall through
     case SIM_QUIT:
-      // dump_gpr();
+      dump_all_reg();
       printf("QUIT SIMULATION\n");
       // TODO
   }

@@ -201,8 +201,8 @@ ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_pipe7_decd.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_eregfile.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_fregfile.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_gated_ereg.v
-${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_gated_preg.v
-${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_gated_vreg.v
+${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_gated_preg.sv
+${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_gated_vreg.sv
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_pregfile.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_rf_prf_vregfile.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_top.v
@@ -379,10 +379,10 @@ ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_expand_96.v
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_ereg.v
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_ereg_entry.v
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_preg.v
-${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_preg_entry.v
+${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_preg_entry.sv
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_vreg.v
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_vreg_dummy.v
-${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_vreg_entry.v
+${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_pst_vreg_entry.sv
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_retire.v
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_rob.v
 ${CODE_BASE_PATH}/gen_rtl/rtu/rtl/ct_rtu_rob_entry.v

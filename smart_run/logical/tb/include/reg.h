@@ -2,7 +2,7 @@
 #define __REG_H__
 #include "common.h"
 
-extern "C" void set_gpr_ptr(const svOpenArrayHandle r);
+// extern "C" void set_gpr_ptr(const svOpenArrayHandle r);
 
 struct riscv64_cpu_regfile{
   union
@@ -18,13 +18,13 @@ struct riscv64_cpu_regfile{
   } fpr[32];
 };
 
-
-
-
 // Read register by index
-uint64_t read_gpr(int index);
+uint64_t read_hart_reg(int index, bool int_or_fp);
 
 // Read register by register name(string)
 word_t reg_str2val(const char *s, bool *success);
+
+// Dump all registers
+void dump_all_reg();
 
 #endif

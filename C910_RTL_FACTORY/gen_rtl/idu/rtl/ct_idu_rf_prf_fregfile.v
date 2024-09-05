@@ -267,8 +267,8 @@ gated_clk_cell  x_vreg_gated_clk (
 //             Instance VGPR Physical Registers
 //==========================================================
 // &ConnRule(s/^x_/vreg0_/); @48
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg0"); @49
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg0 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(0))", "x_ct_idu_rf_prf_vreg0"); @49
+ct_idu_rf_prf_gated_vreg#(.IDX(0))  x_ct_idu_rf_prf_vreg0 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -281,8 +281,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg0 (
 );
 
 // &ConnRule(s/^x_/vreg1_/); @50
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg1"); @51
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg1 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(1))", "x_ct_idu_rf_prf_vreg1"); @51
+ct_idu_rf_prf_gated_vreg#(.IDX(1))  x_ct_idu_rf_prf_vreg1 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -295,8 +295,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg1 (
 );
 
 // &ConnRule(s/^x_/vreg2_/); @52
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg2"); @53
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg2 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(2))", "x_ct_idu_rf_prf_vreg2"); @53
+ct_idu_rf_prf_gated_vreg#(.IDX(2))  x_ct_idu_rf_prf_vreg2 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -309,8 +309,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg2 (
 );
 
 // &ConnRule(s/^x_/vreg3_/); @54
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg3"); @55
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg3 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(3))", "x_ct_idu_rf_prf_vreg3"); @55
+ct_idu_rf_prf_gated_vreg#(.IDX(3))  x_ct_idu_rf_prf_vreg3 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -323,8 +323,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg3 (
 );
 
 // &ConnRule(s/^x_/vreg4_/); @56
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg4"); @57
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg4 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(4))", "x_ct_idu_rf_prf_vreg4"); @57
+ct_idu_rf_prf_gated_vreg#(.IDX(4))  x_ct_idu_rf_prf_vreg4 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -337,8 +337,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg4 (
 );
 
 // &ConnRule(s/^x_/vreg5_/); @58
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg5"); @59
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg5 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(5))", "x_ct_idu_rf_prf_vreg5"); @59
+ct_idu_rf_prf_gated_vreg#(.IDX(5))  x_ct_idu_rf_prf_vreg5 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -351,8 +351,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg5 (
 );
 
 // &ConnRule(s/^x_/vreg6_/); @60
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg6"); @61
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg6 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(6))", "x_ct_idu_rf_prf_vreg6"); @61
+ct_idu_rf_prf_gated_vreg#(.IDX(6))  x_ct_idu_rf_prf_vreg6 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -365,8 +365,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg6 (
 );
 
 // &ConnRule(s/^x_/vreg7_/); @62
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg7"); @63
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg7 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(7))", "x_ct_idu_rf_prf_vreg7"); @63
+ct_idu_rf_prf_gated_vreg#(.IDX(7))  x_ct_idu_rf_prf_vreg7 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -379,8 +379,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg7 (
 );
 
 // &ConnRule(s/^x_/vreg8_/); @64
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg8"); @65
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg8 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(8))", "x_ct_idu_rf_prf_vreg8"); @65
+ct_idu_rf_prf_gated_vreg#(.IDX(8))  x_ct_idu_rf_prf_vreg8 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -393,8 +393,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg8 (
 );
 
 // &ConnRule(s/^x_/vreg9_/); @66
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg9"); @67
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg9 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(9))", "x_ct_idu_rf_prf_vreg9"); @67
+ct_idu_rf_prf_gated_vreg#(.IDX(9))  x_ct_idu_rf_prf_vreg9 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -407,8 +407,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg9 (
 );
 
 // &ConnRule(s/^x_/vreg10_/); @68
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg10"); @69
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg10 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(10))", "x_ct_idu_rf_prf_vreg10"); @69
+ct_idu_rf_prf_gated_vreg#(.IDX(10))  x_ct_idu_rf_prf_vreg10 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -421,8 +421,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg10 (
 );
 
 // &ConnRule(s/^x_/vreg11_/); @70
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg11"); @71
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg11 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(11))", "x_ct_idu_rf_prf_vreg11"); @71
+ct_idu_rf_prf_gated_vreg#(.IDX(11))  x_ct_idu_rf_prf_vreg11 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -435,8 +435,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg11 (
 );
 
 // &ConnRule(s/^x_/vreg12_/); @72
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg12"); @73
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg12 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(12))", "x_ct_idu_rf_prf_vreg12"); @73
+ct_idu_rf_prf_gated_vreg#(.IDX(12))  x_ct_idu_rf_prf_vreg12 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -449,8 +449,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg12 (
 );
 
 // &ConnRule(s/^x_/vreg13_/); @74
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg13"); @75
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg13 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(13))", "x_ct_idu_rf_prf_vreg13"); @75
+ct_idu_rf_prf_gated_vreg#(.IDX(13))  x_ct_idu_rf_prf_vreg13 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -463,8 +463,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg13 (
 );
 
 // &ConnRule(s/^x_/vreg14_/); @76
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg14"); @77
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg14 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(14))", "x_ct_idu_rf_prf_vreg14"); @77
+ct_idu_rf_prf_gated_vreg#(.IDX(14))  x_ct_idu_rf_prf_vreg14 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -477,8 +477,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg14 (
 );
 
 // &ConnRule(s/^x_/vreg15_/); @78
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg15"); @79
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg15 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(15))", "x_ct_idu_rf_prf_vreg15"); @79
+ct_idu_rf_prf_gated_vreg#(.IDX(15))  x_ct_idu_rf_prf_vreg15 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -491,8 +491,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg15 (
 );
 
 // &ConnRule(s/^x_/vreg16_/); @80
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg16"); @81
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg16 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(16))", "x_ct_idu_rf_prf_vreg16"); @81
+ct_idu_rf_prf_gated_vreg#(.IDX(16))  x_ct_idu_rf_prf_vreg16 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -505,8 +505,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg16 (
 );
 
 // &ConnRule(s/^x_/vreg17_/); @82
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg17"); @83
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg17 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(17))", "x_ct_idu_rf_prf_vreg17"); @83
+ct_idu_rf_prf_gated_vreg#(.IDX(17))  x_ct_idu_rf_prf_vreg17 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -519,8 +519,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg17 (
 );
 
 // &ConnRule(s/^x_/vreg18_/); @84
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg18"); @85
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg18 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(18))", "x_ct_idu_rf_prf_vreg18"); @85
+ct_idu_rf_prf_gated_vreg#(.IDX(18))  x_ct_idu_rf_prf_vreg18 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -533,8 +533,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg18 (
 );
 
 // &ConnRule(s/^x_/vreg19_/); @86
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg19"); @87
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg19 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(19))", "x_ct_idu_rf_prf_vreg19"); @87
+ct_idu_rf_prf_gated_vreg#(.IDX(19))  x_ct_idu_rf_prf_vreg19 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -547,8 +547,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg19 (
 );
 
 // &ConnRule(s/^x_/vreg20_/); @88
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg20"); @89
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg20 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(20))", "x_ct_idu_rf_prf_vreg20"); @89
+ct_idu_rf_prf_gated_vreg#(.IDX(20))  x_ct_idu_rf_prf_vreg20 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -561,8 +561,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg20 (
 );
 
 // &ConnRule(s/^x_/vreg21_/); @90
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg21"); @91
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg21 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(21))", "x_ct_idu_rf_prf_vreg21"); @91
+ct_idu_rf_prf_gated_vreg#(.IDX(21))  x_ct_idu_rf_prf_vreg21 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -575,8 +575,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg21 (
 );
 
 // &ConnRule(s/^x_/vreg22_/); @92
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg22"); @93
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg22 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(22))", "x_ct_idu_rf_prf_vreg22"); @93
+ct_idu_rf_prf_gated_vreg#(.IDX(22))  x_ct_idu_rf_prf_vreg22 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -589,8 +589,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg22 (
 );
 
 // &ConnRule(s/^x_/vreg23_/); @94
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg23"); @95
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg23 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(23))", "x_ct_idu_rf_prf_vreg23"); @95
+ct_idu_rf_prf_gated_vreg#(.IDX(23))  x_ct_idu_rf_prf_vreg23 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -603,8 +603,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg23 (
 );
 
 // &ConnRule(s/^x_/vreg24_/); @96
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg24"); @97
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg24 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(24))", "x_ct_idu_rf_prf_vreg24"); @97
+ct_idu_rf_prf_gated_vreg#(.IDX(24))  x_ct_idu_rf_prf_vreg24 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -617,8 +617,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg24 (
 );
 
 // &ConnRule(s/^x_/vreg25_/); @98
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg25"); @99
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg25 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(25))", "x_ct_idu_rf_prf_vreg25"); @99
+ct_idu_rf_prf_gated_vreg#(.IDX(25))  x_ct_idu_rf_prf_vreg25 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -631,8 +631,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg25 (
 );
 
 // &ConnRule(s/^x_/vreg26_/); @100
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg26"); @101
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg26 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(26))", "x_ct_idu_rf_prf_vreg26"); @101
+ct_idu_rf_prf_gated_vreg#(.IDX(26))  x_ct_idu_rf_prf_vreg26 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -645,8 +645,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg26 (
 );
 
 // &ConnRule(s/^x_/vreg27_/); @102
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg27"); @103
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg27 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(27))", "x_ct_idu_rf_prf_vreg27"); @103
+ct_idu_rf_prf_gated_vreg#(.IDX(27))  x_ct_idu_rf_prf_vreg27 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -659,8 +659,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg27 (
 );
 
 // &ConnRule(s/^x_/vreg28_/); @104
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg28"); @105
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg28 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(28))", "x_ct_idu_rf_prf_vreg28"); @105
+ct_idu_rf_prf_gated_vreg#(.IDX(28))  x_ct_idu_rf_prf_vreg28 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -673,8 +673,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg28 (
 );
 
 // &ConnRule(s/^x_/vreg29_/); @106
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg29"); @107
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg29 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(29))", "x_ct_idu_rf_prf_vreg29"); @107
+ct_idu_rf_prf_gated_vreg#(.IDX(29))  x_ct_idu_rf_prf_vreg29 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -687,8 +687,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg29 (
 );
 
 // &ConnRule(s/^x_/vreg30_/); @108
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg30"); @109
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg30 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(30))", "x_ct_idu_rf_prf_vreg30"); @109
+ct_idu_rf_prf_gated_vreg#(.IDX(30))  x_ct_idu_rf_prf_vreg30 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -701,8 +701,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg30 (
 );
 
 // &ConnRule(s/^x_/vreg31_/); @110
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg31"); @111
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg31 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(31))", "x_ct_idu_rf_prf_vreg31"); @111
+ct_idu_rf_prf_gated_vreg#(.IDX(31))  x_ct_idu_rf_prf_vreg31 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -715,8 +715,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg31 (
 );
 
 // &ConnRule(s/^x_/vreg32_/); @112
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg32"); @113
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg32 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(32))", "x_ct_idu_rf_prf_vreg32"); @113
+ct_idu_rf_prf_gated_vreg#(.IDX(32))  x_ct_idu_rf_prf_vreg32 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -729,8 +729,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg32 (
 );
 
 // &ConnRule(s/^x_/vreg33_/); @114
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg33"); @115
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg33 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(33))", "x_ct_idu_rf_prf_vreg33"); @115
+ct_idu_rf_prf_gated_vreg#(.IDX(33))  x_ct_idu_rf_prf_vreg33 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -743,8 +743,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg33 (
 );
 
 // &ConnRule(s/^x_/vreg34_/); @116
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg34"); @117
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg34 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(34))", "x_ct_idu_rf_prf_vreg34"); @117
+ct_idu_rf_prf_gated_vreg#(.IDX(34))  x_ct_idu_rf_prf_vreg34 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -757,8 +757,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg34 (
 );
 
 // &ConnRule(s/^x_/vreg35_/); @118
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg35"); @119
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg35 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(35))", "x_ct_idu_rf_prf_vreg35"); @119
+ct_idu_rf_prf_gated_vreg#(.IDX(35))  x_ct_idu_rf_prf_vreg35 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -771,8 +771,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg35 (
 );
 
 // &ConnRule(s/^x_/vreg36_/); @120
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg36"); @121
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg36 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(36))", "x_ct_idu_rf_prf_vreg36"); @121
+ct_idu_rf_prf_gated_vreg#(.IDX(36))  x_ct_idu_rf_prf_vreg36 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -785,8 +785,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg36 (
 );
 
 // &ConnRule(s/^x_/vreg37_/); @122
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg37"); @123
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg37 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(37))", "x_ct_idu_rf_prf_vreg37"); @123
+ct_idu_rf_prf_gated_vreg#(.IDX(37))  x_ct_idu_rf_prf_vreg37 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -799,8 +799,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg37 (
 );
 
 // &ConnRule(s/^x_/vreg38_/); @124
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg38"); @125
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg38 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(38))", "x_ct_idu_rf_prf_vreg38"); @125
+ct_idu_rf_prf_gated_vreg#(.IDX(38))  x_ct_idu_rf_prf_vreg38 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -813,8 +813,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg38 (
 );
 
 // &ConnRule(s/^x_/vreg39_/); @126
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg39"); @127
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg39 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(39))", "x_ct_idu_rf_prf_vreg39"); @127
+ct_idu_rf_prf_gated_vreg#(.IDX(39))  x_ct_idu_rf_prf_vreg39 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -827,8 +827,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg39 (
 );
 
 // &ConnRule(s/^x_/vreg40_/); @128
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg40"); @129
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg40 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(40))", "x_ct_idu_rf_prf_vreg40"); @129
+ct_idu_rf_prf_gated_vreg#(.IDX(40))  x_ct_idu_rf_prf_vreg40 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -841,8 +841,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg40 (
 );
 
 // &ConnRule(s/^x_/vreg41_/); @130
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg41"); @131
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg41 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(41))", "x_ct_idu_rf_prf_vreg41"); @131
+ct_idu_rf_prf_gated_vreg#(.IDX(41))  x_ct_idu_rf_prf_vreg41 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -855,8 +855,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg41 (
 );
 
 // &ConnRule(s/^x_/vreg42_/); @132
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg42"); @133
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg42 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(42))", "x_ct_idu_rf_prf_vreg42"); @133
+ct_idu_rf_prf_gated_vreg#(.IDX(42))  x_ct_idu_rf_prf_vreg42 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -869,8 +869,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg42 (
 );
 
 // &ConnRule(s/^x_/vreg43_/); @134
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg43"); @135
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg43 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(43))", "x_ct_idu_rf_prf_vreg43"); @135
+ct_idu_rf_prf_gated_vreg#(.IDX(43))  x_ct_idu_rf_prf_vreg43 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -883,8 +883,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg43 (
 );
 
 // &ConnRule(s/^x_/vreg44_/); @136
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg44"); @137
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg44 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(44))", "x_ct_idu_rf_prf_vreg44"); @137
+ct_idu_rf_prf_gated_vreg#(.IDX(44))  x_ct_idu_rf_prf_vreg44 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -897,8 +897,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg44 (
 );
 
 // &ConnRule(s/^x_/vreg45_/); @138
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg45"); @139
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg45 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(45))", "x_ct_idu_rf_prf_vreg45"); @139
+ct_idu_rf_prf_gated_vreg#(.IDX(45))  x_ct_idu_rf_prf_vreg45 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -911,8 +911,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg45 (
 );
 
 // &ConnRule(s/^x_/vreg46_/); @140
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg46"); @141
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg46 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(46))", "x_ct_idu_rf_prf_vreg46"); @141
+ct_idu_rf_prf_gated_vreg#(.IDX(46))  x_ct_idu_rf_prf_vreg46 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -925,8 +925,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg46 (
 );
 
 // &ConnRule(s/^x_/vreg47_/); @142
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg47"); @143
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg47 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(47))", "x_ct_idu_rf_prf_vreg47"); @143
+ct_idu_rf_prf_gated_vreg#(.IDX(47))  x_ct_idu_rf_prf_vreg47 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -939,8 +939,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg47 (
 );
 
 // &ConnRule(s/^x_/vreg48_/); @144
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg48"); @145
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg48 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(48))", "x_ct_idu_rf_prf_vreg48"); @145
+ct_idu_rf_prf_gated_vreg#(.IDX(48))  x_ct_idu_rf_prf_vreg48 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -953,8 +953,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg48 (
 );
 
 // &ConnRule(s/^x_/vreg49_/); @146
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg49"); @147
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg49 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(49))", "x_ct_idu_rf_prf_vreg49"); @147
+ct_idu_rf_prf_gated_vreg#(.IDX(49))  x_ct_idu_rf_prf_vreg49 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -967,8 +967,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg49 (
 );
 
 // &ConnRule(s/^x_/vreg50_/); @148
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg50"); @149
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg50 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(50))", "x_ct_idu_rf_prf_vreg50"); @149
+ct_idu_rf_prf_gated_vreg#(.IDX(50))  x_ct_idu_rf_prf_vreg50 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -981,8 +981,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg50 (
 );
 
 // &ConnRule(s/^x_/vreg51_/); @150
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg51"); @151
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg51 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(51))", "x_ct_idu_rf_prf_vreg51"); @151
+ct_idu_rf_prf_gated_vreg#(.IDX(51))  x_ct_idu_rf_prf_vreg51 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -995,8 +995,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg51 (
 );
 
 // &ConnRule(s/^x_/vreg52_/); @152
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg52"); @153
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg52 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(52))", "x_ct_idu_rf_prf_vreg52"); @153
+ct_idu_rf_prf_gated_vreg#(.IDX(52))  x_ct_idu_rf_prf_vreg52 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1009,8 +1009,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg52 (
 );
 
 // &ConnRule(s/^x_/vreg53_/); @154
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg53"); @155
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg53 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(53))", "x_ct_idu_rf_prf_vreg53"); @155
+ct_idu_rf_prf_gated_vreg#(.IDX(53))  x_ct_idu_rf_prf_vreg53 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1023,8 +1023,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg53 (
 );
 
 // &ConnRule(s/^x_/vreg54_/); @156
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg54"); @157
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg54 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(54))", "x_ct_idu_rf_prf_vreg54"); @157
+ct_idu_rf_prf_gated_vreg#(.IDX(54))  x_ct_idu_rf_prf_vreg54 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1037,8 +1037,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg54 (
 );
 
 // &ConnRule(s/^x_/vreg55_/); @158
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg55"); @159
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg55 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(55))", "x_ct_idu_rf_prf_vreg55"); @159
+ct_idu_rf_prf_gated_vreg#(.IDX(55))  x_ct_idu_rf_prf_vreg55 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1051,8 +1051,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg55 (
 );
 
 // &ConnRule(s/^x_/vreg56_/); @160
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg56"); @161
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg56 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(56))", "x_ct_idu_rf_prf_vreg56"); @161
+ct_idu_rf_prf_gated_vreg#(.IDX(56))  x_ct_idu_rf_prf_vreg56 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1065,8 +1065,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg56 (
 );
 
 // &ConnRule(s/^x_/vreg57_/); @162
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg57"); @163
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg57 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(57))", "x_ct_idu_rf_prf_vreg57"); @163
+ct_idu_rf_prf_gated_vreg#(.IDX(57))  x_ct_idu_rf_prf_vreg57 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1079,8 +1079,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg57 (
 );
 
 // &ConnRule(s/^x_/vreg58_/); @164
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg58"); @165
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg58 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(58))", "x_ct_idu_rf_prf_vreg58"); @165
+ct_idu_rf_prf_gated_vreg#(.IDX(58))  x_ct_idu_rf_prf_vreg58 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1093,8 +1093,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg58 (
 );
 
 // &ConnRule(s/^x_/vreg59_/); @166
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg59"); @167
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg59 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(59))", "x_ct_idu_rf_prf_vreg59"); @167
+ct_idu_rf_prf_gated_vreg#(.IDX(59))  x_ct_idu_rf_prf_vreg59 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1107,8 +1107,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg59 (
 );
 
 // &ConnRule(s/^x_/vreg60_/); @168
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg60"); @169
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg60 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(60))", "x_ct_idu_rf_prf_vreg60"); @169
+ct_idu_rf_prf_gated_vreg#(.IDX(60))  x_ct_idu_rf_prf_vreg60 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1121,8 +1121,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg60 (
 );
 
 // &ConnRule(s/^x_/vreg61_/); @170
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg61"); @171
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg61 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(61))", "x_ct_idu_rf_prf_vreg61"); @171
+ct_idu_rf_prf_gated_vreg#(.IDX(61))  x_ct_idu_rf_prf_vreg61 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1135,8 +1135,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg61 (
 );
 
 // &ConnRule(s/^x_/vreg62_/); @172
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg62"); @173
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg62 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(62))", "x_ct_idu_rf_prf_vreg62"); @173
+ct_idu_rf_prf_gated_vreg#(.IDX(62))  x_ct_idu_rf_prf_vreg62 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
@@ -1149,8 +1149,8 @@ ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg62 (
 );
 
 // &ConnRule(s/^x_/vreg63_/); @174
-// &Instance("ct_idu_rf_prf_gated_vreg", "x_ct_idu_rf_prf_vreg63"); @175
-ct_idu_rf_prf_gated_vreg  x_ct_idu_rf_prf_vreg63 (
+// &Instance("ct_idu_rf_prf_gated_vreg#(.IDX(63))", "x_ct_idu_rf_prf_vreg63"); @175
+ct_idu_rf_prf_gated_vreg#(.IDX(63))  x_ct_idu_rf_prf_vreg63 (
   .cp0_idu_icg_en                  (cp0_idu_icg_en                 ),
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .lsu_idu_wb_pipe3_wb_vreg_data   (lsu_idu_wb_pipe3_wb_vreg_data  ),
