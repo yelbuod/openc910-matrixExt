@@ -77,6 +77,7 @@ void assert_fail_msg() {
 // }
 
 extern "C" void illegal(
+  uint32_t ir_decd_idx,
   uint32_t opcode
 ) {
   sim_state.state = SIM_ABORT;
@@ -84,8 +85,8 @@ extern "C" void illegal(
   sim_state.halt_ret = -1;
 
   printf("invalid opcode:"
-      "\t%08x\n",
-      opcode);
+      "\t%08x at IR Decoder %d\n",
+      opcode, ir_decd_idx);
 
   // printf("There are two cases which will trigger this unexpected exception:\n"
   //     "1. The instruction at PC = " FMT_WORD " is not implemented.\n"
@@ -98,10 +99,11 @@ extern "C" void illegal(
 }
 
 extern "C" void hart_commitInst(
+  uint32_t retire_idx,
   uint64_t retire_pc
 ){
   if(!is_batch_mode) { // no batch mode, single instruction step then STOP
-    Log("[Hart] Instruction of PC 0x%08lx retired", retire_pc);
+    Log("[Hart] Instruction at PC 0x%08lx retired (index%d)", retire_pc, retire_idx);
     if(sim_state.state != SIM_STOP) {
       Log("[Simulation] single step mode: STOP");
       sim_state.state = SIM_STOP;

@@ -114,11 +114,14 @@ uint64_t reg_str2val(const char *s, bool *success) {
 }
 
 void dump_all_reg() {
-  for (int i = 0; i < 32; i++) {
-    printf("%s = 0x%lx\n", int_regs[i], read_hart_reg(i, false));
+  int i;
+  for (i = 0; i < 32; i++) {
+    printf("(x%d) %s = 0x%lx\n", i, int_regs[i], read_hart_reg(i, false));
   }
+  
   printf("pc = 0x%lx\n", hart_pc);
-  for (int i = 0; i < 32; i++) {
-    printf("%s = 0x%lx\n", fp_regs[i], read_hart_reg(i, true));
+
+  for (i = 0; i < 32; i++) {
+    printf("(f%d) %s = 0x%lx\n", i fp_regs[i], read_hart_reg(i, true));
   }
 }

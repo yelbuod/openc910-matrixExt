@@ -14,11 +14,12 @@ limitations under the License.
 */
 
 import "DPI-C" function void illegal(
+  int unsigned ir_decd_idx,
   int unsigned opcode
 );
 
 // &ModuleBeg; @26
-module ct_idu_ir_decd(
+module ct_idu_ir_decd#(parameter IR_DECD_IDX = 0)(
   clk,
   x_alu_short,
   x_bar,
@@ -219,7 +220,7 @@ assign x_sync              = !x_illegal && decd_sync;
 assign x_ecall             = !x_illegal && decd_ecall;
 
 always @(posedge clk) begin
-   if(x_illegal) illegal(x_opcode);
+   if(x_illegal) illegal(IR_DECD_IDX, x_opcode);
 end
 
 //==========================================================
