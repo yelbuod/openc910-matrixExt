@@ -6,6 +6,8 @@
 #define INT_ARCH_REG_NUM 32
 #define FP_ARCH_REG_NUM 32
 
+static uint64_t hart_pc = 0;
+
 static struct {
   uint64_t int_regfile[INT_PHY_REG_NUM];
   uint64_t fp_regfile[FP_PHY_REG_NUM];
@@ -51,6 +53,12 @@ extern "C" void sync_fp_rename_table(
   hart_rename_table.fp_renameTable[arch_regIdx] = phy_regIdx;
 }
 
+extern "C" void sync_hart_pc(
+  uint64_t pc
+) {
+  hart_pc = pc;
+}
+
 uint64_t read_hart_reg(int index, bool fp) {
 	Assert((index >= 0 && index < 32), "Illegal gpr or fpr index, RISCV-64 support 0~31 gpr and fpr");
 	int phy_regIdx;
@@ -80,6 +88,11 @@ const char *fp_regs[] = {
 };
 
 uint64_t reg_str2val(const char *s, bool *success) {
+  if (strcmp("pc", s) == 0) {
+    *success = true;
+    return hart_pc;
+  }
+
   for (int i = 0; i < 32; i++) {
     if (strcmp(int_regs[i], s) == 0) {
       *success = true;
@@ -104,6 +117,7 @@ void dump_all_reg() {
   for (int i = 0; i < 32; i++) {
     printf("%s = 0x%lx\n", int_regs[i], read_hart_reg(i, false));
   }
+  printf("pc = 0x%lx\n", hart_pc);
   for (int i = 0; i < 32; i++) {
     printf("%s = 0x%lx\n", fp_regs[i], read_hart_reg(i, true));
   }

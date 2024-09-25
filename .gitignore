@@ -1,1 +1,3 @@
 smart_run/logical/tb/build_verilate/
+smart_run/toolchain/gcc
+smart_run/work/

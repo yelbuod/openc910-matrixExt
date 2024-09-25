@@ -64,6 +64,8 @@ ARGS_DIFF = --diff=$(DIFF_NEMU_PATH)
 override ARGS ?= --log=$(BUILD_V_DIR)/npc-log.txt --image=$(WORK_DIR)/default_dummy.bin
 override ARGS += $(ARGS_DIFF)
 
+build_verilator: $(BUILD_V)
+
 run_verilator: $(BUILD_V) $(BUILD_V_INC_PATH)
 	@$^ $(ARGS)
 
@@ -76,6 +78,6 @@ wave_verilated:
 clean_verilated:
 	rm -rf $(BUILD_V_DIR)
 
-.PHONY: run_verilator gdb_verilator wave_verilated clean_verilated
+.PHONY: build_verilator run_verilator gdb_verilator wave_verilated clean_verilated
 
 .DEFAULT_GOAL = $(BUILD_V)

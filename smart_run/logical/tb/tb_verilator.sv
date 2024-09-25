@@ -280,12 +280,12 @@ module top(
       retire_inst_in_period[31:0] <= 32'b0;
     end
     else if(`tb_retire0 || `tb_retire1 || `tb_retire2)
-      // if(`tb_retire0) 
-      //   $display("retire0 pc %x", `retire0_pc);
-      // if(`tb_retire1)
-      //   $display("retire1 pc %x", `retire1_pc);
-      // if(`tb_retire2)
-      //   $display("retire2 pc %x", `retire2_pc);
+    //   if(`tb_retire0) 
+    //     $display("retire0 pc %x", `retire0_pc);
+    //   if(`tb_retire1)
+    //     $display("retire1 pc %x", `retire1_pc);
+    //   if(`tb_retire2)
+    //     $display("retire2 pc %x", `retire2_pc);
       retire_inst_in_period[31:0] <= retire_inst_in_period[31:0] + 1'b1;
   end
   

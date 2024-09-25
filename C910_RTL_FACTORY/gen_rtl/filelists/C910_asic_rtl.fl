@@ -161,7 +161,7 @@ ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_id_fence.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_id_split_long.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_id_split_short.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_ctrl.v
-${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_decd.v
+${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_decd.sv
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_dp.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_frt.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_rt.v
@@ -239,7 +239,7 @@ ${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_l1_refill.v
 ${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_lbuf.v
 ${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_lbuf_entry.v
 ${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_pcfifo_if.v
-${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_pcgen.v
+${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_pcgen.sv
 ${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_precode.v
 ${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_ras.v
 ${CODE_BASE_PATH}/gen_rtl/ifu/rtl/ct_ifu_sfp.v

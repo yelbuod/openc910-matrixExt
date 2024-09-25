@@ -1890,6 +1890,7 @@ assign ir_inst3_vsew[2:0]        = ir_inst3_data[IR_VSEW:IR_VSEW-2];
 // &ConnRule(s/^x_/ir_inst0_/); @829
 // &Instance("ct_idu_ir_decd", "x_ct_idu_ir_decd0"); @830
 ct_idu_ir_decd  x_ct_idu_ir_decd0 (
+  .clk                        (forever_cpuclk            ),
   .x_alu_short                (ir_inst0_alu_short        ),
   .x_bar                      (ir_inst0_bar              ),
   .x_bar_type                 (ir_inst0_bar_type         ),
@@ -1927,6 +1928,7 @@ ct_idu_ir_decd  x_ct_idu_ir_decd0 (
 // &ConnRule(s/^x_/ir_inst1_/); @831
 // &Instance("ct_idu_ir_decd", "x_ct_idu_ir_decd1"); @832
 ct_idu_ir_decd  x_ct_idu_ir_decd1 (
+  .clk                        (forever_cpuclk            ),
   .x_alu_short                (ir_inst1_alu_short        ),
   .x_bar                      (ir_inst1_bar              ),
   .x_bar_type                 (ir_inst1_bar_type         ),
@@ -1964,6 +1966,7 @@ ct_idu_ir_decd  x_ct_idu_ir_decd1 (
 // &ConnRule(s/^x_/ir_inst2_/); @833
 // &Instance("ct_idu_ir_decd", "x_ct_idu_ir_decd2"); @834
 ct_idu_ir_decd  x_ct_idu_ir_decd2 (
+  .clk                        (forever_cpuclk            ),
   .x_alu_short                (ir_inst2_alu_short        ),
   .x_bar                      (ir_inst2_bar              ),
   .x_bar_type                 (ir_inst2_bar_type         ),
@@ -2001,6 +2004,7 @@ ct_idu_ir_decd  x_ct_idu_ir_decd2 (
 // &ConnRule(s/^x_/ir_inst3_/); @835
 // &Instance("ct_idu_ir_decd", "x_ct_idu_ir_decd3"); @836
 ct_idu_ir_decd  x_ct_idu_ir_decd3 (
+  .clk                        (forever_cpuclk            ),
   .x_alu_short                (ir_inst3_alu_short        ),
   .x_bar                      (ir_inst3_bar              ),
   .x_bar_type                 (ir_inst3_bar_type         ),

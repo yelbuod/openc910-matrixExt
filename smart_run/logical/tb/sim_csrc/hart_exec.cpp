@@ -76,39 +76,36 @@ void assert_fail_msg() {
 //   sim_state.halt_ret = -1;
 // }
 
-// extern "C" void illegal(uint64_t pc) {
-//   sim_state.state = SIM_ABORT;
-//   sim_state.halt_pc = pc;
-//   sim_state.halt_ret = -1;
+extern "C" void illegal(
+  uint32_t opcode
+) {
+  sim_state.state = SIM_ABORT;
+  sim_state.halt_pc = 0;
+  sim_state.halt_ret = -1;
 
-//   // uint32_t temp[2];
-//   // pmem_read(pc, temp[0]);
-//   // pmem_read(pc, temp[1]);
+  printf("invalid opcode:"
+      "\t%08x\n",
+      opcode);
 
-//   // uint8_t *p = (uint8_t *)temp;
-//   // printf("invalid opcode(PC = " FMT_WORD "):\n"
-//   //     "\t%02x %02x %02x %02x %02x %02x %02x %02x ...\n"
-//   //     "\t%08x %08x...\n",
-//   //     pc, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], temp[0], temp[1]);
-
-//   // printf("There are two cases which will trigger this unexpected exception:\n"
-//   //     "1. The instruction at PC = " FMT_WORD " is not implemented.\n"
-//   //     "2. Something is implemented incorrectly.\n", pc);
-//   // printf("Find this PC(" FMT_WORD ") in the disassembling result to distinguish which case it is.\n\n", pc);
-//   // printf(ANSI_FMT("If it is the first case, see\nriscv-64 manual\nfor more details.\n\n"
-//   //       "If it is the second case, remember:\n"
-//   //       "* The machine is always right!\n"
-//   //       "* Every line of untested code is always wrong!\n\n", ANSI_FG_RED));
-// }
+  // printf("There are two cases which will trigger this unexpected exception:\n"
+  //     "1. The instruction at PC = " FMT_WORD " is not implemented.\n"
+  //     "2. Something is implemented incorrectly.\n", pc);
+  // printf("Find this PC(" FMT_WORD ") in the disassembling result to distinguish which case it is.\n\n", pc);
+  // printf(ANSI_FMT("If it is the first case, see\nriscv-64 manual\nfor more details.\n\n"
+  //       "If it is the second case, remember:\n"
+  //       "* The machine is always right!\n"
+  //       "* Every line of untested code is always wrong!\n\n", ANSI_FG_RED));
+}
 
 extern "C" void hart_commitInst(
   uint64_t retire_pc
 ){
-  
   if(!is_batch_mode) { // no batch mode, single instruction step then STOP
     Log("[Hart] Instruction of PC 0x%08lx retired", retire_pc);
-    Log("[Simulation] single step mode: STOP");
-    sim_state.state = SIM_STOP;
+    if(sim_state.state != SIM_STOP) {
+      Log("[Simulation] single step mode: STOP");
+      sim_state.state = SIM_STOP;
+    }
   }
 }
 

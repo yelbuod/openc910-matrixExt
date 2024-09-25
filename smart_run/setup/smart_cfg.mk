@@ -29,6 +29,7 @@ CASE_LIST := \
       ISA_BARRIER \
       plic_int \
       sleep \
+	  intrinsic_matmul \
 
 
 ISA_AMO_build:
@@ -97,6 +98,13 @@ hello_world_build:
 	@cp ./tests/lib/newlib_wrap/* ./work
 	@cd ./work && make -s clean && make -s all CPU_ARCH_FLAG_0=c910  ENDIAN_MODE=little-endian CASENAME=hello_world FILE=hello_world >& hello_world_build.case.log 
 
+intrinsic_matmul_build:
+	@cp ./tests/cases/intrinsic_matmul/* ./work
+	@find ./tests/lib/ -maxdepth 1 -type f -exec cp {} ./work/ \; 
+	@cp ./tests/lib/clib/* ./work
+	@cp ./tests/lib/newlib_wrap/* ./work
+	@cp -r ./tests/install_nn2 ./work
+	@cd ./work && make -s clean && make -s all CPU_ARCH_FLAG_0=c910  ENDIAN_MODE=little-endian CASENAME=intrinsic_matmul FILE=intrinsic_matmul >& intrinsic_matmul_build.case.log 
 
 MMU_build:
 	@cp ./tests/cases/MMU/* ./work

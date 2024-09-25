@@ -13,8 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "DPI-C" function void illegal(
+  int unsigned opcode
+);
+
 // &ModuleBeg; @26
 module ct_idu_ir_decd(
+  clk,
   x_alu_short,
   x_bar,
   x_bar_type,
@@ -50,6 +55,7 @@ module ct_idu_ir_decd(
 );
 
 // &Ports; @27
+input clk;
 input           x_illegal;             
 input   [31:0]  x_opcode;              
 input           x_type_alu;            
@@ -86,6 +92,7 @@ output          x_vsetvli;
 // &Regs; @28
 
 // &Wires; @29
+wire clk;
 wire            decd_alu_short;        
 wire            decd_bar;              
 wire    [3 :0]  decd_bar_type;         
@@ -210,6 +217,10 @@ assign x_fp                = !x_illegal && decd_fp_inst;
 assign x_csr               = !x_illegal && decd_csr;
 assign x_sync              = !x_illegal && decd_sync;
 assign x_ecall             = !x_illegal && decd_ecall;
+
+always @(posedge clk) begin
+   if(x_illegal) illegal(x_opcode);
+end
 
 //==========================================================
 //                      Short ALU

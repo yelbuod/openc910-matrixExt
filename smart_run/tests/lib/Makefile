@@ -46,9 +46,21 @@ else
   CFLAGS += -c -O2
 endif
 
+ifeq (${CASENAME}, intrinsic_matmul)
+  FLAG_MARCH = -mtune=c910 -march=rv64gcv_zfh_xtheadc_xtheadmatrix
+  FLAG_ABI   = -mabi=lp64d
+  NN2_DIR = install_nn2
+  INCLUDE += -I ${NN2_DIR}/include
+  CFLAGS = ${FLAG_MARCH} ${FLAG_ABI} -c -O2 ${INCLUDE}
+  LDFLAGS_RVM = -L ${NN2_DIR}/lib -lshl_rvm -lm -static -Wl,--no-warn-mismatch
+endif
+
 CFLAGS += --specs=nano.specs
 
 LINKFLAGS = -Tlinker.lcf -nostartfiles ${FLAG_MARCH} ${FLAG_ABI}
+ifeq (${CASENAME}, intrinsic_matmul)
+  LINKFLAGS += ${LDFLAGS_RVM}
+endif
 
 # LINKLIBS  = -L${TOOL_PATH}/lib/gcc/riscv64-unknown-elf/8.1.0/rv32imac
 # LINKLIBS += -L${TOOL_PATH}/riscv64-unknown-elf/lib/rv32imac
