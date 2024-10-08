@@ -11,8 +11,14 @@ VERILATOR_CFLAGS += --build -cc --exe \
 
 #				--x-assign fast --x-initial fast --noassert
 
-ifdef CONFIG_WAVETRACE
+WAVETRACE ?=
+ifneq (,$(filter $(WAVETRACE), 1 vcd VCD))
 VERILATOR_CFLAGS += --trace
+EMU_CXXFLAGS += -DCONFIG_WAVETRACE
+endif
+ifneq (,$(filter $(WAVETRACE), fst FST))
+VERILATOR_CFLAGS += --trace-fst
+EMU_CXXFLAGS += -DENABLE_FST -DCONFIG_WAVETRACE
 endif
 
 # rules for verilator
@@ -43,7 +49,7 @@ CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
 LIBS += $(shell llvm-config --libs)
 
 BUILD_V_CSRCS += $(BUILD_V_DISASM_CSRCS)
-BUIlD_V_CFLAGS += $(CXXFLAGS)
+BUIlD_V_CFLAGS += $(CXXFLAGS) $(EMU_CXXFLAGS)
 LDFLAGS += $(LIBS)
 endif
 # llvm for disasm

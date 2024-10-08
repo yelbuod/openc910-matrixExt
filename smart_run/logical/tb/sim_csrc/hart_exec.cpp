@@ -9,7 +9,11 @@
 
 /* ------------------ simulation ------------------ */
 VerilatedContext* contextp = NULL;
+#ifdef ENABLE_FST
+VerilatedFstC* tfp = NULL;
+#else
 VerilatedVcdC* tfp = NULL;
+#endif
 static Vtop *top;
 static int is_batch_mode = false;
 
@@ -42,9 +46,16 @@ void sim_init() {
   Log("Wave dump: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   Log("Remember to turn off this before run a Large program! ");
 
+#ifdef ENABLE_FST
   tfp = new VerilatedVcdC;
   top->trace(tfp, 0);
   tfp->open("dump.vcd");
+#else
+  tfp = new VerilatedFstC;
+  top->trace(tfp, 0);
+  tfp->open("dump.fst");
+#endif
+
 #endif
   // clk & reset init
   top->clk = 0;

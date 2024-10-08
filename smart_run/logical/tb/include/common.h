@@ -11,7 +11,11 @@
 #include "verilated.h"
 #include "verilated_dpi.h"
 #include "verilated_vpi.h"
-#include "verilated_vcd_c.h"
+#ifdef ENABLE_FST
+#include <verilated_fst_c.h>
+#else
+#include <verilated_vcd_c.h>    // Trace file format header
+#endif
 #include "Vtop.h" // ../build_verilate/obj_dir/
 
 #define FMT_WORD "0x%016lx"
