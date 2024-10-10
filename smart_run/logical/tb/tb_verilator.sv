@@ -378,23 +378,23 @@ module top(
   
   
   parameter cpu_cycle = 110;
-  `ifndef NO_DUMP
-  initial
-  begin
-  `ifdef NC_SIM
-    $dumpfile("test.vcd");
-    $dumpvars;  
-  `else
-    `ifdef IVERILOG_SIM
-      $dumpfile("test.vcd");
-      $dumpvars;  
-    `else
-      $dumpfile("test.vcd");
-      $dumpvars;  
-    `endif
-  `endif
-  end
-  `endif
+  // `ifndef NO_DUMP
+  // initial
+  // begin
+  // `ifdef NC_SIM
+  //   $dumpfile("test.vcd");
+  //   $dumpvars;  
+  // `else
+  //   `ifdef IVERILOG_SIM
+  //     $dumpfile("test.vcd");
+  //     $dumpvars;  
+  //   `else
+  //     $dumpfile("test.vcd");
+  //     $dumpvars;  
+  //   `endif
+  // `endif
+  // end
+  // `endif
   
   assign jtg_tdi = 1'b0;
   assign uart0_sin = 1'b1;

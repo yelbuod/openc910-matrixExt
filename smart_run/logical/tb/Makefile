@@ -35,7 +35,7 @@ BUILD_V = $(BUILD_V_DIR)/$(TOPNAME)
 BUILD_V_INC_PATH_REL := ./include/ $(BUILD_V_OBJ_DIR)
 BUILD_V_INC_PATH = $(abspath $(BUILD_V_INC_PATH_REL))
 BUILD_V_INCFLAGS = $(addprefix -I, $(BUILD_V_INC_PATH))
-BUIlD_V_CFLAGS += $(BUILD_V_INCFLAGS)
+BUILD_V_CFLAGS += $(BUILD_V_INCFLAGS)
 $(shell mkdir -p $(BUILD_V_DIR))
 
 # project source
@@ -49,7 +49,8 @@ CXXFLAGS += $(shell llvm-config --cxxflags) -fPIE
 LIBS += $(shell llvm-config --libs)
 
 BUILD_V_CSRCS += $(BUILD_V_DISASM_CSRCS)
-BUIlD_V_CFLAGS += $(CXXFLAGS) $(EMU_CXXFLAGS)
+BUILD_V_CFLAGS += $(CXXFLAGS)
+BUILD_V_CFLAGS += $(EMU_CXXFLAGS)
 LDFLAGS += $(LIBS)
 endif
 # llvm for disasm
@@ -58,7 +59,7 @@ $(BUILD_V): $(BUILD_V_CSRCS)
 	@rm -rf $(BUILD_V_OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 	--top-module $(TOPNAME) $(SIM_FILELIST) $^ \
-	$(addprefix -CFLAGS , $(BUIlD_V_CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+	$(addprefix -CFLAGS , $(BUILD_V_CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 	-DTOP_NAME="\"V$(TOPNAME)\"" \
 	--Mdir $(BUILD_V_OBJ_DIR) --exe -o $(abspath $(BUILD_V)) 
 

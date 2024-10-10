@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "sdb.h"
 #include <macro.h>
+#define ENABLE_FST
 
 /* ------------------ simulation ------------------ */
 VerilatedContext* contextp = NULL;
@@ -21,9 +22,9 @@ void tick_step_dump() {
   top->clk = !top->clk;
   top->eval();
   contextp->timeInc(1);
-#ifdef CONFIG_WAVETRACE
+// #ifdef CONFIG_WAVETRACE
   tfp->dump(contextp->time());
-#endif
+// #endif
 }
 
 void cycle_step() {
@@ -42,21 +43,22 @@ void sim_init() {
   contextp = new VerilatedContext;
   top = new Vtop;
   contextp->traceEverOn(true);
-#ifdef CONFIG_WAVETRACE
+// #ifdef CONFIG_WAVETRACE
   Log("Wave dump: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
   Log("Remember to turn off this before run a Large program! ");
 
 #ifdef ENABLE_FST
-  tfp = new VerilatedVcdC;
-  top->trace(tfp, 0);
-  tfp->open("dump.vcd");
-#else
   tfp = new VerilatedFstC;
   top->trace(tfp, 0);
   tfp->open("dump.fst");
+#else
+  tfp = new VerilatedVcdC; 
+  top->trace(tfp, 0);
+  tfp->open("dump.vcd");
 #endif
 
-#endif
+// #endif
+
   // clk & reset init
   top->clk = 0;
   smartrun_tb_reset();
@@ -64,9 +66,9 @@ void sim_init() {
 
 void sim_exit() {
   tick_step_dump();
-#ifdef CONFIG_WAVETRACE
+// #ifdef CONFIG_WAVETRACE
   tfp->close();
-#endif
+// #endif
 }
 
 /* ------------------ execute ------------------ */

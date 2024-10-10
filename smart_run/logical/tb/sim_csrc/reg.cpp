@@ -122,6 +122,6 @@ void dump_all_reg() {
   printf("pc = 0x%lx\n", hart_pc);
 
   for (i = 0; i < 32; i++) {
-    printf("(f%d) %s = 0x%lx\n", i fp_regs[i], read_hart_reg(i, true));
+    printf("(f%d) %s = 0x%lx\n", i, fp_regs[i], read_hart_reg(i, true));
   }
 }
