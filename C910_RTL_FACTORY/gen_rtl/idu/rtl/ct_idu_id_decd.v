@@ -1173,7 +1173,7 @@ begin
   decd_32_inst_type[TYPE_WIDTH-1:0]    = {TYPE_WIDTH{1'b0}}; 
   // TODO: 矩阵指令肯定会选通 decd_32_inst_type 作为最终的指令类型, 因此需要在译码类型中排除该类型, 
   //  其实已经自动排除(因为不满足任何一项译码条件), 但是需要修改成矩阵指令在这里有特定case, 不会被认为illegal
-  //  这样就不会enqueue任何issue队列, 此外要保证不allocate任何物理寄存器(dst no vld), 且要保证指令进入ROB.
+  //  这样就不会enqueue任何issue队列, 且要保证指令进入ROB.
   //operand prepare information: valid, and types
   decd_32_dst_vld                      = 1'b0;
   decd_32_dstf_vld                     = 1'b0;
@@ -1192,6 +1192,48 @@ begin
   casez({x_inst[31:25], x_inst[14:12], x_inst[6:2]})
     //16-bits instructions decode logic
     //32-bits instructions decode logic
+    15'b0???_111_000_01010:begin // matrix configuration with imm
+      decd_32_dst_vld                      = 1'b1;
+    end
+    15'b1???_111_000_01010:begin // matrix configuration with scalar register rs1
+      decd_32_dst_vld                      = 1'b1;
+      decd_32_src0_vld                     = 1'b1;
+    end
+    15'b0000_110_000_01010:begin // move from matrix to scalar register 
+      decd_32_dst_vld                      = 1'b1;
+      decd_32_src0_vld                     = 1'b1;
+    end
+    15'b0001_110_000_01010:begin // move from scalar register to matrix
+      decd_32_src1_vld                     = 1'b1; // rs2 valid, rs1 invalid
+    end
+    15'b0010_110_000_01010:begin // move from scalar register to matrix
+      decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
+      decd_32_src1_vld                     = 1'b1;
+    end
+    15'b0000_101_000_01010:begin // store with rs2 index
+      decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
+      decd_32_src1_vld                     = 1'b1;
+    end
+    15'b0010_101_000_01010:begin // store without rs2, whole matrix reg store
+      decd_32_src0_vld                     = 1'b1; // rs1 valid
+    end
+    15'b0000_100_000_01010:begin // load with rs2 index
+      decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
+      decd_32_src1_vld                     = 1'b1;
+    end
+    15'b0010_100_000_01010:begin // load without rs2, whole matrix reg load
+      decd_32_src0_vld                     = 1'b1; // rs1 valid
+    end
+    // matrix arithmetic
+    15'b????_001_000_01010:begin // arithmetic mv.x need rs1'
+      decd_32_src0_vld                     = 1'b1; // rs1 valid
+    end
+    15'b????_011_000_01010:begin // arithmetic mx need rs1'
+      decd_32_src0_vld                     = 1'b1; // rs1 valid
+    end
+    // TODO : 设计一个enqueue matrix valid的信号在上述情况下有效, 并且传入附带dst和src valid信息的信号,
+    // 同时decd_32_inst_type保持0
+
     15'b?????_?????01101:begin //lui
       decd_32_inst_type[TYPE_WIDTH-1:0]    = ALU;
       decd_32_dst_vld                      = 1'b1;
