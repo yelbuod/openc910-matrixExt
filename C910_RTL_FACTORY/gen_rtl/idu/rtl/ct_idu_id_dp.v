@@ -26,6 +26,12 @@ module ct_idu_id_dp(
   cp0_yy_clk_en,
   cp0_yy_hyper,
   cpurst_b,
+  id_inst0_m_inst_vld,
+  id_inst1_m_inst_vld,
+  id_inst2_m_inst_vld,
+  id_inst0_m_data,
+  id_inst1_m_data,
+  id_inst2_m_data,
   ctrl_dp_id_debug_id_pipedown3,
   ctrl_dp_id_inst0_vld,
   ctrl_dp_id_inst1_vld,
@@ -144,6 +150,13 @@ output  [39 :0]  idu_had_id_inst1_info;
 output  [39 :0]  idu_had_id_inst2_info;          
 output           split_long_ctrl_id_stall;       
 output  [3  :0]  split_long_ctrl_inst_vld;       
+
+output        id_inst0_m_inst_vld;
+output        id_inst1_m_inst_vld;
+output        id_inst2_m_inst_vld;
+output [22:0] id_inst0_m_data;
+output [22:0] id_inst1_m_data;
+output [22:0] id_inst2_m_data;
 
 // &Regs; @29
 reg     [31 :0]  debug_id_inst0;                 
@@ -410,7 +423,30 @@ wire    [3  :0]  split_short2_dp_dep_info;
 wire    [177:0]  split_short2_dp_inst0_data;     
 wire    [177:0]  split_short2_dp_inst1_data;     
 
+// matrix basic decode information
+wire       id_inst0_m_inst_vld ;
+wire [3:0] id_inst0_m_inst_type;
+wire       id_inst1_m_inst_vld ;
+wire [3:0] id_inst1_m_inst_type;
+wire       id_inst2_m_inst_vld ;
+wire [3:0] id_inst2_m_inst_type;
 
+// TODO : id_inst0/1/2_m_data 将携带id流水级译码出的基础matrix指令信息, 包括m指令类型和GPR src/dst vld信号
+//  但指令操作以及matrix reg src/dst等更多的信息需要在下一级matrix专属译码模块进行分类译码.
+parameter M_DATA_IR_WIDTH = 23;
+parameter M_TYPE     = 22;
+parameter M_DST_X0   = 18;
+parameter M_DST_VLD  = 17;
+parameter M_DST_REG  = 16;
+parameter M_SRC0_VLD = 11;
+parameter M_SRC0_REG = 10;
+parameter M_SRC1_VLD = 5 ;
+parameter M_SRC1_REG = 4 ;
+// 22-19         18       17        16-12     11         10-6       5          4-0
+// m_inst_type   dst_x0   dst_vld   dst_reg   src0_vld   src0_reg   src1_vld   src1_reg  
+reg [22:0] id_inst0_m_data;
+reg [22:0] id_inst1_m_data;
+reg [22:0] id_inst2_m_data;
 
 //==========================================================
 //                       Parameters
@@ -747,7 +783,7 @@ assign id_inst2_vl[7:0]    = id_inst2_data[ID_VL:ID_VL-7];
 
 // &ConnRule(s/^x_/id_inst0_/); @346
 // &Instance("ct_idu_id_decd", "x_ct_idu_id_decd0"); @347
-ct_idu_id_decd  x_ct_idu_id_decd0 (
+ct_idu_id_decd x_ct_idu_id_decd0 (
   .cp0_idu_cskyee                  (cp0_idu_cskyee                 ),
   .cp0_idu_frm                     (cp0_idu_frm                    ),
   .cp0_idu_fs                      (cp0_idu_fs                     ),
@@ -756,6 +792,8 @@ ct_idu_id_decd  x_ct_idu_id_decd0 (
   .cp0_idu_vstart                  (cp0_idu_vstart                 ),
   .cp0_idu_zero_delay_move_disable (cp0_idu_zero_delay_move_disable),
   .cp0_yy_hyper                    (cp0_yy_hyper                   ),
+  .x_m_inst_vld                    (id_inst0_m_inst_vld            ),
+  .x_m_inst_type                   (id_inst0_m_inst_type           ),
   .x_dst_reg                       (id_inst0_dst_reg               ),
   .x_dst_vld                       (id_inst0_dst_vld               ),
   .x_dst_x0                        (id_inst0_dst_x0                ),
@@ -801,7 +839,7 @@ ct_idu_id_decd  x_ct_idu_id_decd0 (
 
 // &ConnRule(s/^x_/id_inst1_/); @348
 // &Instance("ct_idu_id_decd", "x_ct_idu_id_decd1"); @349
-ct_idu_id_decd  x_ct_idu_id_decd1 (
+ct_idu_id_decd x_ct_idu_id_decd1 (
   .cp0_idu_cskyee                  (cp0_idu_cskyee                 ),
   .cp0_idu_frm                     (cp0_idu_frm                    ),
   .cp0_idu_fs                      (cp0_idu_fs                     ),
@@ -810,6 +848,8 @@ ct_idu_id_decd  x_ct_idu_id_decd1 (
   .cp0_idu_vstart                  (cp0_idu_vstart                 ),
   .cp0_idu_zero_delay_move_disable (cp0_idu_zero_delay_move_disable),
   .cp0_yy_hyper                    (cp0_yy_hyper                   ),
+  .x_m_inst_vld                    (id_inst1_m_inst_vld            ),
+  .x_m_inst_type                   (id_inst1_m_inst_type           ),
   .x_dst_reg                       (id_inst1_dst_reg               ),
   .x_dst_vld                       (id_inst1_dst_vld               ),
   .x_dst_x0                        (id_inst1_dst_x0                ),
@@ -855,7 +895,7 @@ ct_idu_id_decd  x_ct_idu_id_decd1 (
 
 // &ConnRule(s/^x_/id_inst2_/); @350
 // &Instance("ct_idu_id_decd", "x_ct_idu_id_decd2"); @351
-ct_idu_id_decd  x_ct_idu_id_decd2 (
+ct_idu_id_decd x_ct_idu_id_decd2 (
   .cp0_idu_cskyee                  (cp0_idu_cskyee                 ),
   .cp0_idu_frm                     (cp0_idu_frm                    ),
   .cp0_idu_fs                      (cp0_idu_fs                     ),
@@ -864,6 +904,8 @@ ct_idu_id_decd  x_ct_idu_id_decd2 (
   .cp0_idu_vstart                  (cp0_idu_vstart                 ),
   .cp0_idu_zero_delay_move_disable (cp0_idu_zero_delay_move_disable),
   .cp0_yy_hyper                    (cp0_yy_hyper                   ),
+  .x_m_inst_vld                    (id_inst2_m_inst_vld            ),
+  .x_m_inst_type                   (id_inst2_m_inst_type           ),
   .x_dst_reg                       (id_inst2_dst_reg               ),
   .x_dst_vld                       (id_inst2_dst_vld               ),
   .x_dst_x0                        (id_inst2_dst_x0                ),
@@ -907,6 +949,52 @@ ct_idu_id_decd  x_ct_idu_id_decd2 (
   .x_vsew                          (id_inst2_vsew                  )
 );
 
+//----------------------------------------------------------
+//            To Matrix stage normal inst data
+//----------------------------------------------------------
+always @(*) begin
+  id_inst0_m_data = {M_DATA_IR_WIDTH{1'b0}};
+  if(1'b1) begin
+    // id_inst0_m_data = {id_inst0_m_inst_type, id_inst0_dst_x0, id_inst0_dst_vld, id_inst0_dst_reg,
+    //                    id_inst0_src0_vld, id_inst0_src0_reg, id_inst0_src1_vld, id_inst0_src1_reg}; // 23-bit
+    id_inst0_m_data[M_TYPE:M_TYPE-3]         = id_inst0_m_inst_type[3:0];
+    id_inst0_m_data[M_DST_X0]                = id_inst0_dst_x0;
+    id_inst0_m_data[M_DST_VLD]               = id_inst0_dst_vld;
+    id_inst0_m_data[M_DST_REG:M_DST_REG-4]   = id_inst0_dst_reg[4:0];
+    id_inst0_m_data[M_SRC0_VLD]              = id_inst0_src0_vld;
+    id_inst0_m_data[M_SRC0_REG:M_SRC0_REG-4] = id_inst0_src0_reg[4:0];
+    id_inst0_m_data[M_SRC1_VLD]              = id_inst0_src1_vld;
+    id_inst0_m_data[M_SRC1_REG:M_SRC1_REG-4] = id_inst0_src1_reg[4:0];
+  end
+end
+
+always @(*) begin
+  id_inst1_m_data = {M_DATA_IR_WIDTH{1'b0}};
+  if(1'b1) begin
+    id_inst1_m_data[M_TYPE:M_TYPE-3]         = id_inst1_m_inst_type[3:0];
+    id_inst1_m_data[M_DST_X0]                = id_inst1_dst_x0;
+    id_inst1_m_data[M_DST_VLD]               = id_inst1_dst_vld;
+    id_inst1_m_data[M_DST_REG:M_DST_REG-4]   = id_inst1_dst_reg[4:0];
+    id_inst1_m_data[M_SRC0_VLD]              = id_inst1_src0_vld;
+    id_inst1_m_data[M_SRC0_REG:M_SRC0_REG-4] = id_inst1_src0_reg[4:0];
+    id_inst1_m_data[M_SRC1_VLD]              = id_inst1_src1_vld;
+    id_inst1_m_data[M_SRC1_REG:M_SRC1_REG-4] = id_inst1_src1_reg[4:0];
+  end
+end
+
+always @(*) begin
+  id_inst2_m_data = {M_DATA_IR_WIDTH{1'b0}};
+  if(1'b1) begin
+    id_inst2_m_data[M_TYPE:M_TYPE-3]         = id_inst2_m_inst_type[3:0];
+    id_inst2_m_data[M_DST_X0]                = id_inst2_dst_x0;
+    id_inst2_m_data[M_DST_VLD]               = id_inst2_dst_vld;
+    id_inst2_m_data[M_DST_REG:M_DST_REG-4]   = id_inst2_dst_reg[4:0];
+    id_inst2_m_data[M_SRC0_VLD]              = id_inst2_src0_vld;
+    id_inst2_m_data[M_SRC0_REG:M_SRC0_REG-4] = id_inst2_src0_reg[4:0];
+    id_inst2_m_data[M_SRC1_VLD]              = id_inst2_src1_vld;
+    id_inst2_m_data[M_SRC1_REG:M_SRC1_REG-4] = id_inst2_src1_reg[4:0];
+  end
+end
 
 // &Force ("nonport","id_inst1_fence_type"); @353
 // &Force ("nonport","id_inst2_fence_type"); @354

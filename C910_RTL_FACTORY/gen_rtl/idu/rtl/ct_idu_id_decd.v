@@ -23,6 +23,8 @@ module ct_idu_id_decd(
   cp0_idu_vstart,
   cp0_idu_zero_delay_move_disable,
   cp0_yy_hyper,
+  x_m_inst_vld,
+  x_m_inst_type,
   x_dst_reg,
   x_dst_vld,
   x_dst_x0,
@@ -79,6 +81,8 @@ input   [31:0]  x_inst;
 input   [7 :0]  x_vl;                           
 input   [1 :0]  x_vlmul;                        
 input   [1 :0]  x_vsew;                         
+output          x_m_inst_vld;
+output  [3 :0]  x_m_inst_type;
 output  [4 :0]  x_dst_reg;                      
 output          x_dst_vld;                      
 output          x_dst_x0;                       
@@ -118,6 +122,8 @@ output          x_vmb;
 output          x_vmla;                         
 
 // &Regs; @29
+reg             decd_m_inst_vld;
+reg     [3 :0]  decd_m_inst_type;
 reg             decd_16_dst_vld;                
 reg             decd_16_dstf_vld;               
 reg             decd_16_illegal;                
@@ -208,6 +214,8 @@ reg             decd_vec_srcf2_vld;
 reg             decd_vec_srcv0_vld;             
 reg             decd_vec_srcv1_vld;             
 reg             decd_vec_srcv2_vld;             
+reg             x_m_inst_vld;
+reg     [3 :0]  x_m_inst_type;
 reg             x_dst_vld;                      
 reg             x_dste_vld;                     
 reg             x_dstf_vld;                     
@@ -769,6 +777,14 @@ parameter PIPE6                 = 10'b0010000000;
 parameter PIPE7                 = 10'b0100000000;
 parameter SPECIAL               = 10'b1000000000;
 
+// matrix decode parameters
+parameter MAT_TYPE_WIDTH = 4;
+
+parameter MAT_CAL = 4'b0001;
+parameter MAT_LSU = 4'b0010;
+parameter MAT_CFG = 4'b0100;
+parameter MAT_MOV = 4'b1000;
+
 //----------------------------------------------------------
 //                  Decoder Result Selection
 //----------------------------------------------------------
@@ -794,7 +810,9 @@ assign decd_sel[4] = (x_inst[6:0] == 7'b0001011)
 assign decd_sel[5] = 1'b0;
 
 // &CombBeg; @546
-always @( decd_32_srcv2_vld
+always @( decd_m_inst_vld
+       or decd_m_inst_type[3:0]
+       or decd_32_srcv2_vld
        or decd_perf_src0_vld
        or decd_32_srcf0_vld
        or decd_vec_srcf2_vld
@@ -850,6 +868,8 @@ always @( decd_32_srcv2_vld
 begin
   case(decd_sel[5:0])
     6'h1: begin
+      x_m_inst_vld                = decd_m_inst_vld;
+      x_m_inst_type[MAT_TYPE_WIDTH-1:0] = decd_m_inst_type[MAT_TYPE_WIDTH-1:0];
       x_inst_type[TYPE_WIDTH-1:0] = decd_32_inst_type[TYPE_WIDTH-1:0];
       x_dst_vld                   = decd_32_dst_vld;
       x_dstf_vld                  = decd_32_dstf_vld;
@@ -866,6 +886,8 @@ begin
       x_srcv2_vld                 = decd_32_srcv2_vld;
     end
     6'h2: begin
+      x_m_inst_vld                = 1'b0;
+      x_m_inst_type[MAT_TYPE_WIDTH-1:0] = {MAT_TYPE_WIDTH{1'b0}};
       x_inst_type[TYPE_WIDTH-1:0] = decd_16_inst_type[TYPE_WIDTH-1:0];
       x_dst_vld                   = decd_16_dst_vld;
       x_dstf_vld                  = decd_16_dstf_vld;
@@ -882,6 +904,8 @@ begin
       x_srcv2_vld                 = 1'b0;
     end
     6'h4: begin
+      x_m_inst_vld                = 1'b0;
+      x_m_inst_type[MAT_TYPE_WIDTH-1:0] = {MAT_TYPE_WIDTH{1'b0}};
       x_inst_type[TYPE_WIDTH-1:0] = decd_fp_inst_type[TYPE_WIDTH-1:0];
       x_dst_vld                   = decd_fp_dst_vld;
       x_dstf_vld                  = decd_fp_dstf_vld;
@@ -898,6 +922,8 @@ begin
       x_srcv2_vld                 = 1'b0;
     end
     6'h8: begin
+      x_m_inst_vld               = 1'b0;
+      x_m_inst_type[MAT_TYPE_WIDTH-1:0] = {MAT_TYPE_WIDTH{1'b0}};
       x_inst_type[TYPE_WIDTH-1:0] = decd_cache_inst_type[TYPE_WIDTH-1:0];
       x_dst_vld                   = 1'b0;
       x_dstf_vld                  = 1'b0;
@@ -914,6 +940,8 @@ begin
       x_srcv2_vld                 = 1'b0;
     end
     6'h10: begin
+      x_m_inst_vld                = 1'b0;
+      x_m_inst_type[MAT_TYPE_WIDTH-1:0] = {MAT_TYPE_WIDTH{1'b0}};
       x_inst_type[TYPE_WIDTH-1:0] = decd_perf_inst_type[TYPE_WIDTH-1:0];
       x_dst_vld                   = decd_perf_dst_vld;
       x_dstf_vld                  = decd_perf_dstf_vld;
@@ -930,6 +958,8 @@ begin
       x_srcv2_vld                 = 1'b0;
     end
     6'h20: begin
+      x_m_inst_vld                = 1'b0;
+      x_m_inst_type[MAT_TYPE_WIDTH-1:0] = {MAT_TYPE_WIDTH{1'b0}};
       x_inst_type[TYPE_WIDTH-1:0] = decd_vec_inst_type[TYPE_WIDTH-1:0];
       x_dst_vld                   = decd_vec_dst_vld;
       x_dstf_vld                  = decd_vec_dstf_vld;
@@ -946,6 +976,8 @@ begin
       x_srcv2_vld                 = decd_vec_srcv2_vld;
     end
     default: begin
+      x_m_inst_vld                = 1'bx;
+      x_m_inst_type[MAT_TYPE_WIDTH-1:0] = {MAT_TYPE_WIDTH{1'bx}};
       x_inst_type[TYPE_WIDTH-1:0] = {TYPE_WIDTH{1'bx}};
       x_dst_vld                   = 1'bx;
       x_dstf_vld                  = 1'bx;
@@ -1174,6 +1206,8 @@ begin
   // TODO: 矩阵指令肯定会选通 decd_32_inst_type 作为最终的指令类型, 因此需要在译码类型中排除该类型, 
   //  其实已经自动排除(因为不满足任何一项译码条件), 但是需要修改成矩阵指令在这里有特定case, 不会被认为illegal
   //  这样就不会enqueue任何issue队列, 且要保证指令进入ROB.
+  decd_m_inst_vld                      = 1'b0;
+  decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = {MAT_TYPE_WIDTH{1'b0}};
   //operand prepare information: valid, and types
   decd_32_dst_vld                      = 1'b0;
   decd_32_dstf_vld                     = 1'b0;
@@ -1193,46 +1227,66 @@ begin
     //16-bits instructions decode logic
     //32-bits instructions decode logic
     15'b0???_111_000_01010:begin // matrix configuration with imm
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_CFG;
       decd_32_dst_vld                      = 1'b1;
     end
     15'b1???_111_000_01010:begin // matrix configuration with scalar register rs1
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_CFG;
       decd_32_dst_vld                      = 1'b1;
       decd_32_src0_vld                     = 1'b1;
     end
     15'b0000_110_000_01010:begin // move from matrix to scalar register 
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_MOV;
       decd_32_dst_vld                      = 1'b1;
       decd_32_src0_vld                     = 1'b1;
     end
     15'b0001_110_000_01010:begin // move from scalar register to matrix
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_MOV;
       decd_32_src1_vld                     = 1'b1; // rs2 valid, rs1 invalid
     end
     15'b0010_110_000_01010:begin // move from scalar register to matrix
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_MOV;
       decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
       decd_32_src1_vld                     = 1'b1;
     end
     15'b0000_101_000_01010:begin // store with rs2 index
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
       decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
       decd_32_src1_vld                     = 1'b1;
     end
     15'b0010_101_000_01010:begin // store without rs2, whole matrix reg store
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
       decd_32_src0_vld                     = 1'b1; // rs1 valid
     end
     15'b0000_100_000_01010:begin // load with rs2 index
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
       decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
       decd_32_src1_vld                     = 1'b1;
     end
     15'b0010_100_000_01010:begin // load without rs2, whole matrix reg load
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
       decd_32_src0_vld                     = 1'b1; // rs1 valid
     end
     // matrix arithmetic
     15'b????_001_000_01010:begin // arithmetic mv.x need rs1'
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_CAL;
       decd_32_src0_vld                     = 1'b1; // rs1 valid
     end
     15'b????_011_000_01010:begin // arithmetic mx need rs1'
+      decd_m_inst_vld                      = 1'b1;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_CAL;
       decd_32_src0_vld                     = 1'b1; // rs1 valid
     end
-    // TODO : 设计一个enqueue matrix valid的信号在上述情况下有效, 并且传入附带dst和src valid信息的信号,
-    // 同时decd_32_inst_type保持0
 
     15'b?????_?????01101:begin //lui
       decd_32_inst_type[TYPE_WIDTH-1:0]    = ALU;
