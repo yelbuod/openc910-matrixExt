@@ -3329,12 +3329,12 @@ wire    [8  :0]  vrt_dp_inst3_srcv1_data;
 wire    [9  :0]  vrt_dp_inst3_srcv2_data;                
 wire    [8  :0]  vrt_dp_inst3_srcvm_data;                
 
-wire id_inst0_m_inst_vld;
-wire id_inst1_m_inst_vld;
-wire id_inst2_m_inst_vld;
-wire id_inst0_m_data;
-wire id_inst1_m_data;
-wire id_inst2_m_data;
+wire        id_inst0_m_inst_vld;
+wire        id_inst1_m_inst_vld;
+wire        id_inst2_m_inst_vld;
+wire [54:0] id_inst0_m_data    ;
+wire [54:0] id_inst1_m_data    ;
+wire [54:0] id_inst2_m_data    ;
 
 //==========================================================
 //                       ID Stage

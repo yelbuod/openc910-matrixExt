@@ -154,9 +154,9 @@ output  [3  :0]  split_long_ctrl_inst_vld;
 output        id_inst0_m_inst_vld;
 output        id_inst1_m_inst_vld;
 output        id_inst2_m_inst_vld;
-output [22:0] id_inst0_m_data;
-output [22:0] id_inst1_m_data;
-output [22:0] id_inst2_m_data;
+output [54:0] id_inst0_m_data;
+output [54:0] id_inst1_m_data;
+output [54:0] id_inst2_m_data;
 
 // &Regs; @29
 reg     [31 :0]  debug_id_inst0;                 
@@ -433,7 +433,8 @@ wire [3:0] id_inst2_m_inst_type;
 
 // TODO : id_inst0/1/2_m_data 将携带id流水级译码出的基础matrix指令信息, 包括m指令类型和GPR src/dst vld信号
 //  但指令操作以及matrix reg src/dst等更多的信息需要在下一级matrix专属译码模块进行分类译码.
-parameter M_DATA_IR_WIDTH = 23;
+parameter M_DATA_IR_WIDTH = 55;
+parameter M_INST     = 54;
 parameter M_TYPE     = 22;
 parameter M_DST_X0   = 18;
 parameter M_DST_VLD  = 17;
@@ -442,11 +443,11 @@ parameter M_SRC0_VLD = 11;
 parameter M_SRC0_REG = 10;
 parameter M_SRC1_VLD = 5 ;
 parameter M_SRC1_REG = 4 ;
-// 22-19         18       17        16-12     11         10-6       5          4-0
-// m_inst_type   dst_x0   dst_vld   dst_reg   src0_vld   src0_reg   src1_vld   src1_reg  
-reg [22:0] id_inst0_m_data;
-reg [22:0] id_inst1_m_data;
-reg [22:0] id_inst2_m_data;
+// 54-23   22-19         18       17        16-12     11         10-6       5          4-0
+// inst    m_inst_type   dst_x0   dst_vld   dst_reg   src0_vld   src0_reg   src1_vld   src1_reg  
+reg [54:0] id_inst0_m_data;
+reg [54:0] id_inst1_m_data;
+reg [54:0] id_inst2_m_data;
 
 //==========================================================
 //                       Parameters
@@ -957,6 +958,7 @@ always @(*) begin
   if(1'b1) begin
     // id_inst0_m_data = {id_inst0_m_inst_type, id_inst0_dst_x0, id_inst0_dst_vld, id_inst0_dst_reg,
     //                    id_inst0_src0_vld, id_inst0_src0_reg, id_inst0_src1_vld, id_inst0_src1_reg}; // 23-bit
+    id_inst0_m_data[M_INST:M_INST-31]        = id_inst0_inst[31:0];
     id_inst0_m_data[M_TYPE:M_TYPE-3]         = id_inst0_m_inst_type[3:0];
     id_inst0_m_data[M_DST_X0]                = id_inst0_dst_x0;
     id_inst0_m_data[M_DST_VLD]               = id_inst0_dst_vld;
@@ -971,6 +973,7 @@ end
 always @(*) begin
   id_inst1_m_data = {M_DATA_IR_WIDTH{1'b0}};
   if(1'b1) begin
+    id_inst1_m_data[M_INST:M_INST-31]        = id_inst1_inst[31:0];
     id_inst1_m_data[M_TYPE:M_TYPE-3]         = id_inst1_m_inst_type[3:0];
     id_inst1_m_data[M_DST_X0]                = id_inst1_dst_x0;
     id_inst1_m_data[M_DST_VLD]               = id_inst1_dst_vld;
@@ -985,6 +988,7 @@ end
 always @(*) begin
   id_inst2_m_data = {M_DATA_IR_WIDTH{1'b0}};
   if(1'b1) begin
+    id_inst2_m_data[M_INST:M_INST-31]        = id_inst2_inst[31:0];
     id_inst2_m_data[M_TYPE:M_TYPE-3]         = id_inst2_m_inst_type[3:0];
     id_inst2_m_data[M_DST_X0]                = id_inst2_dst_x0;
     id_inst2_m_data[M_DST_VLD]               = id_inst2_dst_vld;
