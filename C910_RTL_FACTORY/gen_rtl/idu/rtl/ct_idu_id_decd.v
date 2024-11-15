@@ -783,7 +783,7 @@ parameter MAT_TYPE_WIDTH = 4;
 parameter MAT_CAL = 4'b0001;
 parameter MAT_LSU = 4'b0010;
 parameter MAT_CFG = 4'b0100;
-parameter MAT_MOV = 4'b1000;
+parameter MAT_SPECIAL_MOV = 4'b1000;
 
 //----------------------------------------------------------
 //                  Decoder Result Selection
@@ -1239,50 +1239,38 @@ begin
     end
     15'b0000_110_000_01010:begin // move from matrix to scalar register 
       decd_m_inst_vld                      = 1'b1;
-      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_MOV;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_SPECIAL_MOV;
       decd_32_dst_vld                      = 1'b1;
       decd_32_src0_vld                     = 1'b1;
     end
     15'b0001_110_000_01010:begin // move from scalar register to matrix
       decd_m_inst_vld                      = 1'b1;
-      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_MOV;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_SPECIAL_MOV;
       decd_32_src1_vld                     = 1'b1; // rs2 valid, rs1 invalid
     end
     15'b0010_110_000_01010:begin // move from scalar register to matrix
       decd_m_inst_vld                      = 1'b1;
-      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_MOV;
+      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_SPECIAL_MOV;
       decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
       decd_32_src1_vld                     = 1'b1;
     end
-    15'b0000_101_000_01010:begin // store with rs2 index
-      decd_m_inst_vld                      = 1'b1;
-      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
-      decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
-      decd_32_src1_vld                     = 1'b1;
-    end
-    15'b0010_101_000_01010:begin // store without rs2, whole matrix reg store
-      decd_m_inst_vld                      = 1'b1;
-      decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
-      decd_32_src0_vld                     = 1'b1; // rs1 valid
-    end
-    15'b0000_100_000_01010:begin // load with rs2 index
+    15'b0000_10?_000_01010:begin // store/load with rs2 index
       decd_m_inst_vld                      = 1'b1;
       decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
       decd_32_src0_vld                     = 1'b1; // rs1 & rs2 valid
       decd_32_src1_vld                     = 1'b1;
     end
-    15'b0010_100_000_01010:begin // load without rs2, whole matrix reg load
+    15'b0010_10?_000_01010:begin // store/load without rs2, whole matrix reg store
       decd_m_inst_vld                      = 1'b1;
       decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_LSU;
-      decd_32_src0_vld                     = 1'b1; // rs1 valid
+      decd_32_src0_vld                     = 1'b1; // only rs1 valid
     end
     // matrix arithmetic
-    15'b????_001_000_01010:begin // arithmetic mv.x need rs1'
+    15'b????_0?0_000_01010:begin // mm or mv.i not need scalar reg
       decd_m_inst_vld                      = 1'b1;
       decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_CAL;
-      decd_32_src0_vld                     = 1'b1; // rs1 valid
     end
-    15'b????_011_000_01010:begin // arithmetic mx need rs1'
+    15'b????_0?1_000_01010:begin // mv.x and mx need rs1'
       decd_m_inst_vld                      = 1'b1;
       decd_m_inst_type[MAT_TYPE_WIDTH-1:0] = MAT_CAL;
       decd_32_src0_vld                     = 1'b1; // rs1 valid
