@@ -373,7 +373,7 @@ wire            x_vreg_src0_norm;
 wire            x_vreg_src1_norm;               
 wire    [1 :0]  x_vsew;
 
-wire decd_inst_src0_reg_mat_rs1_prime;
+wire decd_inst_src0_reg_mat_r1prime;
 
 parameter TYPE_WIDTH            = 10;
 
@@ -502,7 +502,7 @@ assign x_vmb   = (x_inst[6:0]==7'b0000111)
 //same like instruction type, the register index has been
 //optimazied for timing by ignoring invalid instructions
 //so add new instruction should carefully check these logic
-assign decd_inst_src0_reg_32bit   = (x_inst[1:0] == 2'b11) && !decd_inst_src0_reg_mat_rs1_prime;
+assign decd_inst_src0_reg_32bit   = (x_inst[1:0] == 2'b11) && !decd_inst_src0_reg_mat_r1prime;
 assign decd_inst_src0_reg_16bit_5 = (({x_inst[1:0],x_inst[15]} == 3'b01_0)
                                     || (x_inst[1:0] == 2'b10))
                                        && !decd_inst_src0_reg_r2
@@ -516,10 +516,10 @@ assign decd_inst_src0_reg_r2      = ({x_inst[14:13],x_inst[1:0]} == 4'b00_00) //
                                     || (x_inst[1:0] == 2'b10) //c. load and store
                                        && (x_inst[15:13] != 3'b000)
                                        && (x_inst[15:13] != 3'b100);
-assign decd_inst_src0_reg_mat_rs1_prime = (decd_m_inst_type[MAT_TYPE_WIDTH-1:0] == MAT_CAL);
+assign decd_inst_src0_reg_mat_r1prime = (decd_m_inst_type[MAT_TYPE_WIDTH-1:0] == MAT_CAL);
 //index select
 assign decd_src0_reg[4:0] =
-           {5{decd_inst_src0_reg_mat_rs1_prime}} & {2'b01, x_inst[9:7]} // x8~x15
+           {5{decd_inst_src0_reg_mat_r1prime}} & {2'b01, x_inst[9:7]} // x8~x15
          | {5{decd_inst_src0_reg_32bit}}   & x_inst[19:15]
          | {5{decd_inst_src0_reg_16bit_5}} & x_inst[11:7]
          | {5{decd_inst_src0_reg_cmv}}     & x_inst[6:2]
