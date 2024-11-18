@@ -371,9 +371,30 @@ wire    [4 :0]  x_vreg_ill;
 wire    [2 :0]  x_vreg_illegal;                 
 wire            x_vreg_src0_norm;               
 wire            x_vreg_src1_norm;               
-wire    [1 :0]  x_vsew;                         
+wire    [1 :0]  x_vsew;
 
+wire decd_inst_src0_reg_mat_rs1_prime;
 
+parameter TYPE_WIDTH            = 10;
+
+parameter ALU                   = 10'b0000000001;
+parameter BJU                   = 10'b0000000010;
+parameter MULT                  = 10'b0000000100;
+parameter DIV                   = 10'b0000001000;
+parameter LSU_P5                = 10'b0000110000;
+parameter LSU                   = 10'b0000010000;
+parameter PIPE67                = 10'b0001000000;
+parameter PIPE6                 = 10'b0010000000;
+parameter PIPE7                 = 10'b0100000000;
+parameter SPECIAL               = 10'b1000000000;
+
+// matrix decode parameters
+parameter MAT_TYPE_WIDTH = 4;
+
+parameter MAT_CAL = 4'b0001;
+parameter MAT_LSU = 4'b0010;
+parameter MAT_CFG = 4'b0100;
+parameter MAT_SPECIAL_MOV = 4'b1000;
 
 // &Force("bus","x_inst",31,0); @33
 //==========================================================
@@ -481,7 +502,7 @@ assign x_vmb   = (x_inst[6:0]==7'b0000111)
 //same like instruction type, the register index has been
 //optimazied for timing by ignoring invalid instructions
 //so add new instruction should carefully check these logic
-assign decd_inst_src0_reg_32bit   = (x_inst[1:0] == 2'b11);
+assign decd_inst_src0_reg_32bit   = (x_inst[1:0] == 2'b11) && !decd_inst_src0_reg_mat_rs1_prime;
 assign decd_inst_src0_reg_16bit_5 = (({x_inst[1:0],x_inst[15]} == 3'b01_0)
                                     || (x_inst[1:0] == 2'b10))
                                        && !decd_inst_src0_reg_r2
@@ -495,9 +516,11 @@ assign decd_inst_src0_reg_r2      = ({x_inst[14:13],x_inst[1:0]} == 4'b00_00) //
                                     || (x_inst[1:0] == 2'b10) //c. load and store
                                        && (x_inst[15:13] != 3'b000)
                                        && (x_inst[15:13] != 3'b100);
+assign decd_inst_src0_reg_mat_rs1_prime = (decd_m_inst_type[MAT_TYPE_WIDTH-1:0] == MAT_CAL);
 //index select
 assign decd_src0_reg[4:0] =
-           {5{decd_inst_src0_reg_32bit}}   & x_inst[19:15]
+           {5{decd_inst_src0_reg_mat_rs1_prime}} & {2'b01, x_inst[9:7]} // x8~x15
+         | {5{decd_inst_src0_reg_32bit}}   & x_inst[19:15]
          | {5{decd_inst_src0_reg_16bit_5}} & x_inst[11:7]
          | {5{decd_inst_src0_reg_cmv}}     & x_inst[6:2]
          | {5{decd_inst_src0_reg_16bit_3}} & {2'd1, x_inst[9:7]}
@@ -764,27 +787,6 @@ assign x_illegal = decd_32_illegal && decd_sel[0]
 //so here implement a full decoder for: type, dst_vld, dst_c_vld
 //src0_vld, src1_vld, srcc_vld, dstf_vld, dste_vld, srcf0_vld,
 //srcf1_vld, srcf2_vld, inv_expt
-parameter TYPE_WIDTH            = 10;
-
-parameter ALU                   = 10'b0000000001;
-parameter BJU                   = 10'b0000000010;
-parameter MULT                  = 10'b0000000100;
-parameter DIV                   = 10'b0000001000;
-parameter LSU_P5                = 10'b0000110000;
-parameter LSU                   = 10'b0000010000;
-parameter PIPE67                = 10'b0001000000;
-parameter PIPE6                 = 10'b0010000000;
-parameter PIPE7                 = 10'b0100000000;
-parameter SPECIAL               = 10'b1000000000;
-
-// matrix decode parameters
-parameter MAT_TYPE_WIDTH = 4;
-
-parameter MAT_CAL = 4'b0001;
-parameter MAT_LSU = 4'b0010;
-parameter MAT_CFG = 4'b0100;
-parameter MAT_SPECIAL_MOV = 4'b1000;
-
 //----------------------------------------------------------
 //                  Decoder Result Selection
 //----------------------------------------------------------
