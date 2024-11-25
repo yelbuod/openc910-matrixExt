@@ -1077,7 +1077,7 @@ begin
   end
 end
 
-assign ctrl_aiq0_rf_pipe1_alu_reg_fwd_vld[23:0] = rf_pipe1_alu_reg_fwd_vld[23:0];
+assign ctrl_aiq0_rf_pipe1_alu_reg_fwd_vld[23:0] = rf_pipe1_alu_reg_fwd_vld[23:0]; // 24-bit: 3*8, 3 src, 8 entries
 assign ctrl_aiq1_rf_pipe1_alu_reg_fwd_vld[23:0] = rf_pipe1_alu_reg_fwd_vld[47:24];
 assign ctrl_biq_rf_pipe1_alu_reg_fwd_vld[23:0]  = rf_pipe1_alu_reg_fwd_vld[71:48];
 assign ctrl_lsiq_rf_pipe1_alu_reg_fwd_vld[23:0] = rf_pipe1_alu_reg_fwd_vld[95:72];

@@ -4377,12 +4377,12 @@ begin
   if(frt_inst1_srcf0_match_inst0 && dp_frt_inst0_fmov) begin
     frt_dp_inst1_srcf0_data[0]   = frt_inst0_fmov_dst_rdy;
     frt_dp_inst1_srcf0_data[1]   = frt_inst0_fmov_dst_wb;
-    frt_dp_inst1_srcf0_data[8:2] = {1'b0,frt_inst0_fmov_dst_freg[5:0]};
+    frt_dp_inst1_srcf0_data[8:2] = {1'b0,frt_inst0_fmov_dst_freg[5:0]};// inst0 mov指令, inst1 src-> inst0 dst-> inst0 src
   end
   else if(frt_inst1_srcf0_match_inst0) begin
     frt_dp_inst1_srcf0_data[0]   = 1'b0;
     frt_dp_inst1_srcf0_data[1]   = 1'b0;
-    frt_dp_inst1_srcf0_data[8:2] = {1'b0,dp_frt_inst0_dst_freg[5:0]};
+    frt_dp_inst1_srcf0_data[8:2] = {1'b0,dp_frt_inst0_dst_freg[5:0]};// inst0非mov, inst1 src-> inst0 dst (allocated)
   end
   else begin
     frt_dp_inst1_srcf0_data[0]   = inst1_srcf0_read_rdy
@@ -4782,7 +4782,7 @@ always @( inst1_dstf_read_freg[5:0]
        or frt_inst1_dstf_match_inst0
        or dp_frt_inst1_dstf_reg[5])
 begin
-  if(dp_frt_inst1_dstf_reg[5])
+  if(dp_frt_inst1_dstf_reg[5]) // split with implicit dependency
     frt_dp_inst1_rel_freg[6:0] = {1'b0,dp_frt_inst1_dst_freg[5:0]};
   else if(frt_inst1_dstf_match_inst0)
     frt_dp_inst1_rel_freg[6:0] = {1'b0,dp_frt_inst0_dst_freg[5:0]};

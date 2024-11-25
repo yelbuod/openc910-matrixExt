@@ -1154,9 +1154,9 @@ assign aiq1_entry6_issue_en      = aiq1_entry_issue_en[6];
 assign aiq1_entry7_issue_en      = aiq1_entry_issue_en[7];
 
 //-----------------issue entry indiction--------------------
-assign aiq1_dp_issue_entry[7:0]  = (aiq1_create_bypass_empty)
-                                   ? aiq1_entry_create0_in[7:0]
-                                   : aiq1_entry_issue_en[7:0];
+assign aiq1_dp_issue_entry[7:0]  = (aiq1_create_bypass_empty) // 所有entry无效或者已经issue, 
+                                   ? aiq1_entry_create0_in[7:0] // 此时就需要bypass issue刚入队的数据(create0_in)
+                                   : aiq1_entry_issue_en[7:0]; // 否则根据 older ready 判断应该issue的表项
 
 //-----------------issue data path selection----------------
 //issue data path will select oldest ready entry in issue queue
