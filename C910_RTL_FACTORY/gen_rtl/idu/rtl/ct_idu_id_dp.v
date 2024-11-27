@@ -26,12 +26,6 @@ module ct_idu_id_dp(
   cp0_yy_clk_en,
   cp0_yy_hyper,
   cpurst_b,
-  id_inst0_m_inst_vld,
-  id_inst1_m_inst_vld,
-  id_inst2_m_inst_vld,
-  id_inst0_m_data,
-  id_inst1_m_data,
-  id_inst2_m_data,
   ctrl_dp_id_debug_id_pipedown3,
   ctrl_dp_id_inst0_vld,
   ctrl_dp_id_inst1_vld,
@@ -68,6 +62,18 @@ module ct_idu_id_dp(
   dp_id_pipedown_inst1_data,
   dp_id_pipedown_inst2_data,
   dp_id_pipedown_inst3_data,
+  dp_id_pipedown_inst0_mat_vld ,
+  dp_id_pipedown_inst0_mat_type,
+  dp_id_pipedown_inst0_mat_data,
+  dp_id_pipedown_inst1_mat_vld ,
+  dp_id_pipedown_inst1_mat_type,
+  dp_id_pipedown_inst1_mat_data,
+  dp_id_pipedown_inst2_mat_vld ,
+  dp_id_pipedown_inst2_mat_type,
+  dp_id_pipedown_inst2_mat_data,
+  dp_id_pipedown_inst3_mat_vld ,
+  dp_id_pipedown_inst3_mat_type,
+  dp_id_pipedown_inst3_mat_data,
   fence_dp_inst0_data,
   fence_dp_inst1_data,
   fence_dp_inst2_data,
@@ -151,12 +157,18 @@ output  [39 :0]  idu_had_id_inst2_info;
 output           split_long_ctrl_id_stall;       
 output  [3  :0]  split_long_ctrl_inst_vld;       
 
-output        id_inst0_m_inst_vld;
-output        id_inst1_m_inst_vld;
-output        id_inst2_m_inst_vld;
-output [54:0] id_inst0_m_data;
-output [54:0] id_inst1_m_data;
-output [54:0] id_inst2_m_data;
+output        dp_id_pipedown_inst0_mat_vld ;
+output [ 3:0] dp_id_pipedown_inst0_mat_type;
+output [36:0] dp_id_pipedown_inst0_mat_data;
+output        dp_id_pipedown_inst1_mat_vld ;
+output [ 3:0] dp_id_pipedown_inst1_mat_type;
+output [36:0] dp_id_pipedown_inst1_mat_data;
+output        dp_id_pipedown_inst2_mat_vld ;
+output [ 3:0] dp_id_pipedown_inst2_mat_type;
+output [36:0] dp_id_pipedown_inst2_mat_data;
+output        dp_id_pipedown_inst3_mat_vld ;
+output [ 3:0] dp_id_pipedown_inst3_mat_type;
+output [36:0] dp_id_pipedown_inst3_mat_data;
 
 // &Regs; @29
 reg     [31 :0]  debug_id_inst0;                 
@@ -1000,6 +1012,27 @@ always @(*) begin
   end
 end
 
+
+wire [ 3:0] id_inst0_mat_type;
+wire [36:0] id_inst0_mat_data;
+wire [ 3:0] id_inst1_mat_type;
+wire [36:0] id_inst1_mat_data;
+wire [ 3:0] id_inst2_mat_type;
+wire [36:0] id_inst2_mat_data;
+
+ct_mat_idu_top i_ct_mat_idu_top (
+  .id_inst0_m_data  (id_inst0_m_data  ),
+  .id_inst1_m_data  (id_inst1_m_data  ),
+  .id_inst2_m_data  (id_inst2_m_data  ),
+  .id_inst0_mat_type(id_inst0_mat_type),
+  .id_inst0_mat_data(id_inst0_mat_data),
+  .id_inst1_mat_type(id_inst1_mat_type),
+  .id_inst1_mat_data(id_inst1_mat_data),
+  .id_inst2_mat_type(id_inst2_mat_type),
+  .id_inst2_mat_data(id_inst2_mat_data)
+);
+
+
 // &Force ("nonport","id_inst1_fence_type"); @353
 // &Force ("nonport","id_inst2_fence_type"); @354
 assign dp_fence_id_fence_type[2:0] = id_inst0_fence_type[2:0];
@@ -1767,6 +1800,89 @@ begin
   else
     dp_id_pipedown_inst3_data[IR_WIDTH-1:0] = id_split_short2_inst1_data[IR_WIDTH-1:0];
 // &CombEnd; @828
+end
+
+wire        dp_id_pipedown_inst0_mat_vld ;
+wire [ 3:0] dp_id_pipedown_inst0_mat_type;
+wire [36:0] dp_id_pipedown_inst0_mat_data;
+wire        dp_id_pipedown_inst1_mat_vld ;
+wire [ 3:0] dp_id_pipedown_inst1_mat_type;
+wire [36:0] dp_id_pipedown_inst1_mat_data;
+reg         dp_id_pipedown_inst2_mat_vld ;
+reg  [ 3:0] dp_id_pipedown_inst2_mat_type;
+reg  [36:0] dp_id_pipedown_inst2_mat_data;
+reg         dp_id_pipedown_inst3_mat_vld ;
+reg  [ 3:0] dp_id_pipedown_inst3_mat_type;
+reg  [36:0] dp_id_pipedown_inst3_mat_data;
+//==========================================================
+//             ID pipedown inst 矩阵数据 selection
+//==========================================================
+// inst0位置的矩阵信息固定取决于inst0, 非normal inst0的矩阵信息必为0
+assign dp_id_pipedown_inst0_mat_vld        = id_inst0_m_inst_vld;
+assign dp_id_pipedown_inst0_mat_type[3:0]  = id_inst0_mat_type[3:0];
+assign dp_id_pipedown_inst0_mat_data[36:0] = id_inst0_mat_data[36:0];
+
+assign dp_id_pipedown_inst1_mat_vld       = dp_id_inst0_normal & id_inst1_m_inst_vld;
+assign dp_id_pipedown_inst1_mat_type[3:0] =         // inst0 normal 则看 inst1, 非normal则inst1 mat type必为0
+  {4{dp_id_inst0_normal}} & id_inst1_mat_type[3:0]; // inst0 非normal则为0
+assign dp_id_pipedown_inst1_mat_data[36:0] = {37{dp_id_inst0_normal}} & id_inst1_mat_data[36:0];
+
+always @(*) begin : proc_pipedown_inst2_mat_info
+  //if inst0 fence or split long : inst2 槽位赋值 inst0 split信息, 矩阵信息必为0
+  //if inst0 split short & inst1 split short : inst2 槽位赋值 inst1 split信息, 矩阵信息必为0
+  if(id_inst0_data[ID_FENCE] || id_inst0_data[ID_SPLIT_LONG] ||
+    (id_inst0_data[ID_SPLIT_SHORT] && id_inst1_data[ID_SPLIT_SHORT])) begin
+    dp_id_pipedown_inst2_mat_vld        = 1'b0;
+    dp_id_pipedown_inst2_mat_type[3:0]  = 4'd0;
+    dp_id_pipedown_inst2_mat_data[36:0] = 37'd0;
+  end
+  //if inst0 split short (inst1 非 split short) : inst2 槽位递推给 inst1 赋值矩阵信息
+  // 如果inst1 fence或者split long, 无需考虑, 因为不会被pipedown, 矩阵信息也为0
+  else if(id_inst0_data[ID_SPLIT_SHORT]) begin
+    dp_id_pipedown_inst2_mat_vld        = id_inst1_m_inst_vld;
+    dp_id_pipedown_inst2_mat_type[3:0]  = id_inst1_mat_type[3:0];
+    dp_id_pipedown_inst2_mat_data[36:0] = id_inst1_mat_data[36:0];
+  end
+  //if inst1 split short : inst2 槽位赋值 inst1 split信息, 矩阵信息必为0
+  // 如果inst2 fence或者split long, 无需考虑, 因为不会被pipedown
+  else if(id_inst1_data[ID_SPLIT_SHORT]) begin
+    dp_id_pipedown_inst2_mat_vld        = 1'b0;
+    dp_id_pipedown_inst2_mat_type[3:0]  = 4'd0;
+    dp_id_pipedown_inst2_mat_data[36:0] = 37'd0;
+  end
+  //排除上述inst0/1情况, 无论inst2 normal or split short/long :
+  //  inst2 槽位均赋值 ins2 split信息, 矩阵信息取决于inst2
+  else begin
+    dp_id_pipedown_inst2_mat_vld        = id_inst2_m_inst_vld;
+    dp_id_pipedown_inst2_mat_type[3:0]  = id_inst2_mat_type[3:0];
+    dp_id_pipedown_inst2_mat_data[36:0] = id_inst2_mat_data[36:0];
+  end
+end
+
+always @(*) begin : proc_pipedown_inst3_mat_info
+  //if inst0 fence or split long : inst3 槽位无法发出或赋值 inst0 split信息, 矩阵信息必为0
+  //if inst0 split short & inst1 split short : inst3 槽位赋值 inst1 split信息, 矩阵信息必为0
+  if(id_inst0_data[ID_FENCE] || id_inst0_data[ID_SPLIT_LONG] ||
+    (id_inst0_data[ID_SPLIT_SHORT] && id_inst1_data[ID_SPLIT_SHORT])) begin
+    dp_id_pipedown_inst3_mat_vld        = 1'b0;
+    dp_id_pipedown_inst3_mat_type[3:0]  = 4'd0;
+    dp_id_pipedown_inst3_mat_data[36:0] = 37'd0;
+  end
+  //inst0 & inst1 同时 split short的情况被上一条排除
+  //if inst0 split short (inst1 非 split short) : inst3 槽位递推给 inst2 赋值矩阵信息
+  //if inst1 split short (inst0 非 split short) : inst3 槽位递推给 inst2 赋值矩阵信息
+  // 如果inst1/inst2 fence或者split long, 无需考虑, 因为不会被pipedown, 矩阵信息也为0
+  else if(id_inst0_data[ID_SPLIT_SHORT] || id_inst1_data[ID_SPLIT_SHORT]) begin
+    dp_id_pipedown_inst3_mat_vld        = id_inst2_m_inst_vld;
+    dp_id_pipedown_inst3_mat_type[3:0]  = id_inst2_mat_type[3:0];
+    dp_id_pipedown_inst3_mat_data[36:0] = id_inst2_mat_data[36:0];
+  end
+  // 其他情况无法pipe, 赋0
+  else begin
+    dp_id_pipedown_inst3_mat_vld        = 1'b0;
+    dp_id_pipedown_inst3_mat_type[3:0]  = 4'd0;
+    dp_id_pipedown_inst3_mat_data[36:0] = 37'd0;
+  end
 end
 
 //----------------------------------------------------------

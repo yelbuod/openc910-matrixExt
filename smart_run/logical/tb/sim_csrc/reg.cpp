@@ -53,9 +53,7 @@ extern "C" void sync_fp_rename_table(
   hart_rename_table.fp_renameTable[arch_regIdx] = phy_regIdx;
 }
 
-extern "C" void sync_hart_pc(
-  uint64_t pc
-) {
+void sync_hart_pc(uint64_t pc) {
   hart_pc = pc;
 }
 

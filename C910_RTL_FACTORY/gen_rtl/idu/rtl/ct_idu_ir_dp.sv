@@ -13,6 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "DPI-C" function void hart_IRDpStatusSync(
+  input logic [27:0] renameStatInstPack,
+  input logic [23:0] depInsideInstPack
+);
+  
+endfunction : funcname
+
 // &ModuleBeg; @26
 module ct_idu_ir_dp(
   cp0_idu_icg_en,
@@ -109,6 +116,18 @@ module ct_idu_ir_dp(
   dp_id_pipedown_inst1_data,
   dp_id_pipedown_inst2_data,
   dp_id_pipedown_inst3_data,
+  dp_id_pipedown_inst0_mat_vld, 
+  dp_id_pipedown_inst0_mat_type,
+  dp_id_pipedown_inst0_mat_data,
+  dp_id_pipedown_inst1_mat_vld, 
+  dp_id_pipedown_inst1_mat_type,
+  dp_id_pipedown_inst1_mat_data,
+  dp_id_pipedown_inst2_mat_vld, 
+  dp_id_pipedown_inst2_mat_type,
+  dp_id_pipedown_inst2_mat_data,
+  dp_id_pipedown_inst3_mat_vld, 
+  dp_id_pipedown_inst3_mat_type,
+  dp_id_pipedown_inst3_mat_data,
   dp_ir_inst01_src_match,
   dp_ir_inst02_src_match,
   dp_ir_inst03_src_match,
@@ -304,7 +323,19 @@ input   [16 :0]  dp_id_pipedown_dep_info;
 input   [177:0]  dp_id_pipedown_inst0_data; 
 input   [177:0]  dp_id_pipedown_inst1_data; 
 input   [177:0]  dp_id_pipedown_inst2_data; 
-input   [177:0]  dp_id_pipedown_inst3_data; 
+input   [177:0]  dp_id_pipedown_inst3_data;
+input            dp_id_pipedown_inst0_mat_vld ;
+input   [ 3:0]   dp_id_pipedown_inst0_mat_type;
+input   [36:0]   dp_id_pipedown_inst0_mat_data;
+input            dp_id_pipedown_inst1_mat_vld ;
+input   [ 3:0]   dp_id_pipedown_inst1_mat_type;
+input   [36:0]   dp_id_pipedown_inst1_mat_data;
+input            dp_id_pipedown_inst2_mat_vld ;
+input   [ 3:0]   dp_id_pipedown_inst2_mat_type;
+input   [36:0]   dp_id_pipedown_inst2_mat_data;
+input            dp_id_pipedown_inst3_mat_vld ;
+input   [ 3:0]   dp_id_pipedown_inst3_mat_type;
+input   [36:0]   dp_id_pipedown_inst3_mat_data; 
 input            forever_cpuclk;            
 input            frt_dp_inst01_srcf2_match; 
 input            frt_dp_inst02_srcf2_match; 
@@ -673,6 +704,18 @@ wire    [177:0]  dp_id_pipedown_inst0_data;
 wire    [177:0]  dp_id_pipedown_inst1_data; 
 wire    [177:0]  dp_id_pipedown_inst2_data; 
 wire    [177:0]  dp_id_pipedown_inst3_data; 
+wire             dp_id_pipedown_inst0_mat_vld ;
+wire    [ 3:0]   dp_id_pipedown_inst0_mat_type;
+wire    [36:0]   dp_id_pipedown_inst0_mat_data;
+wire             dp_id_pipedown_inst1_mat_vld ;
+wire    [ 3:0]   dp_id_pipedown_inst1_mat_type;
+wire    [36:0]   dp_id_pipedown_inst1_mat_data;
+wire             dp_id_pipedown_inst2_mat_vld ;
+wire    [ 3:0]   dp_id_pipedown_inst2_mat_type;
+wire    [36:0]   dp_id_pipedown_inst2_mat_data;
+wire             dp_id_pipedown_inst3_mat_vld ;
+wire    [ 3:0]   dp_id_pipedown_inst3_mat_type;
+wire    [36:0]   dp_id_pipedown_inst3_mat_data;
 wire    [3  :0]  dp_ir_inst01_src_match;    
 wire    [3  :0]  dp_ir_inst02_src_match;    
 wire    [3  :0]  dp_ir_inst03_src_match;    
@@ -1342,6 +1385,66 @@ begin
   end
 end
 
+reg        ir_inst0_mat_vld ;
+reg [3:0]  ir_inst0_mat_type;
+reg [36:0] ir_inst0_mat_data;
+reg        ir_inst1_mat_vld ;
+reg [3:0]  ir_inst1_mat_type;
+reg [36:0] ir_inst1_mat_data;
+reg        ir_inst2_mat_vld ;
+reg [3:0]  ir_inst2_mat_type;
+reg [36:0] ir_inst2_mat_data;
+reg        ir_inst3_mat_vld ;
+reg [3:0]  ir_inst3_mat_type;
+reg [36:0] ir_inst3_mat_data;
+
+always @(posedge ir_inst_clk or negedge cpurst_b)
+  begin
+    if(!cpurst_b) begin
+      ir_inst0_mat_vld        <= 1'd0;
+      ir_inst0_mat_type[3:0]  <= 4'd0;
+      ir_inst0_mat_data[36:0] <= 37'd0;
+      ir_inst1_mat_vld        <= 1'd0;
+      ir_inst1_mat_type[3:0]  <= 4'd0;
+      ir_inst1_mat_data[36:0] <= 37'd0;
+      ir_inst2_mat_vld        <= 1'd0;
+      ir_inst2_mat_type[3:0]  <= 4'd0;
+      ir_inst2_mat_data[36:0] <= 37'd0;
+      ir_inst3_mat_vld        <= 1'd0;
+      ir_inst3_mat_type[3:0]  <= 4'd0;
+      ir_inst3_mat_data[36:0] <= 37'd0;
+    end
+    else if(!ctrl_ir_stall) begin
+      ir_inst0_mat_vld        <= dp_id_pipedown_inst0_mat_vld       ;
+      ir_inst0_mat_type[3:0]  <= dp_id_pipedown_inst0_mat_type[ 3:0];
+      ir_inst0_mat_data[36:0] <= dp_id_pipedown_inst0_mat_data[36:0];
+      ir_inst1_mat_vld        <= dp_id_pipedown_inst1_mat_vld       ;
+      ir_inst1_mat_type[3:0]  <= dp_id_pipedown_inst1_mat_type[ 3:0];
+      ir_inst1_mat_data[36:0] <= dp_id_pipedown_inst1_mat_data[36:0];
+      ir_inst2_mat_vld        <= dp_id_pipedown_inst2_mat_vld       ;
+      ir_inst2_mat_type[3:0]  <= dp_id_pipedown_inst2_mat_type[ 3:0];
+      ir_inst2_mat_data[36:0] <= dp_id_pipedown_inst2_mat_data[36:0];
+      ir_inst3_mat_vld        <= dp_id_pipedown_inst3_mat_vld       ;
+      ir_inst3_mat_type[3:0]  <= dp_id_pipedown_inst3_mat_type[ 3:0];
+      ir_inst3_mat_data[36:0] <= dp_id_pipedown_inst3_mat_data[36:0];
+    end
+    else begin
+      ir_inst0_mat_vld        <= ir_inst0_mat_vld       ;
+      ir_inst0_mat_type[3:0]  <= ir_inst0_mat_type[3:0] ;
+      ir_inst0_mat_data[36:0] <= ir_inst0_mat_data[36:0];
+      ir_inst1_mat_vld        <= ir_inst1_mat_vld       ;
+      ir_inst1_mat_type[3:0]  <= ir_inst1_mat_type[3:0] ;
+      ir_inst1_mat_data[36:0] <= ir_inst1_mat_data[36:0];
+      ir_inst2_mat_vld        <= ir_inst2_mat_vld       ;
+      ir_inst2_mat_type[3:0]  <= ir_inst2_mat_type[3:0] ;
+      ir_inst2_mat_data[36:0] <= ir_inst2_mat_data[36:0];
+      ir_inst3_mat_vld        <= ir_inst3_mat_vld       ;
+      ir_inst3_mat_type[3:0]  <= ir_inst3_mat_type[3:0] ;
+      ir_inst3_mat_data[36:0] <= ir_inst3_mat_data[36:0];
+    end
+  end
+
+
 //==========================================================
 //                Prepare IR control data
 //==========================================================
@@ -1853,6 +1956,18 @@ assign dp_ir_inst12_src_match[2:0] = rt_dp_inst12_src_match[2:0];
 assign dp_ir_inst13_src_match[2:0] = rt_dp_inst13_src_match[2:0];
 assign dp_ir_inst23_src_match[2:0] = rt_dp_inst23_src_match[2:0];
 
+// TODO: 提交并仿真
+always_ff @(posedge ir_inst_clk) begin : proc_dpic_sync_ir_dp_status
+  hart_IRDpStatusSync(
+    {ir_pipedown_inst0_dst_preg[6:0], 
+     ir_pipedown_inst1_dst_preg[6:0], 
+     ir_pipedown_inst2_dst_preg[6:0], 
+     ir_pipedown_inst3_dst_preg[6:0]},
+    {dp_ir_inst01_src_match[3:0], dp_ir_inst02_src_match[3:0],
+     dp_ir_inst03_src_match[3:0], dp_ir_inst12_src_match[3:0],
+     dp_ir_inst13_src_match[3:0], dp_ir_inst23_src_match[3:0]}
+  );
+end
 //==========================================================
 //                   Instance IR Decoder
 //==========================================================

@@ -12,9 +12,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import "DPI-C" function void sync_hart_pc(
-  longint unsigned pc
-);
+// import "DPI-C" function void sync_hart_pc(
+//   longint unsigned pc
+// );
 
 // &ModuleBeg; @22
 module ct_ifu_pcgen(
@@ -496,10 +496,10 @@ begin
     if_pc[PC_WIDTH-2:0] <= if_pc[PC_WIDTH-2:0]; //Stall IF PC
   
 end
-always @(if_pc) 
-begin
-  sync_hart_pc({if_pc[38:0], 1'b0});
-end
+// always @(if_pc) 
+// begin
+//   sync_hart_pc({if_pc[38:0], 1'b0});
+// end
 
 //pc high is only for mmu 
 //when iu chgflw ,we should update pc high,

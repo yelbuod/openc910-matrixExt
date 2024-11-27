@@ -122,6 +122,61 @@ extern "C" void hart_commitInst(
       sim_state.state = SIM_STOP;
     }
   }
+  sync_hart_pc(retire_pc);
+}
+
+static struct {
+  uint8_t inst_pipeInst_vld;
+
+  union {
+    struct {
+      unsigned int val0 : 7;  // 第0个7-bit数
+      unsigned int val1 : 7;  // 第1个7-bit数
+      unsigned int val2 : 7;  // 第2个7-bit数
+      unsigned int val3 : 7;  // 第3个7-bit数
+    } bitfield;
+    uint32_t wordfield;
+  } renamePhyRegs;
+
+  union {
+    struct {
+      unsigned int val0 : 4;  // 第0个4-bit数
+      unsigned int val1 : 4;  // 第1个4-bit数
+      unsigned int val2 : 4;  // 第2个4-bit数
+      unsigned int val3 : 4;  // 第3个4-bit数
+      unsigned int val4 : 4;  // 第4个4-bit数
+      unsigned int val5 : 4;  // 第5个4-bit数
+    } bitfield;
+    uint32_t wordfield;
+  } dependencies;
+} IRStatus;
+
+extern "C" void hart_IRCtrlStatSync(
+  const svLogicVecVal* instAndPipeInstVld, // 2 * 4-bit = 8-bit
+){
+  IRStatus.inst_pipeInst_vld = *(uint8_t*)instAndPipeInstVld;
+}
+
+extern "C" void hart_IRDpStatusSync(
+  const svLogicVecVal* renameStatInstPack, // 4 * 7-bit = 28-bit
+  const svLogicVecVal* depInsideInstPack // 6 * 4-bit = 24-bit
+
+){
+  IRStatus.renamePhyRegs.wordfield = *(uint32_t*)renameStatInstPack;
+  IRStatus.dependencies.wordfield = *(uint32_t*)depInsideInstPack;
+
+  // uint8_t* buf;
+  // buf = (uint8_t*)depInsideInstPack;
+  // for(int i = 0; i < 4; i++)
+  //   printf("0x%02x", buf[i]);
+  // printf("\n");
+
+  // uint8_t buf_val;
+  // for(int i = 0; i < 4; i++) {
+  //   buf_val = *((uint8_t*)(renameStatInstPack+(i*7))) & 0x7F;
+  //   printf("0x%02x", buf_val);
+  // }
+  // printf("\n");
 }
 
 // traverse all watchpoint elements in head link array

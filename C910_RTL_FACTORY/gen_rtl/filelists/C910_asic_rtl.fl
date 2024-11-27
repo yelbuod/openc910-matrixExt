@@ -160,9 +160,9 @@ ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_id_dp.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_id_fence.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_id_split_long.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_id_split_short.v
-${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_ctrl.v
+${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_ctrl.sv
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_decd.sv
-${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_dp.v
+${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_dp.sv
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_frt.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_rt.v
 ${CODE_BASE_PATH}/gen_rtl/idu/rtl/ct_idu_ir_vrt.v

@@ -3329,13 +3329,6 @@ wire    [8  :0]  vrt_dp_inst3_srcv1_data;
 wire    [9  :0]  vrt_dp_inst3_srcv2_data;                
 wire    [8  :0]  vrt_dp_inst3_srcvm_data;                
 
-wire        id_inst0_m_inst_vld;
-wire        id_inst1_m_inst_vld;
-wire        id_inst2_m_inst_vld;
-wire [54:0] id_inst0_m_data    ;
-wire [54:0] id_inst1_m_data    ;
-wire [54:0] id_inst2_m_data    ;
-
 //==========================================================
 //                       ID Stage
 //==========================================================
@@ -3403,6 +3396,19 @@ ct_idu_id_ctrl  x_ct_idu_id_ctrl (
   .split_long_ctrl_inst_vld      (split_long_ctrl_inst_vld     )
 );
 
+wire        dp_id_pipedown_inst0_mat_vld ;
+wire [ 3:0] dp_id_pipedown_inst0_mat_type;
+wire [36:0] dp_id_pipedown_inst0_mat_data;
+wire        dp_id_pipedown_inst1_mat_vld ;
+wire [ 3:0] dp_id_pipedown_inst1_mat_type;
+wire [36:0] dp_id_pipedown_inst1_mat_data;
+wire        dp_id_pipedown_inst2_mat_vld ;
+wire [ 3:0] dp_id_pipedown_inst2_mat_type;
+wire [36:0] dp_id_pipedown_inst2_mat_data;
+wire        dp_id_pipedown_inst3_mat_vld ;
+wire [ 3:0] dp_id_pipedown_inst3_mat_type;
+wire [36:0] dp_id_pipedown_inst3_mat_data;
+
 // &Instance("ct_idu_id_dp", "x_ct_idu_id_dp"); @33
 ct_idu_id_dp x_ct_idu_id_dp (
   .cp0_idu_cskyee                  (cp0_idu_cskyee                 ),
@@ -3416,12 +3422,6 @@ ct_idu_id_dp x_ct_idu_id_dp (
   .cp0_yy_clk_en                   (cp0_yy_clk_en                  ),
   .cp0_yy_hyper                    (cp0_yy_hyper                   ),
   .cpurst_b                        (cpurst_b                       ),
-  .id_inst0_m_inst_vld             (id_inst0_m_inst_vld            ),
-  .id_inst1_m_inst_vld             (id_inst1_m_inst_vld            ),
-  .id_inst2_m_inst_vld             (id_inst2_m_inst_vld            ),
-  .id_inst0_m_data                 (id_inst0_m_data                ),
-  .id_inst1_m_data                 (id_inst1_m_data                ),
-  .id_inst2_m_data                 (id_inst2_m_data                ),
   .ctrl_dp_id_debug_id_pipedown3   (ctrl_dp_id_debug_id_pipedown3  ),
   .ctrl_dp_id_inst0_vld            (ctrl_dp_id_inst0_vld           ),
   .ctrl_dp_id_inst1_vld            (ctrl_dp_id_inst1_vld           ),
@@ -3458,6 +3458,18 @@ ct_idu_id_dp x_ct_idu_id_dp (
   .dp_id_pipedown_inst1_data       (dp_id_pipedown_inst1_data      ),
   .dp_id_pipedown_inst2_data       (dp_id_pipedown_inst2_data      ),
   .dp_id_pipedown_inst3_data       (dp_id_pipedown_inst3_data      ),
+  .dp_id_pipedown_inst0_mat_vld    (dp_id_pipedown_inst0_mat_vld   ),
+  .dp_id_pipedown_inst0_mat_type   (dp_id_pipedown_inst0_mat_type  ),
+  .dp_id_pipedown_inst0_mat_data   (dp_id_pipedown_inst0_mat_data  ),
+  .dp_id_pipedown_inst1_mat_vld    (dp_id_pipedown_inst1_mat_vld   ),
+  .dp_id_pipedown_inst1_mat_type   (dp_id_pipedown_inst1_mat_type  ),
+  .dp_id_pipedown_inst1_mat_data   (dp_id_pipedown_inst1_mat_data  ),
+  .dp_id_pipedown_inst2_mat_vld    (dp_id_pipedown_inst2_mat_vld   ),
+  .dp_id_pipedown_inst2_mat_type   (dp_id_pipedown_inst2_mat_type  ),
+  .dp_id_pipedown_inst2_mat_data   (dp_id_pipedown_inst2_mat_data  ),
+  .dp_id_pipedown_inst3_mat_vld    (dp_id_pipedown_inst3_mat_vld   ),
+  .dp_id_pipedown_inst3_mat_type   (dp_id_pipedown_inst3_mat_type  ),
+  .dp_id_pipedown_inst3_mat_data   (dp_id_pipedown_inst3_mat_data  ),
   .fence_dp_inst0_data             (fence_dp_inst0_data            ),
   .fence_dp_inst1_data             (fence_dp_inst1_data            ),
   .fence_dp_inst2_data             (fence_dp_inst2_data            ),
@@ -3802,6 +3814,18 @@ ct_idu_ir_dp  x_ct_idu_ir_dp (
   .dp_id_pipedown_inst1_data  (dp_id_pipedown_inst1_data ),
   .dp_id_pipedown_inst2_data  (dp_id_pipedown_inst2_data ),
   .dp_id_pipedown_inst3_data  (dp_id_pipedown_inst3_data ),
+  .dp_id_pipedown_inst0_mat_vld    (dp_id_pipedown_inst0_mat_vld   ),
+  .dp_id_pipedown_inst0_mat_type   (dp_id_pipedown_inst0_mat_type  ),
+  .dp_id_pipedown_inst0_mat_data   (dp_id_pipedown_inst0_mat_data  ),
+  .dp_id_pipedown_inst1_mat_vld    (dp_id_pipedown_inst1_mat_vld   ),
+  .dp_id_pipedown_inst1_mat_type   (dp_id_pipedown_inst1_mat_type  ),
+  .dp_id_pipedown_inst1_mat_data   (dp_id_pipedown_inst1_mat_data  ),
+  .dp_id_pipedown_inst2_mat_vld    (dp_id_pipedown_inst2_mat_vld   ),
+  .dp_id_pipedown_inst2_mat_type   (dp_id_pipedown_inst2_mat_type  ),
+  .dp_id_pipedown_inst2_mat_data   (dp_id_pipedown_inst2_mat_data  ),
+  .dp_id_pipedown_inst3_mat_vld    (dp_id_pipedown_inst3_mat_vld   ),
+  .dp_id_pipedown_inst3_mat_type   (dp_id_pipedown_inst3_mat_type  ),
+  .dp_id_pipedown_inst3_mat_data   (dp_id_pipedown_inst3_mat_data  ),
   .dp_ir_inst01_src_match     (dp_ir_inst01_src_match    ),
   .dp_ir_inst02_src_match     (dp_ir_inst02_src_match    ),
   .dp_ir_inst03_src_match     (dp_ir_inst03_src_match    ),

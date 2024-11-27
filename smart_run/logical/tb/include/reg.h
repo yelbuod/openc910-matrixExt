@@ -18,6 +18,9 @@ struct riscv64_cpu_regfile{
   } fpr[32];
 };
 
+// sync pc
+void sync_hart_pc(uint64_t pc);
+
 // Read register by index
 uint64_t read_hart_reg(int index, bool int_or_fp);
 

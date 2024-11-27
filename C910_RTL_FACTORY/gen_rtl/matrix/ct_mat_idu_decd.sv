@@ -1,3 +1,50 @@
+// matrix basic decode information
+parameter M_DATA_IR_WIDTH = 55;
+parameter M_INST          = 54;
+parameter M_TYPE          = 22;
+parameter M_DST_X0        = 18;
+parameter M_DST_VLD       = 17;
+parameter M_DST_REG       = 16;
+parameter M_SRC0_VLD      = 11;
+parameter M_SRC0_REG      = 10;
+parameter M_SRC1_VLD      = 5 ;
+parameter M_SRC1_REG      = 4 ;
+
+// matrix decode type
+parameter MAT_TYPE_WIDTH  = 4      ;
+parameter MAT_CAL         = 4'b0001;
+parameter MAT_LSU         = 4'b0010;
+parameter MAT_CFG         = 4'b0100;
+parameter MAT_SPECIAL_MOV = 4'b1000;
+
+// matrix op type
+parameter MAT_OP_TYPE_WIDTH = 11;
+// Calculation
+parameter MAT_ALU_OP_TYPE_WIDTH = 11               ;
+parameter MAT_CAL_MMOV          = 11'b000_0000_0001;
+parameter MAT_CAL_FMMACC        = 11'b000_0000_0010;
+parameter MAT_CAL_FWMMACC       = 11'b000_0000_0100;
+parameter MAT_CAL_MMAQA         = 11'b000_0000_1000; // pmmaqa for int4 不实现
+parameter MAT_CAL_MADD          = 11'b000_0001_0000;
+parameter MAT_CAL_MSUB          = 11'b000_0010_0000;
+parameter MAT_CAL_MSRA          = 11'b000_0100_0000;
+parameter MAT_CAL_MN4CLIP       = 11'b000_1000_0000; // signed clip
+parameter MAT_CAL_MN4CLIPU      = 11'b001_0000_0000; // unsigned clip
+parameter MAT_CAL_MMUL          = 11'b010_0000_0000;
+parameter MAT_CAL_MMULH         = 11'b100_0000_0000;
+// LSU
+parameter MAT_LSU_OP_TYPE_WIDTH = 2    ;
+parameter MAT_LSU_LOAD          = 2'b01;
+parameter MAT_LSU_STORE         = 2'b10;
+// CFG
+parameter MAT_CFG_OP_TYPE_WIDTH = 4      ;
+parameter MAT_CFG_K             = 4'b0001;
+parameter MAT_CFG_M             = 4'b0010;
+parameter MAT_CFG_N             = 4'b0100;
+parameter MAT_CFG_ALL           = 4'b1000;
+
+parameter MAT_DATA_WIDTH = 37;
+
 parameter MAT_ALU_DATA_WIDTH     = 37;
 parameter MAT_ALU_OP             = 36; // 36:26
 parameter MAT_ALU_DSTM_VLD       = 25;
@@ -39,60 +86,13 @@ parameter MAT_CFG_UIMM7_VLD  = 7 ;
 parameter MAT_CFG_UIMM7      = 6 ; // 6:0
 
 module ct_mat_idu_decd (
-    input  [                  54:0] id_inst_m_data     ,
-    output [                   3:0] id_inst_m_inst_type,
-    output [MAT_ALU_DATA_WIDTH-1:0] id_mat_alu_data    ,
-    output [MAT_LSU_DATA_WIDTH-1:0] id_mat_lsu_data    ,
-    output [MAT_CFG_DATA_WIDTH-1:0] id_mat_cfg_data
+    input        [              54:0] id_inst_m_data  ,
+    output logic [               3:0] id_inst_mat_type,
+    output logic [MAT_DATA_WIDTH-1:0] id_inst_mat_data
 );
 
-    // matrix basic decode information
-    parameter M_DATA_IR_WIDTH = 55;
-    parameter M_INST          = 54;
-    parameter M_TYPE          = 22;
-    parameter M_DST_X0        = 18;
-    parameter M_DST_VLD       = 17;
-    parameter M_DST_REG       = 16;
-    parameter M_SRC0_VLD      = 11;
-    parameter M_SRC0_REG      = 10;
-    parameter M_SRC1_VLD      = 5 ;
-    parameter M_SRC1_REG      = 4 ;
-
-    // matrix decode type
-    parameter MAT_TYPE_WIDTH  = 4      ;
-    parameter MAT_CAL         = 4'b0001;
-    parameter MAT_LSU         = 4'b0010;
-    parameter MAT_CFG         = 4'b0100;
-    parameter MAT_SPECIAL_MOV = 4'b1000;
-
-    // matrix op type
-    parameter MAT_OP_TYPE_WIDTH = 11;
-    // Calculation
-    parameter MAT_ALU_OP_TYPE_WIDTH = 11               ;
-    parameter MAT_CAL_MMOV          = 11'b000_0000_0001;
-    parameter MAT_CAL_FMMACC        = 11'b000_0000_0010;
-    parameter MAT_CAL_FWMMACC       = 11'b000_0000_0100;
-    parameter MAT_CAL_MMAQA         = 11'b000_0000_1000; // pmmaqa for int4 不实现
-    parameter MAT_CAL_MADD          = 11'b000_0001_0000;
-    parameter MAT_CAL_MSUB          = 11'b000_0010_0000;
-    parameter MAT_CAL_MSRA          = 11'b000_0100_0000;
-    parameter MAT_CAL_MN4CLIP       = 11'b000_1000_0000; // signed clip
-    parameter MAT_CAL_MN4CLIPU      = 11'b001_0000_0000; // unsigned clip
-    parameter MAT_CAL_MMUL          = 11'b010_0000_0000;
-    parameter MAT_CAL_MMULH         = 11'b100_0000_0000;
-    // LSU
-    parameter MAT_LSU_OP_TYPE_WIDTH = 2    ;
-    parameter MAT_LSU_LOAD          = 2'b01;
-    parameter MAT_LSU_STORE         = 2'b10;
-    // CFG
-    parameter MAT_CFG_OP_TYPE_WIDTH = 4      ;
-    parameter MAT_CFG_K             = 4'b0001;
-    parameter MAT_CFG_M             = 4'b0010;
-    parameter MAT_CFG_N             = 4'b0100;
-    parameter MAT_CFG_ALL           = 4'b1000;
-
     logic [31:0] id_inst            ;
-    logic [ 3:0] id_inst_m_inst_type;
+    // logic [ 3:0] id_inst_mat_type;
     logic        id_inst_dst_x0     ;
     logic        id_inst_dst_vld    ;
     logic [ 4:0] id_inst_dst_reg    ;
@@ -126,9 +126,13 @@ module ct_mat_idu_decd (
     logic                         id_srcm1_unsigned; // 用于 int 类型位宽扩展
     logic [MAT_OP_TYPE_WIDTH-1:0] id_mat_op        ; // 操作类型
 
+    logic [MAT_ALU_DATA_WIDTH-1:0] id_mat_alu_data;
+    logic [MAT_LSU_DATA_WIDTH-1:0] id_mat_lsu_data;
+    logic [MAT_CFG_DATA_WIDTH-1:0] id_mat_cfg_data;
+    
     // use for decode
     assign id_inst[31:0]            = id_inst_m_data[M_INST:M_INST-31];
-    assign id_inst_m_inst_type[3:0] = id_inst_m_data[M_TYPE:M_TYPE-3];
+    assign id_inst_mat_type[3:0] = id_inst_m_data[M_TYPE:M_TYPE-3];
     assign id_inst_dst_x0           = id_inst_m_data[M_DST_X0]               ;
     assign id_inst_dst_vld          = id_inst_m_data[M_DST_VLD]              ;
     assign id_inst_dst_reg[4:0]     = id_inst_m_data[M_DST_REG:M_DST_REG-4]  ;
@@ -191,6 +195,20 @@ module ct_mat_idu_decd (
     assign id_mat_cfg_data[MAT_CFG_UIMM7_VLD]                               = id_uimm7_vld;
     assign id_mat_cfg_data[MAT_CFG_UIMM7:MAT_CFG_UIMM7-6]                   = id_uimm7[6:0];
 
+    /* ---------------------------Mux Matrix Data--------------------------- */
+    always_comb begin
+        case (id_inst_mat_type)
+            MAT_CAL :
+                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = id_mat_alu_data[MAT_ALU_DATA_WIDTH-1:0];
+            MAT_LSU : 
+                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = id_mat_lsu_data[MAT_LSU_DATA_WIDTH-1:0];
+            MAT_CFG :
+                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = id_mat_cfg_data[MAT_CFG_DATA_WIDTH-1:0];
+            default : 
+                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = {MAT_DATA_WIDTH{1'b0}};
+        endcase
+    end
+
     always_comb begin
         case (id_uimm3) // 仅在 {p}mmaqa 指令下使用, 因此无需进行指令类型的判断
             3'b000 : // both signed
@@ -231,7 +249,7 @@ module ct_mat_idu_decd (
         id_uimm3_vld      = 1'b0;
         id_uimm7_vld      = 1'b0;
         id_nf_vld         = 1'b0;
-        case ({id_inst_m_inst_type, id_inst_func, id_inst_uop, id_size})
+        case ({id_inst_mat_type, id_inst_func, id_inst_uop, id_size})
             {MAT_CAL, 4'b0000, 3'b000, 1'b0} : // mmov.mm
                 begin
                     id_mat_op         = MAT_CAL_MMOV;
