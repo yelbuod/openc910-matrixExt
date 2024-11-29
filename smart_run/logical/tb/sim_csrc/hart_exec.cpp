@@ -126,57 +126,118 @@ extern "C" void hart_commitInst(
 }
 
 static struct {
-  uint8_t inst_pipeInst_vld;
+  union {
+    struct {
+      unsigned int inst3 : 1;  // 第3个1-bit inst valid (low space)
+      unsigned int inst2 : 1;  // 第2个1-bit inst valid
+      unsigned int inst1 : 1;  // 第1个1-bit inst valid
+      unsigned int inst0 : 1;  // 第0个1-bit inst valid
+      unsigned int pipeinst3 : 1;  // 第3个1-bit pipedown inst valid
+      unsigned int pipeinst2 : 1;  // 第2个1-bit pipedown inst valid
+      unsigned int pipeinst1 : 1;  // 第1个1-bit pipedown inst valid
+      unsigned int pipeinst0 : 1;  // 第0个1-bit pipedown inst valid (high space)
+    } bitfield;    
+    uint8_t bytefield;
+  } inst_pipeInst_vld;
+
+  struct {
+      uint32_t inst3;  // 第0个32-bit inst 
+      uint32_t inst2;  // 第1个32-bit inst 
+      uint32_t inst1;  // 第2个32-bit inst 
+      uint32_t inst0;  // 第3个32-bit inst 
+  } instPacket;
 
   union {
     struct {
-      unsigned int val0 : 7;  // 第0个7-bit数
-      unsigned int val1 : 7;  // 第1个7-bit数
-      unsigned int val2 : 7;  // 第2个7-bit数
-      unsigned int val3 : 7;  // 第3个7-bit数
+      unsigned int inst3 : 7;  // 第0个7-bit rename phy reg
+      unsigned int inst2 : 7;  // 第1个7-bit rename phy reg
+      unsigned int inst1 : 7;  // 第2个7-bit rename phy reg
+      unsigned int inst0 : 7;  // 第3个7-bit rename phy reg
     } bitfield;
     uint32_t wordfield;
   } renamePhyRegs;
 
   union {
     struct {
-      unsigned int val0 : 4;  // 第0个4-bit数
-      unsigned int val1 : 4;  // 第1个4-bit数
-      unsigned int val2 : 4;  // 第2个4-bit数
-      unsigned int val3 : 4;  // 第3个4-bit数
-      unsigned int val4 : 4;  // 第4个4-bit数
-      unsigned int val5 : 4;  // 第5个4-bit数
+      unsigned int inst23 : 4;  // 第5个4-bit inst dependency (low)
+      unsigned int inst13 : 4;  // 第4个4-bit inst dependency
+      unsigned int inst12 : 4;  // 第3个4-bit inst dependency
+      unsigned int inst03 : 4;  // 第2个4-bit inst dependency
+      unsigned int inst02 : 4;  // 第1个4-bit inst dependency
+      unsigned int inst01 : 4;  // 第0个4-bit inst dependency (high)
     } bitfield;
     uint32_t wordfield;
   } dependencies;
 } IRStatus;
 
+void display_IRStatus() {
+    printf("IR inst valid: \n");
+    printf("\tinst0: %u, inst1: %u, inst2: %u, inst3: %u\n",
+           IRStatus.inst_pipeInst_vld.bitfield.inst0,
+           IRStatus.inst_pipeInst_vld.bitfield.inst1,
+           IRStatus.inst_pipeInst_vld.bitfield.inst2,
+           IRStatus.inst_pipeInst_vld.bitfield.inst3);
+    printf("IR pipedown inst valid: \n");
+    printf("\tinst0: %u, inst1: %u, inst2: %u, inst3: %u\n",
+           IRStatus.inst_pipeInst_vld.bitfield.pipeinst0,
+           IRStatus.inst_pipeInst_vld.bitfield.pipeinst1,
+           IRStatus.inst_pipeInst_vld.bitfield.pipeinst2,
+           IRStatus.inst_pipeInst_vld.bitfield.pipeinst3);
+
+    printf("IR inst packet opcode: \n");
+    printf("\tinst0: %08x, inst1: %08x, inst2: %08x, inst3: %08x\n", 
+           IRStatus.instPacket.inst0,
+           IRStatus.instPacket.inst1,
+           IRStatus.instPacket.inst2,
+           IRStatus.instPacket.inst3);
+
+    printf("IR inst rename physical regs: \n");
+    printf("\tinst0: %02x, inst1: %02x, inst2: %02x, inst3: %02x\n",
+           IRStatus.renamePhyRegs.bitfield.inst0,
+           IRStatus.renamePhyRegs.bitfield.inst1,
+           IRStatus.renamePhyRegs.bitfield.inst2,
+           IRStatus.renamePhyRegs.bitfield.inst3);
+
+    printf("IR inst packet dependencies: \n");
+    printf("\tinst01: %01x, inst02: %01x, inst03: %01x, inst12: %01x, inst13: %01x, inst23: %01x\n",
+           IRStatus.dependencies.bitfield.inst01,
+           IRStatus.dependencies.bitfield.inst02,
+           IRStatus.dependencies.bitfield.inst03,
+           IRStatus.dependencies.bitfield.inst12,
+           IRStatus.dependencies.bitfield.inst13,
+           IRStatus.dependencies.bitfield.inst23);
+}
+
 extern "C" void hart_IRCtrlStatSync(
-  const svLogicVecVal* instAndPipeInstVld, // 2 * 4-bit = 8-bit
+  const svLogicVecVal* instAndPipeInstVld // 2 * 4-bit = 8-bit
 ){
-  IRStatus.inst_pipeInst_vld = *(uint8_t*)instAndPipeInstVld;
+  uint8_t buf  = *(uint8_t*)instAndPipeInstVld;
+  // printf("hart_IRCtrlStatSync inst valid info buf: %02x\n", buf);
+  IRStatus.inst_pipeInst_vld.bytefield = buf;
+  // printf("IR inst valid: ");
+  // printf("inst0: %u, inst1: %u, inst2: %u, inst3: %u\n",
+  //         IRStatus.inst_pipeInst_vld.bitfield.inst0,
+  //         IRStatus.inst_pipeInst_vld.bitfield.inst1,
+  //         IRStatus.inst_pipeInst_vld.bitfield.inst2,
+  //         IRStatus.inst_pipeInst_vld.bitfield.inst3);
 }
 
 extern "C" void hart_IRDpStatusSync(
+  const svLogicVecVal* inst0,
+  const svLogicVecVal* inst1,
+  const svLogicVecVal* inst2,
+  const svLogicVecVal* inst3,
   const svLogicVecVal* renameStatInstPack, // 4 * 7-bit = 28-bit
   const svLogicVecVal* depInsideInstPack // 6 * 4-bit = 24-bit
-
 ){
+  IRStatus.instPacket.inst0 = *(uint32_t*)inst0;
+  IRStatus.instPacket.inst1 = *(uint32_t*)inst1;
+  IRStatus.instPacket.inst2 = *(uint32_t*)inst2;
+  IRStatus.instPacket.inst3 = *(uint32_t*)inst3;
+  
+  // printf("hart_IRDpStatusSync inst0 opcode: %08x\n", IRStatus.instPacket.inst0);
   IRStatus.renamePhyRegs.wordfield = *(uint32_t*)renameStatInstPack;
   IRStatus.dependencies.wordfield = *(uint32_t*)depInsideInstPack;
-
-  // uint8_t* buf;
-  // buf = (uint8_t*)depInsideInstPack;
-  // for(int i = 0; i < 4; i++)
-  //   printf("0x%02x", buf[i]);
-  // printf("\n");
-
-  // uint8_t buf_val;
-  // for(int i = 0; i < 4; i++) {
-  //   buf_val = *((uint8_t*)(renameStatInstPack+(i*7))) & 0x7F;
-  //   printf("0x%02x", buf_val);
-  // }
-  // printf("\n");
 }
 
 // traverse all watchpoint elements in head link array
@@ -206,6 +267,8 @@ void hart_exec(uint64_t inst_num) {
 
   if(inst_num == uint64_t(-1)) 
     is_batch_mode = true; // "continue" command, batch mode turn on
+  else 
+    is_batch_mode = false; // maybe continue break then wanna "si" (single step)
 
   execute();
 

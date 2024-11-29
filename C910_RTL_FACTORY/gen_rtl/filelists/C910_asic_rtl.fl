@@ -484,3 +484,5 @@ ${CODE_BASE_PATH}/gen_rtl/common/rtl/sync_level2level.v
 ${CODE_BASE_PATH}/gen_rtl/common/rtl/sync_level2pulse.v
 ${CODE_BASE_PATH}/gen_rtl/cpu/rtl/top_golden_port.v
 
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_idu_decd.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_idu_top.sv

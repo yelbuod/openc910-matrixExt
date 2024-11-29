@@ -14,11 +14,13 @@ limitations under the License.
 */
 
 import "DPI-C" function void hart_IRDpStatusSync(
+  input logic [31:0] inst0,
+  input logic [31:0] inst1,
+  input logic [31:0] inst2,
+  input logic [31:0] inst3,
   input logic [27:0] renameStatInstPack,
   input logic [23:0] depInsideInstPack
 );
-  
-endfunction : funcname
 
 // &ModuleBeg; @26
 module ct_idu_ir_dp(
@@ -1956,17 +1958,28 @@ assign dp_ir_inst12_src_match[2:0] = rt_dp_inst12_src_match[2:0];
 assign dp_ir_inst13_src_match[2:0] = rt_dp_inst13_src_match[2:0];
 assign dp_ir_inst23_src_match[2:0] = rt_dp_inst23_src_match[2:0];
 
-// TODO: 提交并仿真
-always_ff @(posedge ir_inst_clk) begin : proc_dpic_sync_ir_dp_status
-  hart_IRDpStatusSync(
-    {ir_pipedown_inst0_dst_preg[6:0], 
-     ir_pipedown_inst1_dst_preg[6:0], 
-     ir_pipedown_inst2_dst_preg[6:0], 
-     ir_pipedown_inst3_dst_preg[6:0]},
-    {dp_ir_inst01_src_match[3:0], dp_ir_inst02_src_match[3:0],
-     dp_ir_inst03_src_match[3:0], dp_ir_inst12_src_match[3:0],
-     dp_ir_inst13_src_match[3:0], dp_ir_inst23_src_match[3:0]}
-  );
+always @(posedge ir_inst_clk) begin
+  if(ctrl_dp_ir_inst0_vld) begin
+    // $display("inst: %x, %x, %x, %x", 
+    //   ir_inst0_opcode[31:0],
+    //   ir_inst1_opcode[31:0],
+    //   ir_inst2_opcode[31:0],
+    //   ir_inst3_opcode[31:0]);
+
+    hart_IRDpStatusSync(
+      ir_inst0_opcode[31:0],
+      ir_inst1_opcode[31:0],
+      ir_inst2_opcode[31:0],
+      ir_inst3_opcode[31:0],
+      {ir_pipedown_inst0_dst_preg[6:0], 
+       ir_pipedown_inst1_dst_preg[6:0], 
+       ir_pipedown_inst2_dst_preg[6:0], 
+       ir_pipedown_inst3_dst_preg[6:0]},
+      {dp_ir_inst01_src_match[3:0], dp_ir_inst02_src_match[3:0],
+       dp_ir_inst03_src_match[3:0], dp_ir_inst12_src_match[3:0],
+       dp_ir_inst13_src_match[3:0], dp_ir_inst23_src_match[3:0]}
+    );
+  end
 end
 //==========================================================
 //                   Instance IR Decoder

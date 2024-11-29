@@ -971,17 +971,20 @@ assign ir_pipedown_inst3_vld =
          || ctrl_xx_is_inst_sel[1] && ir_inst2_vld && !ctrl_ir_pipedown_stall
          || ctrl_xx_is_inst_sel[2] && ir_inst3_vld && !ctrl_ir_pipedown_stall;
 
-always_ff @(posedge ir_inst_clk) begin : proc_dpic_sync_ir_ctrl_status
-  hart_IRCtrlStatSync(
-    {ir_pipedown_inst3_vld,
-     ir_pipedown_inst2_vld,
-     ir_pipedown_inst1_vld,
-     ir_pipedown_inst0_vld,
-     ir_inst3_vld,
-     ir_inst2_vld,
-     ir_inst1_vld,
-     ir_inst0_vld}
-  );
+always @(posedge ir_inst_clk) begin
+  if(ir_inst0_vld) begin
+    hart_IRCtrlStatSync(
+      {ir_pipedown_inst0_vld,
+      ir_pipedown_inst1_vld,
+      ir_pipedown_inst2_vld,
+      ir_pipedown_inst3_vld,
+      ir_inst0_vld,
+      ir_inst1_vld,
+      ir_inst2_vld,
+      ir_inst3_vld}
+    );
+  end
+
 end
 //----------------------------------------------------------
 //            Rename Table inst valid signals

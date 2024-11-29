@@ -14,6 +14,8 @@ void sim_exit();
 // Message print when Assert fail
 void assert_fail_msg();
 
+void display_IRStatus();
+
 // npc execute N step
 void execute();
 

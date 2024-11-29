@@ -100,9 +100,15 @@ static int cmd_info(char *args) {
   if(args[0] == 'r'){
     dump_all_reg();
   }
-  // else if (args[0] == 'w')
+  else if (args[0] == 'w') {
 	// TODO:
-  //   info_watchpoint();
+    info_watchpoint();
+  }
+  else if (args[0] == 'i') {
+    if(args[1] == 'r') {
+      display_IRStatus();
+    }
+  }
   else {
     Log("Unknown argument '%s'", args);
     Log("Usage: \n\tinfo r : print register state. \n\tinfo w : print watchpoint message");

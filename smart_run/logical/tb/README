@@ -1,5 +1,8 @@
 temporary command
 1. make 
 generate executable file in the "build_verilate" directory
+or 
+make WAVETRACE=1 to satisfy generate .vcd format waveform or
+make WAVETRACE=fst to satisfy generate .fst format waveform 
 2. cd build_verilate && ./top
 exe file "top" will be executed and automatically read the image of helloworld software in the same directory
