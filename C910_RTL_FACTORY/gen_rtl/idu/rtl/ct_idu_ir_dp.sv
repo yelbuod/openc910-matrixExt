@@ -62,6 +62,10 @@ module ct_idu_ir_dp(
   dp_ctrl_ir_inst3_dstf_vld,
   dp_ctrl_ir_inst3_dstv_vld,
   dp_ctrl_ir_inst3_hpcp_type,
+  dp_ctrl_ir_inst0_mat_vld,
+  dp_ctrl_ir_inst1_mat_vld,
+  dp_ctrl_ir_inst2_mat_vld,
+  dp_ctrl_ir_inst3_mat_vld,
   dp_frt_inst0_dst_ereg,
   dp_frt_inst0_dst_freg,
   dp_frt_inst0_dste_vld,
@@ -140,6 +144,10 @@ module ct_idu_ir_dp(
   dp_ir_inst23_src_match,
   dp_ir_inst2_data,
   dp_ir_inst3_data,
+  dp_ir_inst0_mat_meta,
+  dp_ir_inst1_mat_meta,
+  dp_ir_inst2_mat_meta,
+  dp_ir_inst3_mat_meta,
   dp_rt_dep_info,
   dp_rt_inst0_dst_preg,
   dp_rt_inst0_dst_reg,
@@ -462,6 +470,10 @@ output           dp_ctrl_ir_inst3_dste_vld;
 output           dp_ctrl_ir_inst3_dstf_vld; 
 output           dp_ctrl_ir_inst3_dstv_vld; 
 output  [6  :0]  dp_ctrl_ir_inst3_hpcp_type; 
+output           dp_ctrl_ir_inst0_mat_vld;
+output           dp_ctrl_ir_inst1_mat_vld;
+output           dp_ctrl_ir_inst2_mat_vld;
+output           dp_ctrl_ir_inst3_mat_vld;
 output  [4  :0]  dp_frt_inst0_dst_ereg;     
 output  [5  :0]  dp_frt_inst0_dst_freg;     
 output           dp_frt_inst0_dste_vld;     
@@ -523,6 +535,10 @@ output  [270:0]  dp_ir_inst1_data;
 output  [3  :0]  dp_ir_inst23_src_match;    
 output  [270:0]  dp_ir_inst2_data;          
 output  [270:0]  dp_ir_inst3_data;          
+output  [41 :0]  dp_ir_inst0_mat_meta;
+output  [41 :0]  dp_ir_inst1_mat_meta;
+output  [41 :0]  dp_ir_inst2_mat_meta;
+output  [41 :0]  dp_ir_inst3_mat_meta;
 output  [16 :0]  dp_rt_dep_info;            
 output  [6  :0]  dp_rt_inst0_dst_preg;      
 output  [5  :0]  dp_rt_inst0_dst_reg;       
@@ -728,6 +744,10 @@ wire    [270:0]  dp_ir_inst1_data;
 wire    [3  :0]  dp_ir_inst23_src_match;    
 wire    [270:0]  dp_ir_inst2_data;          
 wire    [270:0]  dp_ir_inst3_data;          
+wire    [41 :0]  dp_ir_inst0_mat_meta;
+wire    [41 :0]  dp_ir_inst1_mat_meta;
+wire    [41 :0]  dp_ir_inst2_mat_meta;
+wire    [41 :0]  dp_ir_inst3_mat_meta;
 wire    [16 :0]  dp_rt_dep_info;            
 wire    [6  :0]  dp_rt_inst0_dst_preg;      
 wire    [5  :0]  dp_rt_inst0_dst_reg;       
@@ -1123,7 +1143,10 @@ wire    [8  :0]  vrt_dp_inst3_srcv1_data;
 wire    [9  :0]  vrt_dp_inst3_srcv2_data;   
 wire    [8  :0]  vrt_dp_inst3_srcvm_data;   
 
-
+wire dp_ctrl_ir_inst0_mat_vld;
+wire dp_ctrl_ir_inst1_mat_vld;
+wire dp_ctrl_ir_inst2_mat_vld;
+wire dp_ctrl_ir_inst3_mat_vld;
 
 //==========================================================
 //                       Parameters
@@ -1446,6 +1469,10 @@ always @(posedge ir_inst_clk or negedge cpurst_b)
     end
   end
 
+assign dp_ctrl_ir_inst0_mat_vld = ir_inst0_mat_vld;
+assign dp_ctrl_ir_inst1_mat_vld = ir_inst1_mat_vld;
+assign dp_ctrl_ir_inst2_mat_vld = ir_inst2_mat_vld;
+assign dp_ctrl_ir_inst3_mat_vld = ir_inst3_mat_vld;
 
 //==========================================================
 //                Prepare IR control data
@@ -2570,6 +2597,11 @@ assign dp_ir_inst3_data[IS_SRC2_VLD]                       = ir_inst3_data[IR_SR
 assign dp_ir_inst3_data[IS_SRC1_VLD]                       = ir_inst3_data[IR_SRC1_VLD];
 assign dp_ir_inst3_data[IS_SRC0_VLD]                       = ir_inst3_data[IR_SRC0_VLD];
 assign dp_ir_inst3_data[IS_OPCODE:IS_OPCODE-31]            = ir_inst3_data[IR_OPCODE:IR_OPCODE-31];
+
+assign dp_ir_inst0_mat_meta[41:0] = {ir_inst0_mat_vld, ir_inst0_mat_type[3:0], ir_inst0_mat_data[36:0]};
+assign dp_ir_inst1_mat_meta[41:0] = {ir_inst1_mat_vld, ir_inst1_mat_type[3:0], ir_inst1_mat_data[36:0]};
+assign dp_ir_inst2_mat_meta[41:0] = {ir_inst2_mat_vld, ir_inst2_mat_type[3:0], ir_inst2_mat_data[36:0]};
+assign dp_ir_inst3_mat_meta[41:0] = {ir_inst3_mat_vld, ir_inst3_mat_type[3:0], ir_inst3_mat_data[36:0]};
 
 // &ModuleEnd; @1241
 endmodule

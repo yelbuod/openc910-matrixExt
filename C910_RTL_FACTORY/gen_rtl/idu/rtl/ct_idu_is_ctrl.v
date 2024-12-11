@@ -30,6 +30,7 @@ module ct_idu_is_ctrl(
   biq_ctrl_full,
   biq_ctrl_full_updt,
   biq_ctrl_full_updt_clk_en,
+  miq_ctrl_full,
   cp0_idu_icg_en,
   cp0_yy_clk_en,
   cpurst_b,
@@ -51,6 +52,12 @@ module ct_idu_is_ctrl(
   ctrl_biq_create1_dp_en,
   ctrl_biq_create1_en,
   ctrl_biq_create1_gateclk_en,
+  ctrl_miq_create0_en,
+  ctrl_miq_create0_dp_en,
+  ctrl_miq_create0_gateclk_en,
+  ctrl_miq_create1_en,
+  ctrl_miq_create1_dp_en,
+  ctrl_miq_create1_gateclk_en,
   ctrl_dp_dis_inst0_ereg_vld,
   ctrl_dp_dis_inst0_freg_vld,
   ctrl_dp_dis_inst0_preg_vld,
@@ -73,6 +80,8 @@ module ct_idu_is_ctrl(
   ctrl_dp_is_dis_aiq1_create1_sel,
   ctrl_dp_is_dis_biq_create0_sel,
   ctrl_dp_is_dis_biq_create1_sel,
+  ctrl_dp_is_dis_miq_create0_sel,
+  ctrl_dp_is_dis_miq_create1_sel,
   ctrl_dp_is_dis_lsiq_create0_sel,
   ctrl_dp_is_dis_lsiq_create1_sel,
   ctrl_dp_is_dis_pst_create1_iid_sel,
@@ -146,6 +155,10 @@ module ct_idu_is_ctrl(
   ctrl_ir_pre_dis_vmb_create0_sel,
   ctrl_ir_pre_dis_vmb_create1_en,
   ctrl_ir_pre_dis_vmb_create1_sel,
+  ctrl_ir_pre_dis_miq_create0_en, 
+  ctrl_ir_pre_dis_miq_create0_sel,
+  ctrl_ir_pre_dis_miq_create1_en, 
+  ctrl_ir_pre_dis_miq_create1_sel,
   ctrl_ir_type_stall_inst2_vld,
   ctrl_ir_type_stall_inst3_vld,
   ctrl_is_dis_type_stall,
@@ -297,6 +310,7 @@ input          biq_ctrl_empty;
 input          biq_ctrl_full;                      
 input          biq_ctrl_full_updt;                 
 input          biq_ctrl_full_updt_clk_en;          
+input          miq_ctrl_full;
 input          cp0_idu_icg_en;                     
 input          cp0_yy_clk_en;                      
 input          cpurst_b;                           
@@ -351,6 +365,10 @@ input          ctrl_ir_pre_dis_vmb_create0_en;
 input   [1:0]  ctrl_ir_pre_dis_vmb_create0_sel;    
 input          ctrl_ir_pre_dis_vmb_create1_en;     
 input   [1:0]  ctrl_ir_pre_dis_vmb_create1_sel;    
+input          ctrl_ir_pre_dis_miq_create0_en;
+input   [1:0]  ctrl_ir_pre_dis_miq_create0_sel;
+input          ctrl_ir_pre_dis_miq_create1_en;
+input   [1:0]  ctrl_ir_pre_dis_miq_create1_sel;
 input          ctrl_ir_type_stall_inst2_vld;       
 input          ctrl_ir_type_stall_inst3_vld;       
 input          dp_ctrl_is_inst0_bar;               
@@ -427,6 +445,12 @@ output         ctrl_biq_create0_gateclk_en;
 output         ctrl_biq_create1_dp_en;             
 output         ctrl_biq_create1_en;                
 output         ctrl_biq_create1_gateclk_en;        
+output         ctrl_miq_create0_en;
+output         ctrl_miq_create0_dp_en;
+output         ctrl_miq_create0_gateclk_en;
+output         ctrl_miq_create1_en;
+output         ctrl_miq_create1_dp_en;
+output         ctrl_miq_create1_gateclk_en;
 output         ctrl_dp_dis_inst0_ereg_vld;         
 output         ctrl_dp_dis_inst0_freg_vld;         
 output         ctrl_dp_dis_inst0_preg_vld;         
@@ -449,6 +473,8 @@ output  [1:0]  ctrl_dp_is_dis_aiq1_create0_sel;
 output  [1:0]  ctrl_dp_is_dis_aiq1_create1_sel;    
 output  [1:0]  ctrl_dp_is_dis_biq_create0_sel;     
 output  [1:0]  ctrl_dp_is_dis_biq_create1_sel;     
+output  [1:0]  ctrl_dp_is_dis_miq_create0_sel;
+output  [1:0]  ctrl_dp_is_dis_miq_create1_sel;
 output  [1:0]  ctrl_dp_is_dis_lsiq_create0_sel;    
 output  [1:0]  ctrl_dp_is_dis_lsiq_create1_sel;    
 output         ctrl_dp_is_dis_pst_create1_iid_sel; 
@@ -919,8 +945,31 @@ wire           viq1_ctrl_full;
 wire           viq1_ctrl_full_updt;                
 wire           viq1_ctrl_full_updt_clk_en;         
 
+wire       ctrl_ir_pre_dis_miq_create0_en ;
+wire [1:0] ctrl_ir_pre_dis_miq_create0_sel;
+wire       ctrl_ir_pre_dis_miq_create1_en ;
+wire [1:0] ctrl_ir_pre_dis_miq_create1_sel;
 
+reg        is_dis_miq_create0_en          ;
+reg  [1:0] is_dis_miq_create0_sel         ;
+reg        is_dis_miq_create1_en          ;
+reg  [1:0] is_dis_miq_create1_sel         ;
 
+// TODO: 完善MIQ输入的empty/full信息, full updt信息用于stal dis(patch), empty信息用于调试
+wire miq_ctrl_1_left_updt     ;
+wire miq_ctrl_empty           ;
+wire miq_ctrl_full            ; // 用于 disable miq create
+wire miq_ctrl_full_updt       ;
+wire miq_ctrl_full_updt_clk_en;
+
+wire       ctrl_miq_create0_en           ;
+wire       ctrl_miq_create0_dp_en        ;
+wire       ctrl_miq_create0_gateclk_en   ;
+wire [1:0] ctrl_dp_is_dis_miq_create0_sel;
+wire       ctrl_miq_create1_en           ;
+wire       ctrl_miq_create1_dp_en        ;
+wire       ctrl_miq_create1_gateclk_en   ;
+wire [1:0] ctrl_dp_is_dis_miq_create1_sel;
 //==========================================================
 //                 Instance of Gated Cell  
 //==========================================================
@@ -1050,6 +1099,10 @@ begin
     is_dis_vmb_create0_sel[1:0]     <= 2'b0;
     is_dis_vmb_create1_en           <= 1'b0;
     is_dis_vmb_create1_sel[1:0]     <= 2'b0;
+    is_dis_miq_create0_en           <= 1'b0;
+    is_dis_miq_create0_sel[1:0]     <= 2'b0;
+    is_dis_miq_create1_en           <= 1'b0;
+    is_dis_miq_create1_sel[1:0]     <= 2'b0;
   end
   else if(rtu_idu_flush_fe || iu_yy_xx_cancel) begin
     is_dis_inst0_vld                <= 1'b0;
@@ -1098,6 +1151,10 @@ begin
     is_dis_vmb_create0_sel[1:0]     <= 2'b0;
     is_dis_vmb_create1_en           <= 1'b0;
     is_dis_vmb_create1_sel[1:0]     <= 2'b0;
+    is_dis_miq_create0_en           <= 1'b0;
+    is_dis_miq_create0_sel[1:0]     <= 2'b0;
+    is_dis_miq_create1_en           <= 1'b0;
+    is_dis_miq_create1_sel[1:0]     <= 2'b0;
   end
   else if(!ctrl_is_dis_stall) begin
     is_dis_inst0_vld                <= ctrl_ir_pre_dis_inst0_vld;
@@ -1146,6 +1203,10 @@ begin
     is_dis_vmb_create0_sel[1:0]     <= ctrl_ir_pre_dis_vmb_create0_sel[1:0];
     is_dis_vmb_create1_en           <= ctrl_ir_pre_dis_vmb_create1_en;
     is_dis_vmb_create1_sel[1:0]     <= ctrl_ir_pre_dis_vmb_create1_sel[1:0];
+    is_dis_miq_create0_en           <= ctrl_ir_pre_dis_miq_create0_en; 
+    is_dis_miq_create0_sel[1:0]     <= ctrl_ir_pre_dis_miq_create0_sel[1:0];
+    is_dis_miq_create1_en           <= ctrl_ir_pre_dis_miq_create1_en; 
+    is_dis_miq_create1_sel[1:0]     <= ctrl_ir_pre_dis_miq_create1_sel[1:0];
   end
   else begin
     is_dis_inst0_vld                <= is_dis_inst0_vld;
@@ -1194,6 +1255,10 @@ begin
     is_dis_vmb_create0_sel[1:0]     <= is_dis_vmb_create0_sel[1:0];
     is_dis_vmb_create1_en           <= is_dis_vmb_create1_en;
     is_dis_vmb_create1_sel[1:0]     <= is_dis_vmb_create1_sel[1:0];
+    is_dis_miq_create0_en           <= is_dis_miq_create0_en;
+    is_dis_miq_create0_sel[1:0]     <= is_dis_miq_create0_sel[1:0];
+    is_dis_miq_create1_en           <= is_dis_miq_create1_en;
+    is_dis_miq_create1_sel[1:0]     <= is_dis_miq_create1_sel[1:0];
   end
 end
 
@@ -1516,6 +1581,24 @@ assign ctrl_viq1_create1_dp_en              = is_dis_viq1_create1_en
 assign ctrl_viq1_create1_gateclk_en         = is_dis_viq1_create1_en;
 //output for rob create data path select
 assign ctrl_dp_is_dis_viq1_create1_sel[1:0] = is_dis_viq1_create1_sel[1:0];
+
+//---------create port 0 of Matrix Issue Queue (MIQ)-----------
+assign ctrl_miq_create0_en                 = is_dis_miq_create0_en
+                                              && !ctrl_is_dis_stall;
+assign ctrl_miq_create0_dp_en              = is_dis_miq_create0_en
+                                              && !miq_ctrl_full;
+assign ctrl_miq_create0_gateclk_en         = is_dis_miq_create0_en;
+//output for rob create data path select
+assign ctrl_dp_is_dis_miq_create0_sel[1:0] = is_dis_miq_create0_sel[1:0];
+
+//---------create port 1 of Matrix Issue Queue (MIQ)-----------
+assign ctrl_miq_create1_en                 = is_dis_miq_create1_en
+                                              && !ctrl_is_dis_stall;
+assign ctrl_miq_create1_dp_en              = is_dis_miq_create1_en
+                                              && !miq_ctrl_full;
+assign ctrl_miq_create1_gateclk_en         = is_dis_miq_create1_en;
+//output for rob create data path select
+assign ctrl_dp_is_dis_miq_create1_sel[1:0] = is_dis_miq_create1_sel[1:0];
 
 //==========================================================
 //               PID assign signal for PCFIFO

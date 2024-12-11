@@ -77,10 +77,12 @@ module ct_idu_is_pipe_entry(
   vfpu_idu_ex5_pipe7_wb_vreg_dupx,
   vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx,
   x_create_data,
+  x_create_mat_meta,
   x_create_dp_en,
   x_create_gateclk_en,
   x_entry_vld,
-  x_read_data
+  x_read_data,
+  x_read_mat_meta
 );
 
 // &Ports; @27
@@ -146,10 +148,13 @@ input            vfpu_idu_ex5_pipe6_wb_vreg_vld_dupx;
 input   [6  :0]  vfpu_idu_ex5_pipe7_wb_vreg_dupx;        
 input            vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx;    
 input   [270:0]  x_create_data;                          
+input   [41 :0]  x_create_mat_meta;
 input            x_create_dp_en;                         
 input            x_create_gateclk_en;                    
 input            x_entry_vld;                            
 output  [270:0]  x_read_data;                            
+output  [41 :0]  x_read_mat_meta;
+
 
 // &Regs; @28
 reg              entry_alu;                              
@@ -309,6 +314,7 @@ wire             vfpu_idu_ex5_pipe6_wb_vreg_vld_dupx;
 wire    [6  :0]  vfpu_idu_ex5_pipe7_wb_vreg_dupx;        
 wire             vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx;    
 wire    [270:0]  x_create_data;                          
+wire    [41 :0]  x_create_mat_meta;
 wire             x_create_dp_en;                         
 wire             x_create_gateclk_en;                    
 wire    [9  :0]  x_create_src0_data;                     
@@ -320,6 +326,7 @@ wire    [10 :0]  x_create_srcv2_data;
 wire    [9  :0]  x_create_srcvm_data;                    
 wire             x_entry_vld;                            
 wire    [270:0]  x_read_data;                            
+wire    [41 :0]  x_read_mat_meta;
 wire    [11 :0]  x_read_src0_data;                       
 wire    [11 :0]  x_read_src1_data;                       
 wire    [12 :0]  x_read_src2_data;                       
@@ -617,6 +624,48 @@ begin
   end
 end
 
+//----------------------------------------------------------
+// Instance of Gated Cell about Matrix Meta except Valid Signal
+//----------------------------------------------------------
+parameter IS_MAT_META_VLD = 41;
+parameter IS_MAT_META_TYPE = 40;
+parameter IS_MAT_META_DATA = 36;
+
+wire create_mreg_clk_en;
+wire create_mreg_clk   ;
+
+reg        entry_mat_vld ;
+reg [ 3:0] entry_mat_type;
+reg [36:0] entry_mat_data;
+
+assign create_mreg_clk_en = x_create_gateclk_en && x_create_mat_meta[IS_MAT_META_VLD];
+// &Instance("gated_clk_cell", "x_create_vreg_gated_clk"); @165
+gated_clk_cell  x_create_mreg_gated_clk (
+  .clk_in             (forever_cpuclk    ),
+  .clk_out            (create_mreg_clk   ),
+  .external_en        (1'b0              ),
+  .global_en          (cp0_yy_clk_en     ),
+  .local_en           (create_mreg_clk_en),
+  .module_en          (cp0_idu_icg_en    ),
+  .pad_yy_icg_scan_en (pad_yy_icg_scan_en)
+);
+
+always @(posedge create_mreg_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b) begin
+    entry_mat_type[3:0]  <= 4'b0;
+    entry_mat_data[36:0] <= 37'b0;
+  end
+  else if(x_create_dp_en) begin
+    entry_mat_type[3:0]  <= x_create_mat_meta[IS_MAT_META_TYPE:IS_MAT_META_TYPE-3];
+    entry_mat_data[36:0] <= x_create_mat_meta[IS_MAT_META_DATA:IS_MAT_META_DATA-36];
+  end
+  else begin
+    entry_mat_type[3:0]  <= entry_mat_type[3:0];
+    entry_mat_data[36:0] <= entry_mat_data[36:0];
+  end
+end
+
 always @(posedge create_clk or negedge cpurst_b)
 begin
   if(!cpurst_b) begin
@@ -681,6 +730,7 @@ begin
     entry_unit_stride        <= 1'b0;
     entry_vamo               <= 1'b0;
     entry_lch_preg           <= 1'b0;
+    entry_mat_vld            <= 1'b0;
   end
   else if(x_create_dp_en) begin
     entry_opcode[31:0]       <= x_create_data[IS_OPCODE:IS_OPCODE-31];
@@ -744,6 +794,7 @@ begin
     entry_unit_stride        <= x_create_data[IS_UNIT_STRIDE];
     entry_vamo               <= x_create_data[IS_VAMO];
     entry_lch_preg           <= x_create_data[IS_LCH_PREG];
+    entry_mat_vld            <= x_create_mat_meta[IS_MAT_META_VLD];
   end
   else begin
     entry_opcode[31:0]       <= entry_opcode[31:0];
@@ -807,8 +858,14 @@ begin
     entry_unit_stride        <= entry_unit_stride;
     entry_vamo               <= entry_vamo;
     entry_lch_preg           <= entry_lch_preg;
+    entry_mat_vld            <= entry_mat_vld;
   end
 end
+
+// matrix meta read output
+assign x_read_mat_meta[IS_MAT_META_VLD]                      = entry_mat_vld;
+assign x_read_mat_meta[IS_MAT_META_TYPE:IS_MAT_META_TYPE-3]  = entry_mat_type[3:0];
+assign x_read_mat_meta[IS_MAT_META_DATA:IS_MAT_META_DATA-36] = entry_mat_data[36:0];
 
 //rename for read output
 assign x_read_data[IS_OPCODE:IS_OPCODE-31]            = entry_opcode[31:0];

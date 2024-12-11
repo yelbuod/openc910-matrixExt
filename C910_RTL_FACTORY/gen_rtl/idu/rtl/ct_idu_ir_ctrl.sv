@@ -86,6 +86,10 @@ module ct_idu_ir_ctrl(
   ctrl_ir_pre_dis_vmb_create0_sel,
   ctrl_ir_pre_dis_vmb_create1_en,
   ctrl_ir_pre_dis_vmb_create1_sel,
+  ctrl_ir_pre_dis_miq_create0_en,
+  ctrl_ir_pre_dis_miq_create0_sel,
+  ctrl_ir_pre_dis_miq_create1_en,
+  ctrl_ir_pre_dis_miq_create1_sel,
   ctrl_ir_stage_stall,
   ctrl_ir_stall,
   ctrl_ir_type_stall_inst2_vld,
@@ -142,8 +146,14 @@ module ct_idu_ir_ctrl(
   dp_ctrl_ir_inst3_dstf_vld,
   dp_ctrl_ir_inst3_dstv_vld,
   dp_ctrl_ir_inst3_hpcp_type,
+  dp_ctrl_ir_inst0_mat_vld,
+  dp_ctrl_ir_inst1_mat_vld,
+  dp_ctrl_ir_inst2_mat_vld,
+  dp_ctrl_ir_inst3_mat_vld,
   dp_ctrl_is_dis_inst2_ctrl_info,
   dp_ctrl_is_dis_inst3_ctrl_info,
+  dp_ctrl_is_dis_inst2_mat_vld,
+  dp_ctrl_is_dis_inst3_mat_vld,  
   forever_cpuclk,
   hpcp_idu_cnt_en,
   idu_hpcp_ir_inst0_type,
@@ -257,8 +267,14 @@ input           dp_ctrl_ir_inst3_dste_vld;
 input           dp_ctrl_ir_inst3_dstf_vld;             
 input           dp_ctrl_ir_inst3_dstv_vld;             
 input   [6 :0]  dp_ctrl_ir_inst3_hpcp_type;            
+input           dp_ctrl_ir_inst0_mat_vld;
+input           dp_ctrl_ir_inst1_mat_vld;
+input           dp_ctrl_ir_inst2_mat_vld;
+input           dp_ctrl_ir_inst3_mat_vld;
 input   [12:0]  dp_ctrl_is_dis_inst2_ctrl_info;        
 input   [12:0]  dp_ctrl_is_dis_inst3_ctrl_info;        
+input           dp_ctrl_is_dis_inst2_mat_vld;
+input           dp_ctrl_is_dis_inst3_mat_vld;
 input           forever_cpuclk;                        
 input           hpcp_idu_cnt_en;                       
 input           iu_idu_mispred_stall;                  
@@ -343,6 +359,10 @@ output          ctrl_ir_pre_dis_vmb_create0_en;
 output  [1 :0]  ctrl_ir_pre_dis_vmb_create0_sel;       
 output          ctrl_ir_pre_dis_vmb_create1_en;        
 output  [1 :0]  ctrl_ir_pre_dis_vmb_create1_sel;       
+output          ctrl_ir_pre_dis_miq_create0_en;
+output  [1 :0]  ctrl_ir_pre_dis_miq_create0_sel;
+output          ctrl_ir_pre_dis_miq_create1_en;
+output  [1 :0]  ctrl_ir_pre_dis_miq_create1_sel;
 output          ctrl_ir_stage_stall;                   
 output          ctrl_ir_stall;                         
 output          ctrl_ir_type_stall_inst2_vld;          
@@ -843,7 +863,36 @@ wire            viq0_ctrl_entry_cnt_updt_vld;
 wire    [3 :0]  viq1_ctrl_entry_cnt_updt_val;          
 wire            viq1_ctrl_entry_cnt_updt_vld;          
 
+wire dp_ctrl_ir_inst0_mat_vld    ;
+wire dp_ctrl_ir_inst1_mat_vld    ;
+wire dp_ctrl_ir_inst2_mat_vld    ;
+wire dp_ctrl_ir_inst3_mat_vld    ;
+wire ir_pipedown_inst0_mat_vld   ;
+wire ir_pipedown_inst1_mat_vld   ;
+wire ir_pipedown_inst2_mat_vld   ;
+wire ir_pipedown_inst3_mat_vld   ;
+wire dp_ctrl_is_dis_inst2_mat_vld;
+wire dp_ctrl_is_dis_inst3_mat_vld;
+wire ctrl_ir_inst0_miq           ;
+wire ctrl_ir_inst1_miq           ;
+wire ctrl_ir_inst2_miq           ;
+wire ctrl_ir_inst3_miq           ;
+wire ctrl_ir_inst0_miq_vld       ;
+wire ctrl_ir_inst1_miq_vld       ;
+wire ctrl_ir_inst2_miq_vld       ;
+wire ctrl_ir_inst3_miq_vld       ;
+wire ctrl_ir_pre_dis_3_miq_inst  ;
+wire ctrl_ir_pre_dis_inst0_miq   ;
+wire ctrl_ir_pre_dis_inst1_miq   ;
+wire ctrl_ir_pre_dis_inst2_miq   ;
+wire ctrl_ir_pre_dis_inst3_miq   ;
 
+wire         ctrl_ir_pre_dis_miq_create0_en      ;
+reg    [1:0] ctrl_ir_pre_dis_miq_create0_sel     ;
+wire         ctrl_ir_pre_dis_miq_create1_en      ;
+reg    [1:0] ctrl_ir_pre_dis_miq_create1_sel     ;
+wire         ctrl_ir_pre_dis_miq_create1_sel_ins1;
+wire         ctrl_ir_pre_dis_miq_create1_sel_ins2;
 
 //==========================================================
 //                       Parameters
@@ -984,8 +1033,25 @@ always @(posedge ir_inst_clk) begin
       ir_inst3_vld}
     );
   end
-
 end
+
+// Matrix Valid 
+assign ir_pipedown_inst0_mat_vld =
+            ctrl_xx_is_inst0_sel[0] && dp_ctrl_is_dis_inst2_mat_vld
+         || ctrl_xx_is_inst0_sel[1] && dp_ctrl_ir_inst0_mat_vld && !ctrl_ir_pipedown_stall;
+assign ir_pipedown_inst1_mat_vld =
+            ctrl_xx_is_inst_sel[0] && dp_ctrl_is_dis_inst3_mat_vld
+         || ctrl_xx_is_inst_sel[1] && dp_ctrl_ir_inst0_mat_vld && !ctrl_ir_pipedown_stall
+         || ctrl_xx_is_inst_sel[2] && dp_ctrl_ir_inst1_mat_vld && !ctrl_ir_pipedown_stall;
+assign ir_pipedown_inst2_mat_vld =
+            ctrl_xx_is_inst_sel[0] && dp_ctrl_ir_inst0_mat_vld && !ctrl_ir_pipedown_stall
+         || ctrl_xx_is_inst_sel[1] && dp_ctrl_ir_inst1_mat_vld && !ctrl_ir_pipedown_stall
+         || ctrl_xx_is_inst_sel[2] && dp_ctrl_ir_inst2_mat_vld && !ctrl_ir_pipedown_stall;
+assign ir_pipedown_inst3_mat_vld =
+            ctrl_xx_is_inst_sel[0] && ir_inst1_mat_vld && !ctrl_ir_pipedown_stall
+         || ctrl_xx_is_inst_sel[1] && ir_inst2_mat_vld && !ctrl_ir_pipedown_stall
+         || ctrl_xx_is_inst_sel[2] && ir_inst3_mat_vld && !ctrl_ir_pipedown_stall;
+
 //----------------------------------------------------------
 //            Rename Table inst valid signals
 //----------------------------------------------------------
@@ -1272,6 +1338,11 @@ assign ctrl_ir_inst1_vmb           = ir_pipedown_inst1_ctrl_info[IS_CTRL_VMB];
 assign ctrl_ir_inst2_vmb           = ir_pipedown_inst2_ctrl_info[IS_CTRL_VMB];
 assign ctrl_ir_inst3_vmb           = ir_pipedown_inst3_ctrl_info[IS_CTRL_VMB];
 
+assign ctrl_ir_inst0_miq           = ir_pipedown_inst0_mat_vld;
+assign ctrl_ir_inst1_miq           = ir_pipedown_inst1_mat_vld;
+assign ctrl_ir_inst2_miq           = ir_pipedown_inst2_mat_vld;
+assign ctrl_ir_inst3_miq           = ir_pipedown_inst3_mat_vld;
+
 //----------------------------------------------------------
 //             Dynamic Load Balance (DLB) of AIQ
 //----------------------------------------------------------
@@ -1474,6 +1545,11 @@ assign ctrl_ir_inst1_viq1_vld = ir_pipedown_inst1_vld && ctrl_ir_inst1_viq1;
 assign ctrl_ir_inst2_viq1_vld = ir_pipedown_inst2_vld && ctrl_ir_inst2_viq1;
 assign ctrl_ir_inst3_viq1_vld = ir_pipedown_inst3_vld && ctrl_ir_inst3_viq1;
 
+assign ctrl_ir_inst0_miq_vld = ir_pipedown_inst0_vld && ctrl_ir_inst0_miq;
+assign ctrl_ir_inst1_miq_vld = ir_pipedown_inst1_vld && ctrl_ir_inst1_miq;
+assign ctrl_ir_inst2_miq_vld = ir_pipedown_inst2_vld && ctrl_ir_inst2_miq;
+assign ctrl_ir_inst3_miq_vld = ir_pipedown_inst3_vld && ctrl_ir_inst3_miq;
+
 assign ctrl_ir_pre_dis_3_biq_inst =
             ctrl_ir_inst0_biq_vld && ctrl_ir_inst1_biq_vld && ctrl_ir_inst2_biq_vld
          || ctrl_ir_inst0_biq_vld && ctrl_ir_inst1_biq_vld && ctrl_ir_inst3_biq_vld
@@ -1505,12 +1581,19 @@ assign ctrl_ir_pre_dis_3_viq1_inst =
          || ctrl_ir_inst0_viq1_vld && ctrl_ir_inst2_viq1_vld && ctrl_ir_inst3_viq1_vld
          || ctrl_ir_inst1_viq1_vld && ctrl_ir_inst2_viq1_vld && ctrl_ir_inst3_viq1_vld;
 
+assign ctrl_ir_pre_dis_3_miq_inst =
+            ctrl_ir_inst0_miq_vld && ctrl_ir_inst1_miq_vld && ctrl_ir_inst2_miq_vld
+         || ctrl_ir_inst0_miq_vld && ctrl_ir_inst1_miq_vld && ctrl_ir_inst3_miq_vld
+         || ctrl_ir_inst0_miq_vld && ctrl_ir_inst2_miq_vld && ctrl_ir_inst3_miq_vld
+         || ctrl_ir_inst1_miq_vld && ctrl_ir_inst2_miq_vld && ctrl_ir_inst3_miq_vld;
+
 assign ctrl_ir_pre_dis_type_stall_pipedown2 = ctrl_ir_pre_dis_3_biq_inst
                                            || ctrl_ir_pre_dis_3_aiq0_inst
                                            || ctrl_ir_pre_dis_3_aiq1_inst
                                            || ctrl_ir_pre_dis_3_lsiq_inst
                                            || ctrl_ir_pre_dis_3_viq0_inst
-                                           || ctrl_ir_pre_dis_3_viq1_inst;
+                                           || ctrl_ir_pre_dis_3_viq1_inst
+                                           || ctrl_ir_pre_dis_3_miq_inst;
 
 assign ctrl_ir_pre_dis_pipedown2  = ir_pipedown_inst2_vld
                                     && ctrl_ir_pre_dis_type_stall_pipedown2;
@@ -1598,6 +1681,15 @@ assign ctrl_ir_pre_dis_inst2_vmb        = ctrl_ir_pre_dis_inst2_vld
                                           && ctrl_ir_inst2_vmb;
 assign ctrl_ir_pre_dis_inst3_vmb        = ctrl_ir_pre_dis_inst3_vld
                                           && ctrl_ir_inst3_vmb;
+
+assign ctrl_ir_pre_dis_inst0_miq        = ctrl_ir_pre_dis_inst0_vld
+                                          && ctrl_ir_inst0_miq;
+assign ctrl_ir_pre_dis_inst1_miq        = ctrl_ir_pre_dis_inst1_vld
+                                          && ctrl_ir_inst1_miq;
+assign ctrl_ir_pre_dis_inst2_miq        = ctrl_ir_pre_dis_inst2_vld
+                                          && ctrl_ir_inst2_miq;
+assign ctrl_ir_pre_dis_inst3_miq        = ctrl_ir_pre_dis_inst3_vld
+                                          && ctrl_ir_inst3_miq;
 
 //----------------------------------------------------------
 //           AIQ0 and AIQ1 create enable prepare
@@ -2409,6 +2501,59 @@ begin
   else
     ctrl_ir_pre_dis_viq1_create1_sel[1:0] = 2'd3; //sel inst 3
 // &CombEnd; @1486
+end
+
+//----------------------------------------------------------
+//               MIQ create enable
+//----------------------------------------------------------
+//miq create0 enable
+assign ctrl_ir_pre_dis_miq_create0_en = ctrl_ir_pre_dis_inst0_miq
+                                        || ctrl_ir_pre_dis_inst1_miq
+                                        || ctrl_ir_pre_dis_inst2_miq
+                                        || ctrl_ir_pre_dis_inst3_miq;
+
+always @(ctrl_ir_pre_dis_inst0_miq
+        or ctrl_ir_pre_dis_inst1_miq
+        or ctrl_ir_pre_dis_inst2_miq)
+begin
+  if(ctrl_ir_pre_dis_inst0_miq)
+    ctrl_ir_pre_dis_miq_create0_sel[1:0] = 2'd0; // sel inst 0
+  else if(ctrl_ir_pre_dis_inst1_miq)
+    ctrl_ir_pre_dis_miq_create0_sel[1:0] = 2'd1; // sel inst 1
+  else if(ctrl_ir_pre_dis_inst2_miq)
+    ctrl_ir_pre_dis_miq_create0_sel[1:0] = 2'd2; // sel inst 2
+  else
+    ctrl_ir_pre_dis_miq_create0_sel[1:0] = 2'd3; // sel inst 3
+end
+
+assign ctrl_ir_pre_dis_miq_create1_en = 
+              ctrl_ir_pre_dis_inst0_miq 
+              && (ctrl_ir_pre_dis_inst1_miq
+                  || ctrl_ir_pre_dis_inst2_miq
+                  || ctrl_ir_pre_dis_inst3_miq)
+              || ctrl_ir_pre_dis_inst1_miq 
+                 && (ctrl_ir_pre_dis_inst2_miq
+                     || ctrl_ir_pre_dis_inst3_miq)
+              || ctrl_ir_pre_dis_inst2_miq 
+                 && ctrl_ir_pre_dis_inst3_miq;
+
+assign ctrl_ir_pre_dis_miq_create1_sel_ins1 = 
+                    ctrl_ir_pre_dis_inst0_miq 
+                 && ctrl_ir_pre_dis_inst1_miq;
+
+assign ctrl_ir_pre_dis_miq_create1_sel_ins2 = 
+                    ctrl_ir_pre_dis_inst2_miq
+                 && (ctrl_ir_pre_dis_inst0_miq || ctrl_ir_pre_dis_inst1_miq);
+
+always @(ctrl_ir_pre_dis_miq_create1_sel_ins1
+        or ctrl_ir_pre_dis_miq_create1_sel_ins2)
+begin
+  if(ctrl_ir_pre_dis_miq_create1_sel_ins1)
+    ctrl_ir_pre_dis_miq_create1_sel[1:0] = 2'd1;
+  else if(ctrl_ir_pre_dis_miq_create1_sel_ins2)
+    ctrl_ir_pre_dis_miq_create1_sel[1:0] = 2'd2;
+  else
+    ctrl_ir_pre_dis_miq_create1_sel[1:0] = 2'd3;
 end
 
 //----------------------------------------------------------

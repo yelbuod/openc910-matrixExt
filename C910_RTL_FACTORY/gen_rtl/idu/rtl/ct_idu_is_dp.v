@@ -21,6 +21,8 @@ module ct_idu_is_dp(
   aiq1_aiq_create1_entry,
   biq_aiq_create0_entry,
   biq_aiq_create1_entry,
+  miq_aiq_create0_entry,
+  miq_aiq_create1_entry,
   cp0_idu_icg_en,
   cp0_yy_clk_en,
   cpurst_b,
@@ -36,6 +38,10 @@ module ct_idu_is_dp(
   ctrl_biq_create0_gateclk_en,
   ctrl_biq_create1_dp_en,
   ctrl_biq_create1_gateclk_en,
+  ctrl_miq_create0_dp_en,
+  ctrl_miq_create0_gateclk_en,
+  ctrl_miq_create1_dp_en,
+  ctrl_miq_create1_gateclk_en,
   ctrl_dp_dis_inst0_ereg_vld,
   ctrl_dp_dis_inst0_freg_vld,
   ctrl_dp_dis_inst0_preg_vld,
@@ -58,6 +64,8 @@ module ct_idu_is_dp(
   ctrl_dp_is_dis_aiq1_create1_sel,
   ctrl_dp_is_dis_biq_create0_sel,
   ctrl_dp_is_dis_biq_create1_sel,
+  ctrl_dp_is_dis_miq_create0_sel,
+  ctrl_dp_is_dis_miq_create1_sel,
   ctrl_dp_is_dis_lsiq_create0_sel,
   ctrl_dp_is_dis_lsiq_create1_sel,
   ctrl_dp_is_dis_pst_create1_iid_sel,
@@ -138,6 +146,8 @@ module ct_idu_is_dp(
   dp_biq_create_src1_rdy_for_bypass,
   dp_ctrl_is_dis_inst2_ctrl_info,
   dp_ctrl_is_dis_inst3_ctrl_info,
+  dp_ctrl_is_dis_inst2_mat_vld,
+  dp_ctrl_is_dis_inst3_mat_vld,
   dp_ctrl_is_inst0_bar,
   dp_ctrl_is_inst0_dst_vld,
   dp_ctrl_is_inst0_dste_vld,
@@ -172,6 +182,10 @@ module ct_idu_is_dp(
   dp_ir_inst23_src_match,
   dp_ir_inst2_data,
   dp_ir_inst3_data,
+  dp_ir_inst0_mat_meta,
+  dp_ir_inst1_mat_meta,
+  dp_ir_inst2_mat_meta,
+  dp_ir_inst3_mat_meta,
   dp_lsiq_bypass_data,
   dp_lsiq_create0_bar,
   dp_lsiq_create0_data,
@@ -357,6 +371,8 @@ input   [7  :0]  aiq1_aiq_create0_entry;
 input   [7  :0]  aiq1_aiq_create1_entry;                 
 input   [11 :0]  biq_aiq_create0_entry;                  
 input   [11 :0]  biq_aiq_create1_entry;                  
+input   [11 :0]  miq_aiq_create0_entry;
+input   [11 :0]  miq_aiq_create1_entry;
 input            cp0_idu_icg_en;                         
 input            cp0_yy_clk_en;                          
 input            cpurst_b;                               
@@ -372,6 +388,10 @@ input            ctrl_biq_create0_dp_en;
 input            ctrl_biq_create0_gateclk_en;            
 input            ctrl_biq_create1_dp_en;                 
 input            ctrl_biq_create1_gateclk_en;            
+input            ctrl_miq_create0_dp_en;                 
+input            ctrl_miq_create0_gateclk_en;            
+input            ctrl_miq_create1_dp_en;                 
+input            ctrl_miq_create1_gateclk_en;             
 input            ctrl_dp_dis_inst0_ereg_vld;             
 input            ctrl_dp_dis_inst0_freg_vld;             
 input            ctrl_dp_dis_inst0_preg_vld;             
@@ -394,6 +414,8 @@ input   [1  :0]  ctrl_dp_is_dis_aiq1_create0_sel;
 input   [1  :0]  ctrl_dp_is_dis_aiq1_create1_sel;        
 input   [1  :0]  ctrl_dp_is_dis_biq_create0_sel;         
 input   [1  :0]  ctrl_dp_is_dis_biq_create1_sel;         
+input   [1  :0]  ctrl_dp_is_dis_miq_create0_sel;
+input   [1  :0]  ctrl_dp_is_dis_miq_create1_sel;
 input   [1  :0]  ctrl_dp_is_dis_lsiq_create0_sel;        
 input   [1  :0]  ctrl_dp_is_dis_lsiq_create1_sel;        
 input            ctrl_dp_is_dis_pst_create1_iid_sel;     
@@ -449,6 +471,10 @@ input   [270:0]  dp_ir_inst1_data;
 input   [3  :0]  dp_ir_inst23_src_match;                 
 input   [270:0]  dp_ir_inst2_data;                       
 input   [270:0]  dp_ir_inst3_data;                       
+input   [41 :0]  dp_ir_inst0_mat_meta;
+input   [41 :0]  dp_ir_inst1_mat_meta;
+input   [41 :0]  dp_ir_inst2_mat_meta;
+input   [41 :0]  dp_ir_inst3_mat_meta;
 input   [6  :0]  dp_xx_rf_pipe0_dst_preg_dupx;           
 input   [6  :0]  dp_xx_rf_pipe1_dst_preg_dupx;           
 input   [6  :0]  dp_xx_rf_pipe6_dst_vreg_dupx;           
@@ -526,16 +552,16 @@ input   [7  :0]  viq0_viq_create0_entry;
 input   [7  :0]  viq0_viq_create1_entry;                 
 input   [7  :0]  viq1_viq_create0_entry;                 
 input   [7  :0]  viq1_viq_create1_entry;                 
-output  [226:0]  dp_aiq0_bypass_data;                    
-output  [226:0]  dp_aiq0_create0_data;                   
-output  [226:0]  dp_aiq0_create1_data;                   
+output  [250:0]  dp_aiq0_bypass_data;                    
+output  [250:0]  dp_aiq0_create0_data;                   
+output  [250:0]  dp_aiq0_create1_data;                   
 output           dp_aiq0_create_div;                     
 output           dp_aiq0_create_src0_rdy_for_bypass;     
 output           dp_aiq0_create_src1_rdy_for_bypass;     
 output           dp_aiq0_create_src2_rdy_for_bypass;     
-output  [213:0]  dp_aiq1_bypass_data;                    
-output  [213:0]  dp_aiq1_create0_data;                   
-output  [213:0]  dp_aiq1_create1_data;                   
+output  [237:0]  dp_aiq1_bypass_data;                    
+output  [237:0]  dp_aiq1_create0_data;                   
+output  [237:0]  dp_aiq1_create1_data;                   
 output           dp_aiq1_create_alu;                     
 output           dp_aiq1_create_src0_rdy_for_bypass;     
 output           dp_aiq1_create_src1_rdy_for_bypass;     
@@ -561,6 +587,8 @@ output           dp_biq_create_src0_rdy_for_bypass;
 output           dp_biq_create_src1_rdy_for_bypass;      
 output  [12 :0]  dp_ctrl_is_dis_inst2_ctrl_info;         
 output  [12 :0]  dp_ctrl_is_dis_inst3_ctrl_info;         
+output           dp_ctrl_is_dis_inst2_mat_vld;
+output           dp_ctrl_is_dis_inst3_mat_vld;
 output           dp_ctrl_is_inst0_bar;                   
 output           dp_ctrl_is_inst0_dst_vld;               
 output           dp_ctrl_is_inst0_dste_vld;              
@@ -710,6 +738,7 @@ reg     [6  :0]  is_aiq0_create0_iid;
 reg     [23 :0]  is_aiq0_create0_lch_rdy_aiq0;           
 reg     [23 :0]  is_aiq0_create0_lch_rdy_aiq1;           
 reg     [23 :0]  is_aiq0_create0_lch_rdy_biq;            
+reg     [23 :0]  is_aiq0_create0_lch_rdy_miq;
 reg     [23 :0]  is_aiq0_create0_lch_rdy_lsiq;           
 reg     [11 :0]  is_aiq0_create0_lch_rdy_sdiq;           
 reg     [4  :0]  is_aiq0_create0_pid;                    
@@ -718,6 +747,7 @@ reg     [6  :0]  is_aiq0_create1_iid;
 reg     [23 :0]  is_aiq0_create1_lch_rdy_aiq0;           
 reg     [23 :0]  is_aiq0_create1_lch_rdy_aiq1;           
 reg     [23 :0]  is_aiq0_create1_lch_rdy_biq;            
+reg     [23 :0]  is_aiq0_create1_lch_rdy_miq;
 reg     [23 :0]  is_aiq0_create1_lch_rdy_lsiq;           
 reg     [11 :0]  is_aiq0_create1_lch_rdy_sdiq;           
 reg     [4  :0]  is_aiq0_create1_pid;                    
@@ -726,6 +756,7 @@ reg     [6  :0]  is_aiq1_create0_iid;
 reg     [23 :0]  is_aiq1_create0_lch_rdy_aiq0;           
 reg     [23 :0]  is_aiq1_create0_lch_rdy_aiq1;           
 reg     [23 :0]  is_aiq1_create0_lch_rdy_biq;            
+reg     [23 :0]  is_aiq1_create0_lch_rdy_miq;
 reg     [23 :0]  is_aiq1_create0_lch_rdy_lsiq;           
 reg     [11 :0]  is_aiq1_create0_lch_rdy_sdiq;           
 reg     [270:0]  is_aiq1_create1_data;                   
@@ -733,6 +764,7 @@ reg     [6  :0]  is_aiq1_create1_iid;
 reg     [23 :0]  is_aiq1_create1_lch_rdy_aiq0;           
 reg     [23 :0]  is_aiq1_create1_lch_rdy_aiq1;           
 reg     [23 :0]  is_aiq1_create1_lch_rdy_biq;            
+reg     [23 :0]  is_aiq1_create1_lch_rdy_miq;
 reg     [23 :0]  is_aiq1_create1_lch_rdy_lsiq;           
 reg     [11 :0]  is_aiq1_create1_lch_rdy_sdiq;           
 reg     [270:0]  is_biq_create0_data;                    
@@ -827,16 +859,18 @@ reg     [7  :0]  is_viq1_create1_lch_rdy_viq1;
 // &Wires; @29
 wire    [7  :0]  aiq0_aiq_create0_entry;                 
 wire    [7  :0]  aiq0_aiq_create1_entry;                 
-wire    [226:0]  aiq0_create0_data;                      
-wire    [226:0]  aiq0_create1_data;                      
+wire    [250:0]  aiq0_create0_data;                      
+wire    [250:0]  aiq0_create1_data;                      
 wire    [7  :0]  aiq1_aiq_create0_entry;                 
 wire    [7  :0]  aiq1_aiq_create1_entry;                 
-wire    [213:0]  aiq1_create0_data;                      
-wire    [213:0]  aiq1_create1_data;                      
+wire    [237:0]  aiq1_create0_data;                      
+wire    [237:0]  aiq1_create1_data;                      
 wire    [11 :0]  biq_aiq_create0_entry;                  
 wire    [11 :0]  biq_aiq_create1_entry;                  
 wire    [81 :0]  biq_create0_data;                       
 wire    [81 :0]  biq_create1_data;                       
+wire    [11 :0]  miq_aiq_create0_entry;
+wire    [11 :0]  miq_aiq_create1_entry;
 wire             cp0_idu_icg_en;                         
 wire             cp0_yy_clk_en;                          
 wire             cpurst_b;                               
@@ -852,6 +886,10 @@ wire             ctrl_biq_create0_dp_en;
 wire             ctrl_biq_create0_gateclk_en;            
 wire             ctrl_biq_create1_dp_en;                 
 wire             ctrl_biq_create1_gateclk_en;            
+wire             ctrl_miq_create0_dp_en;                 
+wire             ctrl_miq_create0_gateclk_en;    // TODO: enable create data to miq        
+wire             ctrl_miq_create1_dp_en;                 
+wire             ctrl_miq_create1_gateclk_en;    // TODO: enable create data to miq          
 wire             ctrl_dp_dis_inst0_ereg_vld;             
 wire             ctrl_dp_dis_inst0_freg_vld;             
 wire             ctrl_dp_dis_inst0_preg_vld;             
@@ -874,6 +912,8 @@ wire    [1  :0]  ctrl_dp_is_dis_aiq1_create0_sel;
 wire    [1  :0]  ctrl_dp_is_dis_aiq1_create1_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_biq_create0_sel;         
 wire    [1  :0]  ctrl_dp_is_dis_biq_create1_sel;         
+wire    [1  :0]  ctrl_dp_is_dis_miq_create0_sel;
+wire    [1  :0]  ctrl_dp_is_dis_miq_create1_sel;
 wire    [1  :0]  ctrl_dp_is_dis_lsiq_create0_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_lsiq_create1_sel;        
 wire             ctrl_dp_is_dis_pst_create1_iid_sel;     
@@ -937,16 +977,16 @@ wire    [6  :0]  dis_inst0_iid;
 wire    [6  :0]  dis_inst1_iid;                          
 wire    [6  :0]  dis_inst2_iid;                          
 wire    [6  :0]  dis_inst3_iid;                          
-wire    [226:0]  dp_aiq0_bypass_data;                    
-wire    [226:0]  dp_aiq0_create0_data;                   
-wire    [226:0]  dp_aiq0_create1_data;                   
+wire    [250:0]  dp_aiq0_bypass_data;                    
+wire    [250:0]  dp_aiq0_create0_data;                   
+wire    [250:0]  dp_aiq0_create1_data;                   
 wire             dp_aiq0_create_div;                     
 wire             dp_aiq0_create_src0_rdy_for_bypass;     
 wire             dp_aiq0_create_src1_rdy_for_bypass;     
 wire             dp_aiq0_create_src2_rdy_for_bypass;     
-wire    [213:0]  dp_aiq1_bypass_data;                    
-wire    [213:0]  dp_aiq1_create0_data;                   
-wire    [213:0]  dp_aiq1_create1_data;                   
+wire    [237:0]  dp_aiq1_bypass_data;                    
+wire    [237:0]  dp_aiq1_create0_data;                   
+wire    [237:0]  dp_aiq1_create1_data;                   
 wire             dp_aiq1_create_alu;                     
 wire             dp_aiq1_create_src0_rdy_for_bypass;     
 wire             dp_aiq1_create_src1_rdy_for_bypass;     
@@ -972,6 +1012,8 @@ wire             dp_biq_create_src0_rdy_for_bypass;
 wire             dp_biq_create_src1_rdy_for_bypass;      
 wire    [12 :0]  dp_ctrl_is_dis_inst2_ctrl_info;         
 wire    [12 :0]  dp_ctrl_is_dis_inst3_ctrl_info;         
+wire             dp_ctrl_is_dis_inst2_mat_vld;
+wire             dp_ctrl_is_dis_inst3_mat_vld;
 wire             dp_ctrl_is_inst0_bar;                   
 wire             dp_ctrl_is_inst0_dst_vld;               
 wire             dp_ctrl_is_inst0_dste_vld;              
@@ -1006,6 +1048,10 @@ wire    [270:0]  dp_ir_inst1_data;
 wire    [3  :0]  dp_ir_inst23_src_match;                 
 wire    [270:0]  dp_ir_inst2_data;                       
 wire    [270:0]  dp_ir_inst3_data;                       
+wire    [41 :0]  dp_ir_inst0_mat_meta;
+wire    [41 :0]  dp_ir_inst1_mat_meta;
+wire    [41 :0]  dp_ir_inst2_mat_meta;
+wire    [41 :0]  dp_ir_inst3_mat_meta;
 wire    [162:0]  dp_lsiq_bypass_data;                    
 wire             dp_lsiq_create0_bar;                    
 wire    [162:0]  dp_lsiq_create0_data;                   
@@ -1342,6 +1388,14 @@ wire    [149:0]  viq1_create1_data;
 wire    [7  :0]  viq1_viq_create0_entry;                 
 wire    [7  :0]  viq1_viq_create1_entry;                 
 
+wire  [41:0] is_inst0_read_mat_meta  ;
+wire  [41:0] is_inst1_read_mat_meta  ;
+wire  [41:0] is_inst2_read_mat_meta  ;
+wire  [41:0] is_inst3_read_mat_meta  ;
+reg   [41:0] is_inst0_create_mat_meta;
+reg   [41:0] is_inst1_create_mat_meta;
+reg   [41:0] is_inst2_create_mat_meta;
+reg   [41:0] is_inst3_create_mat_meta;
 
 //==========================================================
 //                       Parameters
@@ -1479,8 +1533,9 @@ parameter IS_OPCODE            = 31;
 //----------------------------------------------------------
 //                    AIQ0 Parameters
 //----------------------------------------------------------
-parameter AIQ0_WIDTH             = 227;
+parameter AIQ0_WIDTH             = 251;
 
+parameter AIQ0_LCH_RDY_MIQ       = 250;
 parameter AIQ0_VL                = 226;
 parameter AIQ0_LCH_PREG          = 218;
 parameter AIQ0_SPECIAL           = 217;
@@ -1527,8 +1582,9 @@ parameter AIQ0_OPCODE            = 31;
 //----------------------------------------------------------
 //                    AIQ1 Parameters
 //----------------------------------------------------------
-parameter AIQ1_WIDTH             = 214;
+parameter AIQ1_WIDTH             = 238;
 
+parameter AIQ1_LCH_RDY_MIQ       = 237;
 parameter AIQ1_VL                = 213;
 parameter AIQ1_LCH_PREG          = 205;
 parameter AIQ1_VSEW              = 204;
@@ -1823,6 +1879,12 @@ parameter ROB_CMPLT_CNT          = 3;
 parameter ROB_CMPLT              = 1;
 parameter ROB_VLD                = 0;
 
+//----------------------------------------------------------
+//                     Matrix Meta Parameters
+//----------------------------------------------------------
+parameter IS_MAT_META_WIDTH = 42;
+parameter IS_MAT_META_VLD = 41;
+
 //==========================================================
 //                IR/IS pipeline registers
 //==========================================================
@@ -1910,6 +1972,59 @@ begin
 end
 
 //----------------------------------------------------------
+//             IS pipeline Matrix meta registers shift MUX
+//----------------------------------------------------------
+always @( dp_ir_inst0_mat_meta[41:0]
+       or is_inst2_read_mat_meta[41:0]
+       or ctrl_xx_is_inst0_sel[1:0])
+begin
+  case(ctrl_xx_is_inst0_sel[1:0])
+    2'b01  : is_inst0_create_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst2_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+    2'b10  : is_inst0_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst0_mat_meta[IS_MAT_META_WIDTH-1:0];
+    default: is_inst0_create_mat_meta[IS_MAT_META_WIDTH-1:0] = {IS_MAT_META_WIDTH{1'bx}};
+  endcase
+end
+
+always @( is_inst3_read_mat_meta[41:0]
+       or dp_ir_inst0_mat_meta[41:0]
+       or dp_ir_inst1_mat_meta[41:0]
+       or ctrl_xx_is_inst_sel[2:0])
+begin
+  case(ctrl_xx_is_inst_sel[2:0])
+    3'b001 : is_inst1_create_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst3_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+    3'b010 : is_inst1_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst0_mat_meta[IS_MAT_META_WIDTH-1:0];
+    3'b100 : is_inst1_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst1_mat_meta[IS_MAT_META_WIDTH-1:0];
+    default: is_inst1_create_mat_meta[IS_MAT_META_WIDTH-1:0] = {IS_MAT_META_WIDTH{1'bx}};
+  endcase
+end
+
+always @( dp_ir_inst0_mat_meta[41:0]
+       or dp_ir_inst1_mat_meta[41:0]
+       or dp_ir_inst2_mat_meta[41:0]
+       or ctrl_xx_is_inst_sel[2:0])
+begin
+  case(ctrl_xx_is_inst_sel[2:0])
+    3'b001 : is_inst2_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst0_mat_meta[IS_MAT_META_WIDTH-1:0];
+    3'b010 : is_inst2_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst1_mat_meta[IS_MAT_META_WIDTH-1:0];
+    3'b100 : is_inst2_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst2_mat_meta[IS_MAT_META_WIDTH-1:0];
+    default: is_inst2_create_mat_meta[IS_MAT_META_WIDTH-1:0] = {IS_MAT_META_WIDTH{1'bx}};
+  endcase
+end
+
+always @( ctrl_xx_is_inst_sel[2:0]
+       or dp_ir_inst1_mat_meta[41:0]
+       or dp_ir_inst2_mat_meta[41:0]
+       or dp_ir_inst3_mat_meta[41:0])
+begin
+  case(ctrl_xx_is_inst_sel[2:0])
+    3'b001 : is_inst3_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst1_mat_meta[IS_MAT_META_WIDTH-1:0];
+    3'b010 : is_inst3_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst2_mat_meta[IS_MAT_META_WIDTH-1:0];
+    3'b100 : is_inst3_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst3_mat_meta[IS_MAT_META_WIDTH-1:0];
+    default: is_inst3_create_mat_meta[IS_MAT_META_WIDTH-1:0] = {IS_MAT_META_WIDTH{1'bx}};
+  endcase
+end
+
+//----------------------------------------------------------
 //            pipeline entry registers instance
 //----------------------------------------------------------
 // &ConnRule(s/^x_/is_inst0_/); @577
@@ -1977,10 +2092,12 @@ ct_idu_is_pipe_entry  x_ct_idu_is_dp_inst0 (
   .vfpu_idu_ex5_pipe7_wb_vreg_dupx         (vfpu_idu_ex5_pipe7_wb_vreg_dupx        ),
   .vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx     (vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx    ),
   .x_create_data                           (is_inst0_create_data                   ),
+  .x_create_mat_meta                       (is_inst0_create_mat_meta               ),
   .x_create_dp_en                          (is_inst0_create_dp_en                  ),
   .x_create_gateclk_en                     (is_inst0_create_gateclk_en             ),
   .x_entry_vld                             (is_inst0_entry_vld                     ),
-  .x_read_data                             (is_inst0_read_data                     )
+  .x_read_data                             (is_inst0_read_data                     ),
+  .x_read_mat_meta                         (is_inst0_read_mat_meta                 )
 );
 
 
@@ -2049,10 +2166,12 @@ ct_idu_is_pipe_entry  x_ct_idu_is_dp_inst1 (
   .vfpu_idu_ex5_pipe7_wb_vreg_dupx         (vfpu_idu_ex5_pipe7_wb_vreg_dupx        ),
   .vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx     (vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx    ),
   .x_create_data                           (is_inst1_create_data                   ),
+  .x_create_mat_meta                       (is_inst1_create_mat_meta               ),
   .x_create_dp_en                          (is_inst1_create_dp_en                  ),
   .x_create_gateclk_en                     (is_inst1_create_gateclk_en             ),
   .x_entry_vld                             (is_inst1_entry_vld                     ),
-  .x_read_data                             (is_inst1_read_data                     )
+  .x_read_data                             (is_inst1_read_data                     ),
+  .x_read_mat_meta                         (is_inst1_read_mat_meta                 )
 );
 
 
@@ -2121,10 +2240,12 @@ ct_idu_is_pipe_entry  x_ct_idu_is_dp_inst2 (
   .vfpu_idu_ex5_pipe7_wb_vreg_dupx         (vfpu_idu_ex5_pipe7_wb_vreg_dupx        ),
   .vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx     (vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx    ),
   .x_create_data                           (is_inst2_create_data                   ),
+  .x_create_mat_meta                       (is_inst2_create_mat_meta               ),
   .x_create_dp_en                          (is_inst2_create_dp_en                  ),
   .x_create_gateclk_en                     (is_inst2_create_gateclk_en             ),
   .x_entry_vld                             (is_inst2_entry_vld                     ),
-  .x_read_data                             (is_inst2_read_data                     )
+  .x_read_data                             (is_inst2_read_data                     ),
+  .x_read_mat_meta                         (is_inst2_read_mat_meta                 )
 );
 
 
@@ -2193,10 +2314,12 @@ ct_idu_is_pipe_entry  x_ct_idu_is_dp_inst3 (
   .vfpu_idu_ex5_pipe7_wb_vreg_dupx         (vfpu_idu_ex5_pipe7_wb_vreg_dupx        ),
   .vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx     (vfpu_idu_ex5_pipe7_wb_vreg_vld_dupx    ),
   .x_create_data                           (is_inst3_create_data                   ),
+  .x_create_mat_meta                       (is_inst3_create_mat_meta               ),
   .x_create_dp_en                          (is_inst3_create_dp_en                  ),
   .x_create_gateclk_en                     (is_inst3_create_gateclk_en             ),
   .x_entry_vld                             (is_inst3_entry_vld                     ),
-  .x_read_data                             (is_inst3_read_data                     )
+  .x_read_data                             (is_inst3_read_data                     ),
+  .x_read_mat_meta                         (is_inst3_read_mat_meta                 )
 );
 
 
@@ -3352,6 +3475,14 @@ assign ctrl_is_biq_create0_entry[11:0] = {12{ctrl_biq_create0_dp_en}}
 assign ctrl_is_biq_create1_entry[11:0] = {12{ctrl_biq_create1_dp_en}}
                                          & biq_aiq_create1_entry[11:0];
 
+wire [11:0] ctrl_is_miq_create0_entry;
+wire [11:0] ctrl_is_miq_create1_entry;
+
+assign ctrl_is_miq_create0_entry[11:0] = {12{ctrl_miq_create0_dp_en}}
+                                         & miq_aiq_create0_entry[11:0];
+assign ctrl_is_miq_create1_entry[11:0] = {12{ctrl_miq_create1_dp_en}}
+                                         & miq_aiq_create1_entry[11:0];
+
 assign ctrl_is_lsiq_create0_entry[11:0] = {12{ctrl_lsiq_create0_dp_en}}
                                          & lsiq_aiq_create0_entry[11:0];
 assign ctrl_is_lsiq_create1_entry[11:0] = {12{ctrl_lsiq_create1_dp_en}}
@@ -3550,6 +3681,92 @@ assign is_inst0_lch_rdy_biq_create1[23:0] =
 
 assign is_inst0_lch_rdy_biq[23:0] =   is_inst0_lch_rdy_biq_create0[23:0]
                                     | is_inst0_lch_rdy_biq_create1[23:0];
+
+
+reg  [ 1:0] is_inst0_miq_create0_src_match;
+reg  [ 1:0] is_inst0_miq_create1_src_match;
+wire [23:0] is_inst0_lch_rdy_miq_create0  ;
+wire [23:0] is_inst0_lch_rdy_miq_create1  ;
+wire [23:0] is_inst0_lch_rdy_miq          ;
+
+reg  [ 1:0] is_inst1_miq_create0_src_match;
+reg  [ 1:0] is_inst1_miq_create1_src_match;
+wire [23:0] is_inst1_lch_rdy_miq_create0  ;
+wire [23:0] is_inst1_lch_rdy_miq_create1  ;
+wire [23:0] is_inst1_lch_rdy_miq          ;
+
+reg  [ 1:0] is_inst2_miq_create0_src_match;
+reg  [ 1:0] is_inst2_miq_create1_src_match;
+wire [23:0] is_inst2_lch_rdy_miq_create0  ;
+wire [23:0] is_inst2_lch_rdy_miq_create1  ;
+wire [23:0] is_inst2_lch_rdy_miq          ;
+
+wire [23:0] is_inst3_lch_rdy_miq          ;
+
+//----------------------------------------------------------
+//         Dispatch Inst0 Create Launch Ready MIQ
+//----------------------------------------------------------
+// &CombBeg; @1753
+always @( ctrl_dp_is_dis_miq_create0_sel[1:0]
+       or is_inst01_src_match[1:0]
+       or is_inst03_src_match[1:0]
+       or is_inst02_src_match[1:0])
+begin
+  case(ctrl_dp_is_dis_miq_create0_sel[1:0])
+    2'd0:   is_inst0_miq_create0_src_match[1:0] = 2'b0;
+    2'd1:   is_inst0_miq_create0_src_match[1:0] = is_inst01_src_match[1:0];
+    2'd2:   is_inst0_miq_create0_src_match[1:0] = is_inst02_src_match[1:0];
+    2'd3:   is_inst0_miq_create0_src_match[1:0] = is_inst03_src_match[1:0];
+    default:is_inst0_miq_create0_src_match[1:0] = {2{1'bx}};
+  endcase
+// &CombEnd; @1761
+end
+
+// &CombBeg; @1763
+always @( ctrl_dp_is_dis_miq_create1_sel[1:0]
+       or is_inst01_src_match[1:0]
+       or is_inst03_src_match[1:0]
+       or is_inst02_src_match[1:0])
+begin
+  case(ctrl_dp_is_dis_miq_create1_sel[1:0])
+    2'd0:   is_inst0_miq_create1_src_match[1:0] = 2'b0;
+    2'd1:   is_inst0_miq_create1_src_match[1:0] = is_inst01_src_match[1:0];
+    2'd2:   is_inst0_miq_create1_src_match[1:0] = is_inst02_src_match[1:0];
+    2'd3:   is_inst0_miq_create1_src_match[1:0] = is_inst03_src_match[1:0];
+    default:is_inst0_miq_create1_src_match[1:0] = {2{1'bx}};
+  endcase
+// &CombEnd; @1771
+end
+
+assign is_inst0_lch_rdy_miq_create0[23:0] =
+  {is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[11]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[10]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[9]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[8]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[7]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[6]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[5]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[4]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[3]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[2]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[1]}},
+   is_inst0_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[0]}}};
+assign is_inst0_lch_rdy_miq_create1[23:0] =
+  {is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[11]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[10]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[9]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[8]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[7]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[6]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[5]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[4]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[3]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[2]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[1]}},
+   is_inst0_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[0]}}};
+
+assign is_inst0_lch_rdy_miq[23:0] =   is_inst0_lch_rdy_miq_create0[23:0]
+                                    | is_inst0_lch_rdy_miq_create1[23:0];
 
 //----------------------------------------------------------
 //         Dispatch Inst0 Create Launch Ready LSIQ
@@ -3984,6 +4201,69 @@ assign is_inst1_lch_rdy_biq[23:0] =   is_inst1_lch_rdy_biq_create0[23:0]
                                     | is_inst1_lch_rdy_biq_create1[23:0];
 
 //----------------------------------------------------------
+//         Dispatch Inst1 Create Launch Ready MIQ
+//----------------------------------------------------------
+// &CombBeg; @1753
+always @( ctrl_dp_is_dis_miq_create0_sel[1:0]
+       or is_inst12_src_match[1:0]
+       or is_inst13_src_match[1:0])
+begin
+  case(ctrl_dp_is_dis_miq_create0_sel[1:0])
+    2'd0:   is_inst1_miq_create0_src_match[1:0] = 2'b0;
+    2'd1:   is_inst1_miq_create0_src_match[1:0] = 2'b0;
+    2'd2:   is_inst1_miq_create0_src_match[1:0] = is_inst12_src_match[1:0];
+    2'd3:   is_inst1_miq_create0_src_match[1:0] = is_inst13_src_match[1:0];
+    default:is_inst1_miq_create0_src_match[1:0] = {2{1'bx}};
+  endcase
+// &CombEnd; @1761
+end
+
+// &CombBeg; @1763
+always @( ctrl_dp_is_dis_miq_create1_sel[1:0]
+       or is_inst12_src_match[1:0]
+       or is_inst13_src_match[1:0])
+begin
+  case(ctrl_dp_is_dis_miq_create1_sel[1:0])
+    2'd0:   is_inst1_miq_create1_src_match[1:0] = 2'b0;
+    2'd1:   is_inst1_miq_create1_src_match[1:0] = 2'b0;
+    2'd2:   is_inst1_miq_create1_src_match[1:0] = is_inst12_src_match[1:0];
+    2'd3:   is_inst1_miq_create1_src_match[1:0] = is_inst13_src_match[1:0];
+    default:is_inst1_miq_create1_src_match[1:0] = {2{1'bx}};
+  endcase
+// &CombEnd; @1771
+end
+
+assign is_inst1_lch_rdy_miq_create0[23:0] =
+  {is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[11]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[10]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[9]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[8]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[7]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[6]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[5]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[4]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[3]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[2]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[1]}},
+   is_inst1_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[0]}}};
+assign is_inst1_lch_rdy_miq_create1[23:0] =
+  {is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[11]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[10]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[9]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[8]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[7]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[6]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[5]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[4]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[3]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[2]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[1]}},
+   is_inst1_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[0]}}};
+
+assign is_inst1_lch_rdy_miq[23:0] =   is_inst1_lch_rdy_miq_create0[23:0]
+                                    | is_inst1_lch_rdy_miq_create1[23:0];
+
+//----------------------------------------------------------
 //         Dispatch Inst1 Create Launch Ready LSIQ
 //----------------------------------------------------------
 // &CombBeg; @2157
@@ -4399,6 +4679,67 @@ assign is_inst2_lch_rdy_biq[23:0] =   is_inst2_lch_rdy_biq_create0[23:0]
                                     | is_inst2_lch_rdy_biq_create1[23:0];
 
 //----------------------------------------------------------
+//         Dispatch Inst1 Create Launch Ready MIQ
+//----------------------------------------------------------
+// &CombBeg; @1753
+always @( ctrl_dp_is_dis_miq_create0_sel[1:0]
+       or is_inst23_src_match[1:0])
+begin
+  case(ctrl_dp_is_dis_miq_create0_sel[1:0])
+    2'd0:   is_inst2_miq_create0_src_match[1:0] = 2'b0;
+    2'd1:   is_inst2_miq_create0_src_match[1:0] = 2'b0;
+    2'd2:   is_inst2_miq_create0_src_match[1:0] = 2'b0;
+    2'd3:   is_inst2_miq_create0_src_match[1:0] = is_inst23_src_match[1:0];
+    default:is_inst2_miq_create0_src_match[1:0] = {2{1'bx}};
+  endcase
+// &CombEnd; @1761
+end
+
+// &CombBeg; @1763
+always @( ctrl_dp_is_dis_miq_create1_sel[1:0]
+       or is_inst23_src_match[1:0])
+begin
+  case(ctrl_dp_is_dis_miq_create1_sel[1:0])
+    2'd0:   is_inst2_miq_create1_src_match[1:0] = 2'b0;
+    2'd1:   is_inst2_miq_create1_src_match[1:0] = 2'b0;
+    2'd2:   is_inst2_miq_create1_src_match[1:0] = 2'b0;
+    2'd3:   is_inst2_miq_create1_src_match[1:0] = is_inst23_src_match[1:0];
+    default:is_inst2_miq_create1_src_match[1:0] = {2{1'bx}};
+  endcase
+// &CombEnd; @1771
+end
+
+assign is_inst2_lch_rdy_miq_create0[23:0] =
+  {is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[11]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[10]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[9]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[8]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[7]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[6]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[5]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[4]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[3]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[2]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[1]}},
+   is_inst2_miq_create0_src_match[1:0] & {2{ctrl_is_miq_create0_entry[0]}}};
+assign is_inst2_lch_rdy_miq_create1[23:0] =
+  {is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[11]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[10]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[9]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[8]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[7]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[6]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[5]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[4]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[3]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[2]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[1]}},
+   is_inst2_miq_create1_src_match[1:0] & {2{ctrl_is_miq_create1_entry[0]}}};
+
+assign is_inst2_lch_rdy_miq[23:0] =   is_inst2_lch_rdy_miq_create0[23:0]
+                                    | is_inst2_lch_rdy_miq_create1[23:0];
+
+//----------------------------------------------------------
 //         Dispatch Inst2 Create Launch Ready LSIQ
 //----------------------------------------------------------
 // &CombBeg; @2505
@@ -4643,6 +4984,7 @@ assign is_inst3_lch_rdy_lsiq[23:0] = 24'b0;
 assign is_inst3_lch_rdy_sdiq[11:0] = 12'b0;
 assign is_inst3_lch_rdy_viq0[7:0]  = 8'b0;
 assign is_inst3_lch_rdy_viq1[7:0]  = 8'b0;
+assign is_inst3_lch_rdy_miq[23:0]  = 24'b0;
 
 //==========================================================
 //               Create Data for Issue Queue
@@ -4674,6 +5016,10 @@ always @( is_inst2_pid[4:0]
        or is_inst3_lch_rdy_lsiq[23:0]
        or is_inst1_lch_rdy_aiq1[23:0]
        or is_inst3_lch_rdy_aiq1[23:0]
+       or is_inst0_lch_rdy_miq[23:0]
+       or is_inst1_lch_rdy_miq[23:0]
+       or is_inst2_lch_rdy_miq[23:0]
+       or is_inst3_lch_rdy_miq[23:0]
        or ctrl_dp_is_dis_aiq0_create0_sel[1:0]
        or is_inst0_read_data[270:0]
        or is_inst3_read_data[270:0]
@@ -4695,6 +5041,7 @@ begin
           is_aiq0_create0_lch_rdy_biq[23:0]  = is_inst0_lch_rdy_biq[23:0];
           is_aiq0_create0_lch_rdy_lsiq[23:0] = is_inst0_lch_rdy_lsiq[23:0];
           is_aiq0_create0_lch_rdy_sdiq[11:0] = is_inst0_lch_rdy_sdiq[11:0];
+          is_aiq0_create0_lch_rdy_miq[23:0]  = is_inst0_lch_rdy_miq[23:0];
           end
     2'd1: begin
           is_aiq0_create0_data[IS_WIDTH-1:0] = is_inst1_read_data[IS_WIDTH-1:0];
@@ -4705,6 +5052,7 @@ begin
           is_aiq0_create0_lch_rdy_biq[23:0]  = is_inst1_lch_rdy_biq[23:0];
           is_aiq0_create0_lch_rdy_lsiq[23:0] = is_inst1_lch_rdy_lsiq[23:0];
           is_aiq0_create0_lch_rdy_sdiq[11:0] = is_inst1_lch_rdy_sdiq[11:0];
+          is_aiq0_create0_lch_rdy_miq[23:0]  = is_inst1_lch_rdy_miq[23:0];
           end
     2'd2: begin
           is_aiq0_create0_data[IS_WIDTH-1:0] = is_inst2_read_data[IS_WIDTH-1:0];
@@ -4715,6 +5063,7 @@ begin
           is_aiq0_create0_lch_rdy_biq[23:0]  = is_inst2_lch_rdy_biq[23:0];
           is_aiq0_create0_lch_rdy_lsiq[23:0] = is_inst2_lch_rdy_lsiq[23:0];
           is_aiq0_create0_lch_rdy_sdiq[11:0] = is_inst2_lch_rdy_sdiq[11:0];
+          is_aiq0_create0_lch_rdy_miq[23:0]  = is_inst2_lch_rdy_miq[23:0];
           end
     2'd3: begin
           is_aiq0_create0_data[IS_WIDTH-1:0] = is_inst3_read_data[IS_WIDTH-1:0];
@@ -4725,6 +5074,7 @@ begin
           is_aiq0_create0_lch_rdy_biq[23:0]  = is_inst3_lch_rdy_biq[23:0];
           is_aiq0_create0_lch_rdy_lsiq[23:0] = is_inst3_lch_rdy_lsiq[23:0];
           is_aiq0_create0_lch_rdy_sdiq[11:0] = is_inst3_lch_rdy_sdiq[11:0];
+          is_aiq0_create0_lch_rdy_miq[23:0]  = is_inst3_lch_rdy_miq[23:0];
           end
     default: begin
           is_aiq0_create0_data[IS_WIDTH-1:0] = {IS_WIDTH{1'bx}};
@@ -4735,6 +5085,7 @@ begin
           is_aiq0_create0_lch_rdy_biq[23:0]  = {24{1'bx}};
           is_aiq0_create0_lch_rdy_lsiq[23:0] = {24{1'bx}};
           is_aiq0_create0_lch_rdy_sdiq[11:0] = {12{1'bx}};
+          is_aiq0_create0_lch_rdy_miq[23:0]  = {24{1'bx}};
           end
   endcase
 // &CombEnd; @2773
@@ -4765,6 +5116,10 @@ always @( is_inst2_pid[4:0]
        or is_inst3_lch_rdy_lsiq[23:0]
        or is_inst1_lch_rdy_aiq1[23:0]
        or is_inst3_lch_rdy_aiq1[23:0]
+       or is_inst0_lch_rdy_miq[23:0]
+       or is_inst1_lch_rdy_miq[23:0]
+       or is_inst2_lch_rdy_miq[23:0]
+       or is_inst3_lch_rdy_miq[23:0]
        or is_inst0_read_data[270:0]
        or is_inst3_read_data[270:0]
        or is_inst2_lch_rdy_biq[23:0]
@@ -4785,6 +5140,7 @@ begin
           is_aiq0_create1_lch_rdy_biq[23:0]  = is_inst0_lch_rdy_biq[23:0];
           is_aiq0_create1_lch_rdy_lsiq[23:0] = is_inst0_lch_rdy_lsiq[23:0];
           is_aiq0_create1_lch_rdy_sdiq[11:0] = is_inst0_lch_rdy_sdiq[11:0];
+          is_aiq0_create1_lch_rdy_miq[23:0]  = is_inst0_lch_rdy_miq[23:0]; 
           end
     2'd1: begin
           is_aiq0_create1_data[IS_WIDTH-1:0] = is_inst1_read_data[IS_WIDTH-1:0];
@@ -4795,6 +5151,7 @@ begin
           is_aiq0_create1_lch_rdy_biq[23:0]  = is_inst1_lch_rdy_biq[23:0];
           is_aiq0_create1_lch_rdy_lsiq[23:0] = is_inst1_lch_rdy_lsiq[23:0];
           is_aiq0_create1_lch_rdy_sdiq[11:0] = is_inst1_lch_rdy_sdiq[11:0];
+          is_aiq0_create1_lch_rdy_miq[23:0]  = is_inst1_lch_rdy_miq[23:0];
           end
     2'd2: begin
           is_aiq0_create1_data[IS_WIDTH-1:0] = is_inst2_read_data[IS_WIDTH-1:0];
@@ -4805,6 +5162,7 @@ begin
           is_aiq0_create1_lch_rdy_biq[23:0]  = is_inst2_lch_rdy_biq[23:0];
           is_aiq0_create1_lch_rdy_lsiq[23:0] = is_inst2_lch_rdy_lsiq[23:0];
           is_aiq0_create1_lch_rdy_sdiq[11:0] = is_inst2_lch_rdy_sdiq[11:0];
+          is_aiq0_create1_lch_rdy_miq[23:0]  = is_inst2_lch_rdy_miq[23:0];
           end
     2'd3: begin
           is_aiq0_create1_data[IS_WIDTH-1:0] = is_inst3_read_data[IS_WIDTH-1:0];
@@ -4815,6 +5173,7 @@ begin
           is_aiq0_create1_lch_rdy_biq[23:0]  = is_inst3_lch_rdy_biq[23:0];
           is_aiq0_create1_lch_rdy_lsiq[23:0] = is_inst3_lch_rdy_lsiq[23:0];
           is_aiq0_create1_lch_rdy_sdiq[11:0] = is_inst3_lch_rdy_sdiq[11:0];
+          is_aiq0_create1_lch_rdy_miq[23:0]  = is_inst3_lch_rdy_miq[23:0];
           end
     default: begin
           is_aiq0_create1_data[IS_WIDTH-1:0] = {IS_WIDTH{1'bx}};
@@ -4825,6 +5184,7 @@ begin
           is_aiq0_create1_lch_rdy_biq[23:0]  = {24{1'bx}};
           is_aiq0_create1_lch_rdy_lsiq[23:0] = {24{1'bx}};
           is_aiq0_create1_lch_rdy_sdiq[11:0] = {12{1'bx}};
+          is_aiq0_create1_lch_rdy_miq[23:0]  = {24{1'bx}};
           end
   endcase
 // &CombEnd; @2828
@@ -4843,6 +5203,7 @@ assign aiq0_create0_data[AIQ0_SPECIAL]                           = is_aiq0_creat
 assign aiq0_create0_data[AIQ0_VSEW:AIQ0_VSEW-2]                  = is_aiq0_create0_data[IS_VSEW:IS_VSEW-2];
 assign aiq0_create0_data[AIQ0_VLMUL:AIQ0_VLMUL-1]                = is_aiq0_create0_data[IS_VLMUL:IS_VLMUL-1];
 assign aiq0_create0_data[AIQ0_DIV]                               = is_aiq0_create0_data[IS_DIV];
+assign aiq0_create0_data[AIQ0_LCH_RDY_MIQ:AIQ0_LCH_RDY_MIQ-23]   = is_aiq0_create0_lch_rdy_miq[23:0];
 assign aiq0_create0_data[AIQ0_LCH_RDY_SDIQ:AIQ0_LCH_RDY_SDIQ-11] = is_aiq0_create0_lch_rdy_sdiq[11:0];
 assign aiq0_create0_data[AIQ0_LCH_RDY_LSIQ:AIQ0_LCH_RDY_LSIQ-23] = is_aiq0_create0_lch_rdy_lsiq[23:0];
 assign aiq0_create0_data[AIQ0_LCH_RDY_BIQ:AIQ0_LCH_RDY_BIQ-23]   = is_aiq0_create0_lch_rdy_biq[23:0];
@@ -4881,6 +5242,7 @@ assign aiq0_create1_data[AIQ0_SPECIAL]                           = is_aiq0_creat
 assign aiq0_create1_data[AIQ0_VSEW:AIQ0_VSEW-2]                  = is_aiq0_create1_data[IS_VSEW:IS_VSEW-2];
 assign aiq0_create1_data[AIQ0_VLMUL:AIQ0_VLMUL-1]                = is_aiq0_create1_data[IS_VLMUL:IS_VLMUL-1];
 assign aiq0_create1_data[AIQ0_DIV]                               = is_aiq0_create1_data[IS_DIV];
+assign aiq0_create1_data[AIQ0_LCH_RDY_MIQ:AIQ0_LCH_RDY_MIQ-23]   = is_aiq0_create1_lch_rdy_miq[23:0];
 assign aiq0_create1_data[AIQ0_LCH_RDY_SDIQ:AIQ0_LCH_RDY_SDIQ-11] = is_aiq0_create1_lch_rdy_sdiq[11:0];
 assign aiq0_create1_data[AIQ0_LCH_RDY_LSIQ:AIQ0_LCH_RDY_LSIQ-23] = is_aiq0_create1_lch_rdy_lsiq[23:0];
 assign aiq0_create1_data[AIQ0_LCH_RDY_BIQ:AIQ0_LCH_RDY_BIQ-23]   = is_aiq0_create1_lch_rdy_biq[23:0];
@@ -4915,6 +5277,7 @@ assign dp_aiq0_bypass_data[AIQ0_SPECIAL]                            = is_aiq0_cr
 assign dp_aiq0_bypass_data[AIQ0_VSEW:AIQ0_VSEW-2]                   = is_aiq0_create0_data[IS_VSEW:IS_VSEW-2];
 assign dp_aiq0_bypass_data[AIQ0_VLMUL:AIQ0_VLMUL-1]                 = is_aiq0_create0_data[IS_VLMUL:IS_VLMUL-1];
 assign dp_aiq0_bypass_data[AIQ0_DIV]                                = is_aiq0_create0_data[IS_DIV];
+assign dp_aiq0_bypass_data[AIQ0_LCH_RDY_MIQ:AIQ0_LCH_RDY_MIQ-23]    = is_aiq0_create0_lch_rdy_miq[23:0];
 assign dp_aiq0_bypass_data[AIQ0_LCH_RDY_SDIQ:AIQ0_LCH_RDY_SDIQ-11]  = is_aiq0_create0_lch_rdy_sdiq[11:0];
 assign dp_aiq0_bypass_data[AIQ0_LCH_RDY_LSIQ:AIQ0_LCH_RDY_LSIQ-23]  = is_aiq0_create0_lch_rdy_lsiq[23:0];
 assign dp_aiq0_bypass_data[AIQ0_LCH_RDY_BIQ:AIQ0_LCH_RDY_BIQ-23]    = is_aiq0_create0_lch_rdy_biq[23:0];
@@ -4973,6 +5336,10 @@ always @( is_inst2_lch_rdy_aiq0[23:0]
        or is_inst1_iid[6:0]
        or is_inst3_lch_rdy_biq[23:0]
        or is_inst0_lch_rdy_lsiq[23:0]
+       or is_inst0_lch_rdy_miq[23:0]
+       or is_inst1_lch_rdy_miq[23:0]
+       or is_inst2_lch_rdy_miq[23:0]
+       or is_inst3_lch_rdy_miq[23:0]
        or is_inst1_read_data[270:0]
        or is_inst3_lch_rdy_sdiq[11:0]
        or is_inst1_lch_rdy_lsiq[23:0]
@@ -4997,6 +5364,7 @@ begin
           is_aiq1_create0_lch_rdy_biq[23:0]  = is_inst0_lch_rdy_biq[23:0];
           is_aiq1_create0_lch_rdy_lsiq[23:0] = is_inst0_lch_rdy_lsiq[23:0];
           is_aiq1_create0_lch_rdy_sdiq[11:0] = is_inst0_lch_rdy_sdiq[11:0];
+          is_aiq1_create0_lch_rdy_miq[23:0]  = is_inst0_lch_rdy_miq[23:0];
           end
     2'd1: begin
           is_aiq1_create0_data[IS_WIDTH-1:0] = is_inst1_read_data[IS_WIDTH-1:0];
@@ -5006,6 +5374,7 @@ begin
           is_aiq1_create0_lch_rdy_biq[23:0]  = is_inst1_lch_rdy_biq[23:0];
           is_aiq1_create0_lch_rdy_lsiq[23:0] = is_inst1_lch_rdy_lsiq[23:0];
           is_aiq1_create0_lch_rdy_sdiq[11:0] = is_inst1_lch_rdy_sdiq[11:0];
+          is_aiq1_create0_lch_rdy_miq[23:0]  = is_inst1_lch_rdy_miq[23:0];
           end
     2'd2: begin
           is_aiq1_create0_data[IS_WIDTH-1:0] = is_inst2_read_data[IS_WIDTH-1:0];
@@ -5015,6 +5384,7 @@ begin
           is_aiq1_create0_lch_rdy_biq[23:0]  = is_inst2_lch_rdy_biq[23:0];
           is_aiq1_create0_lch_rdy_lsiq[23:0] = is_inst2_lch_rdy_lsiq[23:0];
           is_aiq1_create0_lch_rdy_sdiq[11:0] = is_inst2_lch_rdy_sdiq[11:0];
+          is_aiq1_create0_lch_rdy_miq[23:0]  = is_inst2_lch_rdy_miq[23:0];
           end
     2'd3: begin
           is_aiq1_create0_data[IS_WIDTH-1:0] = is_inst3_read_data[IS_WIDTH-1:0];
@@ -5024,6 +5394,7 @@ begin
           is_aiq1_create0_lch_rdy_biq[23:0]  = is_inst3_lch_rdy_biq[23:0];
           is_aiq1_create0_lch_rdy_lsiq[23:0] = is_inst3_lch_rdy_lsiq[23:0];
           is_aiq1_create0_lch_rdy_sdiq[11:0] = is_inst3_lch_rdy_sdiq[11:0];
+          is_aiq1_create0_lch_rdy_miq[23:0]  = is_inst3_lch_rdy_miq[23:0];
           end
     default: begin
           is_aiq1_create0_data[IS_WIDTH-1:0] = {IS_WIDTH{1'bx}};
@@ -5033,6 +5404,7 @@ begin
           is_aiq1_create0_lch_rdy_biq[23:0]  = {24{1'bx}};
           is_aiq1_create0_lch_rdy_lsiq[23:0] = {24{1'bx}};
           is_aiq1_create0_lch_rdy_sdiq[11:0] = {12{1'bx}};
+          is_aiq1_create0_lch_rdy_miq[23:0]  = {24{1'bx}};
           end
   endcase
 // &CombEnd; @3005
@@ -5052,6 +5424,10 @@ always @( is_inst2_lch_rdy_aiq0[23:0]
        or is_inst0_lch_rdy_aiq0[23:0]
        or is_inst1_lch_rdy_biq[23:0]
        or is_inst2_lch_rdy_lsiq[23:0]
+       or is_inst0_lch_rdy_miq[23:0]
+       or is_inst1_lch_rdy_miq[23:0]
+       or is_inst2_lch_rdy_miq[23:0]
+       or is_inst3_lch_rdy_miq[23:0]
        or is_inst1_iid[6:0]
        or is_inst3_lch_rdy_biq[23:0]
        or is_inst0_lch_rdy_lsiq[23:0]
@@ -5078,6 +5454,7 @@ begin
           is_aiq1_create1_lch_rdy_biq[23:0]  = is_inst0_lch_rdy_biq[23:0];
           is_aiq1_create1_lch_rdy_lsiq[23:0] = is_inst0_lch_rdy_lsiq[23:0];
           is_aiq1_create1_lch_rdy_sdiq[11:0] = is_inst0_lch_rdy_sdiq[11:0];
+          is_aiq1_create1_lch_rdy_miq[23:0]  = is_inst0_lch_rdy_miq[23:0];
           end
     2'd1: begin
           is_aiq1_create1_data[IS_WIDTH-1:0] = is_inst1_read_data[IS_WIDTH-1:0];
@@ -5087,6 +5464,7 @@ begin
           is_aiq1_create1_lch_rdy_biq[23:0]  = is_inst1_lch_rdy_biq[23:0];
           is_aiq1_create1_lch_rdy_lsiq[23:0] = is_inst1_lch_rdy_lsiq[23:0];
           is_aiq1_create1_lch_rdy_sdiq[11:0] = is_inst1_lch_rdy_sdiq[11:0];
+          is_aiq1_create1_lch_rdy_miq[23:0]  = is_inst1_lch_rdy_miq[23:0];
           end
     2'd2: begin
           is_aiq1_create1_data[IS_WIDTH-1:0] = is_inst2_read_data[IS_WIDTH-1:0];
@@ -5096,6 +5474,7 @@ begin
           is_aiq1_create1_lch_rdy_biq[23:0]  = is_inst2_lch_rdy_biq[23:0];
           is_aiq1_create1_lch_rdy_lsiq[23:0] = is_inst2_lch_rdy_lsiq[23:0];
           is_aiq1_create1_lch_rdy_sdiq[11:0] = is_inst2_lch_rdy_sdiq[11:0];
+          is_aiq1_create1_lch_rdy_miq[23:0]  = is_inst2_lch_rdy_miq[23:0];
           end
     2'd3: begin
           is_aiq1_create1_data[IS_WIDTH-1:0] = is_inst3_read_data[IS_WIDTH-1:0];
@@ -5105,6 +5484,7 @@ begin
           is_aiq1_create1_lch_rdy_biq[23:0]  = is_inst3_lch_rdy_biq[23:0];
           is_aiq1_create1_lch_rdy_lsiq[23:0] = is_inst3_lch_rdy_lsiq[23:0];
           is_aiq1_create1_lch_rdy_sdiq[11:0] = is_inst3_lch_rdy_sdiq[11:0];
+          is_aiq1_create1_lch_rdy_miq[23:0]  = is_inst3_lch_rdy_miq[23:0];
           end
     default: begin
           is_aiq1_create1_data[IS_WIDTH-1:0] = {IS_WIDTH{1'bx}};
@@ -5114,6 +5494,7 @@ begin
           is_aiq1_create1_lch_rdy_biq[23:0]  = {24{1'bx}};
           is_aiq1_create1_lch_rdy_lsiq[23:0] = {24{1'bx}};
           is_aiq1_create1_lch_rdy_sdiq[11:0] = {12{1'bx}};
+          is_aiq1_create1_lch_rdy_miq[23:0]  = {24{1'bx}};
           end
   endcase
 // &CombEnd; @3055
@@ -5130,6 +5511,7 @@ assign aiq1_create0_data[AIQ1_VL:AIQ1_VL-7]                      = is_aiq1_creat
 assign aiq1_create0_data[AIQ1_LCH_PREG]                          = is_aiq1_create0_data[IS_LCH_PREG];
 assign aiq1_create0_data[AIQ1_VSEW:AIQ1_VSEW-2]                  = is_aiq1_create0_data[IS_VSEW:IS_VSEW-2];
 assign aiq1_create0_data[AIQ1_VLMUL:AIQ1_VLMUL-1]                = is_aiq1_create0_data[IS_VLMUL:IS_VLMUL-1];
+assign aiq1_create0_data[AIQ1_LCH_RDY_MIQ:AIQ1_LCH_RDY_MIQ-23]   = is_aiq1_create0_lch_rdy_miq[23:0];
 assign aiq1_create0_data[AIQ1_LCH_RDY_SDIQ:AIQ1_LCH_RDY_SDIQ-11] = is_aiq1_create0_lch_rdy_sdiq[11:0];
 assign aiq1_create0_data[AIQ1_LCH_RDY_LSIQ:AIQ1_LCH_RDY_LSIQ-23] = is_aiq1_create0_lch_rdy_lsiq[23:0];
 assign aiq1_create0_data[AIQ1_LCH_RDY_BIQ:AIQ1_LCH_RDY_BIQ-23]   = is_aiq1_create0_lch_rdy_biq[23:0];
@@ -5162,6 +5544,7 @@ assign aiq1_create1_data[AIQ1_VL:AIQ1_VL-7]                      = is_aiq1_creat
 assign aiq1_create1_data[AIQ1_LCH_PREG]                          = is_aiq1_create1_data[IS_LCH_PREG];
 assign aiq1_create1_data[AIQ1_VSEW:AIQ1_VSEW-2]                  = is_aiq1_create1_data[IS_VSEW:IS_VSEW-2];
 assign aiq1_create1_data[AIQ1_VLMUL:AIQ1_VLMUL-1]                = is_aiq1_create1_data[IS_VLMUL:IS_VLMUL-1];
+assign aiq1_create1_data[AIQ1_LCH_RDY_MIQ:AIQ1_LCH_RDY_MIQ-23]   = is_aiq1_create1_lch_rdy_miq[23:0];
 assign aiq1_create1_data[AIQ1_LCH_RDY_SDIQ:AIQ1_LCH_RDY_SDIQ-11] = is_aiq1_create1_lch_rdy_sdiq[11:0];
 assign aiq1_create1_data[AIQ1_LCH_RDY_LSIQ:AIQ1_LCH_RDY_LSIQ-23] = is_aiq1_create1_lch_rdy_lsiq[23:0];
 assign aiq1_create1_data[AIQ1_LCH_RDY_BIQ:AIQ1_LCH_RDY_BIQ-23]   = is_aiq1_create1_lch_rdy_biq[23:0];
@@ -5190,6 +5573,7 @@ assign dp_aiq1_bypass_data[AIQ1_VL:AIQ1_VL-7]                       = is_aiq1_cr
 assign dp_aiq1_bypass_data[AIQ1_LCH_PREG]                           = is_aiq1_create0_data[IS_LCH_PREG];
 assign dp_aiq1_bypass_data[AIQ1_VSEW:AIQ1_VSEW-2]                   = is_aiq1_create0_data[IS_VSEW:IS_VSEW-2];
 assign dp_aiq1_bypass_data[AIQ1_VLMUL:AIQ1_VLMUL-1]                 = is_aiq1_create0_data[IS_VLMUL:IS_VLMUL-1];
+assign dp_aiq1_bypass_data[AIQ1_LCH_RDY_MIQ:AIQ1_LCH_RDY_MIQ-23]    = is_aiq1_create0_lch_rdy_miq[23:0];
 assign dp_aiq1_bypass_data[AIQ1_LCH_RDY_SDIQ:AIQ1_LCH_RDY_SDIQ-11]  = is_aiq1_create0_lch_rdy_sdiq[11:0];
 assign dp_aiq1_bypass_data[AIQ1_LCH_RDY_LSIQ:AIQ1_LCH_RDY_LSIQ-23]  = is_aiq1_create0_lch_rdy_lsiq[23:0];
 assign dp_aiq1_bypass_data[AIQ1_LCH_RDY_BIQ:AIQ1_LCH_RDY_BIQ-23]    = is_aiq1_create0_lch_rdy_biq[23:0];
@@ -6324,6 +6708,9 @@ assign dp_ctrl_is_dis_inst3_ctrl_info[IS_CTRL_BJU]     = is_inst3_read_data[IS_B
 assign dp_ctrl_is_dis_inst3_ctrl_info[IS_CTRL_DIV]     = is_inst3_read_data[IS_DIV];
 assign dp_ctrl_is_dis_inst3_ctrl_info[IS_CTRL_MULT]    = is_inst3_read_data[IS_MULT];
 assign dp_ctrl_is_dis_inst3_ctrl_info[IS_CTRL_ALU]     = is_inst3_read_data[IS_ALU];
+
+assign dp_ctrl_is_dis_inst2_mat_vld = is_inst2_read_mat_meta[IS_MAT_META_VLD];
+assign dp_ctrl_is_dis_inst3_mat_vld = is_inst3_read_mat_meta[IS_MAT_META_VLD];
 
 // &ModuleEnd; @4124
 endmodule

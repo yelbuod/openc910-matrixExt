@@ -3526,6 +3526,20 @@ ct_idu_id_fence  x_ct_idu_id_fence (
   .rtu_idu_rob_empty        (rtu_idu_rob_empty       )
 );
 
+wire       ctrl_is_inst2_mat_vld               ;
+wire       ctrl_is_inst3_mat_vld               ;
+wire       ctrl_ir_pre_dis_miq_create0_en      ;
+wire [1:0] ctrl_ir_pre_dis_miq_create0_sel     ;
+wire       ctrl_ir_pre_dis_miq_create1_en      ;
+wire [1:0] ctrl_ir_pre_dis_miq_create1_sel     ;
+
+wire dp_ctrl_ir_inst0_mat_vld;
+wire dp_ctrl_ir_inst1_mat_vld;
+wire dp_ctrl_ir_inst2_mat_vld;
+wire dp_ctrl_ir_inst3_mat_vld;
+
+wire dp_ctrl_is_dis_inst2_mat_vld;
+wire dp_ctrl_is_dis_inst3_mat_vld;
 
 //==========================================================
 //                       IR Stage
@@ -3600,6 +3614,10 @@ ct_idu_ir_ctrl  x_ct_idu_ir_ctrl (
   .ctrl_ir_pre_dis_vmb_create0_sel     (ctrl_ir_pre_dis_vmb_create0_sel    ),
   .ctrl_ir_pre_dis_vmb_create1_en      (ctrl_ir_pre_dis_vmb_create1_en     ),
   .ctrl_ir_pre_dis_vmb_create1_sel     (ctrl_ir_pre_dis_vmb_create1_sel    ),
+  .ctrl_ir_pre_dis_miq_create0_en      (ctrl_ir_pre_dis_miq_create0_en     ),
+  .ctrl_ir_pre_dis_miq_create0_sel     (ctrl_ir_pre_dis_miq_create0_sel    ),
+  .ctrl_ir_pre_dis_miq_create1_en      (ctrl_ir_pre_dis_miq_create1_en     ),
+  .ctrl_ir_pre_dis_miq_create1_sel     (ctrl_ir_pre_dis_miq_create1_sel    ),
   .ctrl_ir_stage_stall                 (ctrl_ir_stage_stall                ),
   .ctrl_ir_stall                       (ctrl_ir_stall                      ),
   .ctrl_ir_type_stall_inst2_vld        (ctrl_ir_type_stall_inst2_vld       ),
@@ -3607,6 +3625,8 @@ ct_idu_ir_ctrl  x_ct_idu_ir_ctrl (
   .ctrl_is_dis_type_stall              (ctrl_is_dis_type_stall             ),
   .ctrl_is_inst2_vld                   (ctrl_is_inst2_vld                  ),
   .ctrl_is_inst3_vld                   (ctrl_is_inst3_vld                  ),
+  .ctrl_is_inst2_mat_vld               (ctrl_is_inst2_mat_vld              ),
+  .ctrl_is_inst3_mat_vld               (ctrl_is_inst3_mat_vld              ),
   .ctrl_is_stall                       (ctrl_is_stall                      ),
   .ctrl_lsiq_ir_bar_inst_vld           (ctrl_lsiq_ir_bar_inst_vld          ),
   .ctrl_rt_inst0_vld                   (ctrl_rt_inst0_vld                  ),
@@ -3658,6 +3678,12 @@ ct_idu_ir_ctrl  x_ct_idu_ir_ctrl (
   .dp_ctrl_ir_inst3_hpcp_type          (dp_ctrl_ir_inst3_hpcp_type         ),
   .dp_ctrl_is_dis_inst2_ctrl_info      (dp_ctrl_is_dis_inst2_ctrl_info     ),
   .dp_ctrl_is_dis_inst3_ctrl_info      (dp_ctrl_is_dis_inst3_ctrl_info     ),
+  .dp_ctrl_is_dis_inst2_mat_vld        (dp_ctrl_is_dis_inst2_mat_vld       ),
+  .dp_ctrl_is_dis_inst3_mat_vld        (dp_ctrl_is_dis_inst3_mat_vld       ),
+  .dp_ctrl_ir_inst0_mat_vld            (dp_ctrl_ir_inst0_mat_vld           ),
+  .dp_ctrl_ir_inst1_mat_vld            (dp_ctrl_ir_inst1_mat_vld           ),
+  .dp_ctrl_ir_inst2_mat_vld            (dp_ctrl_ir_inst2_mat_vld           ),
+  .dp_ctrl_ir_inst3_mat_vld            (dp_ctrl_ir_inst3_mat_vld           ),
   .forever_cpuclk                      (forever_cpuclk                     ),
   .hpcp_idu_cnt_en                     (hpcp_idu_cnt_en                    ),
   .idu_hpcp_ir_inst0_type              (idu_hpcp_ir_inst0_type             ),
@@ -3718,6 +3744,10 @@ ct_idu_ir_ctrl  x_ct_idu_ir_ctrl (
   .viq1_ctrl_entry_cnt_updt_vld        (viq1_ctrl_entry_cnt_updt_vld       )
 );
 
+wire [41:0] dp_ir_inst0_mat_meta;
+wire [41:0] dp_ir_inst1_mat_meta;
+wire [41:0] dp_ir_inst2_mat_meta;
+wire [41:0] dp_ir_inst3_mat_meta;
 // &Instance("ct_idu_ir_dp", "x_ct_idu_ir_dp"); @40
 ct_idu_ir_dp  x_ct_idu_ir_dp (
   .cp0_idu_icg_en             (cp0_idu_icg_en            ),
@@ -3758,6 +3788,10 @@ ct_idu_ir_dp  x_ct_idu_ir_dp (
   .dp_ctrl_ir_inst3_dstf_vld  (dp_ctrl_ir_inst3_dstf_vld ),
   .dp_ctrl_ir_inst3_dstv_vld  (dp_ctrl_ir_inst3_dstv_vld ),
   .dp_ctrl_ir_inst3_hpcp_type (dp_ctrl_ir_inst3_hpcp_type),
+  .dp_ctrl_ir_inst0_mat_vld   (dp_ctrl_ir_inst0_mat_vld  ),
+  .dp_ctrl_ir_inst1_mat_vld   (dp_ctrl_ir_inst1_mat_vld  ),
+  .dp_ctrl_ir_inst2_mat_vld   (dp_ctrl_ir_inst2_mat_vld  ),
+  .dp_ctrl_ir_inst3_mat_vld   (dp_ctrl_ir_inst3_mat_vld  ),
   .dp_frt_inst0_dst_ereg      (dp_frt_inst0_dst_ereg     ),
   .dp_frt_inst0_dst_freg      (dp_frt_inst0_dst_freg     ),
   .dp_frt_inst0_dste_vld      (dp_frt_inst0_dste_vld     ),
@@ -3836,6 +3870,10 @@ ct_idu_ir_dp  x_ct_idu_ir_dp (
   .dp_ir_inst23_src_match     (dp_ir_inst23_src_match    ),
   .dp_ir_inst2_data           (dp_ir_inst2_data          ),
   .dp_ir_inst3_data           (dp_ir_inst3_data          ),
+  .dp_ir_inst0_mat_meta       (dp_ir_inst0_mat_meta      ),
+  .dp_ir_inst1_mat_meta       (dp_ir_inst1_mat_meta      ),
+  .dp_ir_inst2_mat_meta       (dp_ir_inst2_mat_meta      ),
+  .dp_ir_inst3_mat_meta       (dp_ir_inst3_mat_meta      ),
   .dp_rt_dep_info             (dp_rt_dep_info            ),
   .dp_rt_inst0_dst_preg       (dp_rt_inst0_dst_preg      ),
   .dp_rt_inst0_dst_reg        (dp_rt_inst0_dst_reg       ),
@@ -4315,7 +4353,14 @@ ct_idu_ir_vrt  x_ct_idu_ir_vrt (
   .vrt_dp_inst3_srcvm_data   (vrt_dp_inst3_srcvm_data  )
 );
 
-
+wire       ctrl_miq_create0_en           ;
+wire       ctrl_miq_create0_dp_en        ;
+wire       ctrl_miq_create0_gateclk_en   ;
+wire [1:0] ctrl_dp_is_dis_miq_create0_sel;
+wire       ctrl_miq_create1_en           ;
+wire       ctrl_miq_create1_dp_en        ;
+wire       ctrl_miq_create1_gateclk_en   ;
+wire [1:0] ctrl_dp_is_dis_miq_create1_sel;
 //==========================================================
 //                       IS Stage
 //==========================================================
@@ -4357,6 +4402,12 @@ ct_idu_is_ctrl  x_ct_idu_is_ctrl (
   .ctrl_biq_create1_dp_en              (ctrl_biq_create1_dp_en             ),
   .ctrl_biq_create1_en                 (ctrl_biq_create1_en                ),
   .ctrl_biq_create1_gateclk_en         (ctrl_biq_create1_gateclk_en        ),
+  .ctrl_miq_create0_en                 (ctrl_miq_create0_en                ),
+  .ctrl_miq_create0_dp_en              (ctrl_miq_create0_dp_en             ),
+  .ctrl_miq_create0_gateclk_en         (ctrl_miq_create0_gateclk_en        ),
+  .ctrl_miq_create1_en                 (ctrl_miq_create1_en                ),
+  .ctrl_miq_create1_dp_en              (ctrl_miq_create1_dp_en             ),
+  .ctrl_miq_create1_gateclk_en         (ctrl_miq_create1_gateclk_en        ),
   .ctrl_dp_dis_inst0_ereg_vld          (ctrl_dp_dis_inst0_ereg_vld         ),
   .ctrl_dp_dis_inst0_freg_vld          (ctrl_dp_dis_inst0_freg_vld         ),
   .ctrl_dp_dis_inst0_preg_vld          (ctrl_dp_dis_inst0_preg_vld         ),
@@ -4379,6 +4430,8 @@ ct_idu_is_ctrl  x_ct_idu_is_ctrl (
   .ctrl_dp_is_dis_aiq1_create1_sel     (ctrl_dp_is_dis_aiq1_create1_sel    ),
   .ctrl_dp_is_dis_biq_create0_sel      (ctrl_dp_is_dis_biq_create0_sel     ),
   .ctrl_dp_is_dis_biq_create1_sel      (ctrl_dp_is_dis_biq_create1_sel     ),
+  .ctrl_dp_is_dis_miq_create0_sel      (ctrl_dp_is_dis_miq_create0_sel     ),
+  .ctrl_dp_is_dis_miq_create1_sel      (ctrl_dp_is_dis_miq_create1_sel     ),
   .ctrl_dp_is_dis_lsiq_create0_sel     (ctrl_dp_is_dis_lsiq_create0_sel    ),
   .ctrl_dp_is_dis_lsiq_create1_sel     (ctrl_dp_is_dis_lsiq_create1_sel    ),
   .ctrl_dp_is_dis_pst_create1_iid_sel  (ctrl_dp_is_dis_pst_create1_iid_sel ),
@@ -4452,6 +4505,10 @@ ct_idu_is_ctrl  x_ct_idu_is_ctrl (
   .ctrl_ir_pre_dis_vmb_create0_sel     (ctrl_ir_pre_dis_vmb_create0_sel    ),
   .ctrl_ir_pre_dis_vmb_create1_en      (ctrl_ir_pre_dis_vmb_create1_en     ),
   .ctrl_ir_pre_dis_vmb_create1_sel     (ctrl_ir_pre_dis_vmb_create1_sel    ),
+  .ctrl_ir_pre_dis_miq_create0_en      (ctrl_ir_pre_dis_miq_create0_en     ),
+  .ctrl_ir_pre_dis_miq_create0_sel     (ctrl_ir_pre_dis_miq_create0_sel    ),
+  .ctrl_ir_pre_dis_miq_create1_en      (ctrl_ir_pre_dis_miq_create1_en     ),
+  .ctrl_ir_pre_dis_miq_create1_sel     (ctrl_ir_pre_dis_miq_create1_sel    ),
   .ctrl_ir_type_stall_inst2_vld        (ctrl_ir_type_stall_inst2_vld       ),
   .ctrl_ir_type_stall_inst3_vld        (ctrl_ir_type_stall_inst3_vld       ),
   .ctrl_is_dis_type_stall              (ctrl_is_dis_type_stall             ),
@@ -4587,6 +4644,8 @@ ct_idu_is_ctrl  x_ct_idu_is_ctrl (
   .viq1_ctrl_full_updt_clk_en          (viq1_ctrl_full_updt_clk_en         )
 );
 
+wire    [11 :0]  miq_aiq_create0_entry;
+wire    [11 :0]  miq_aiq_create1_entry;
 // &ConnRule(s/_dupx/_dup1/); @52
 // &Instance("ct_idu_is_dp", "x_ct_idu_is_dp"); @53
 ct_idu_is_dp  x_ct_idu_is_dp (
@@ -4596,6 +4655,8 @@ ct_idu_is_dp  x_ct_idu_is_dp (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -4611,6 +4672,10 @@ ct_idu_is_dp  x_ct_idu_is_dp (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_dis_inst0_ereg_vld              (ctrl_dp_dis_inst0_ereg_vld             ),
   .ctrl_dp_dis_inst0_freg_vld              (ctrl_dp_dis_inst0_freg_vld             ),
   .ctrl_dp_dis_inst0_preg_vld              (ctrl_dp_dis_inst0_preg_vld             ),
@@ -4633,6 +4698,8 @@ ct_idu_is_dp  x_ct_idu_is_dp (
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_pst_create1_iid_sel      (ctrl_dp_is_dis_pst_create1_iid_sel     ),
@@ -4713,6 +4780,8 @@ ct_idu_is_dp  x_ct_idu_is_dp (
   .dp_biq_create_src1_rdy_for_bypass       (dp_biq_create_src1_rdy_for_bypass      ),
   .dp_ctrl_is_dis_inst2_ctrl_info          (dp_ctrl_is_dis_inst2_ctrl_info         ),
   .dp_ctrl_is_dis_inst3_ctrl_info          (dp_ctrl_is_dis_inst3_ctrl_info         ),
+  .dp_ctrl_is_dis_inst2_mat_vld            (dp_ctrl_is_dis_inst2_mat_vld           ),
+  .dp_ctrl_is_dis_inst3_mat_vld            (dp_ctrl_is_dis_inst3_mat_vld           ),
   .dp_ctrl_is_inst0_bar                    (dp_ctrl_is_inst0_bar                   ),
   .dp_ctrl_is_inst0_dst_vld                (dp_ctrl_is_inst0_dst_vld               ),
   .dp_ctrl_is_inst0_dste_vld               (dp_ctrl_is_inst0_dste_vld              ),
@@ -4747,6 +4816,10 @@ ct_idu_is_dp  x_ct_idu_is_dp (
   .dp_ir_inst23_src_match                  (dp_ir_inst23_src_match                 ),
   .dp_ir_inst2_data                        (dp_ir_inst2_data                       ),
   .dp_ir_inst3_data                        (dp_ir_inst3_data                       ),
+  .dp_ir_inst0_mat_meta                    (dp_ir_inst0_mat_meta                   ),
+  .dp_ir_inst1_mat_meta                    (dp_ir_inst1_mat_meta                   ),
+  .dp_ir_inst2_mat_meta                    (dp_ir_inst2_mat_meta                   ),
+  .dp_ir_inst3_mat_meta                    (dp_ir_inst3_mat_meta                   ),
   .dp_lsiq_bypass_data                     (dp_lsiq_bypass_data                    ),
   .dp_lsiq_create0_bar                     (dp_lsiq_create0_bar                    ),
   .dp_lsiq_create0_data                    (dp_lsiq_create0_data                   ),
