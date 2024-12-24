@@ -33,6 +33,8 @@ module ct_idu_is_aiq1(
   aiq1_xx_issue_en,
   biq_aiq_create0_entry,
   biq_aiq_create1_entry,
+  miq_aiq_create0_entry,
+  miq_aiq_create1_entry,
   cp0_idu_icg_en,
   cp0_idu_iq_bypass_disable,
   cp0_yy_clk_en,
@@ -58,12 +60,18 @@ module ct_idu_is_aiq1(
   ctrl_biq_create0_gateclk_en,
   ctrl_biq_create1_dp_en,
   ctrl_biq_create1_gateclk_en,
+  ctrl_miq_create0_dp_en,
+  ctrl_miq_create0_gateclk_en,
+  ctrl_miq_create1_dp_en,
+  ctrl_miq_create1_gateclk_en,
   ctrl_dp_is_dis_aiq0_create0_sel,
   ctrl_dp_is_dis_aiq0_create1_sel,
   ctrl_dp_is_dis_aiq1_create0_sel,
   ctrl_dp_is_dis_aiq1_create1_sel,
   ctrl_dp_is_dis_biq_create0_sel,
   ctrl_dp_is_dis_biq_create1_sel,
+  ctrl_dp_is_dis_miq_create0_sel,
+  ctrl_dp_is_dis_miq_create1_sel,
   ctrl_dp_is_dis_lsiq_create0_sel,
   ctrl_dp_is_dis_lsiq_create1_sel,
   ctrl_dp_is_dis_sdiq_create0_sel,
@@ -139,6 +147,8 @@ input   [7  :0]  aiq0_aiq_create0_entry;
 input   [7  :0]  aiq0_aiq_create1_entry;                 
 input   [11 :0]  biq_aiq_create0_entry;                  
 input   [11 :0]  biq_aiq_create1_entry;                  
+input   [11 :0]  miq_aiq_create0_entry;                  
+input   [11 :0]  miq_aiq_create1_entry;
 input            cp0_idu_icg_en;                         
 input            cp0_idu_iq_bypass_disable;              
 input            cp0_yy_clk_en;                          
@@ -164,12 +174,18 @@ input            ctrl_biq_create0_dp_en;
 input            ctrl_biq_create0_gateclk_en;            
 input            ctrl_biq_create1_dp_en;                 
 input            ctrl_biq_create1_gateclk_en;            
+input            ctrl_miq_create0_dp_en;
+input            ctrl_miq_create0_gateclk_en;
+input            ctrl_miq_create1_dp_en;
+input            ctrl_miq_create1_gateclk_en;
 input   [1  :0]  ctrl_dp_is_dis_aiq0_create0_sel;        
 input   [1  :0]  ctrl_dp_is_dis_aiq0_create1_sel;        
 input   [1  :0]  ctrl_dp_is_dis_aiq1_create0_sel;        
 input   [1  :0]  ctrl_dp_is_dis_aiq1_create1_sel;        
 input   [1  :0]  ctrl_dp_is_dis_biq_create0_sel;         
 input   [1  :0]  ctrl_dp_is_dis_biq_create1_sel;         
+input   [1  :0]  ctrl_dp_is_dis_miq_create0_sel;         
+input   [1  :0]  ctrl_dp_is_dis_miq_create1_sel;         
 input   [1  :0]  ctrl_dp_is_dis_lsiq_create0_sel;        
 input   [1  :0]  ctrl_dp_is_dis_lsiq_create1_sel;        
 input   [1  :0]  ctrl_dp_is_dis_sdiq_create0_sel;        
@@ -184,9 +200,9 @@ input            ctrl_sdiq_create1_dp_en;
 input            ctrl_sdiq_create1_gateclk_en;           
 input            ctrl_xx_rf_pipe0_preg_lch_vld_dupx;     
 input            ctrl_xx_rf_pipe1_preg_lch_vld_dupx;     
-input   [213:0]  dp_aiq1_bypass_data;                    
-input   [213:0]  dp_aiq1_create0_data;                   
-input   [213:0]  dp_aiq1_create1_data;                   
+input   [237:0]  dp_aiq1_bypass_data;                    
+input   [237:0]  dp_aiq1_create0_data;                   
+input   [237:0]  dp_aiq1_create1_data;                   
 input            dp_aiq1_create_alu;                     
 input            dp_aiq1_create_src0_rdy_for_bypass;     
 input            dp_aiq1_create_src1_rdy_for_bypass;     
@@ -248,40 +264,40 @@ output           aiq1_ctrl_full;
 output           aiq1_ctrl_full_updt;                    
 output           aiq1_ctrl_full_updt_clk_en;             
 output  [7  :0]  aiq1_dp_issue_entry;                    
-output  [213:0]  aiq1_dp_issue_read_data;                
+output  [237:0]  aiq1_dp_issue_read_data;                
 output  [3  :0]  aiq1_top_aiq1_entry_cnt;                
 output           aiq1_xx_gateclk_issue_en;               
 output           aiq1_xx_issue_en;                       
 
 // &Regs; @29
 reg     [6  :0]  aiq1_entry0_create_agevec;              
-reg     [213:0]  aiq1_entry0_create_data;                
+reg     [237:0]  aiq1_entry0_create_data;                
 reg              aiq1_entry0_create_frz;                 
 reg     [6  :0]  aiq1_entry1_create_agevec;              
-reg     [213:0]  aiq1_entry1_create_data;                
+reg     [237:0]  aiq1_entry1_create_data;                
 reg              aiq1_entry1_create_frz;                 
 reg     [6  :0]  aiq1_entry2_create_agevec;              
-reg     [213:0]  aiq1_entry2_create_data;                
+reg     [237:0]  aiq1_entry2_create_data;                
 reg              aiq1_entry2_create_frz;                 
 reg     [6  :0]  aiq1_entry3_create_agevec;              
-reg     [213:0]  aiq1_entry3_create_data;                
+reg     [237:0]  aiq1_entry3_create_data;                
 reg              aiq1_entry3_create_frz;                 
 reg     [6  :0]  aiq1_entry4_create_agevec;              
-reg     [213:0]  aiq1_entry4_create_data;                
+reg     [237:0]  aiq1_entry4_create_data;                
 reg              aiq1_entry4_create_frz;                 
 reg     [6  :0]  aiq1_entry5_create_agevec;              
-reg     [213:0]  aiq1_entry5_create_data;                
+reg     [237:0]  aiq1_entry5_create_data;                
 reg              aiq1_entry5_create_frz;                 
 reg     [6  :0]  aiq1_entry6_create_agevec;              
-reg     [213:0]  aiq1_entry6_create_data;                
+reg     [237:0]  aiq1_entry6_create_data;                
 reg              aiq1_entry6_create_frz;                 
 reg     [6  :0]  aiq1_entry7_create_agevec;              
-reg     [213:0]  aiq1_entry7_create_data;                
+reg     [237:0]  aiq1_entry7_create_data;                
 reg              aiq1_entry7_create_frz;                 
 reg     [3  :0]  aiq1_entry_cnt;                         
 reg     [7  :0]  aiq1_entry_create0_in;                  
 reg     [7  :0]  aiq1_entry_create1_in;                  
-reg     [213:0]  aiq1_entry_read_data;                   
+reg     [237:0]  aiq1_entry_read_data;                   
 
 // &Wires; @30
 wire    [7  :0]  aiq0_aiq_create0_entry;                 
@@ -303,7 +319,7 @@ wire             aiq1_ctrl_full;
 wire             aiq1_ctrl_full_updt;                    
 wire             aiq1_ctrl_full_updt_clk_en;             
 wire    [7  :0]  aiq1_dp_issue_entry;                    
-wire    [213:0]  aiq1_dp_issue_read_data;                
+wire    [237:0]  aiq1_dp_issue_read_data;                
 wire    [6  :0]  aiq1_entry0_agevec;                     
 wire    [2  :0]  aiq1_entry0_alu0_reg_fwd_vld;           
 wire    [2  :0]  aiq1_entry0_alu1_reg_fwd_vld;           
@@ -316,7 +332,7 @@ wire             aiq1_entry0_mla_fwd_vld;
 wire             aiq1_entry0_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry0_pop_other_entry;            
 wire             aiq1_entry0_rdy;                        
-wire    [213:0]  aiq1_entry0_read_data;                  
+wire    [237:0]  aiq1_entry0_read_data;                  
 wire             aiq1_entry0_vld;                        
 wire             aiq1_entry0_vld_with_frz;               
 wire    [6  :0]  aiq1_entry1_agevec;                     
@@ -331,7 +347,7 @@ wire             aiq1_entry1_mla_fwd_vld;
 wire             aiq1_entry1_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry1_pop_other_entry;            
 wire             aiq1_entry1_rdy;                        
-wire    [213:0]  aiq1_entry1_read_data;                  
+wire    [237:0]  aiq1_entry1_read_data;                  
 wire             aiq1_entry1_vld;                        
 wire             aiq1_entry1_vld_with_frz;               
 wire    [6  :0]  aiq1_entry2_agevec;                     
@@ -346,7 +362,7 @@ wire             aiq1_entry2_mla_fwd_vld;
 wire             aiq1_entry2_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry2_pop_other_entry;            
 wire             aiq1_entry2_rdy;                        
-wire    [213:0]  aiq1_entry2_read_data;                  
+wire    [237:0]  aiq1_entry2_read_data;                  
 wire             aiq1_entry2_vld;                        
 wire             aiq1_entry2_vld_with_frz;               
 wire    [6  :0]  aiq1_entry3_agevec;                     
@@ -361,7 +377,7 @@ wire             aiq1_entry3_mla_fwd_vld;
 wire             aiq1_entry3_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry3_pop_other_entry;            
 wire             aiq1_entry3_rdy;                        
-wire    [213:0]  aiq1_entry3_read_data;                  
+wire    [237:0]  aiq1_entry3_read_data;                  
 wire             aiq1_entry3_vld;                        
 wire             aiq1_entry3_vld_with_frz;               
 wire    [6  :0]  aiq1_entry4_agevec;                     
@@ -376,7 +392,7 @@ wire             aiq1_entry4_mla_fwd_vld;
 wire             aiq1_entry4_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry4_pop_other_entry;            
 wire             aiq1_entry4_rdy;                        
-wire    [213:0]  aiq1_entry4_read_data;                  
+wire    [237:0]  aiq1_entry4_read_data;                  
 wire             aiq1_entry4_vld;                        
 wire             aiq1_entry4_vld_with_frz;               
 wire    [6  :0]  aiq1_entry5_agevec;                     
@@ -391,7 +407,7 @@ wire             aiq1_entry5_mla_fwd_vld;
 wire             aiq1_entry5_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry5_pop_other_entry;            
 wire             aiq1_entry5_rdy;                        
-wire    [213:0]  aiq1_entry5_read_data;                  
+wire    [237:0]  aiq1_entry5_read_data;                  
 wire             aiq1_entry5_vld;                        
 wire             aiq1_entry5_vld_with_frz;               
 wire    [6  :0]  aiq1_entry6_agevec;                     
@@ -406,7 +422,7 @@ wire             aiq1_entry6_mla_fwd_vld;
 wire             aiq1_entry6_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry6_pop_other_entry;            
 wire             aiq1_entry6_rdy;                        
-wire    [213:0]  aiq1_entry6_read_data;                  
+wire    [237:0]  aiq1_entry6_read_data;                  
 wire             aiq1_entry6_vld;                        
 wire             aiq1_entry6_vld_with_frz;               
 wire    [6  :0]  aiq1_entry7_agevec;                     
@@ -421,7 +437,7 @@ wire             aiq1_entry7_mla_fwd_vld;
 wire             aiq1_entry7_pop_cur_entry;              
 wire    [6  :0]  aiq1_entry7_pop_other_entry;            
 wire             aiq1_entry7_rdy;                        
-wire    [213:0]  aiq1_entry7_read_data;                  
+wire    [237:0]  aiq1_entry7_read_data;                  
 wire             aiq1_entry7_vld;                        
 wire             aiq1_entry7_vld_with_frz;               
 wire    [3  :0]  aiq1_entry_cnt_create;                  
@@ -447,6 +463,8 @@ wire             aiq1_xx_gateclk_issue_en;
 wire             aiq1_xx_issue_en;                       
 wire    [11 :0]  biq_aiq_create0_entry;                  
 wire    [11 :0]  biq_aiq_create1_entry;                  
+wire    [11 :0]  miq_aiq_create0_entry;                  
+wire    [11 :0]  miq_aiq_create1_entry;                  
 wire             cnt_clk;                                
 wire             cnt_clk_en;                             
 wire             cp0_idu_icg_en;                         
@@ -474,12 +492,18 @@ wire             ctrl_biq_create0_dp_en;
 wire             ctrl_biq_create0_gateclk_en;            
 wire             ctrl_biq_create1_dp_en;                 
 wire             ctrl_biq_create1_gateclk_en;            
+wire             ctrl_miq_create0_dp_en;
+wire             ctrl_miq_create0_gateclk_en;
+wire             ctrl_miq_create1_dp_en;
+wire             ctrl_miq_create1_gateclk_en;
 wire    [1  :0]  ctrl_dp_is_dis_aiq0_create0_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_aiq0_create1_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_aiq1_create0_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_aiq1_create1_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_biq_create0_sel;         
 wire    [1  :0]  ctrl_dp_is_dis_biq_create1_sel;         
+wire    [1  :0]  ctrl_dp_is_dis_miq_create0_sel;         
+wire    [1  :0]  ctrl_dp_is_dis_miq_create1_sel;         
 wire    [1  :0]  ctrl_dp_is_dis_lsiq_create0_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_lsiq_create1_sel;        
 wire    [1  :0]  ctrl_dp_is_dis_sdiq_create0_sel;        
@@ -494,9 +518,9 @@ wire             ctrl_sdiq_create1_dp_en;
 wire             ctrl_sdiq_create1_gateclk_en;           
 wire             ctrl_xx_rf_pipe0_preg_lch_vld_dupx;     
 wire             ctrl_xx_rf_pipe1_preg_lch_vld_dupx;     
-wire    [213:0]  dp_aiq1_bypass_data;                    
-wire    [213:0]  dp_aiq1_create0_data;                   
-wire    [213:0]  dp_aiq1_create1_data;                   
+wire    [237:0]  dp_aiq1_bypass_data;                    
+wire    [237:0]  dp_aiq1_create0_data;                   
+wire    [237:0]  dp_aiq1_create1_data;                   
 wire             dp_aiq1_create_alu;                     
 wire             dp_aiq1_create_src0_rdy_for_bypass;     
 wire             dp_aiq1_create_src1_rdy_for_bypass;     
@@ -550,7 +574,7 @@ wire             vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx;
 wire    [6  :0]  vfpu_idu_ex1_pipe7_preg_dupx;           
 
 
-parameter AIQ1_WIDTH             = 214;
+parameter AIQ1_WIDTH             = 238;
 
 //==========================================================
 //            ALU Issue Queue 1 Create Control
@@ -850,8 +874,8 @@ assign aiq1_entry_create_sel[3:0] = ~({4{ctrl_aiq1_create0_dp_en}}
 // &CombBeg; @299
 always @( aiq1_entry_create_sel[0]
        or aiq1_bypass_dp_en
-       or dp_aiq1_create1_data[213:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create1_data[237:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create1_agevec[7:1]
        or aiq1_entry_create0_agevec[7:1])
 begin
@@ -876,8 +900,8 @@ always @( aiq1_bypass_dp_en
        or aiq1_entry_create1_agevec[7:2]
        or aiq1_entry_create0_agevec[7:2]
        or aiq1_entry_create1_agevec[0]
-       or dp_aiq1_create1_data[213:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create1_data[237:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create_sel[1]
        or aiq1_entry_create0_agevec[0])
 begin
@@ -905,8 +929,8 @@ always @( aiq1_entry_create1_agevec[7:3]
        or aiq1_entry_create0_agevec[7:3]
        or aiq1_entry_create_sel[2]
        or aiq1_entry_create0_agevec[1:0]
-       or dp_aiq1_create1_data[213:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create1_data[237:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create1_agevec[1:0])
 begin
   if(!aiq1_entry_create_sel[2]) begin
@@ -929,10 +953,10 @@ end
 //----------------entry3 flop create signals----------------
 // &CombBeg; @351
 always @( aiq1_bypass_dp_en
-       or dp_aiq1_create1_data[213:0]
+       or dp_aiq1_create1_data[237:0]
        or aiq1_entry_create1_agevec[7:4]
        or aiq1_entry_create1_agevec[2:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create0_agevec[2:0]
        or aiq1_entry_create_sel[3]
        or aiq1_entry_create0_agevec[7:4])
@@ -959,10 +983,10 @@ end
 always @( aiq1_bypass_dp_en
        or aiq1_entry_create1_agevec[7:5]
        or aiq1_entry_create0_agevec[7:5]
-       or dp_aiq1_create1_data[213:0]
+       or dp_aiq1_create1_data[237:0]
        or aiq1_entry_create0_agevec[3:0]
        or aiq1_entry_create1_agevec[3:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create_sel[4])
 begin
   if(!aiq1_entry_create_sel[4]) begin
@@ -985,9 +1009,9 @@ end
 //----------------entry5 flop create signals----------------
 // &CombBeg; @387
 always @( aiq1_bypass_dp_en
-       or dp_aiq1_create1_data[213:0]
+       or dp_aiq1_create1_data[237:0]
        or aiq1_entry_create0_agevec[4:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create0_agevec[7:6]
        or aiq1_entry_create_sel[5]
        or aiq1_entry_create1_agevec[7:6]
@@ -1016,9 +1040,9 @@ always @( aiq1_entry_create0_agevec[7]
        or aiq1_entry_create1_agevec[7]
        or aiq1_bypass_dp_en
        or aiq1_entry_create0_agevec[5:0]
-       or dp_aiq1_create1_data[213:0]
+       or dp_aiq1_create1_data[237:0]
        or aiq1_entry_create1_agevec[5:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create_sel[6])
 begin
   if(!aiq1_entry_create_sel[6]) begin
@@ -1042,8 +1066,8 @@ end
 // &CombBeg; @423
 always @( aiq1_bypass_dp_en
        or aiq1_entry_create_sel[7]
-       or dp_aiq1_create1_data[213:0]
-       or dp_aiq1_create0_data[213:0]
+       or dp_aiq1_create1_data[237:0]
+       or dp_aiq1_create0_data[237:0]
        or aiq1_entry_create0_agevec[6:0]
        or aiq1_entry_create1_agevec[6:0])
 begin
@@ -1163,14 +1187,14 @@ assign aiq1_dp_issue_entry[7:0]  = (aiq1_create_bypass_empty) // 所有entry无�
 //if no instruction valid, the data path will always select bypass 
 //data path
 // &CombBeg; @538
-always @( aiq1_entry7_read_data[213:0]
-       or aiq1_entry3_read_data[213:0]
-       or aiq1_entry1_read_data[213:0]
-       or aiq1_entry0_read_data[213:0]
-       or aiq1_entry6_read_data[213:0]
-       or aiq1_entry2_read_data[213:0]
-       or aiq1_entry4_read_data[213:0]
-       or aiq1_entry5_read_data[213:0]
+always @( aiq1_entry7_read_data[237:0]
+       or aiq1_entry3_read_data[237:0]
+       or aiq1_entry1_read_data[237:0]
+       or aiq1_entry0_read_data[237:0]
+       or aiq1_entry6_read_data[237:0]
+       or aiq1_entry2_read_data[237:0]
+       or aiq1_entry4_read_data[237:0]
+       or aiq1_entry5_read_data[237:0]
        or aiq1_entry_issue_en[7:0])
 begin
   case (aiq1_entry_issue_en[7:0])
@@ -1261,6 +1285,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry0 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -1278,12 +1304,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry0 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -1373,6 +1405,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry1 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -1390,12 +1424,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry1 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -1485,6 +1525,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry2 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -1502,12 +1544,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry2 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -1597,6 +1645,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry3 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -1614,12 +1664,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry3 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -1709,6 +1765,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry4 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -1726,12 +1784,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry4 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -1821,6 +1885,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry5 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -1838,12 +1904,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry5 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -1933,6 +2005,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry6 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -1950,12 +2024,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry6 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -2045,6 +2125,8 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry7 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),  
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
   .cpurst_b                                (cpurst_b                               ),
@@ -2062,12 +2144,18 @@ ct_idu_is_aiq1_entry  x_ct_idu_is_aiq1_entry7 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),

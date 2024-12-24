@@ -21,6 +21,8 @@ module ct_idu_rf_ctrl(
   aiq1_xx_issue_en,
   biq_xx_gateclk_issue_en,
   biq_xx_issue_en,
+  miq_xx_gateclk_issue_en,                  
+  miq_xx_issue_en,                          
   cp0_idu_icg_en,
   cp0_yy_clk_en,
   cpurst_b,
@@ -41,6 +43,10 @@ module ct_idu_rf_ctrl(
   ctrl_biq_rf_pipe0_alu_reg_fwd_vld,
   ctrl_biq_rf_pipe1_alu_reg_fwd_vld,
   ctrl_biq_rf_pop_vld,
+  ctrl_miq_rf_lch_fail_vld,
+  ctrl_miq_rf_pipe0_alu_reg_fwd_vld,
+  ctrl_miq_rf_pipe1_alu_reg_fwd_vld,
+  ctrl_miq_rf_pop_vld,
   ctrl_dp_rf_pipe0_other_lch_fail,
   ctrl_dp_rf_pipe3_other_lch_fail,
   ctrl_dp_rf_pipe4_other_lch_fail,
@@ -72,11 +78,13 @@ module ct_idu_rf_ctrl(
   ctrl_xx_rf_pipe0_preg_lch_vld_dup2,
   ctrl_xx_rf_pipe0_preg_lch_vld_dup3,
   ctrl_xx_rf_pipe0_preg_lch_vld_dup4,
+  ctrl_xx_rf_pipe0_preg_lch_vld_dup5,
   ctrl_xx_rf_pipe1_preg_lch_vld_dup0,
   ctrl_xx_rf_pipe1_preg_lch_vld_dup1,
   ctrl_xx_rf_pipe1_preg_lch_vld_dup2,
   ctrl_xx_rf_pipe1_preg_lch_vld_dup3,
   ctrl_xx_rf_pipe1_preg_lch_vld_dup4,
+  ctrl_xx_rf_pipe1_preg_lch_vld_dup5,
   ctrl_xx_rf_pipe6_vmla_lch_vld_dup0,
   ctrl_xx_rf_pipe6_vmla_lch_vld_dup1,
   ctrl_xx_rf_pipe6_vmla_lch_vld_dup2,
@@ -131,6 +139,8 @@ module ct_idu_rf_ctrl(
   dp_ctrl_rf_pipe7_src_no_rdy,
   dp_ctrl_rf_pipe7_srcv2_vld,
   dp_ctrl_rf_pipe7_vmul_unsplit,
+  dp_ctrl_rf_pipe8_fu_sel,
+  dp_ctrl_rf_pipe8_src_no_rdy,
   forever_cpuclk,
   hpcp_idu_cnt_en,
   idu_cp0_rf_gateclk_sel,
@@ -183,6 +193,12 @@ module ct_idu_rf_ctrl(
   idu_vfpu_rf_pipe6_sel,
   idu_vfpu_rf_pipe7_gateclk_sel,
   idu_vfpu_rf_pipe7_sel,
+  idu_mat_rf_alu_gateclk_sel,
+  idu_mat_rf_alu_sel,
+  idu_mat_rf_lsu_gateclk_sel,
+  idu_mat_rf_lsu_sel,
+  idu_mat_rf_cfg_gateclk_sel,
+  idu_mat_rf_cfg_sel,
   iu_idu_div_wb_stall,
   iu_idu_ex1_pipe1_mult_stall,
   lsiq_xx_gateclk_issue_en,
@@ -208,6 +224,8 @@ input            aiq1_xx_gateclk_issue_en;
 input            aiq1_xx_issue_en;                         
 input            biq_xx_gateclk_issue_en;                  
 input            biq_xx_issue_en;                          
+input            miq_xx_gateclk_issue_en;                  
+input            miq_xx_issue_en;                          
 input            cp0_idu_icg_en;                           
 input            cp0_yy_clk_en;                            
 input            cpurst_b;                                 
@@ -215,12 +233,12 @@ input            dp_ctrl_is_aiq0_issue_alu_short;
 input            dp_ctrl_is_aiq0_issue_div;                
 input            dp_ctrl_is_aiq0_issue_dst_vld;            
 input            dp_ctrl_is_aiq0_issue_lch_preg;           
-input   [107:0]  dp_ctrl_is_aiq0_issue_lch_rdy;            
+input   [131:0]  dp_ctrl_is_aiq0_issue_lch_rdy;            
 input            dp_ctrl_is_aiq0_issue_special;            
 input            dp_ctrl_is_aiq1_issue_alu_short;          
 input            dp_ctrl_is_aiq1_issue_dst_vld;            
 input            dp_ctrl_is_aiq1_issue_lch_preg;           
-input   [107:0]  dp_ctrl_is_aiq1_issue_lch_rdy;            
+input   [131:0]  dp_ctrl_is_aiq1_issue_lch_rdy;            
 input   [7  :0]  dp_ctrl_is_aiq1_issue_mla_lch_rdy;        
 input            dp_ctrl_is_aiq1_issue_mla_vld;            
 input            dp_ctrl_is_viq0_issue_dstv_vld;           
@@ -257,6 +275,8 @@ input            dp_ctrl_rf_pipe7_mfvr;
 input            dp_ctrl_rf_pipe7_src_no_rdy;              
 input            dp_ctrl_rf_pipe7_srcv2_vld;               
 input            dp_ctrl_rf_pipe7_vmul_unsplit;            
+input   [2  :0]  dp_ctrl_rf_pipe8_fu_sel;
+input            dp_ctrl_rf_pipe8_src_no_rdy;
 input            forever_cpuclk;                           
 input            hpcp_idu_cnt_en;                          
 input            iu_idu_div_wb_stall;                      
@@ -292,6 +312,10 @@ output           ctrl_biq_rf_lch_fail_vld;
 output  [23 :0]  ctrl_biq_rf_pipe0_alu_reg_fwd_vld;        
 output  [23 :0]  ctrl_biq_rf_pipe1_alu_reg_fwd_vld;        
 output           ctrl_biq_rf_pop_vld;                      
+output           ctrl_miq_rf_lch_fail_vld;
+output  [23 :0]  ctrl_miq_rf_pipe0_alu_reg_fwd_vld;        
+output  [23 :0]  ctrl_miq_rf_pipe1_alu_reg_fwd_vld;        
+output           ctrl_miq_rf_pop_vld;
 output           ctrl_dp_rf_pipe0_other_lch_fail;          
 output           ctrl_dp_rf_pipe3_other_lch_fail;          
 output           ctrl_dp_rf_pipe4_other_lch_fail;          
@@ -323,11 +347,13 @@ output           ctrl_xx_rf_pipe0_preg_lch_vld_dup1;
 output           ctrl_xx_rf_pipe0_preg_lch_vld_dup2;       
 output           ctrl_xx_rf_pipe0_preg_lch_vld_dup3;       
 output           ctrl_xx_rf_pipe0_preg_lch_vld_dup4;       
+output           ctrl_xx_rf_pipe0_preg_lch_vld_dup5;
 output           ctrl_xx_rf_pipe1_preg_lch_vld_dup0;       
 output           ctrl_xx_rf_pipe1_preg_lch_vld_dup1;       
 output           ctrl_xx_rf_pipe1_preg_lch_vld_dup2;       
 output           ctrl_xx_rf_pipe1_preg_lch_vld_dup3;       
 output           ctrl_xx_rf_pipe1_preg_lch_vld_dup4;       
+output           ctrl_xx_rf_pipe1_preg_lch_vld_dup5;       
 output           ctrl_xx_rf_pipe6_vmla_lch_vld_dup0;       
 output           ctrl_xx_rf_pipe6_vmla_lch_vld_dup1;       
 output           ctrl_xx_rf_pipe6_vmla_lch_vld_dup2;       
@@ -387,6 +413,13 @@ output           idu_vfpu_rf_pipe6_sel;
 output           idu_vfpu_rf_pipe7_gateclk_sel;            
 output           idu_vfpu_rf_pipe7_sel;                    
 
+output           idu_mat_rf_alu_sel;
+output           idu_mat_rf_alu_gateclk_sel;
+output           idu_mat_rf_lsu_sel;
+output           idu_mat_rf_lsu_gateclk_sel;
+output           idu_mat_rf_cfg_sel;
+output           idu_mat_rf_cfg_gateclk_sel;
+
 // &Regs; @29
 reg              ctrl_rf_hpcp_pipe0_inst_vld_ff;           
 reg              ctrl_rf_hpcp_pipe0_rf_lch_fail_vld_ff;    
@@ -407,19 +440,20 @@ reg              ctrl_rf_hpcp_pipe6_inst_vld_ff;
 reg              ctrl_rf_hpcp_pipe6_rf_lch_fail_vld_ff;    
 reg              ctrl_rf_hpcp_pipe7_inst_vld_ff;           
 reg              ctrl_rf_hpcp_pipe7_rf_lch_fail_vld_ff;    
-reg     [107:0]  rf_pipe0_alu_reg_fwd_vld;                 
+reg     [131:0]  rf_pipe0_alu_reg_fwd_vld;                 
 reg              rf_pipe0_inst_vld;                        
-reg     [4  :0]  rf_pipe0_preg_lch_vld;                    
+reg     [5  :0]  rf_pipe0_preg_lch_vld;                    
 reg              rf_pipe0_special_vld;                     
-reg     [107:0]  rf_pipe1_alu_reg_fwd_vld;                 
+reg     [131:0]  rf_pipe1_alu_reg_fwd_vld;                 
 reg              rf_pipe1_inst_vld;                        
 reg     [7  :0]  rf_pipe1_mla_fwd_vld;                     
-reg     [4  :0]  rf_pipe1_preg_lch_vld;                    
+reg     [5  :0]  rf_pipe1_preg_lch_vld;                    
 reg              rf_pipe2_inst_vld;                        
 reg              rf_pipe3_inst_vld;                        
 reg              rf_pipe4_inst_vld;                        
 reg              rf_pipe5_inst_vld;                        
 reg              rf_pipe6_inst_vld;                        
+reg              rf_pipe8_inst_vld;
 reg     [3  :0]  rf_pipe6_vmla_rf_lch_vld;                 
 reg     [15 :0]  rf_pipe6_vmla_vreg_fwd_vld;               
 reg              rf_pipe7_inst_vld;                        
@@ -428,20 +462,22 @@ reg     [15 :0]  rf_pipe7_vmla_vreg_fwd_vld;
 
 // &Wires; @30
 wire             aiq0_issue_alu_fwd_inst;                  
-wire    [107:0]  aiq0_issue_alu_fwd_vld;                   
+wire    [131:0]  aiq0_issue_alu_fwd_vld;                   
 wire             aiq0_issue_alu_reg_vld;                   
 wire             aiq0_issue_special_vld;                   
 wire             aiq0_xx_gateclk_issue_en;                 
 wire             aiq0_xx_issue_en;                         
 wire             aiq1_issue_alu_fwd_inst;                  
-wire    [107:0]  aiq1_issue_alu_fwd_vld;                   
+wire    [131:0]  aiq1_issue_alu_fwd_vld;                   
 wire             aiq1_issue_alu_reg_vld;                   
 wire             aiq1_issue_mla_fwd_inst;                  
 wire    [7  :0]  aiq1_issue_mla_fwd_vld;                   
 wire             aiq1_xx_gateclk_issue_en;                 
 wire             aiq1_xx_issue_en;                         
 wire             biq_xx_gateclk_issue_en;                  
-wire             biq_xx_issue_en;                          
+wire             biq_xx_issue_en;
+wire             miq_xx_gateclk_issue_en;                  
+wire             miq_xx_issue_en;                                                    
 wire             cp0_idu_icg_en;                           
 wire             cp0_yy_clk_en;                            
 wire             cpurst_b;                                 
@@ -462,6 +498,10 @@ wire             ctrl_biq_rf_lch_fail_vld;
 wire    [23 :0]  ctrl_biq_rf_pipe0_alu_reg_fwd_vld;        
 wire    [23 :0]  ctrl_biq_rf_pipe1_alu_reg_fwd_vld;        
 wire             ctrl_biq_rf_pop_vld;                      
+wire             ctrl_miq_rf_lch_fail_vld;
+wire    [23 :0]  ctrl_miq_rf_pipe0_alu_reg_fwd_vld;        
+wire    [23 :0]  ctrl_miq_rf_pipe1_alu_reg_fwd_vld;        
+wire             ctrl_miq_rf_pop_vld;
 wire             ctrl_dp_rf_pipe0_other_lch_fail;          
 wire             ctrl_dp_rf_pipe3_other_lch_fail;          
 wire             ctrl_dp_rf_pipe4_other_lch_fail;          
@@ -506,6 +546,11 @@ wire             ctrl_rf_pipe1_src2_vld;
 wire             ctrl_rf_pipe2_inst_vld;                   
 wire             ctrl_rf_pipe2_lch_fail;                   
 wire             ctrl_rf_pipe2_pipedown_vld;               
+wire    [2  :0]  ctrl_rf_pipe8_fu_gateclk_sel;
+wire    [2  :0]  ctrl_rf_pipe8_fu_sel;
+wire             ctrl_rf_pipe8_inst_vld;
+wire             ctrl_rf_pipe8_lch_fail;
+wire             ctrl_rf_pipe8_pipedown_vld;
 wire             ctrl_rf_pipe3_inst_vld;                   
 wire             ctrl_rf_pipe3_lch_fail;                   
 wire             ctrl_rf_pipe3_other_lch_fail;             
@@ -565,11 +610,13 @@ wire             ctrl_xx_rf_pipe0_preg_lch_vld_dup1;
 wire             ctrl_xx_rf_pipe0_preg_lch_vld_dup2;       
 wire             ctrl_xx_rf_pipe0_preg_lch_vld_dup3;       
 wire             ctrl_xx_rf_pipe0_preg_lch_vld_dup4;       
+wire             ctrl_xx_rf_pipe0_preg_lch_vld_dup5;       
 wire             ctrl_xx_rf_pipe1_preg_lch_vld_dup0;       
 wire             ctrl_xx_rf_pipe1_preg_lch_vld_dup1;       
 wire             ctrl_xx_rf_pipe1_preg_lch_vld_dup2;       
 wire             ctrl_xx_rf_pipe1_preg_lch_vld_dup3;       
 wire             ctrl_xx_rf_pipe1_preg_lch_vld_dup4;       
+wire             ctrl_xx_rf_pipe1_preg_lch_vld_dup5;       
 wire             ctrl_xx_rf_pipe6_vmla_lch_vld_dup0;       
 wire             ctrl_xx_rf_pipe6_vmla_lch_vld_dup1;       
 wire             ctrl_xx_rf_pipe6_vmla_lch_vld_dup2;       
@@ -582,12 +629,12 @@ wire             dp_ctrl_is_aiq0_issue_alu_short;
 wire             dp_ctrl_is_aiq0_issue_div;                
 wire             dp_ctrl_is_aiq0_issue_dst_vld;            
 wire             dp_ctrl_is_aiq0_issue_lch_preg;           
-wire    [107:0]  dp_ctrl_is_aiq0_issue_lch_rdy;            
+wire    [131:0]  dp_ctrl_is_aiq0_issue_lch_rdy;            
 wire             dp_ctrl_is_aiq0_issue_special;            
 wire             dp_ctrl_is_aiq1_issue_alu_short;          
 wire             dp_ctrl_is_aiq1_issue_dst_vld;            
 wire             dp_ctrl_is_aiq1_issue_lch_preg;           
-wire    [107:0]  dp_ctrl_is_aiq1_issue_lch_rdy;            
+wire    [131:0]  dp_ctrl_is_aiq1_issue_lch_rdy;            
 wire    [7  :0]  dp_ctrl_is_aiq1_issue_mla_lch_rdy;        
 wire             dp_ctrl_is_aiq1_issue_mla_vld;            
 wire             dp_ctrl_is_viq0_issue_dstv_vld;           
@@ -624,6 +671,8 @@ wire             dp_ctrl_rf_pipe7_mfvr;
 wire             dp_ctrl_rf_pipe7_src_no_rdy;              
 wire             dp_ctrl_rf_pipe7_srcv2_vld;               
 wire             dp_ctrl_rf_pipe7_vmul_unsplit;            
+wire    [2  :0]  dp_ctrl_rf_pipe8_fu_sel;
+wire             dp_ctrl_rf_pipe8_src_no_rdy;
 wire             forever_cpuclk;                           
 wire             hpcp_clk;                                 
 wire             hpcp_clk_en;                              
@@ -678,6 +727,12 @@ wire             idu_vfpu_rf_pipe6_gateclk_sel;
 wire             idu_vfpu_rf_pipe6_sel;                    
 wire             idu_vfpu_rf_pipe7_gateclk_sel;            
 wire             idu_vfpu_rf_pipe7_sel;                    
+wire             idu_mat_rf_alu_sel;
+wire             idu_mat_rf_alu_gateclk_sel;
+wire             idu_mat_rf_lsu_sel;
+wire             idu_mat_rf_lsu_gateclk_sel;
+wire             idu_mat_rf_cfg_sel;
+wire             idu_mat_rf_cfg_gateclk_sel;
 wire             iu_idu_div_wb_stall;                      
 wire             iu_idu_ex1_pipe1_mult_stall;              
 wire             lsiq_xx_gateclk_issue_en;                 
@@ -721,12 +776,14 @@ assign rf_inst_clk_en = biq_xx_gateclk_issue_en
                         || sdiq_xx_gateclk_issue_en
                         || viq0_xx_gateclk_issue_en
                         || viq1_xx_gateclk_issue_en
+                        || miq_xx_gateclk_issue_en
                         || rf_pipe2_inst_vld
                         || rf_pipe3_inst_vld
                         || rf_pipe4_inst_vld
                         || rf_pipe5_inst_vld
                         || rf_pipe6_inst_vld
-                        || rf_pipe7_inst_vld;
+                        || rf_pipe7_inst_vld
+                        || rf_pipe8_inst_vld;
 // &Instance("gated_clk_cell", "x_rf_inst_gated_clk"); @47
 gated_clk_cell  x_rf_inst_gated_clk (
   .clk_in             (forever_cpuclk    ),
@@ -845,17 +902,17 @@ always @(posedge rf_inst0_clk or negedge cpurst_b)
 begin
   if(!cpurst_b) begin
     rf_pipe0_inst_vld          <= 1'b0;
-    rf_pipe0_preg_lch_vld[4:0] <= 5'b0;
+    rf_pipe0_preg_lch_vld[5:0] <= 6'b0;
     rf_pipe0_special_vld       <= 1'b0;
   end
   else if(rtu_idu_flush_fe || rtu_idu_flush_is) begin
     rf_pipe0_inst_vld          <= 1'b0;
-    rf_pipe0_preg_lch_vld[4:0] <= 5'b0;
+    rf_pipe0_preg_lch_vld[5:0] <= 6'b0;
     rf_pipe0_special_vld       <= 1'b0;
   end
   else begin
     rf_pipe0_inst_vld          <= aiq0_xx_issue_en;
-    rf_pipe0_preg_lch_vld[4:0] <= {5{aiq0_issue_alu_reg_vld}};
+    rf_pipe0_preg_lch_vld[5:0] <= {6{aiq0_issue_alu_reg_vld}};
     rf_pipe0_special_vld       <= aiq0_issue_special_vld;
   end
 end
@@ -866,6 +923,7 @@ assign ctrl_xx_rf_pipe0_preg_lch_vld_dup1 = rf_pipe0_preg_lch_vld[1];
 assign ctrl_xx_rf_pipe0_preg_lch_vld_dup2 = rf_pipe0_preg_lch_vld[2];
 assign ctrl_xx_rf_pipe0_preg_lch_vld_dup3 = rf_pipe0_preg_lch_vld[3];
 assign ctrl_xx_rf_pipe0_preg_lch_vld_dup4 = rf_pipe0_preg_lch_vld[4];
+assign ctrl_xx_rf_pipe0_preg_lch_vld_dup5 = rf_pipe0_preg_lch_vld[5];
 
 //----------------------------------------------------------
 //                Pipe1 Instruction Valid
@@ -877,15 +935,15 @@ always @(posedge rf_inst1_clk or negedge cpurst_b)
 begin
   if(!cpurst_b) begin
     rf_pipe1_inst_vld          <= 1'b0;
-    rf_pipe1_preg_lch_vld[4:0] <= 5'b0;
+    rf_pipe1_preg_lch_vld[5:0] <= 6'b0;
   end
   else if(rtu_idu_flush_fe ||   rtu_idu_flush_is) begin
     rf_pipe1_inst_vld          <= 1'b0;
-    rf_pipe1_preg_lch_vld[4:0] <= 5'b0;
+    rf_pipe1_preg_lch_vld[5:0] <= 6'b0;
   end
   else begin
     rf_pipe1_inst_vld          <= aiq1_xx_issue_en;
-    rf_pipe1_preg_lch_vld[4:0] <= {5{aiq1_issue_alu_reg_vld}};
+    rf_pipe1_preg_lch_vld[5:0] <= {6{aiq1_issue_alu_reg_vld}};
   end
 end
 
@@ -895,6 +953,7 @@ assign ctrl_xx_rf_pipe1_preg_lch_vld_dup1 = rf_pipe1_preg_lch_vld[1];
 assign ctrl_xx_rf_pipe1_preg_lch_vld_dup2 = rf_pipe1_preg_lch_vld[2];
 assign ctrl_xx_rf_pipe1_preg_lch_vld_dup3 = rf_pipe1_preg_lch_vld[3];
 assign ctrl_xx_rf_pipe1_preg_lch_vld_dup4 = rf_pipe1_preg_lch_vld[4];
+assign ctrl_xx_rf_pipe1_preg_lch_vld_dup5 = rf_pipe1_preg_lch_vld[5];
 
 //----------------------------------------------------------
 //                Pipe2 Instruction Valid
@@ -910,6 +969,21 @@ begin
 end
 
 assign ctrl_rf_pipe2_inst_vld    = rf_pipe2_inst_vld;
+
+//----------------------------------------------------------
+//                Pipe8 (Matrix) Instruction Valid
+//----------------------------------------------------------
+always @(posedge rf_inst_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b)
+    rf_pipe8_inst_vld <= 1'b0;
+  else if(rtu_idu_flush_fe || rtu_idu_flush_is)
+    rf_pipe8_inst_vld <= 1'b0;
+  else
+    rf_pipe8_inst_vld <= miq_xx_issue_en;
+end
+
+assign ctrl_rf_pipe8_inst_vld    = rf_pipe8_inst_vld;
 
 //----------------------------------------------------------
 //                Pipe3 Instruction Valid
@@ -1028,17 +1102,17 @@ assign ctrl_xx_rf_pipe7_vmla_lch_vld_dup3 = rf_pipe7_vmla_rf_lch_vld[3];
 assign aiq0_issue_alu_fwd_inst       = aiq0_xx_issue_en
                                        && dp_ctrl_is_aiq0_issue_dst_vld
                                        && dp_ctrl_is_aiq0_issue_alu_short;
-assign aiq0_issue_alu_fwd_vld[107:0] = {108{aiq0_issue_alu_fwd_inst}}
-                                       & dp_ctrl_is_aiq0_issue_lch_rdy[107:0];
+assign aiq0_issue_alu_fwd_vld[131:0] = {132{aiq0_issue_alu_fwd_inst}}
+                                       & dp_ctrl_is_aiq0_issue_lch_rdy[131:0];
 
 always @(posedge rf_inst0_clk or negedge cpurst_b)
 begin
   if(!cpurst_b)
-    rf_pipe0_alu_reg_fwd_vld[107:0] <= 108'b0;
+    rf_pipe0_alu_reg_fwd_vld[131:0] <= 132'b0;
   else if(rtu_idu_flush_fe || rtu_idu_flush_is)
-    rf_pipe0_alu_reg_fwd_vld[107:0] <= 108'b0;
+    rf_pipe0_alu_reg_fwd_vld[131:0] <= 132'b0;
   else
-    rf_pipe0_alu_reg_fwd_vld[107:0] <= aiq0_issue_alu_fwd_vld[107:0];
+    rf_pipe0_alu_reg_fwd_vld[131:0] <= aiq0_issue_alu_fwd_vld[131:0];
 end
 
 assign ctrl_aiq0_rf_pipe0_alu_reg_fwd_vld[23:0] = rf_pipe0_alu_reg_fwd_vld[23:0];
@@ -1046,6 +1120,7 @@ assign ctrl_aiq1_rf_pipe0_alu_reg_fwd_vld[23:0] = rf_pipe0_alu_reg_fwd_vld[47:24
 assign ctrl_biq_rf_pipe0_alu_reg_fwd_vld[23:0]  = rf_pipe0_alu_reg_fwd_vld[71:48];
 assign ctrl_lsiq_rf_pipe0_alu_reg_fwd_vld[23:0] = rf_pipe0_alu_reg_fwd_vld[95:72];
 assign ctrl_sdiq_rf_pipe0_alu_reg_fwd_vld[11:0] = rf_pipe0_alu_reg_fwd_vld[107:96];
+assign ctrl_miq_rf_pipe0_alu_reg_fwd_vld[23:0]  = rf_pipe0_alu_reg_fwd_vld[131:108];
 
 //----------------------------------------------------------
 //                Pipe1 Launch Ready valid
@@ -1053,8 +1128,8 @@ assign ctrl_sdiq_rf_pipe0_alu_reg_fwd_vld[11:0] = rf_pipe0_alu_reg_fwd_vld[107:9
 assign aiq1_issue_alu_fwd_inst       = aiq1_xx_issue_en
                                        && dp_ctrl_is_aiq1_issue_dst_vld
                                        && dp_ctrl_is_aiq1_issue_alu_short;
-assign aiq1_issue_alu_fwd_vld[107:0] = {108{aiq1_issue_alu_fwd_inst}}
-                                       & dp_ctrl_is_aiq1_issue_lch_rdy[107:0];
+assign aiq1_issue_alu_fwd_vld[131:0] = {132{aiq1_issue_alu_fwd_inst}}
+                                       & dp_ctrl_is_aiq1_issue_lch_rdy[131:0];
 
 assign aiq1_issue_mla_fwd_inst       = aiq1_xx_issue_en
                                        && dp_ctrl_is_aiq1_issue_mla_vld;
@@ -1064,15 +1139,15 @@ assign aiq1_issue_mla_fwd_vld[7:0]   = {8{aiq1_issue_mla_fwd_inst}}
 always @(posedge rf_inst1_clk or negedge cpurst_b)
 begin
   if(!cpurst_b) begin
-    rf_pipe1_alu_reg_fwd_vld[107:0] <= 108'b0;
+    rf_pipe1_alu_reg_fwd_vld[131:0] <= 132'b0;
     rf_pipe1_mla_fwd_vld[7:0]       <= 8'b0;
   end
   else if(rtu_idu_flush_fe || rtu_idu_flush_is) begin
-    rf_pipe1_alu_reg_fwd_vld[107:0] <= 108'b0;
+    rf_pipe1_alu_reg_fwd_vld[131:0] <= 132'b0;
     rf_pipe1_mla_fwd_vld[7:0]       <= 8'b0;
   end
   else begin
-    rf_pipe1_alu_reg_fwd_vld[107:0] <= aiq1_issue_alu_fwd_vld[107:0];
+    rf_pipe1_alu_reg_fwd_vld[131:0] <= aiq1_issue_alu_fwd_vld[131:0];
     rf_pipe1_mla_fwd_vld[7:0]       <= aiq1_issue_mla_fwd_vld[7:0];
   end
 end
@@ -1082,6 +1157,7 @@ assign ctrl_aiq1_rf_pipe1_alu_reg_fwd_vld[23:0] = rf_pipe1_alu_reg_fwd_vld[47:24
 assign ctrl_biq_rf_pipe1_alu_reg_fwd_vld[23:0]  = rf_pipe1_alu_reg_fwd_vld[71:48];
 assign ctrl_lsiq_rf_pipe1_alu_reg_fwd_vld[23:0] = rf_pipe1_alu_reg_fwd_vld[95:72];
 assign ctrl_sdiq_rf_pipe1_alu_reg_fwd_vld[11:0] = rf_pipe1_alu_reg_fwd_vld[107:96];
+assign ctrl_miq_rf_pipe1_alu_reg_fwd_vld[23:0]  = rf_pipe1_alu_reg_fwd_vld[131:108];
 
 assign ctrl_aiq1_rf_pipe1_mla_reg_lch_vld[7:0]  = rf_pipe1_mla_fwd_vld[7:0];
 
@@ -1297,6 +1373,7 @@ assign ctrl_rf_pipe6_lch_fail           = dp_ctrl_rf_pipe6_src_no_rdy
 assign ctrl_rf_pipe7_lch_fail           = dp_ctrl_rf_pipe7_src_no_rdy
                                           || ctrl_rf_pipe7_other_lch_fail;
 
+assign ctrl_rf_pipe8_lch_fail           = dp_ctrl_rf_pipe8_src_no_rdy;
 //==========================================================
 //                    RF Control Signals
 //==========================================================
@@ -1319,7 +1396,8 @@ assign ctrl_rf_pipe6_pipedown_vld       = ctrl_rf_pipe6_inst_vld
                                           && !ctrl_rf_pipe6_lch_fail;
 assign ctrl_rf_pipe7_pipedown_vld       = ctrl_rf_pipe7_inst_vld
                                           && !ctrl_rf_pipe7_lch_fail;
-
+assign ctrl_rf_pipe8_pipedown_vld       = ctrl_rf_pipe8_inst_vld
+                                          && !ctrl_rf_pipe8_lch_fail;
 //----------------------------------------------------------
 //                 lch fail to clear iq frz
 //----------------------------------------------------------
@@ -1339,6 +1417,8 @@ assign ctrl_viq0_rf_lch_fail_vld        = ctrl_rf_pipe6_inst_vld
                                           && ctrl_rf_pipe6_lch_fail;
 assign ctrl_viq1_rf_lch_fail_vld        = ctrl_rf_pipe7_inst_vld
                                           && ctrl_rf_pipe7_lch_fail;
+assign ctrl_miq_rf_lch_fail_vld         = ctrl_rf_pipe8_inst_vld
+                                          && ctrl_rf_pipe8_lch_fail;
 
 //----------------------------------------------------------
 //               no lch fail to pop iq entry
@@ -1349,6 +1429,7 @@ assign ctrl_aiq1_rf_pop_vld             = ctrl_rf_pipe1_pipedown_vld;
 assign ctrl_biq_rf_pop_vld              = ctrl_rf_pipe2_pipedown_vld;
 assign ctrl_viq0_rf_pop_vld             = ctrl_rf_pipe6_pipedown_vld;
 assign ctrl_viq1_rf_pop_vld             = ctrl_rf_pipe7_pipedown_vld;
+assign ctrl_miq_rf_pop_vld              = ctrl_rf_pipe8_pipedown_vld;
 //pop singals for IR dlb, optimized for timing
 assign ctrl_aiq0_rf_pop_dlb_vld         = ctrl_rf_pipe0_inst_vld;
 assign ctrl_aiq1_rf_pop_dlb_vld         = ctrl_rf_pipe1_inst_vld;
@@ -1375,6 +1456,8 @@ assign ctrl_rf_hpcp_pipe6_rf_lch_fail_vld = ctrl_rf_pipe6_inst_vld
                                             && dp_ctrl_rf_pipe6_src_no_rdy;
 assign ctrl_rf_hpcp_pipe7_rf_lch_fail_vld = ctrl_rf_pipe7_inst_vld
                                             && dp_ctrl_rf_pipe7_src_no_rdy;
+// assign ctrl_rf_hpcp_pipe8_rf_lch_fail_vld = ctrl_rf_pipe8_inst_vld
+//                                             && dp_ctrl_rf_pipe8_src_no_rdy;
 //lch fail by preg share
 assign ctrl_rf_hpcp_pipe3_rf_reg_lch_fail_vld = ctrl_rf_pipe3_inst_vld
                                                 && (ctrl_rf_pipe3_preg_lch_fail
@@ -1435,6 +1518,22 @@ assign idu_iu_rf_pipe1_cbus_gateclk_sel = ctrl_rf_pipe1_inst_vld;
 //----------------------------------------------------------
 assign idu_iu_rf_bju_sel            = ctrl_rf_pipe2_pipedown_vld;
 assign idu_iu_rf_bju_gateclk_sel    = ctrl_rf_pipe2_inst_vld;
+
+//----------------------------------------------------------
+//     Pipe8 Function Unit(Matrix ALU/LSU/CFG) Selection
+//----------------------------------------------------------
+assign ctrl_rf_pipe8_fu_sel[2:0] = 
+          {3{ctrl_rf_pipe8_pipedown_vld}} & dp_ctrl_rf_pipe8_fu_sel[2:0];
+assign ctrl_rf_pipe8_fu_gateclk_sel[2:0] =
+          {3{ctrl_rf_pipe8_inst_vld}}     & dp_ctrl_rf_pipe8_fu_sel[2:0];
+
+assign idu_mat_rf_alu_sel = ctrl_rf_pipe8_fu_sel[0]; // MAT_CAL = 4'b0001
+assign idu_mat_rf_lsu_sel = ctrl_rf_pipe8_fu_sel[1]; // MAT_LSU = 4'b0010
+assign idu_mat_rf_cfg_sel = ctrl_rf_pipe8_fu_sel[2]; // MAT_CFG = 4'b0100
+
+assign idu_mat_rf_alu_gateclk_sel = ctrl_rf_pipe8_fu_gateclk_sel[0];
+assign idu_mat_rf_lsu_gateclk_sel = ctrl_rf_pipe8_fu_gateclk_sel[1];
+assign idu_mat_rf_cfg_gateclk_sel = ctrl_rf_pipe8_fu_gateclk_sel[2];
 
 //----------------------------------------------------------
 //               Pipe3 Exectuion Unit Selection
@@ -1502,7 +1601,7 @@ assign ctrl_rf_hpcp_inst_vld    = rf_pipe0_inst_vld
                                || rf_pipe4_inst_vld
                                || rf_pipe5_inst_vld
                                || rf_pipe6_inst_vld
-                               || rf_pipe7_inst_vld;
+                               || rf_pipe7_inst_vld; // || rf_pipe8_inst_vld
 assign ctrl_rf_hpcp_inst_vld_ff = ctrl_rf_hpcp_pipe0_inst_vld_ff
                                || ctrl_rf_hpcp_pipe1_inst_vld_ff
                                || ctrl_rf_hpcp_pipe2_inst_vld_ff
@@ -1548,6 +1647,7 @@ begin
     ctrl_rf_hpcp_pipe5_inst_vld_ff            <= ctrl_rf_pipe5_inst_vld;
     ctrl_rf_hpcp_pipe6_inst_vld_ff            <= ctrl_rf_pipe6_inst_vld;
     ctrl_rf_hpcp_pipe7_inst_vld_ff            <= ctrl_rf_pipe7_inst_vld;
+    // ctrl_rf_hpcp_pipe8_inst_vld_ff            <= ctrl_rf_pipe8_inst_vld;
                                                                                           
     ctrl_rf_hpcp_pipe0_rf_lch_fail_vld_ff     <= ctrl_rf_hpcp_pipe0_rf_lch_fail_vld;
     ctrl_rf_hpcp_pipe1_rf_lch_fail_vld_ff     <= ctrl_rf_hpcp_pipe1_rf_lch_fail_vld;

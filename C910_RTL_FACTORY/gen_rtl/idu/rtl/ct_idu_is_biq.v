@@ -573,9 +573,9 @@ assign biq_entry_vld[9]          = biq_entry9_vld;
 assign biq_entry_vld[10]         = biq_entry10_vld;
 assign biq_entry_vld[11]         = biq_entry11_vld;
 
-assign biq_create_bypass_empty   = !(biq_entry0_vld_with_frz
-                                     || biq_entry1_vld_with_frz
-                                     || biq_entry2_vld_with_frz
+assign biq_create_bypass_empty   = !(biq_entry0_vld_with_frz // x_vld_with_frz = vld && !frz; 实际表示表项有效且未冻结
+                                     || biq_entry1_vld_with_frz // 表示如果IQ存在任一有效且未发射的表项, 
+                                     || biq_entry2_vld_with_frz //  则不会考虑创建并旁路直接issue(create bypass)
                                      || biq_entry3_vld_with_frz
                                      || biq_entry4_vld_with_frz
                                      || biq_entry5_vld_with_frz

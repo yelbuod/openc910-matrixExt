@@ -144,6 +144,11 @@ module ct_idu_is_dp(
   dp_biq_create1_data,
   dp_biq_create_src0_rdy_for_bypass,
   dp_biq_create_src1_rdy_for_bypass,
+  dp_miq_bypass_data,
+  dp_miq_create0_data,
+  dp_miq_create1_data,
+  dp_miq_create_src0_rdy_for_bypass,
+  dp_miq_create_src1_rdy_for_bypass,
   dp_ctrl_is_dis_inst2_ctrl_info,
   dp_ctrl_is_dis_inst3_ctrl_info,
   dp_ctrl_is_dis_inst2_mat_vld,
@@ -471,10 +476,10 @@ input   [270:0]  dp_ir_inst1_data;
 input   [3  :0]  dp_ir_inst23_src_match;                 
 input   [270:0]  dp_ir_inst2_data;                       
 input   [270:0]  dp_ir_inst3_data;                       
-input   [41 :0]  dp_ir_inst0_mat_meta;
-input   [41 :0]  dp_ir_inst1_mat_meta;
-input   [41 :0]  dp_ir_inst2_mat_meta;
-input   [41 :0]  dp_ir_inst3_mat_meta;
+input   [4  :0]  dp_ir_inst0_mat_meta;
+input   [4  :0]  dp_ir_inst1_mat_meta;
+input   [4  :0]  dp_ir_inst2_mat_meta;
+input   [4  :0]  dp_ir_inst3_mat_meta;
 input   [6  :0]  dp_xx_rf_pipe0_dst_preg_dupx;           
 input   [6  :0]  dp_xx_rf_pipe1_dst_preg_dupx;           
 input   [6  :0]  dp_xx_rf_pipe6_dst_vreg_dupx;           
@@ -585,6 +590,11 @@ output  [81 :0]  dp_biq_create0_data;
 output  [81 :0]  dp_biq_create1_data;                    
 output           dp_biq_create_src0_rdy_for_bypass;      
 output           dp_biq_create_src1_rdy_for_bypass;      
+output  [72:0]  dp_miq_bypass_data;
+output  [72:0]  dp_miq_create0_data;
+output  [72:0]  dp_miq_create1_data;
+output           dp_miq_create_src0_rdy_for_bypass;
+output           dp_miq_create_src1_rdy_for_bypass;
 output  [12 :0]  dp_ctrl_is_dis_inst2_ctrl_info;         
 output  [12 :0]  dp_ctrl_is_dis_inst3_ctrl_info;         
 output           dp_ctrl_is_dis_inst2_mat_vld;
@@ -773,6 +783,12 @@ reg     [4  :0]  is_biq_create0_pid;
 reg     [270:0]  is_biq_create1_data;                    
 reg     [6  :0]  is_biq_create1_iid;                     
 reg     [4  :0]  is_biq_create1_pid;                     
+reg     [270:0]  is_miq_create0_data    ;
+reg     [  6:0]  is_miq_create0_iid     ;
+reg     [  4:0]  is_miq_create0_mat_meta;
+reg     [270:0]  is_miq_create1_data    ;
+reg     [  6:0]  is_miq_create1_iid     ;
+reg     [  4:0]  is_miq_create1_mat_meta;
 reg     [3  :0]  is_inst01_create_src_match;             
 reg     [3  :0]  is_inst01_src_match;                    
 reg     [3  :0]  is_inst02_create_src_match;             
@@ -871,6 +887,8 @@ wire    [81 :0]  biq_create0_data;
 wire    [81 :0]  biq_create1_data;                       
 wire    [11 :0]  miq_aiq_create0_entry;
 wire    [11 :0]  miq_aiq_create1_entry;
+wire    [72 :0]  miq_create0_data;
+wire    [72 :0]  miq_create1_data;
 wire             cp0_idu_icg_en;                         
 wire             cp0_yy_clk_en;                          
 wire             cpurst_b;                               
@@ -1010,6 +1028,11 @@ wire    [81 :0]  dp_biq_create0_data;
 wire    [81 :0]  dp_biq_create1_data;                    
 wire             dp_biq_create_src0_rdy_for_bypass;      
 wire             dp_biq_create_src1_rdy_for_bypass;      
+wire    [72 :0]  dp_miq_bypass_data;
+wire    [72 :0]  dp_miq_create0_data;
+wire    [72 :0]  dp_miq_create1_data;
+wire             dp_miq_create_src0_rdy_for_bypass;
+wire             dp_miq_create_src1_rdy_for_bypass;
 wire    [12 :0]  dp_ctrl_is_dis_inst2_ctrl_info;         
 wire    [12 :0]  dp_ctrl_is_dis_inst3_ctrl_info;         
 wire             dp_ctrl_is_dis_inst2_mat_vld;
@@ -1048,10 +1071,10 @@ wire    [270:0]  dp_ir_inst1_data;
 wire    [3  :0]  dp_ir_inst23_src_match;                 
 wire    [270:0]  dp_ir_inst2_data;                       
 wire    [270:0]  dp_ir_inst3_data;                       
-wire    [41 :0]  dp_ir_inst0_mat_meta;
-wire    [41 :0]  dp_ir_inst1_mat_meta;
-wire    [41 :0]  dp_ir_inst2_mat_meta;
-wire    [41 :0]  dp_ir_inst3_mat_meta;
+wire    [4  :0]  dp_ir_inst0_mat_meta;
+wire    [4  :0]  dp_ir_inst1_mat_meta;
+wire    [4  :0]  dp_ir_inst2_mat_meta;
+wire    [4  :0]  dp_ir_inst3_mat_meta;
 wire    [162:0]  dp_lsiq_bypass_data;                    
 wire             dp_lsiq_create0_bar;                    
 wire    [162:0]  dp_lsiq_create0_data;                   
@@ -1388,14 +1411,14 @@ wire    [149:0]  viq1_create1_data;
 wire    [7  :0]  viq1_viq_create0_entry;                 
 wire    [7  :0]  viq1_viq_create1_entry;                 
 
-wire  [41:0] is_inst0_read_mat_meta  ;
-wire  [41:0] is_inst1_read_mat_meta  ;
-wire  [41:0] is_inst2_read_mat_meta  ;
-wire  [41:0] is_inst3_read_mat_meta  ;
-reg   [41:0] is_inst0_create_mat_meta;
-reg   [41:0] is_inst1_create_mat_meta;
-reg   [41:0] is_inst2_create_mat_meta;
-reg   [41:0] is_inst3_create_mat_meta;
+wire  [4:0] is_inst0_read_mat_meta  ;
+wire  [4:0] is_inst1_read_mat_meta  ;
+wire  [4:0] is_inst2_read_mat_meta  ;
+wire  [4:0] is_inst3_read_mat_meta  ;
+reg   [4:0] is_inst0_create_mat_meta;
+reg   [4:0] is_inst1_create_mat_meta;
+reg   [4:0] is_inst2_create_mat_meta;
+reg   [4:0] is_inst3_create_mat_meta;
 
 //==========================================================
 //                       Parameters
@@ -1650,6 +1673,28 @@ parameter BIQ_IID               = 38;
 parameter BIQ_OPCODE            = 31;
 
 //----------------------------------------------------------
+//                    MIQ Parameters
+//----------------------------------------------------------
+parameter MIQ_WIDTH             = 73;
+
+parameter MIQ_MAT_TYPE          = 72;
+parameter MIQ_SRC1_LSU_MATCH    = 68 ;
+parameter MIQ_SRC1_DATA         = 67 ;
+parameter MIQ_SRC1_PREG         = 67 ;
+parameter MIQ_SRC1_WB           = 60 ;
+parameter MIQ_SRC1_RDY          = 59 ;
+parameter MIQ_SRC0_LSU_MATCH    = 58 ;
+parameter MIQ_SRC0_DATA         = 57 ;
+parameter MIQ_SRC0_PREG         = 57 ;
+parameter MIQ_SRC0_WB           = 50 ;
+parameter MIQ_SRC0_RDY          = 49 ;
+parameter MIQ_DST_PREG          = 48 ;
+parameter MIQ_DST_VLD          = 41 ;
+parameter MIQ_SRC1_VLD          = 40 ;
+parameter MIQ_SRC0_VLD          = 39 ;
+parameter MIQ_IID               = 38 ;
+parameter MIQ_OPCODE            = 31 ;
+//----------------------------------------------------------
 //                    LSIQ Parameters
 //----------------------------------------------------------
 parameter LSIQ_WIDTH             = 163;
@@ -1882,8 +1927,9 @@ parameter ROB_VLD                = 0;
 //----------------------------------------------------------
 //                     Matrix Meta Parameters
 //----------------------------------------------------------
-parameter IS_MAT_META_WIDTH = 42;
-parameter IS_MAT_META_VLD = 41;
+parameter IS_MAT_META_WIDTH = 4;
+parameter IS_MAT_META_VLD   = 4;
+parameter IS_MAT_META_TYPE  = 3;
 
 //==========================================================
 //                IR/IS pipeline registers
@@ -1974,8 +2020,8 @@ end
 //----------------------------------------------------------
 //             IS pipeline Matrix meta registers shift MUX
 //----------------------------------------------------------
-always @( dp_ir_inst0_mat_meta[41:0]
-       or is_inst2_read_mat_meta[41:0]
+always @( dp_ir_inst0_mat_meta[4:0]
+       or is_inst2_read_mat_meta[4:0]
        or ctrl_xx_is_inst0_sel[1:0])
 begin
   case(ctrl_xx_is_inst0_sel[1:0])
@@ -1985,9 +2031,9 @@ begin
   endcase
 end
 
-always @( is_inst3_read_mat_meta[41:0]
-       or dp_ir_inst0_mat_meta[41:0]
-       or dp_ir_inst1_mat_meta[41:0]
+always @( is_inst3_read_mat_meta[4:0]
+       or dp_ir_inst0_mat_meta[4:0]
+       or dp_ir_inst1_mat_meta[4:0]
        or ctrl_xx_is_inst_sel[2:0])
 begin
   case(ctrl_xx_is_inst_sel[2:0])
@@ -1998,9 +2044,9 @@ begin
   endcase
 end
 
-always @( dp_ir_inst0_mat_meta[41:0]
-       or dp_ir_inst1_mat_meta[41:0]
-       or dp_ir_inst2_mat_meta[41:0]
+always @( dp_ir_inst0_mat_meta[4:0]
+       or dp_ir_inst1_mat_meta[4:0]
+       or dp_ir_inst2_mat_meta[4:0]
        or ctrl_xx_is_inst_sel[2:0])
 begin
   case(ctrl_xx_is_inst_sel[2:0])
@@ -2012,9 +2058,9 @@ begin
 end
 
 always @( ctrl_xx_is_inst_sel[2:0]
-       or dp_ir_inst1_mat_meta[41:0]
-       or dp_ir_inst2_mat_meta[41:0]
-       or dp_ir_inst3_mat_meta[41:0])
+       or dp_ir_inst1_mat_meta[4:0]
+       or dp_ir_inst2_mat_meta[4:0]
+       or dp_ir_inst3_mat_meta[4:0])
 begin
   case(ctrl_xx_is_inst_sel[2:0])
     3'b001 : is_inst3_create_mat_meta[IS_MAT_META_WIDTH-1:0] = dp_ir_inst1_mat_meta[IS_MAT_META_WIDTH-1:0];
@@ -4679,7 +4725,7 @@ assign is_inst2_lch_rdy_biq[23:0] =   is_inst2_lch_rdy_biq_create0[23:0]
                                     | is_inst2_lch_rdy_biq_create1[23:0];
 
 //----------------------------------------------------------
-//         Dispatch Inst1 Create Launch Ready MIQ
+//         Dispatch Inst2 Create Launch Ready MIQ
 //----------------------------------------------------------
 // &CombBeg; @1753
 always @( ctrl_dp_is_dis_miq_create0_sel[1:0]
@@ -5768,6 +5814,149 @@ assign dp_biq_bypass_data[BIQ_OPCODE:BIQ_OPCODE-31]       = is_biq_create0_data[
 
 assign dp_biq_create_src0_rdy_for_bypass = is_biq_create0_data[IS_SRC0_BP_RDY];
 assign dp_biq_create_src1_rdy_for_bypass = is_biq_create0_data[IS_SRC1_BP_RDY];
+
+//----------------------------------------------------------
+//                  Create Data for MIQ
+//----------------------------------------------------------
+always @( ctrl_dp_is_dis_miq_create0_sel[1:0]
+    or is_inst0_iid[6:0]
+    or is_inst1_iid[6:0]
+    or is_inst2_iid[6:0]
+    or is_inst3_iid[6:0]
+    or is_inst0_read_data[270:0]
+    or is_inst1_read_data[270:0]
+    or is_inst2_read_data[270:0]
+    or is_inst3_read_data[270:0]
+    or is_inst0_read_mat_meta[4:0]
+    or is_inst1_read_mat_meta[4:0]
+    or is_inst2_read_mat_meta[4:0]
+    or is_inst3_read_mat_meta[4:0])
+  begin
+    case(ctrl_dp_is_dis_miq_create0_sel[1:0])
+      2'd0 : begin
+        is_miq_create0_data[IS_WIDTH-1:0]              = is_inst0_read_data[IS_WIDTH-1:0];
+        is_miq_create0_iid[6:0]                        = is_inst0_iid[6:0];
+        is_miq_create0_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst0_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      2'd1 : begin
+        is_miq_create0_data[IS_WIDTH-1:0]              = is_inst1_read_data[IS_WIDTH-1:0];
+        is_miq_create0_iid[6:0]                        = is_inst1_iid[6:0];
+        is_miq_create0_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst1_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      2'd2 : begin
+        is_miq_create0_data[IS_WIDTH-1:0]              = is_inst2_read_data[IS_WIDTH-1:0];
+        is_miq_create0_iid[6:0]                        = is_inst2_iid[6:0];
+        is_miq_create0_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst2_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      2'd3 : begin
+        is_miq_create0_data[IS_WIDTH-1:0]              = is_inst3_read_data[IS_WIDTH-1:0];
+        is_miq_create0_iid[6:0]                        = is_inst3_iid[6:0];
+        is_miq_create0_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst3_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      default : begin
+        is_miq_create0_data[IS_WIDTH-1:0]              = {IS_WIDTH{1'bx}};
+        is_miq_create0_iid[6:0]                        = {7{1'bx}};
+        is_miq_create0_mat_meta[IS_MAT_META_WIDTH-1:0] = {IS_MAT_META_WIDTH{1'bx}};
+      end
+    endcase
+  end
+
+always @( ctrl_dp_is_dis_miq_create1_sel[1:0]
+    or is_inst0_iid[6:0]
+    or is_inst1_iid[6:0]
+    or is_inst2_iid[6:0]
+    or is_inst3_iid[6:0]
+    or is_inst0_read_data[270:0]
+    or is_inst1_read_data[270:0]
+    or is_inst2_read_data[270:0]
+    or is_inst3_read_data[270:0]
+    or is_inst0_read_mat_meta[4:0]
+    or is_inst1_read_mat_meta[4:0]
+    or is_inst2_read_mat_meta[4:0]
+    or is_inst3_read_mat_meta[4:0])
+  begin
+    case(ctrl_dp_is_dis_miq_create1_sel[1:0])
+      2'd0 : begin
+        is_miq_create1_data[IS_WIDTH-1:0]              = is_inst0_read_data[IS_WIDTH-1:0];
+        is_miq_create1_iid[6:0]                        = is_inst0_iid[6:0];
+        is_miq_create1_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst0_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      2'd1 : begin
+        is_miq_create1_data[IS_WIDTH-1:0]              = is_inst1_read_data[IS_WIDTH-1:0];
+        is_miq_create1_iid[6:0]                        = is_inst1_iid[6:0];
+        is_miq_create1_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst1_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      2'd2 : begin
+        is_miq_create1_data[IS_WIDTH-1:0]              = is_inst2_read_data[IS_WIDTH-1:0];
+        is_miq_create1_iid[6:0]                        = is_inst2_iid[6:0];
+        is_miq_create1_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst2_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      2'd3 : begin
+        is_miq_create1_data[IS_WIDTH-1:0]              = is_inst3_read_data[IS_WIDTH-1:0];
+        is_miq_create1_iid[6:0]                        = is_inst3_iid[6:0];
+        is_miq_create1_mat_meta[IS_MAT_META_WIDTH-1:0] = is_inst3_read_mat_meta[IS_MAT_META_WIDTH-1:0];
+      end
+      default : begin
+        is_miq_create1_data[IS_WIDTH-1:0]              = {IS_WIDTH{1'bx}};
+        is_miq_create1_iid[6:0]                        = {7{1'bx}};
+        is_miq_create1_mat_meta[IS_MAT_META_WIDTH-1:0] = {IS_MAT_META_WIDTH{1'bx}};
+      end
+    endcase
+  end
+//----------------------------------------------------------
+//                Reorganize for MIQ create
+//----------------------------------------------------------
+//operand mux for iq create
+assign dp_miq_create0_data[MIQ_WIDTH-1:0] = {MIQ_WIDTH{ctrl_miq_create0_gateclk_en}}
+                                            & miq_create0_data[MIQ_WIDTH-1:0];
+
+// TODO: 完善IS DP->MIQ
+assign miq_create0_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-3]   = is_miq_create0_mat_meta[IS_MAT_META_TYPE:IS_MAT_META_TYPE-3];
+assign miq_create0_data[MIQ_SRC1_LSU_MATCH]            = is_miq_create0_data[IS_SRC1_LSU_MATCH];
+assign miq_create0_data[MIQ_SRC1_DATA:MIQ_SRC1_DATA-8] = is_miq_create0_data[IS_SRC1_DATA:IS_SRC1_DATA-8];
+assign miq_create0_data[MIQ_SRC0_LSU_MATCH]            = is_miq_create0_data[IS_SRC0_LSU_MATCH];
+assign miq_create0_data[MIQ_SRC0_DATA:MIQ_SRC0_DATA-8] = is_miq_create0_data[IS_SRC0_DATA:IS_SRC0_DATA-8];
+assign miq_create0_data[MIQ_DST_PREG:MIQ_DST_PREG-6]   = is_miq_create0_data[IS_DST_PREG:IS_DST_PREG-6];
+assign miq_create0_data[MIQ_DST_VLD]                   = is_miq_create0_data[IS_DST_VLD];
+assign miq_create0_data[MIQ_SRC1_VLD]                  = is_miq_create0_data[IS_SRC1_VLD];
+assign miq_create0_data[MIQ_SRC0_VLD]                  = is_miq_create0_data[IS_SRC0_VLD];
+assign miq_create0_data[MIQ_IID:MIQ_IID-6]             = is_miq_create0_iid[6:0];
+assign miq_create0_data[MIQ_OPCODE:MIQ_OPCODE-31]      = is_miq_create0_data[IS_OPCODE:IS_OPCODE-31];
+
+//operand mux for iq create
+assign dp_miq_create1_data[MIQ_WIDTH-1:0] = {MIQ_WIDTH{ctrl_miq_create1_gateclk_en}}
+                                            & miq_create1_data[MIQ_WIDTH-1:0];
+
+assign miq_create1_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-3]   = is_miq_create1_mat_meta[IS_MAT_META_TYPE:IS_MAT_META_TYPE-3];
+assign miq_create1_data[MIQ_SRC1_LSU_MATCH]            = is_miq_create1_data[IS_SRC1_LSU_MATCH];
+assign miq_create1_data[MIQ_SRC1_DATA:MIQ_SRC1_DATA-8] = is_miq_create1_data[IS_SRC1_DATA:IS_SRC1_DATA-8];
+assign miq_create1_data[MIQ_SRC0_LSU_MATCH]            = is_miq_create1_data[IS_SRC0_LSU_MATCH];
+assign miq_create1_data[MIQ_SRC0_DATA:MIQ_SRC0_DATA-8] = is_miq_create1_data[IS_SRC0_DATA:IS_SRC0_DATA-8];
+assign miq_create1_data[MIQ_DST_PREG:MIQ_DST_PREG-6]   = is_miq_create1_data[IS_DST_PREG:IS_DST_PREG-6];
+assign miq_create1_data[MIQ_DST_VLD]                   = is_miq_create1_data[IS_DST_VLD];
+assign miq_create1_data[MIQ_SRC1_VLD]                  = is_miq_create1_data[IS_SRC1_VLD];
+assign miq_create1_data[MIQ_SRC0_VLD]                  = is_miq_create1_data[IS_SRC0_VLD];
+assign miq_create1_data[MIQ_IID:MIQ_IID-6]             = is_miq_create1_iid[6:0];
+assign miq_create1_data[MIQ_OPCODE:MIQ_OPCODE-31]      = is_miq_create1_data[IS_OPCODE:IS_OPCODE-31];
+
+assign dp_miq_bypass_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-3]   = is_miq_create0_mat_meta[IS_MAT_META_TYPE:IS_MAT_META_TYPE-3];
+assign dp_miq_bypass_data[MIQ_SRC1_LSU_MATCH]            = 1'b0;
+assign dp_miq_bypass_data[MIQ_SRC1_PREG:MIQ_SRC1_PREG-6] = is_miq_create0_data[IS_SRC1_PREG:IS_SRC1_PREG-6];
+assign dp_miq_bypass_data[MIQ_SRC1_WB]                   = is_miq_create0_data[IS_SRC1_WB];
+assign dp_miq_bypass_data[MIQ_SRC1_RDY]                  = 1'b0;
+assign dp_miq_bypass_data[MIQ_SRC0_LSU_MATCH]            = 1'b0;
+assign dp_miq_bypass_data[MIQ_SRC0_PREG:BIQ_SRC0_PREG-6] = is_miq_create0_data[IS_SRC0_PREG:IS_SRC0_PREG-6];
+assign dp_miq_bypass_data[MIQ_SRC0_WB]                   = is_miq_create0_data[IS_SRC0_WB];
+assign dp_miq_bypass_data[MIQ_SRC0_RDY]                  = 1'b0;
+assign dp_miq_bypass_data[MIQ_DST_PREG:MIQ_DST_PREG-6]   = is_miq_create0_data[IS_DST_PREG:IS_DST_PREG-6];
+assign dp_miq_bypass_data[MIQ_DST_VLD]                   = is_miq_create0_data[IS_DST_VLD];
+assign dp_miq_bypass_data[MIQ_SRC1_VLD]                  = is_miq_create0_data[IS_SRC1_VLD];
+assign dp_miq_bypass_data[MIQ_SRC0_VLD]                  = is_miq_create0_data[IS_SRC0_VLD];
+assign dp_miq_bypass_data[MIQ_IID:BIQ_IID-6]             = is_miq_create0_iid[6:0];
+assign dp_miq_bypass_data[MIQ_OPCODE:BIQ_OPCODE-31]      = is_miq_create0_data[IS_OPCODE:IS_OPCODE-31];
+
+assign dp_miq_create_src0_rdy_for_bypass = is_miq_create0_data[IS_SRC0_BP_RDY]; // bypass ready
+assign dp_miq_create_src1_rdy_for_bypass = is_miq_create0_data[IS_SRC1_BP_RDY];
 
 //----------------------------------------------------------
 //                  Create Data for LSIQ

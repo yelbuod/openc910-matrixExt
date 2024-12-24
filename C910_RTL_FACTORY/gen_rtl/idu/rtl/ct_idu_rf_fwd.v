@@ -24,6 +24,8 @@ module ct_idu_rf_fwd(
   dp_fwd_rf_pipe1_src1_preg,
   dp_fwd_rf_pipe2_src0_preg,
   dp_fwd_rf_pipe2_src1_preg,
+  dp_fwd_rf_pipe8_src0_preg,
+  dp_fwd_rf_pipe8_src1_preg,
   dp_fwd_rf_pipe3_src0_preg,
   dp_fwd_rf_pipe3_src1_preg,
   dp_fwd_rf_pipe4_src0_preg,
@@ -52,6 +54,10 @@ module ct_idu_rf_fwd(
   fwd_dp_rf_pipe2_src0_no_fwd,
   fwd_dp_rf_pipe2_src1_data,
   fwd_dp_rf_pipe2_src1_no_fwd,
+  fwd_dp_rf_pipe8_src0_data,
+  fwd_dp_rf_pipe8_src0_no_fwd,
+  fwd_dp_rf_pipe8_src1_data,
+  fwd_dp_rf_pipe8_src1_no_fwd,
   fwd_dp_rf_pipe3_src0_data,
   fwd_dp_rf_pipe3_src0_no_fwd,
   fwd_dp_rf_pipe3_src1_data,
@@ -176,6 +182,8 @@ input   [6 :0]  dp_fwd_rf_pipe1_src0_preg;
 input   [6 :0]  dp_fwd_rf_pipe1_src1_preg;             
 input   [6 :0]  dp_fwd_rf_pipe2_src0_preg;             
 input   [6 :0]  dp_fwd_rf_pipe2_src1_preg;             
+input   [6 :0]  dp_fwd_rf_pipe8_src0_preg;             
+input   [6 :0]  dp_fwd_rf_pipe8_src1_preg;             
 input   [6 :0]  dp_fwd_rf_pipe3_src0_preg;             
 input   [6 :0]  dp_fwd_rf_pipe3_src1_preg;             
 input   [6 :0]  dp_fwd_rf_pipe4_src0_preg;             
@@ -265,6 +273,10 @@ output  [63:0]  fwd_dp_rf_pipe2_src0_data;
 output          fwd_dp_rf_pipe2_src0_no_fwd;           
 output  [63:0]  fwd_dp_rf_pipe2_src1_data;             
 output          fwd_dp_rf_pipe2_src1_no_fwd;           
+output  [63:0]  fwd_dp_rf_pipe8_src0_data;             
+output          fwd_dp_rf_pipe8_src0_no_fwd;           
+output  [63:0]  fwd_dp_rf_pipe8_src1_data;             
+output          fwd_dp_rf_pipe8_src1_no_fwd;           
 output  [63:0]  fwd_dp_rf_pipe3_src0_data;             
 output          fwd_dp_rf_pipe3_src0_no_fwd;           
 output  [63:0]  fwd_dp_rf_pipe3_src1_data;             
@@ -329,6 +341,8 @@ wire    [6 :0]  dp_fwd_rf_pipe1_src0_preg;
 wire    [6 :0]  dp_fwd_rf_pipe1_src1_preg;             
 wire    [6 :0]  dp_fwd_rf_pipe2_src0_preg;             
 wire    [6 :0]  dp_fwd_rf_pipe2_src1_preg;             
+wire    [6 :0]  dp_fwd_rf_pipe8_src0_preg;             
+wire    [6 :0]  dp_fwd_rf_pipe8_src1_preg;             
 wire    [6 :0]  dp_fwd_rf_pipe3_src0_preg;             
 wire    [6 :0]  dp_fwd_rf_pipe3_src1_preg;             
 wire    [6 :0]  dp_fwd_rf_pipe4_src0_preg;             
@@ -357,6 +371,10 @@ wire    [63:0]  fwd_dp_rf_pipe2_src0_data;
 wire            fwd_dp_rf_pipe2_src0_no_fwd;           
 wire    [63:0]  fwd_dp_rf_pipe2_src1_data;             
 wire            fwd_dp_rf_pipe2_src1_no_fwd;           
+wire    [63:0]  fwd_dp_rf_pipe8_src0_data;             
+wire            fwd_dp_rf_pipe8_src0_no_fwd;           
+wire    [63:0]  fwd_dp_rf_pipe8_src1_data;             
+wire            fwd_dp_rf_pipe8_src1_no_fwd;           
 wire    [63:0]  fwd_dp_rf_pipe3_src0_data;             
 wire            fwd_dp_rf_pipe3_src0_no_fwd;           
 wire    [63:0]  fwd_dp_rf_pipe3_src1_data;             
@@ -674,6 +692,75 @@ ct_idu_rf_fwd_preg  x_ct_idu_rf_fwd_preg_pipe2_src1 (
 // &Connect(.x_src_reg               (dp_fwd_rf_pipe2_src1_preg[6:0]), @64
 //          .x_src_data              (fwd_dp_rf_pipe2_src1_data[63:0]), @65
 //          .x_src_no_fwd            (fwd_dp_rf_pipe2_src1_no_fwd)); @66
+
+
+
+
+
+//==========================================================
+//                      Pipe8 Forward
+//==========================================================
+// &Instance("ct_idu_rf_fwd_preg","x_ct_idu_rf_fwd_preg_pipe8_src0"); @59
+ct_idu_rf_fwd_preg  x_ct_idu_rf_fwd_preg_pipe8_src0 (
+  .iu_idu_ex1_pipe0_fwd_preg       (iu_idu_ex1_pipe0_fwd_preg      ),
+  .iu_idu_ex1_pipe0_fwd_preg_data  (iu_idu_ex1_pipe0_fwd_preg_data ),
+  .iu_idu_ex1_pipe0_fwd_preg_vld   (iu_idu_ex1_pipe0_fwd_preg_vld  ),
+  .iu_idu_ex1_pipe1_fwd_preg       (iu_idu_ex1_pipe1_fwd_preg      ),
+  .iu_idu_ex1_pipe1_fwd_preg_data  (iu_idu_ex1_pipe1_fwd_preg_data ),
+  .iu_idu_ex1_pipe1_fwd_preg_vld   (iu_idu_ex1_pipe1_fwd_preg_vld  ),
+  .iu_idu_ex2_pipe0_wb_preg        (iu_idu_ex2_pipe0_wb_preg       ),
+  .iu_idu_ex2_pipe0_wb_preg_data   (iu_idu_ex2_pipe0_wb_preg_data  ),
+  .iu_idu_ex2_pipe0_wb_preg_vld    (iu_idu_ex2_pipe0_wb_preg_vld   ),
+  .iu_idu_ex2_pipe1_wb_preg        (iu_idu_ex2_pipe1_wb_preg       ),
+  .iu_idu_ex2_pipe1_wb_preg_data   (iu_idu_ex2_pipe1_wb_preg_data  ),
+  .iu_idu_ex2_pipe1_wb_preg_vld    (iu_idu_ex2_pipe1_wb_preg_vld   ),
+  .lsu_idu_da_pipe3_fwd_preg       (lsu_idu_da_pipe3_fwd_preg      ),
+  .lsu_idu_da_pipe3_fwd_preg_data  (lsu_idu_da_pipe3_fwd_preg_data ),
+  .lsu_idu_da_pipe3_fwd_preg_vld   (lsu_idu_da_pipe3_fwd_preg_vld  ),
+  .lsu_idu_wb_pipe3_wb_preg        (lsu_idu_wb_pipe3_wb_preg       ),
+  .lsu_idu_wb_pipe3_wb_preg_data   (lsu_idu_wb_pipe3_wb_preg_data  ),
+  .lsu_idu_wb_pipe3_wb_preg_vld    (lsu_idu_wb_pipe3_wb_preg_vld   ),
+  .x_src_data                      (fwd_dp_rf_pipe8_src0_data[63:0]),
+  .x_src_no_fwd                    (fwd_dp_rf_pipe8_src0_no_fwd    ),
+  .x_src_reg                       (dp_fwd_rf_pipe8_src0_preg[6:0] )
+);
+
+// &Connect(.x_src_reg               (dp_fwd_rf_pipe8_src0_preg[6:0]), @60
+//          .x_src_data              (fwd_dp_rf_pipe8_src0_data[63:0]), @61
+//          .x_src_no_fwd            (fwd_dp_rf_pipe8_src0_no_fwd)); @62
+
+// &Instance("ct_idu_rf_fwd_preg","x_ct_idu_rf_fwd_preg_pipe8_src1"); @63
+ct_idu_rf_fwd_preg  x_ct_idu_rf_fwd_preg_pipe8_src1 (
+  .iu_idu_ex1_pipe0_fwd_preg       (iu_idu_ex1_pipe0_fwd_preg      ),
+  .iu_idu_ex1_pipe0_fwd_preg_data  (iu_idu_ex1_pipe0_fwd_preg_data ),
+  .iu_idu_ex1_pipe0_fwd_preg_vld   (iu_idu_ex1_pipe0_fwd_preg_vld  ),
+  .iu_idu_ex1_pipe1_fwd_preg       (iu_idu_ex1_pipe1_fwd_preg      ),
+  .iu_idu_ex1_pipe1_fwd_preg_data  (iu_idu_ex1_pipe1_fwd_preg_data ),
+  .iu_idu_ex1_pipe1_fwd_preg_vld   (iu_idu_ex1_pipe1_fwd_preg_vld  ),
+  .iu_idu_ex2_pipe0_wb_preg        (iu_idu_ex2_pipe0_wb_preg       ),
+  .iu_idu_ex2_pipe0_wb_preg_data   (iu_idu_ex2_pipe0_wb_preg_data  ),
+  .iu_idu_ex2_pipe0_wb_preg_vld    (iu_idu_ex2_pipe0_wb_preg_vld   ),
+  .iu_idu_ex2_pipe1_wb_preg        (iu_idu_ex2_pipe1_wb_preg       ),
+  .iu_idu_ex2_pipe1_wb_preg_data   (iu_idu_ex2_pipe1_wb_preg_data  ),
+  .iu_idu_ex2_pipe1_wb_preg_vld    (iu_idu_ex2_pipe1_wb_preg_vld   ),
+  .lsu_idu_da_pipe3_fwd_preg       (lsu_idu_da_pipe3_fwd_preg      ),
+  .lsu_idu_da_pipe3_fwd_preg_data  (lsu_idu_da_pipe3_fwd_preg_data ),
+  .lsu_idu_da_pipe3_fwd_preg_vld   (lsu_idu_da_pipe3_fwd_preg_vld  ),
+  .lsu_idu_wb_pipe3_wb_preg        (lsu_idu_wb_pipe3_wb_preg       ),
+  .lsu_idu_wb_pipe3_wb_preg_data   (lsu_idu_wb_pipe3_wb_preg_data  ),
+  .lsu_idu_wb_pipe3_wb_preg_vld    (lsu_idu_wb_pipe3_wb_preg_vld   ),
+  .x_src_data                      (fwd_dp_rf_pipe8_src1_data[63:0]),
+  .x_src_no_fwd                    (fwd_dp_rf_pipe8_src1_no_fwd    ),
+  .x_src_reg                       (dp_fwd_rf_pipe8_src1_preg[6:0] )
+);
+
+// &Connect(.x_src_reg               (dp_fwd_rf_pipe8_src1_preg[6:0]), @64
+//          .x_src_data              (fwd_dp_rf_pipe8_src1_data[63:0]), @65
+//          .x_src_no_fwd            (fwd_dp_rf_pipe8_src1_no_fwd)); @66
+
+
+
+
 
 //==========================================================
 //                      Pipe3 Forward

@@ -1,15 +1,3 @@
-// matrix basic decode information
-parameter M_DATA_IR_WIDTH = 55;
-parameter M_INST          = 54;
-parameter M_TYPE          = 22;
-parameter M_DST_X0        = 18;
-parameter M_DST_VLD       = 17;
-parameter M_DST_REG       = 16;
-parameter M_SRC0_VLD      = 11;
-parameter M_SRC0_REG      = 10;
-parameter M_SRC1_VLD      = 5 ;
-parameter M_SRC1_REG      = 4 ;
-
 // matrix decode type
 parameter MAT_TYPE_WIDTH  = 4      ;
 parameter MAT_CAL         = 4'b0001;
@@ -43,66 +31,56 @@ parameter MAT_CFG_M             = 4'b0010;
 parameter MAT_CFG_N             = 4'b0100;
 parameter MAT_CFG_ALL           = 4'b1000;
 
-parameter MAT_DATA_WIDTH = 37;
-
-parameter MAT_ALU_DATA_WIDTH     = 37;
-parameter MAT_ALU_OP             = 36; // 36:26
-parameter MAT_ALU_DSTM_VLD       = 25;
-parameter MAT_ALU_DSTM_IDX       = 24; // 24:22
-parameter MAT_ALU_SRC0M_VLD      = 21;
-parameter MAT_ALU_SRC0M_UNSIGNED = 20;
-parameter MAT_ALU_SRC0M_IDX      = 19; // 19:17
-parameter MAT_ALU_SRC1M_VLD      = 16;
-parameter MAT_ALU_SRC1M_UNSIGNED = 15;
-parameter MAT_ALU_SRC1M_IDX      = 14; // 14:12
-parameter MAT_ALU_SRC0_VLD       = 11;
-parameter MAT_ALU_SRC0_REG       = 10; // 10:6
+parameter MAT_ALU_DATA_WIDTH     = 31;
+parameter MAT_ALU_OP             = 30; // 30:20
+parameter MAT_ALU_DSTM_VLD       = 19;
+parameter MAT_ALU_DSTM_IDX       = 18; // 18:16
+parameter MAT_ALU_SRC1M_VLD      = 15;
+parameter MAT_ALU_SRC1M_UNSIGNED = 14;
+parameter MAT_ALU_SRC1M_IDX      = 13; // 13:11
+parameter MAT_ALU_SRC0M_VLD      = 10;
+parameter MAT_ALU_SRC0M_UNSIGNED = 9;
+parameter MAT_ALU_SRC0M_IDX      = 8; // 8:6
 parameter MAT_ALU_UIMM3_VLD      = 5 ;
 parameter MAT_ALU_UIMM3          = 4 ; // 4:2
 parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
 
-parameter MAT_LSU_DATA_WIDTH = 28;
-parameter MAT_LSU_OP         = 27; // 27:26
-parameter MAT_LSU_DSTM_VLD   = 25;
-parameter MAT_LSU_DSTM_IDX   = 24; // 24:22
-parameter MAT_LSU_SRC2M_VLD  = 21;
-parameter MAT_LSU_SRC2M_IDX  = 20; // 20:18
-parameter MAT_LSU_SCR0_VLD   = 17;
-parameter MAT_LSU_SRC0_IDX   = 16; // 16:12
-parameter MAT_LSU_SRC1_VLD   = 11;
-parameter MAT_LSU_SRC1_IDX   = 10; // 10:6
+parameter MAT_LSU_DATA_WIDTH = 16;
+parameter MAT_LSU_OP         = 15; // 15:14
+parameter MAT_LSU_DSTM_VLD   = 13;
+parameter MAT_LSU_DSTM_IDX   = 12; // 12:10
+parameter MAT_LSU_SRC2M_VLD  = 9;
+parameter MAT_LSU_SRC2M_IDX  = 8; // 8:6
 parameter MAT_LSU_NF_VLD     = 5 ;
 parameter MAT_LSU_NF         = 4 ; // 4:2
 parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
 
-parameter MAT_CFG_DATA_WIDTH = 25;
-parameter MAT_CFG_OP         = 24; // 24:21
-parameter MAT_CFG_DST_X0     = 20;
-parameter MAT_CFG_DST_VLD    = 19;
-parameter MAT_CFG_DST_REG    = 18; // 18:14
-parameter MAT_CFG_SRC0_VLD   = 13;
-parameter MAT_CFG_SRC0_REG   = 12; // 12:8
+parameter MAT_CFG_DATA_WIDTH = 12;
+parameter MAT_CFG_OP         = 11; // 11:8
 parameter MAT_CFG_UIMM7_VLD  = 7 ;
 parameter MAT_CFG_UIMM7      = 6 ; // 6:0
 
-module ct_mat_idu_decd (
-    input        [              54:0] id_inst_m_data  ,
-    output logic [               3:0] id_inst_mat_type,
-    output logic [MAT_DATA_WIDTH-1:0] id_inst_mat_data
+module ct_idu_rf_pipe8_mat_decd (
+    input [31:0] pipe8_mat_decd_opcode  ,
+    input [ 3:0] pipe8_mat_decd_type    ,
+    input        pipe8_mat_decd_src0_vld,
+    output [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta,
+    output [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta,
+    output [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta
 );
+    wire [31:0] pipe8_mat_decd_opcode  ;
+    wire [ 3:0] pipe8_mat_decd_type    ;
+    wire        pipe8_mat_decd_src0_vld;
+    wire [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta;
+    wire [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta;
+    wire [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta;
 
-    logic [31:0] id_inst            ;
-    // logic [ 3:0] id_inst_mat_type;
-    logic        id_inst_dst_x0     ;
-    logic        id_inst_dst_vld    ;
-    logic [ 4:0] id_inst_dst_reg    ;
-    logic        id_inst_src0_vld   ;
-    logic [ 4:0] id_inst_src0_reg   ;
-    logic        id_inst_src1_vld   ;
-    logic [ 4:0] id_inst_src1_reg   ;
-    logic [ 3:0] id_inst_func       ;
-    logic [ 2:0] id_inst_uop        ;
-    logic        id_size            ;
+    logic [31:0] id_inst         ;
+    logic [ 3:0] id_inst_mat_type;
+    logic        id_inst_src0_vld;
+    logic [ 3:0] id_inst_func    ;
+    logic [ 2:0] id_inst_uop     ;
+    logic        id_size         ;
 
     logic       id_dstm_17_15_vld ; // md 17:15 for arithmetic
     logic [2:0] id_dstm_idx_17_15 ; // md for arithmetic
@@ -125,92 +103,63 @@ module ct_mat_idu_decd (
     logic                         id_srcm0_unsigned; // 用于 int 类型位宽扩展
     logic                         id_srcm1_unsigned; // 用于 int 类型位宽扩展
     logic [MAT_OP_TYPE_WIDTH-1:0] id_mat_op        ; // 操作类型
-
-    logic [MAT_ALU_DATA_WIDTH-1:0] id_mat_alu_data;
-    logic [MAT_LSU_DATA_WIDTH-1:0] id_mat_lsu_data;
-    logic [MAT_CFG_DATA_WIDTH-1:0] id_mat_cfg_data;
     
     // use for decode
-    assign id_inst[31:0]            = id_inst_m_data[M_INST:M_INST-31];
-    assign id_inst_mat_type[3:0] = id_inst_m_data[M_TYPE:M_TYPE-3];
-    assign id_inst_dst_x0           = id_inst_m_data[M_DST_X0]               ;
-    assign id_inst_dst_vld          = id_inst_m_data[M_DST_VLD]              ;
-    assign id_inst_dst_reg[4:0]     = id_inst_m_data[M_DST_REG:M_DST_REG-4]  ;
-    assign id_inst_src0_vld         = id_inst_m_data[M_SRC0_VLD]             ;
-    assign id_inst_src0_reg[4:0]    = id_inst_m_data[M_SRC0_REG:M_SRC0_REG-4];
-    assign id_inst_src1_vld         = id_inst_m_data[M_SRC1_VLD]             ;
-    assign id_inst_src1_reg[4:0]    = id_inst_m_data[M_SRC1_REG:M_SRC1_REG-4];
-    assign id_inst_func[3:0]        = id_inst[31:28];
-    assign id_inst_uop[2:0]         = id_inst[27:25];
-    assign id_size                  = id_inst[24];
+    assign id_inst[31:0]         = pipe8_mat_decd_opcode[31:0];
+    assign id_inst_mat_type[3:0] = pipe8_mat_decd_type[3:0];
+    assign id_inst_src0_vld      = pipe8_mat_decd_src0_vld;
+    assign id_inst_func[3:0]     = id_inst[31:28];
+    assign id_inst_uop[2:0]      = id_inst[27:25];
+    assign id_size               = id_inst[24];
     // information
     assign id_dstm_idx_17_15[2:0]  = id_inst[17:15];
     assign id_dstm_idx_9_7[2:0]    = id_inst[9:7];
     assign id_srcm0_idx[2:0]       = id_inst[20:18];
     assign id_srcm1_idx[2:0]       = id_inst[23:21];
-    assign id_srcm2_idx[2:0]       = id_inst[9:7];
+    assign id_srcm2_idx[2:0]       = id_inst[9:7]; // ms3
     assign id_uimm3[2:0]           = id_inst[9:7];
     assign id_uimm7[6:0]           = id_inst[24:18];
     assign id_nf[2:0]              = id_inst[22:20];
     assign id_elem_data_width[1:0] = id_inst[11:10];
 
+    /* --------------------------------------------------------------------- */
+    /* ------------------------------ Matrix Data--------------------------- */
+    /* --------------------------------------------------------------------- */
     // ALU/LSU/CFG 三类指令不同的译码信息组合
     /* ---------------------------ALU--------------------------- */
-    assign id_mat_alu_data[MAT_ALU_OP:MAT_ALU_OP-(MAT_ALU_OP_TYPE_WIDTH-1)] = id_mat_op[MAT_ALU_OP_TYPE_WIDTH-1:0];
-    assign id_mat_alu_data[MAT_ALU_DSTM_VLD]                                = id_dstm_17_15_vld;
-    assign id_mat_alu_data[MAT_ALU_DSTM_IDX:MAT_ALU_DSTM_IDX-2]             = id_dstm_idx_17_15[2:0];
-    assign id_mat_alu_data[MAT_ALU_SRC0M_VLD]                               = id_srcm0_vld;
-    assign id_mat_alu_data[MAT_ALU_SRC0M_UNSIGNED]                          = id_srcm0_unsigned;
-    assign id_mat_alu_data[MAT_ALU_SRC0M_IDX:MAT_ALU_SRC0M_IDX-2]           = id_srcm0_idx[2:0];
-    assign id_mat_alu_data[MAT_ALU_SRC1M_VLD]                               = id_srcm1_vld;
-    assign id_mat_alu_data[MAT_ALU_SRC1M_UNSIGNED]                          = id_srcm1_unsigned;
-    assign id_mat_alu_data[MAT_ALU_SRC1M_IDX:MAT_ALU_SRC1M_IDX-2]           = id_srcm1_idx[2:0];
-    assign id_mat_alu_data[MAT_ALU_SRC0_VLD]                                = id_inst_src0_vld;
-    assign id_mat_alu_data[MAT_ALU_SRC0_REG:MAT_ALU_SRC0_REG-4]             = id_inst_src0_reg[4:0];
-    assign id_mat_alu_data[MAT_ALU_UIMM3_VLD]                               = id_uimm3_vld;
-    assign id_mat_alu_data[MAT_ALU_UIMM3:MAT_ALU_UIMM3-2]                   = id_uimm3[2:0];
-    assign id_mat_alu_data[MAT_ALU_ELM_WIDTH:MAT_ALU_ELM_WIDTH-1]           = id_elem_data_width[1:0];
+    assign pipe8_mat_alu_meta[MAT_ALU_OP:MAT_ALU_OP-(MAT_ALU_OP_TYPE_WIDTH-1)] = id_mat_op[MAT_ALU_OP_TYPE_WIDTH-1:0];
+    assign pipe8_mat_alu_meta[MAT_ALU_DSTM_VLD]                                = id_dstm_17_15_vld;
+    assign pipe8_mat_alu_meta[MAT_ALU_DSTM_IDX:MAT_ALU_DSTM_IDX-2]             = id_dstm_idx_17_15[2:0];
+    assign pipe8_mat_alu_meta[MAT_ALU_SRC1M_VLD]                               = id_srcm1_vld;
+    assign pipe8_mat_alu_meta[MAT_ALU_SRC1M_UNSIGNED]                          = id_srcm1_unsigned;
+    assign pipe8_mat_alu_meta[MAT_ALU_SRC1M_IDX:MAT_ALU_SRC1M_IDX-2]           = id_srcm1_idx[2:0];
+    assign pipe8_mat_alu_meta[MAT_ALU_SRC0M_VLD]                               = id_srcm0_vld;
+    assign pipe8_mat_alu_meta[MAT_ALU_SRC0M_UNSIGNED]                          = id_srcm0_unsigned;
+    assign pipe8_mat_alu_meta[MAT_ALU_SRC0M_IDX:MAT_ALU_SRC0M_IDX-2]           = id_srcm0_idx[2:0];
+    assign pipe8_mat_alu_meta[MAT_ALU_UIMM3_VLD]                               = id_uimm3_vld;
+    assign pipe8_mat_alu_meta[MAT_ALU_UIMM3:MAT_ALU_UIMM3-2]                   = id_uimm3[2:0];
+    assign pipe8_mat_alu_meta[MAT_ALU_ELM_WIDTH:MAT_ALU_ELM_WIDTH-1]           = id_elem_data_width[1:0];
 
     /* ---------------------------LSU--------------------------- */
-    assign id_mat_lsu_data[MAT_LSU_OP:MAT_LSU_OP-(MAT_LSU_OP_TYPE_WIDTH-1)] = id_mat_op[MAT_LSU_OP_TYPE_WIDTH-1:0];
-    assign id_mat_lsu_data[MAT_LSU_DSTM_VLD]                                = id_dstm_9_7_vld;
-    assign id_mat_lsu_data[MAT_LSU_DSTM_IDX:MAT_LSU_DSTM_IDX-2]             = id_dstm_idx_9_7[2:0];
-    assign id_mat_lsu_data[MAT_LSU_SRC2M_VLD]                               = id_srcm2_vld;
-    assign id_mat_lsu_data[MAT_LSU_SRC2M_IDX:MAT_LSU_SRC2M_IDX-2]           = id_srcm2_idx[2:0];
-    assign id_mat_lsu_data[MAT_LSU_SCR0_VLD]                                = id_inst_src0_vld;
-    assign id_mat_lsu_data[MAT_LSU_SRC0_IDX:MAT_LSU_SRC0_IDX-4]             = id_inst_src0_reg[4:0];
-    assign id_mat_lsu_data[MAT_LSU_SRC1_VLD]                                = id_inst_src1_vld;
-    assign id_mat_lsu_data[MAT_LSU_SRC1_IDX:MAT_LSU_SRC1_IDX-4]             = id_inst_src1_reg[4:0];
-    assign id_mat_lsu_data[MAT_LSU_NF_VLD]                                  = id_nf_vld;
-    assign id_mat_lsu_data[MAT_LSU_NF:MAT_LSU_NF-2]                         = id_nf[2:0];
-    assign id_mat_lsu_data[MAT_LSU_ELM_WIDTH:MAT_LSU_ELM_WIDTH-1]           = id_elem_data_width[1:0];
+    assign pipe8_mat_lsu_meta[MAT_LSU_OP:MAT_LSU_OP-(MAT_LSU_OP_TYPE_WIDTH-1)] = id_mat_op[MAT_LSU_OP_TYPE_WIDTH-1:0];
+    assign pipe8_mat_lsu_meta[MAT_LSU_DSTM_VLD]                                = id_dstm_9_7_vld;
+    assign pipe8_mat_lsu_meta[MAT_LSU_DSTM_IDX:MAT_LSU_DSTM_IDX-2]             = id_dstm_idx_9_7[2:0];
+    assign pipe8_mat_lsu_meta[MAT_LSU_SRC2M_VLD]                               = id_srcm2_vld;
+    assign pipe8_mat_lsu_meta[MAT_LSU_SRC2M_IDX:MAT_LSU_SRC2M_IDX-2]           = id_srcm2_idx[2:0];
+    assign pipe8_mat_lsu_meta[MAT_LSU_NF_VLD]                                  = id_nf_vld;
+    assign pipe8_mat_lsu_meta[MAT_LSU_NF:MAT_LSU_NF-2]                         = id_nf[2:0];
+    assign pipe8_mat_lsu_meta[MAT_LSU_ELM_WIDTH:MAT_LSU_ELM_WIDTH-1]           = id_elem_data_width[1:0];
 
     /* ---------------------------CFG--------------------------- */
-    assign id_mat_cfg_data[MAT_CFG_OP:MAT_CFG_OP-(MAT_CFG_OP_TYPE_WIDTH-1)] = id_mat_op[MAT_CFG_OP_TYPE_WIDTH-1:0];
-    assign id_mat_cfg_data[MAT_CFG_DST_X0]                                  = id_inst_dst_x0;
-    assign id_mat_cfg_data[MAT_CFG_DST_VLD]                                 = id_inst_dst_vld;
-    assign id_mat_cfg_data[MAT_CFG_DST_REG:MAT_CFG_DST_REG-4]               = id_inst_dst_reg [4:0];
-    assign id_mat_cfg_data[MAT_CFG_SRC0_VLD]                                = id_inst_src0_vld;
-    assign id_mat_cfg_data[MAT_CFG_SRC0_REG:MAT_CFG_SRC0_REG-4]             = id_inst_src0_reg[4:0];
-    assign id_mat_cfg_data[MAT_CFG_UIMM7_VLD]                               = id_uimm7_vld;
-    assign id_mat_cfg_data[MAT_CFG_UIMM7:MAT_CFG_UIMM7-6]                   = id_uimm7[6:0];
-
-    /* ---------------------------Mux Matrix Data--------------------------- */
-    always_comb begin
-        case (id_inst_mat_type)
-            MAT_CAL :
-                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = id_mat_alu_data[MAT_ALU_DATA_WIDTH-1:0];
-            MAT_LSU : 
-                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = id_mat_lsu_data[MAT_LSU_DATA_WIDTH-1:0];
-            MAT_CFG :
-                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = id_mat_cfg_data[MAT_CFG_DATA_WIDTH-1:0];
-            default : 
-                id_inst_mat_data[MAT_DATA_WIDTH-1:0] = {MAT_DATA_WIDTH{1'b0}};
-        endcase
-    end
+    assign pipe8_mat_cfg_meta[MAT_CFG_OP:MAT_CFG_OP-(MAT_CFG_OP_TYPE_WIDTH-1)] = id_mat_op[MAT_CFG_OP_TYPE_WIDTH-1:0];
+    // uimm7 与 uimm3 不同, matrix alu指令可能不使用rs同时也不使用uimm3, 不是非此即彼的关系, 因此不能用rs0 vld来判断,
+    //  而 matrix cfg 指令的 uimm7和rs0是非此即彼的关系, 因此可以不需要通过译码, 只需要通过特定指令类型(CFG)下用rs0 vld来判断即可
+    assign pipe8_mat_cfg_meta[MAT_CFG_UIMM7_VLD]                               = id_uimm7_vld;
+    assign pipe8_mat_cfg_meta[MAT_CFG_UIMM7:MAT_CFG_UIMM7-6]                   = id_uimm7[6:0];
 
     always_comb begin
-        case (id_uimm3) // 仅在 {p}mmaqa 指令下使用, 因此无需进行指令类型的判断
+        // uimm3位置信息被复用为1.立即数, 2.{p}mmaqa指令下两ms的有/无符号
+        case (id_uimm3) // 后者仅在 {p}mmaqa 指令下使用, 因此无需进行指令类型的判断
             3'b000 : // both signed
                 begin
                     id_srcm0_unsigned = 1'b0;
@@ -555,4 +504,4 @@ module ct_mat_idu_decd (
     end
 
 
-endmodule : ct_mat_idu_decd
+endmodule : ct_idu_rf_pipe8_mat_decd

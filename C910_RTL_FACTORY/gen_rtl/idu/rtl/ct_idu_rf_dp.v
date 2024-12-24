@@ -27,6 +27,10 @@ module ct_idu_rf_dp(
   biq_dp_issue_read_data,
   biq_xx_gateclk_issue_en,
   biq_xx_issue_en,
+  miq_dp_issue_entry,
+  miq_dp_issue_read_data,
+  miq_xx_gateclk_issue_en,
+  miq_xx_issue_en,
   cp0_idu_icg_en,
   cp0_lsu_fencei_broad_dis,
   cp0_lsu_fencerw_broad_dis,
@@ -45,6 +49,8 @@ module ct_idu_rf_dp(
   dp_aiq1_rf_rdy_clr,
   dp_biq_rf_lch_entry,
   dp_biq_rf_rdy_clr,
+  dp_miq_rf_lch_entry,
+  dp_miq_rf_rdy_clr,
   dp_ctrl_is_aiq0_issue_alu_short,
   dp_ctrl_is_aiq0_issue_div,
   dp_ctrl_is_aiq0_issue_dst_vld,
@@ -75,6 +81,8 @@ module ct_idu_rf_dp(
   dp_ctrl_rf_pipe1_src2_vld,
   dp_ctrl_rf_pipe1_src_no_rdy,
   dp_ctrl_rf_pipe2_src_no_rdy,
+  dp_ctrl_rf_pipe8_fu_sel,
+  dp_ctrl_rf_pipe8_src_no_rdy,
   dp_ctrl_rf_pipe3_src1_vld,
   dp_ctrl_rf_pipe3_src_no_rdy,
   dp_ctrl_rf_pipe3_srcvm_vld,
@@ -98,6 +106,8 @@ module ct_idu_rf_dp(
   dp_fwd_rf_pipe1_src1_preg,
   dp_fwd_rf_pipe2_src0_preg,
   dp_fwd_rf_pipe2_src1_preg,
+  dp_fwd_rf_pipe8_src0_preg,
+  dp_fwd_rf_pipe8_src1_preg,
   dp_fwd_rf_pipe3_src0_preg,
   dp_fwd_rf_pipe3_src1_preg,
   dp_fwd_rf_pipe4_src0_preg,
@@ -124,6 +134,8 @@ module ct_idu_rf_dp(
   dp_prf_rf_pipe1_src1_preg,
   dp_prf_rf_pipe2_src0_preg,
   dp_prf_rf_pipe2_src1_preg,
+  dp_prf_rf_pipe8_src0_preg,
+  dp_prf_rf_pipe8_src1_preg,
   dp_prf_rf_pipe3_src0_preg,
   dp_prf_rf_pipe3_src1_preg,
   dp_prf_rf_pipe4_src0_preg,
@@ -169,11 +181,13 @@ module ct_idu_rf_dp(
   dp_xx_rf_pipe0_dst_preg_dup2,
   dp_xx_rf_pipe0_dst_preg_dup3,
   dp_xx_rf_pipe0_dst_preg_dup4,
+  dp_xx_rf_pipe0_dst_preg_dup5,
   dp_xx_rf_pipe1_dst_preg_dup0,
   dp_xx_rf_pipe1_dst_preg_dup1,
   dp_xx_rf_pipe1_dst_preg_dup2,
   dp_xx_rf_pipe1_dst_preg_dup3,
   dp_xx_rf_pipe1_dst_preg_dup4,
+  dp_xx_rf_pipe1_dst_preg_dup5,
   dp_xx_rf_pipe6_dst_vreg_dup0,
   dp_xx_rf_pipe6_dst_vreg_dup1,
   dp_xx_rf_pipe6_dst_vreg_dup2,
@@ -195,6 +209,10 @@ module ct_idu_rf_dp(
   fwd_dp_rf_pipe2_src0_no_fwd,
   fwd_dp_rf_pipe2_src1_data,
   fwd_dp_rf_pipe2_src1_no_fwd,
+  fwd_dp_rf_pipe8_src0_data,
+  fwd_dp_rf_pipe8_src0_no_fwd,
+  fwd_dp_rf_pipe8_src1_data,
+  fwd_dp_rf_pipe8_src1_no_fwd,
   fwd_dp_rf_pipe3_src0_data,
   fwd_dp_rf_pipe3_src0_no_fwd,
   fwd_dp_rf_pipe3_src1_data,
@@ -412,6 +430,18 @@ module ct_idu_rf_dp(
   idu_vfpu_rf_pipe7_srcv1_fr,
   idu_vfpu_rf_pipe7_srcv2_fr,
   idu_vfpu_rf_pipe7_vmla_type,
+  idu_mat_rf_pipe8_alu_meta,
+  idu_mat_rf_pipe8_alu_src0_vld,
+  idu_mat_rf_pipe8_alu_src0,
+  idu_mat_rf_pipe8_lsu_meta,
+  idu_mat_rf_pipe8_lsu_src0,
+  idu_mat_rf_pipe8_lsu_src1_vld,
+  idu_mat_rf_pipe8_lsu_src1,
+  idu_mat_rf_pipe8_cfg_meta,
+  idu_mat_rf_pipe8_cfg_dst_vld,
+  idu_mat_rf_pipe8_cfg_dst_preg,
+  idu_mat_rf_pipe8_cfg_src0_vld,
+  idu_mat_rf_pipe8_cfg_src0,
   lsiq_dp_pipe3_issue_entry,
   lsiq_dp_pipe3_issue_read_data,
   lsiq_dp_pipe4_issue_entry,
@@ -428,6 +458,8 @@ module ct_idu_rf_dp(
   prf_dp_rf_pipe0_src1_data,
   prf_dp_rf_pipe2_src0_data,
   prf_dp_rf_pipe2_src1_data,
+  prf_dp_rf_pipe8_src0_data,
+  prf_dp_rf_pipe8_src1_data,
   prf_dp_rf_pipe3_src0_data,
   prf_dp_rf_pipe3_src1_data,
   prf_dp_rf_pipe4_src0_data,
@@ -478,17 +510,21 @@ module ct_idu_rf_dp(
 
 // &Ports; @27
 input   [7  :0]  aiq0_dp_issue_entry;                   
-input   [226:0]  aiq0_dp_issue_read_data;               
+input   [250:0]  aiq0_dp_issue_read_data;               
 input            aiq0_xx_gateclk_issue_en;              
 input            aiq0_xx_issue_en;                      
 input   [7  :0]  aiq1_dp_issue_entry;                   
-input   [213:0]  aiq1_dp_issue_read_data;               
+input   [237:0]  aiq1_dp_issue_read_data;               
 input            aiq1_xx_gateclk_issue_en;              
 input            aiq1_xx_issue_en;                      
 input   [11 :0]  biq_dp_issue_entry;                    
 input   [81 :0]  biq_dp_issue_read_data;                
 input            biq_xx_gateclk_issue_en;               
 input            biq_xx_issue_en;                       
+input   [11 :0]  miq_dp_issue_entry;                    
+input   [72 :0]  miq_dp_issue_read_data;                
+input            miq_xx_gateclk_issue_en;               
+input            miq_xx_issue_en;                       
 input            cp0_idu_icg_en;                        
 input            cp0_lsu_fencei_broad_dis;              
 input            cp0_lsu_fencerw_broad_dis;             
@@ -514,6 +550,10 @@ input   [63 :0]  fwd_dp_rf_pipe2_src0_data;
 input            fwd_dp_rf_pipe2_src0_no_fwd;           
 input   [63 :0]  fwd_dp_rf_pipe2_src1_data;             
 input            fwd_dp_rf_pipe2_src1_no_fwd;           
+input   [63 :0]  fwd_dp_rf_pipe8_src0_data;             
+input            fwd_dp_rf_pipe8_src0_no_fwd;           
+input   [63 :0]  fwd_dp_rf_pipe8_src1_data;             
+input            fwd_dp_rf_pipe8_src1_no_fwd;           
 input   [63 :0]  fwd_dp_rf_pipe3_src0_data;             
 input            fwd_dp_rf_pipe3_src0_no_fwd;           
 input   [63 :0]  fwd_dp_rf_pipe3_src1_data;             
@@ -583,6 +623,8 @@ input   [63 :0]  prf_dp_rf_pipe0_src0_data;
 input   [63 :0]  prf_dp_rf_pipe0_src1_data;             
 input   [63 :0]  prf_dp_rf_pipe2_src0_data;             
 input   [63 :0]  prf_dp_rf_pipe2_src1_data;             
+input   [63 :0]  prf_dp_rf_pipe8_src0_data;             
+input   [63 :0]  prf_dp_rf_pipe8_src1_data;             
 input   [63 :0]  prf_dp_rf_pipe3_src0_data;             
 input   [63 :0]  prf_dp_rf_pipe3_src1_data;             
 input   [63 :0]  prf_dp_rf_pipe4_src0_data;             
@@ -635,16 +677,18 @@ output  [7  :0]  dp_aiq1_rf_lch_entry;
 output  [2  :0]  dp_aiq1_rf_rdy_clr;                    
 output  [11 :0]  dp_biq_rf_lch_entry;                   
 output  [1  :0]  dp_biq_rf_rdy_clr;                     
+output  [11 :0]  dp_miq_rf_lch_entry;                   
+output  [1  :0]  dp_miq_rf_rdy_clr;                     
 output           dp_ctrl_is_aiq0_issue_alu_short;       
 output           dp_ctrl_is_aiq0_issue_div;             
 output           dp_ctrl_is_aiq0_issue_dst_vld;         
 output           dp_ctrl_is_aiq0_issue_lch_preg;        
-output  [107:0]  dp_ctrl_is_aiq0_issue_lch_rdy;         
+output  [131:0]  dp_ctrl_is_aiq0_issue_lch_rdy;         
 output           dp_ctrl_is_aiq0_issue_special;         
 output           dp_ctrl_is_aiq1_issue_alu_short;       
 output           dp_ctrl_is_aiq1_issue_dst_vld;         
 output           dp_ctrl_is_aiq1_issue_lch_preg;        
-output  [107:0]  dp_ctrl_is_aiq1_issue_lch_rdy;         
+output  [131:0]  dp_ctrl_is_aiq1_issue_lch_rdy;         
 output  [7  :0]  dp_ctrl_is_aiq1_issue_mla_lch_rdy;     
 output           dp_ctrl_is_aiq1_issue_mla_vld;         
 output           dp_ctrl_is_viq0_issue_dstv_vld;        
@@ -665,6 +709,8 @@ output           dp_ctrl_rf_pipe1_mtvr;
 output           dp_ctrl_rf_pipe1_src2_vld;             
 output           dp_ctrl_rf_pipe1_src_no_rdy;           
 output           dp_ctrl_rf_pipe2_src_no_rdy;           
+output  [2  :0]  dp_ctrl_rf_pipe8_fu_sel;
+output           dp_ctrl_rf_pipe8_src_no_rdy;           
 output           dp_ctrl_rf_pipe3_src1_vld;             
 output           dp_ctrl_rf_pipe3_src_no_rdy;           
 output           dp_ctrl_rf_pipe3_srcvm_vld;            
@@ -688,6 +734,8 @@ output  [6  :0]  dp_fwd_rf_pipe1_src0_preg;
 output  [6  :0]  dp_fwd_rf_pipe1_src1_preg;             
 output  [6  :0]  dp_fwd_rf_pipe2_src0_preg;             
 output  [6  :0]  dp_fwd_rf_pipe2_src1_preg;             
+output  [6  :0]  dp_fwd_rf_pipe8_src0_preg;             
+output  [6  :0]  dp_fwd_rf_pipe8_src1_preg;             
 output  [6  :0]  dp_fwd_rf_pipe3_src0_preg;             
 output  [6  :0]  dp_fwd_rf_pipe3_src1_preg;             
 output  [6  :0]  dp_fwd_rf_pipe4_src0_preg;             
@@ -714,6 +762,8 @@ output  [6  :0]  dp_prf_rf_pipe1_src0_preg;
 output  [6  :0]  dp_prf_rf_pipe1_src1_preg;             
 output  [6  :0]  dp_prf_rf_pipe2_src0_preg;             
 output  [6  :0]  dp_prf_rf_pipe2_src1_preg;             
+output  [6  :0]  dp_prf_rf_pipe8_src0_preg;             
+output  [6  :0]  dp_prf_rf_pipe8_src1_preg;             
 output  [6  :0]  dp_prf_rf_pipe3_src0_preg;             
 output  [6  :0]  dp_prf_rf_pipe3_src1_preg;             
 output  [6  :0]  dp_prf_rf_pipe4_src0_preg;             
@@ -759,11 +809,13 @@ output  [6  :0]  dp_xx_rf_pipe0_dst_preg_dup1;
 output  [6  :0]  dp_xx_rf_pipe0_dst_preg_dup2;          
 output  [6  :0]  dp_xx_rf_pipe0_dst_preg_dup3;          
 output  [6  :0]  dp_xx_rf_pipe0_dst_preg_dup4;          
+output  [6  :0]  dp_xx_rf_pipe0_dst_preg_dup5;          
 output  [6  :0]  dp_xx_rf_pipe1_dst_preg_dup0;          
 output  [6  :0]  dp_xx_rf_pipe1_dst_preg_dup1;          
 output  [6  :0]  dp_xx_rf_pipe1_dst_preg_dup2;          
 output  [6  :0]  dp_xx_rf_pipe1_dst_preg_dup3;          
 output  [6  :0]  dp_xx_rf_pipe1_dst_preg_dup4;          
+output  [6  :0]  dp_xx_rf_pipe1_dst_preg_dup5;
 output  [6  :0]  dp_xx_rf_pipe6_dst_vreg_dup0;          
 output  [6  :0]  dp_xx_rf_pipe6_dst_vreg_dup1;          
 output  [6  :0]  dp_xx_rf_pipe6_dst_vreg_dup2;          
@@ -938,12 +990,13 @@ output  [63 :0]  idu_vfpu_rf_pipe7_srcv2_fr;
 output  [2  :0]  idu_vfpu_rf_pipe7_vmla_type;           
 
 // &Regs; @28
-reg     [226:0]  rf_pipe0_data;                         
+reg     [250:0]  rf_pipe0_data;                         
 reg     [6  :0]  rf_pipe0_dst_preg_dup0;                
 reg     [6  :0]  rf_pipe0_dst_preg_dup1;                
 reg     [6  :0]  rf_pipe0_dst_preg_dup2;                
 reg     [6  :0]  rf_pipe0_dst_preg_dup3;                
 reg     [6  :0]  rf_pipe0_dst_preg_dup4;                
+reg     [6  :0]  rf_pipe0_dst_preg_dup5;                
 reg     [6  :0]  rf_pipe0_fwd_src0_preg;                
 reg     [6  :0]  rf_pipe0_fwd_src1_preg;                
 reg     [7  :0]  rf_pipe0_iq_entry;                     
@@ -951,12 +1004,13 @@ reg     [6  :0]  rf_pipe0_prf_src0_preg;
 reg     [6  :0]  rf_pipe0_prf_src1_preg;                
 reg     [63 :0]  rf_pipe0_src0_data;                    
 reg     [63 :0]  rf_pipe0_src1_data;                    
-reg     [213:0]  rf_pipe1_data;                         
+reg     [237:0]  rf_pipe1_data;                         
 reg     [6  :0]  rf_pipe1_dst_preg_dup0;                
 reg     [6  :0]  rf_pipe1_dst_preg_dup1;                
 reg     [6  :0]  rf_pipe1_dst_preg_dup2;                
 reg     [6  :0]  rf_pipe1_dst_preg_dup3;                
 reg     [6  :0]  rf_pipe1_dst_preg_dup4;                
+reg     [6  :0]  rf_pipe1_dst_preg_dup5;                
 reg     [6  :0]  rf_pipe1_fwd_src0_preg;                
 reg     [6  :0]  rf_pipe1_fwd_src1_preg;                
 reg     [7  :0]  rf_pipe1_iq_entry;                     
@@ -971,6 +1025,13 @@ reg     [11 :0]  rf_pipe2_iq_entry;
 reg     [6  :0]  rf_pipe2_prf_src0_preg;                
 reg     [6  :0]  rf_pipe2_prf_src1_preg;                
 reg     [63 :0]  rf_pipe2_src1_data;                    
+reg     [72 :0]  rf_pipe8_data;
+reg     [6  :0]  rf_pipe8_fwd_src0_preg;                
+reg     [6  :0]  rf_pipe8_fwd_src1_preg;                
+reg     [11 :0]  rf_pipe8_iq_entry;
+reg     [6  :0]  rf_pipe8_prf_src0_preg;                
+reg     [6  :0]  rf_pipe8_prf_src1_preg;                
+reg     [63 :0]  rf_pipe8_src1_data; // need to Mux Imm or Reg data                  
 reg     [162:0]  rf_pipe3_data;                         
 reg     [6  :0]  rf_pipe3_fwd_src0_preg;                
 reg     [6  :0]  rf_pipe3_fwd_src1_preg;                
@@ -1036,17 +1097,21 @@ reg     [5  :0]  rf_pipe7_prf_srcvm_vreg_vr1;
 
 // &Wires; @29
 wire    [7  :0]  aiq0_dp_issue_entry;                   
-wire    [226:0]  aiq0_dp_issue_read_data;               
+wire    [250:0]  aiq0_dp_issue_read_data;               
 wire             aiq0_xx_gateclk_issue_en;              
 wire             aiq0_xx_issue_en;                      
 wire    [7  :0]  aiq1_dp_issue_entry;                   
-wire    [213:0]  aiq1_dp_issue_read_data;               
+wire    [237:0]  aiq1_dp_issue_read_data;               
 wire             aiq1_xx_gateclk_issue_en;              
 wire             aiq1_xx_issue_en;                      
 wire    [11 :0]  biq_dp_issue_entry;                    
 wire    [81 :0]  biq_dp_issue_read_data;                
 wire             biq_xx_gateclk_issue_en;               
 wire             biq_xx_issue_en;                       
+wire    [11 :0]  miq_dp_issue_entry;                    
+wire    [72 :0]  miq_dp_issue_read_data;                
+wire             miq_xx_gateclk_issue_en;               
+wire             miq_xx_issue_en;                       
 wire             cp0_idu_icg_en;                        
 wire             cp0_lsu_fencei_broad_dis;              
 wire             cp0_lsu_fencerw_broad_dis;             
@@ -1065,16 +1130,18 @@ wire    [7  :0]  dp_aiq1_rf_lch_entry;
 wire    [2  :0]  dp_aiq1_rf_rdy_clr;                    
 wire    [11 :0]  dp_biq_rf_lch_entry;                   
 wire    [1  :0]  dp_biq_rf_rdy_clr;                     
+wire    [11 :0]  dp_miq_rf_lch_entry;                   
+wire    [1  :0]  dp_miq_rf_rdy_clr;                     
 wire             dp_ctrl_is_aiq0_issue_alu_short;       
 wire             dp_ctrl_is_aiq0_issue_div;             
 wire             dp_ctrl_is_aiq0_issue_dst_vld;         
 wire             dp_ctrl_is_aiq0_issue_lch_preg;        
-wire    [107:0]  dp_ctrl_is_aiq0_issue_lch_rdy;         
+wire    [131:0]  dp_ctrl_is_aiq0_issue_lch_rdy;         
 wire             dp_ctrl_is_aiq0_issue_special;         
 wire             dp_ctrl_is_aiq1_issue_alu_short;       
 wire             dp_ctrl_is_aiq1_issue_dst_vld;         
 wire             dp_ctrl_is_aiq1_issue_lch_preg;        
-wire    [107:0]  dp_ctrl_is_aiq1_issue_lch_rdy;         
+wire    [131:0]  dp_ctrl_is_aiq1_issue_lch_rdy;         
 wire    [7  :0]  dp_ctrl_is_aiq1_issue_mla_lch_rdy;     
 wire             dp_ctrl_is_aiq1_issue_mla_vld;         
 wire             dp_ctrl_is_viq0_issue_dstv_vld;        
@@ -1095,6 +1162,8 @@ wire             dp_ctrl_rf_pipe1_mtvr;
 wire             dp_ctrl_rf_pipe1_src2_vld;             
 wire             dp_ctrl_rf_pipe1_src_no_rdy;           
 wire             dp_ctrl_rf_pipe2_src_no_rdy;           
+wire    [2  :0]  dp_ctrl_rf_pipe8_fu_sel;
+wire             dp_ctrl_rf_pipe8_src_no_rdy;           
 wire             dp_ctrl_rf_pipe3_src1_vld;             
 wire             dp_ctrl_rf_pipe3_src_no_rdy;           
 wire             dp_ctrl_rf_pipe3_srcvm_vld;            
@@ -1118,6 +1187,8 @@ wire    [6  :0]  dp_fwd_rf_pipe1_src0_preg;
 wire    [6  :0]  dp_fwd_rf_pipe1_src1_preg;             
 wire    [6  :0]  dp_fwd_rf_pipe2_src0_preg;             
 wire    [6  :0]  dp_fwd_rf_pipe2_src1_preg;             
+wire    [6  :0]  dp_fwd_rf_pipe8_src0_preg;             
+wire    [6  :0]  dp_fwd_rf_pipe8_src1_preg;             
 wire    [6  :0]  dp_fwd_rf_pipe3_src0_preg;             
 wire    [6  :0]  dp_fwd_rf_pipe3_src1_preg;             
 wire    [6  :0]  dp_fwd_rf_pipe4_src0_preg;             
@@ -1144,6 +1215,8 @@ wire    [6  :0]  dp_prf_rf_pipe1_src0_preg;
 wire    [6  :0]  dp_prf_rf_pipe1_src1_preg;             
 wire    [6  :0]  dp_prf_rf_pipe2_src0_preg;             
 wire    [6  :0]  dp_prf_rf_pipe2_src1_preg;             
+wire    [6  :0]  dp_prf_rf_pipe8_src0_preg;             
+wire    [6  :0]  dp_prf_rf_pipe8_src1_preg;             
 wire    [6  :0]  dp_prf_rf_pipe3_src0_preg;             
 wire    [6  :0]  dp_prf_rf_pipe3_src1_preg;             
 wire    [6  :0]  dp_prf_rf_pipe4_src0_preg;             
@@ -1189,11 +1262,13 @@ wire    [6  :0]  dp_xx_rf_pipe0_dst_preg_dup1;
 wire    [6  :0]  dp_xx_rf_pipe0_dst_preg_dup2;          
 wire    [6  :0]  dp_xx_rf_pipe0_dst_preg_dup3;          
 wire    [6  :0]  dp_xx_rf_pipe0_dst_preg_dup4;          
+wire    [6  :0]  dp_xx_rf_pipe0_dst_preg_dup5;          
 wire    [6  :0]  dp_xx_rf_pipe1_dst_preg_dup0;          
 wire    [6  :0]  dp_xx_rf_pipe1_dst_preg_dup1;          
 wire    [6  :0]  dp_xx_rf_pipe1_dst_preg_dup2;          
 wire    [6  :0]  dp_xx_rf_pipe1_dst_preg_dup3;          
 wire    [6  :0]  dp_xx_rf_pipe1_dst_preg_dup4;          
+wire    [6  :0]  dp_xx_rf_pipe1_dst_preg_dup5;
 wire    [6  :0]  dp_xx_rf_pipe6_dst_vreg_dup0;          
 wire    [6  :0]  dp_xx_rf_pipe6_dst_vreg_dup1;          
 wire    [6  :0]  dp_xx_rf_pipe6_dst_vreg_dup2;          
@@ -1215,6 +1290,10 @@ wire    [63 :0]  fwd_dp_rf_pipe2_src0_data;
 wire             fwd_dp_rf_pipe2_src0_no_fwd;           
 wire    [63 :0]  fwd_dp_rf_pipe2_src1_data;             
 wire             fwd_dp_rf_pipe2_src1_no_fwd;           
+wire    [63 :0]  fwd_dp_rf_pipe8_src0_data;             
+wire             fwd_dp_rf_pipe8_src0_no_fwd;           
+wire    [63 :0]  fwd_dp_rf_pipe8_src1_data;             
+wire             fwd_dp_rf_pipe8_src1_no_fwd;           
 wire    [63 :0]  fwd_dp_rf_pipe3_src0_data;             
 wire             fwd_dp_rf_pipe3_src0_no_fwd;           
 wire    [63 :0]  fwd_dp_rf_pipe3_src1_data;             
@@ -1498,6 +1577,9 @@ wire    [7  :0]  pipe2_decd_func;
 wire    [20 :0]  pipe2_decd_offset;                     
 wire    [31 :0]  pipe2_decd_opcode;                     
 wire    [63 :0]  pipe2_decd_src1_imm;                   
+wire    [3  :0]  pipe8_mat_decd_type;
+wire             pipe8_mat_decd_src0_vld;
+wire    [31 :0]  pipe8_mat_decd_opcode;
 wire             pipe3_decd_atomic;                     
 wire             pipe3_decd_inst_fls;                   
 wire             pipe3_decd_inst_ldr;                   
@@ -1552,6 +1634,8 @@ wire    [63 :0]  prf_dp_rf_pipe0_src0_data;
 wire    [63 :0]  prf_dp_rf_pipe0_src1_data;             
 wire    [63 :0]  prf_dp_rf_pipe2_src0_data;             
 wire    [63 :0]  prf_dp_rf_pipe2_src1_data;             
+wire    [63 :0]  prf_dp_rf_pipe8_src0_data;             
+wire    [63 :0]  prf_dp_rf_pipe8_src1_data;             
 wire    [63 :0]  prf_dp_rf_pipe3_src0_data;             
 wire    [63 :0]  prf_dp_rf_pipe3_src1_data;             
 wire    [63 :0]  prf_dp_rf_pipe4_src0_data;             
@@ -1624,6 +1708,15 @@ wire             rf_pipe2_prf_src1_preg_updt_vld;
 wire    [63 :0]  rf_pipe2_src0_data;                    
 wire             rf_pipe2_src0_no_rdy;                  
 wire             rf_pipe2_src1_no_rdy;                  
+wire             rf_pipe8_clk;                          
+wire             rf_pipe8_clk_en;                       
+wire             rf_pipe8_fwd_src0_preg_updt_vld;       
+wire             rf_pipe8_fwd_src1_preg_updt_vld;       
+wire             rf_pipe8_prf_src0_preg_updt_vld;       
+wire             rf_pipe8_prf_src1_preg_updt_vld;       
+wire    [63 :0]  rf_pipe8_src0_data;                    
+wire             rf_pipe8_src0_no_rdy;                  
+wire             rf_pipe8_src1_no_rdy;                  
 wire             rf_pipe36_clk;                         
 wire             rf_pipe36_clk_en;                      
 wire             rf_pipe3_clk;                          
@@ -1739,7 +1832,31 @@ wire    [149:0]  viq1_dp_issue_read_data;
 wire             viq1_xx_gateclk_issue_en;              
 wire             viq1_xx_issue_en;                      
 
+output [30:0] idu_mat_rf_pipe8_alu_meta;
+output        idu_mat_rf_pipe8_alu_src0_vld;
+output [63:0] idu_mat_rf_pipe8_alu_src0;
+output [15:0] idu_mat_rf_pipe8_lsu_meta;
+output [63:0] idu_mat_rf_pipe8_lsu_src0;
+output        idu_mat_rf_pipe8_lsu_src1_vld;
+output [63:0] idu_mat_rf_pipe8_lsu_src1;
+output [11:0] idu_mat_rf_pipe8_cfg_meta;
+output        idu_mat_rf_pipe8_cfg_dst_vld;
+output [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
+output        idu_mat_rf_pipe8_cfg_src0_vld;
+output [63:0] idu_mat_rf_pipe8_cfg_src0;
 
+wire [30:0] idu_mat_rf_pipe8_alu_meta;
+wire        idu_mat_rf_pipe8_alu_src0_vld;
+wire [63:0] idu_mat_rf_pipe8_alu_src0;
+wire [15:0] idu_mat_rf_pipe8_lsu_meta;
+wire [63:0] idu_mat_rf_pipe8_lsu_src0;
+wire        idu_mat_rf_pipe8_lsu_src1_vld;
+wire [63:0] idu_mat_rf_pipe8_lsu_src1;
+wire [11:0] idu_mat_rf_pipe8_cfg_meta;
+wire        idu_mat_rf_pipe8_cfg_dst_vld;
+wire [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
+wire        idu_mat_rf_pipe8_cfg_src0_vld;
+wire [63:0] idu_mat_rf_pipe8_cfg_src0;
 
 //==========================================================
 //                       Parameters
@@ -1747,8 +1864,9 @@ wire             viq1_xx_issue_en;
 //----------------------------------------------------------
 //                    AIQ0 Parameters
 //----------------------------------------------------------
-parameter AIQ0_WIDTH             = 227;
+parameter AIQ0_WIDTH             = 251;
 
+parameter AIQ0_LCH_RDY_MIQ       = 250;
 parameter AIQ0_VL                = 226;
 parameter AIQ0_LCH_PREG          = 218;
 parameter AIQ0_SPECIAL           = 217;
@@ -1795,8 +1913,9 @@ parameter AIQ0_OPCODE            = 31;
 //----------------------------------------------------------
 //                    AIQ1 Parameters
 //----------------------------------------------------------
-parameter AIQ1_WIDTH             = 214;
+parameter AIQ1_WIDTH             = 238;
 
+parameter AIQ1_LCH_RDY_MIQ       = 237;
 parameter AIQ1_VL                = 213;
 parameter AIQ1_LCH_PREG          = 205;
 parameter AIQ1_VSEW              = 204;
@@ -1860,6 +1979,29 @@ parameter BIQ_SRC1_VLD          = 40;
 parameter BIQ_SRC0_VLD          = 39;
 parameter BIQ_IID               = 38;
 parameter BIQ_OPCODE            = 31;
+
+//----------------------------------------------------------
+//                    MIQ Parameters
+//----------------------------------------------------------
+parameter MIQ_WIDTH             = 73;
+
+parameter MIQ_MAT_TYPE          = 72;
+parameter MIQ_SRC1_LSU_MATCH    = 68 ;
+parameter MIQ_SRC1_DATA         = 67 ;
+parameter MIQ_SRC1_PREG         = 67 ;
+parameter MIQ_SRC1_WB           = 60 ;
+parameter MIQ_SRC1_RDY          = 59 ;
+parameter MIQ_SRC0_LSU_MATCH    = 58 ;
+parameter MIQ_SRC0_DATA         = 57 ;
+parameter MIQ_SRC0_PREG         = 57 ;
+parameter MIQ_SRC0_WB           = 50 ;
+parameter MIQ_SRC0_RDY          = 49 ;
+parameter MIQ_DST_PREG          = 48 ;
+parameter MIQ_DST_VLD           = 41 ;
+parameter MIQ_SRC1_VLD          = 40 ;
+parameter MIQ_SRC0_VLD          = 39 ;
+parameter MIQ_IID               = 38 ;
+parameter MIQ_OPCODE            = 31 ;
 
 //----------------------------------------------------------
 //                    LSIQ Parameters
@@ -2075,7 +2217,8 @@ assign dp_ctrl_is_aiq0_issue_lch_preg       = aiq0_dp_issue_read_data[AIQ0_LCH_P
 assign dp_ctrl_is_aiq0_issue_alu_short      = aiq0_dp_issue_read_data[AIQ0_ALU_SHORT];
 assign dp_ctrl_is_aiq0_issue_special        = aiq0_dp_issue_read_data[AIQ0_SPECIAL];
 
-assign dp_ctrl_is_aiq0_issue_lch_rdy[107:0] = aiq0_dp_issue_read_data[AIQ0_LCH_RDY_SDIQ:AIQ0_LCH_RDY_AIQ0-23];
+assign dp_ctrl_is_aiq0_issue_lch_rdy[131:0] = 
+        {aiq0_dp_issue_read_data[AIQ0_LCH_RDY_MIQ:AIQ0_LCH_RDY_MIQ-23], aiq0_dp_issue_read_data[AIQ0_LCH_RDY_SDIQ:AIQ0_LCH_RDY_AIQ0-23]};
 
 //----------------------------------------------------------
 //                   Pipeline Registers
@@ -2090,6 +2233,7 @@ begin
     rf_pipe0_dst_preg_dup2[6:0]   <= 7'b0;
     rf_pipe0_dst_preg_dup3[6:0]   <= 7'b0;
     rf_pipe0_dst_preg_dup4[6:0]   <= 7'b0;
+    rf_pipe0_dst_preg_dup5[6:0]   <= 7'b0;
   end
   else if(aiq0_xx_issue_en) begin
     rf_pipe0_iq_entry[7:0]        <= aiq0_dp_issue_entry[7:0];
@@ -2099,6 +2243,7 @@ begin
     rf_pipe0_dst_preg_dup2[6:0]   <= aiq0_dp_issue_read_data[AIQ0_DST_PREG:AIQ0_DST_PREG-6];
     rf_pipe0_dst_preg_dup3[6:0]   <= aiq0_dp_issue_read_data[AIQ0_DST_PREG:AIQ0_DST_PREG-6];
     rf_pipe0_dst_preg_dup4[6:0]   <= aiq0_dp_issue_read_data[AIQ0_DST_PREG:AIQ0_DST_PREG-6];
+    rf_pipe0_dst_preg_dup5[6:0]   <= aiq0_dp_issue_read_data[AIQ0_DST_PREG:AIQ0_DST_PREG-6];
   end
   else begin
     rf_pipe0_iq_entry[7:0]        <= rf_pipe0_iq_entry[7:0];
@@ -2108,6 +2253,7 @@ begin
     rf_pipe0_dst_preg_dup2[6:0]   <= rf_pipe0_dst_preg_dup2[6:0];
     rf_pipe0_dst_preg_dup3[6:0]   <= rf_pipe0_dst_preg_dup3[6:0];
     rf_pipe0_dst_preg_dup4[6:0]   <= rf_pipe0_dst_preg_dup4[6:0];
+    rf_pipe0_dst_preg_dup5[6:0]   <= rf_pipe0_dst_preg_dup5[6:0];
   end
 end
 
@@ -2193,6 +2339,7 @@ assign dp_xx_rf_pipe0_dst_preg_dup1[6:0] = rf_pipe0_dst_preg_dup1[6:0];
 assign dp_xx_rf_pipe0_dst_preg_dup2[6:0] = rf_pipe0_dst_preg_dup2[6:0];
 assign dp_xx_rf_pipe0_dst_preg_dup3[6:0] = rf_pipe0_dst_preg_dup3[6:0];
 assign dp_xx_rf_pipe0_dst_preg_dup4[6:0] = rf_pipe0_dst_preg_dup4[6:0];
+assign dp_xx_rf_pipe0_dst_preg_dup5[6:0] = rf_pipe0_dst_preg_dup5[6:0];
 
 //----------------------------------------------------------
 //                    RF stage Decoder
@@ -2357,7 +2504,8 @@ assign dp_ctrl_is_aiq1_issue_lch_preg       = aiq1_dp_issue_read_data[AIQ1_LCH_P
 assign dp_ctrl_is_aiq1_issue_mla_vld        = aiq1_dp_issue_read_data[AIQ1_MLA];
 assign dp_ctrl_is_aiq1_issue_alu_short      = aiq1_dp_issue_read_data[AIQ1_ALU_SHORT];
 
-assign dp_ctrl_is_aiq1_issue_lch_rdy[107:0] = aiq1_dp_issue_read_data[AIQ1_LCH_RDY_SDIQ:AIQ1_LCH_RDY_AIQ0-23];
+assign dp_ctrl_is_aiq1_issue_lch_rdy[131:0] = 
+        {aiq1_dp_issue_read_data[AIQ1_LCH_RDY_MIQ:AIQ1_LCH_RDY_MIQ-23], aiq1_dp_issue_read_data[AIQ1_LCH_RDY_SDIQ:AIQ1_LCH_RDY_AIQ0-23]};
 assign dp_ctrl_is_aiq1_issue_mla_lch_rdy[7] = aiq1_dp_issue_read_data[AIQ1_LCH_RDY_AIQ1-0];
 assign dp_ctrl_is_aiq1_issue_mla_lch_rdy[6] = aiq1_dp_issue_read_data[AIQ1_LCH_RDY_AIQ1-3];
 assign dp_ctrl_is_aiq1_issue_mla_lch_rdy[5] = aiq1_dp_issue_read_data[AIQ1_LCH_RDY_AIQ1-6];
@@ -2380,6 +2528,7 @@ begin
     rf_pipe1_dst_preg_dup2[6:0]   <= 7'b0;
     rf_pipe1_dst_preg_dup3[6:0]   <= 7'b0;
     rf_pipe1_dst_preg_dup4[6:0]   <= 7'b0;
+    rf_pipe1_dst_preg_dup5[6:0]   <= 7'b0;
   end
   else if(aiq1_xx_issue_en) begin
     rf_pipe1_iq_entry[7:0]        <= aiq1_dp_issue_entry[7:0];
@@ -2389,6 +2538,7 @@ begin
     rf_pipe1_dst_preg_dup2[6:0]   <= aiq1_dp_issue_read_data[AIQ1_DST_PREG:AIQ1_DST_PREG-6];
     rf_pipe1_dst_preg_dup3[6:0]   <= aiq1_dp_issue_read_data[AIQ1_DST_PREG:AIQ1_DST_PREG-6];
     rf_pipe1_dst_preg_dup4[6:0]   <= aiq1_dp_issue_read_data[AIQ1_DST_PREG:AIQ1_DST_PREG-6];
+    rf_pipe1_dst_preg_dup5[6:0]   <= aiq1_dp_issue_read_data[AIQ1_DST_PREG:AIQ1_DST_PREG-6];
   end
   else begin
     rf_pipe1_iq_entry[7:0]        <= rf_pipe1_iq_entry[7:0];
@@ -2398,6 +2548,7 @@ begin
     rf_pipe1_dst_preg_dup2[6:0]   <= rf_pipe1_dst_preg_dup2[6:0];
     rf_pipe1_dst_preg_dup3[6:0]   <= rf_pipe1_dst_preg_dup3[6:0];
     rf_pipe1_dst_preg_dup4[6:0]   <= rf_pipe1_dst_preg_dup4[6:0];
+    rf_pipe1_dst_preg_dup5[6:0]   <= rf_pipe1_dst_preg_dup5[6:0];
   end
 end
 
@@ -2489,6 +2640,7 @@ assign dp_xx_rf_pipe1_dst_preg_dup1[6:0] = rf_pipe1_dst_preg_dup1[6:0];
 assign dp_xx_rf_pipe1_dst_preg_dup2[6:0] = rf_pipe1_dst_preg_dup2[6:0];
 assign dp_xx_rf_pipe1_dst_preg_dup3[6:0] = rf_pipe1_dst_preg_dup3[6:0];
 assign dp_xx_rf_pipe1_dst_preg_dup4[6:0] = rf_pipe1_dst_preg_dup4[6:0];
+assign dp_xx_rf_pipe1_dst_preg_dup5[6:0] = rf_pipe1_dst_preg_dup5[6:0];
 
 //----------------------------------------------------------
 //                    RF stage Decoder
@@ -2706,7 +2858,7 @@ begin
     rf_pipe2_fwd_src1_preg[6:0] <= rf_pipe2_fwd_src1_preg[6:0];
 end
 
-//output
+//output to RF prf pregfile & fwd
 assign dp_prf_rf_pipe2_src0_preg[6:0] = rf_pipe2_prf_src0_preg[6:0];
 assign dp_fwd_rf_pipe2_src0_preg[6:0] = rf_pipe2_fwd_src0_preg[6:0];
 assign dp_prf_rf_pipe2_src1_preg[6:0] = rf_pipe2_prf_src1_preg[6:0];
@@ -2791,6 +2943,199 @@ assign idu_iu_rf_pipe2_pcall        = rf_pipe2_data[BIQ_PCALL];
 assign idu_iu_rf_pipe2_vlmul[1:0]   = rf_pipe2_data[BIQ_VLMUL:BIQ_VLMUL-1];
 assign idu_iu_rf_pipe2_vsew[2:0]    = rf_pipe2_data[BIQ_VSEW:BIQ_VSEW-2];
 assign idu_iu_rf_pipe2_vl[7:0]      = rf_pipe2_data[BIQ_VL:BIQ_VL-7];
+
+//==========================================================
+//                    Pipe8 Data Path
+//==========================================================
+//----------------------------------------------------------
+//                 Instance of Gated Cell  
+//----------------------------------------------------------
+assign rf_pipe8_clk_en = miq_xx_gateclk_issue_en;
+// &Instance("gated_clk_cell", "x_rf_pipe2_gated_clk"); @836
+gated_clk_cell  x_rf_pipe8_gated_clk (
+  .clk_in             (forever_cpuclk    ),
+  .clk_out            (rf_pipe8_clk      ),
+  .external_en        (1'b0              ),
+  .global_en          (cp0_yy_clk_en     ),
+  .local_en           (rf_pipe8_clk_en   ),
+  .module_en          (cp0_idu_icg_en    ),
+  .pad_yy_icg_scan_en (pad_yy_icg_scan_en)
+);
+
+// &Connect(.clk_in      (forever_cpuclk), @837
+//          .external_en (1'b0), @838
+//          .global_en   (cp0_yy_clk_en), @839
+//          .module_en   (cp0_idu_icg_en), @840
+//          .local_en    (rf_pipe8_clk_en), @841
+//          .clk_out     (rf_pipe8_clk)); @842
+
+//----------------------------------------------------------
+//                   Pipeline Registers
+//----------------------------------------------------------
+always @(posedge rf_pipe8_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b) begin
+    rf_pipe8_iq_entry[11:0]       <= 12'b0;
+    rf_pipe8_data[MIQ_WIDTH-1:0]  <= {MIQ_WIDTH{1'b0}};
+  end
+  else if(biq_xx_issue_en) begin
+    rf_pipe8_iq_entry[11:0]       <= miq_dp_issue_entry[11:0];
+    rf_pipe8_data[MIQ_WIDTH-1:0]  <= miq_dp_issue_read_data[MIQ_WIDTH-1:0];
+  end
+  else begin
+    rf_pipe8_iq_entry[11:0]       <= rf_pipe8_iq_entry[11:0];
+    rf_pipe8_data[MIQ_WIDTH-1:0]  <= rf_pipe8_data[MIQ_WIDTH-1:0];
+  end
+end
+
+//----------------------------------------------------------
+//                Source Pipeline Registers
+//----------------------------------------------------------
+//for power and timing optimization, duplicate source preg index
+//rf pipe source index will never swap because:
+//1.producer launch when it is allocated with preg
+//2.consumer issue after producer launch no matter replay or not
+// matrix指令的src0/1操作数可能无效, 取消寄存器更新的使能
+assign rf_pipe8_prf_src0_preg_updt_vld = miq_xx_issue_en
+                                        && miq_dp_issue_read_data[MIQ_SRC0_VLD];
+//                                         && miq_dp_issue_read_data[BIQ_SRC0_WB];
+assign rf_pipe8_prf_src1_preg_updt_vld = miq_xx_issue_en
+                                        && miq_dp_issue_read_data[MIQ_SRC1_VLD];
+//                                         && miq_dp_issue_read_data[BIQ_SRC1_WB];
+assign rf_pipe8_fwd_src0_preg_updt_vld = miq_xx_issue_en
+                                        && miq_dp_issue_read_data[MIQ_SRC0_VLD];
+//                                         && miq_dp_issue_read_data[BIQ_SRC0_WB];
+assign rf_pipe8_fwd_src1_preg_updt_vld = miq_xx_issue_en
+                                        && miq_dp_issue_read_data[MIQ_SRC1_VLD];
+//                                         && miq_dp_issue_read_data[BIQ_SRC1_WB];
+
+always @(posedge rf_pipe8_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b)
+    rf_pipe8_prf_src0_preg[6:0] <= 7'b0;
+  else if(rf_pipe8_prf_src0_preg_updt_vld)
+    rf_pipe8_prf_src0_preg[6:0] <= miq_dp_issue_read_data[MIQ_SRC0_PREG:MIQ_SRC0_PREG-6];
+  else
+    rf_pipe8_prf_src0_preg[6:0] <= rf_pipe8_prf_src0_preg[6:0];
+end
+
+always @(posedge rf_pipe8_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b)
+    rf_pipe8_prf_src1_preg[6:0] <= 7'b0;
+  else if(rf_pipe8_prf_src1_preg_updt_vld)
+    rf_pipe8_prf_src1_preg[6:0] <= miq_dp_issue_read_data[MIQ_SRC1_PREG:MIQ_SRC1_PREG-6];
+  else
+    rf_pipe8_prf_src1_preg[6:0] <= rf_pipe8_prf_src1_preg[6:0];
+end
+
+always @(posedge rf_pipe8_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b)
+    rf_pipe8_fwd_src0_preg[6:0] <= 7'b0;
+  else if(rf_pipe8_fwd_src0_preg_updt_vld)
+    rf_pipe8_fwd_src0_preg[6:0] <= miq_dp_issue_read_data[MIQ_SRC0_PREG:MIQ_SRC0_PREG-6];
+  else
+    rf_pipe8_fwd_src0_preg[6:0] <= rf_pipe8_fwd_src0_preg[6:0];
+end
+
+always @(posedge rf_pipe8_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b)
+    rf_pipe8_fwd_src1_preg[6:0] <= 7'b0;
+  else if(rf_pipe8_fwd_src1_preg_updt_vld)
+    rf_pipe8_fwd_src1_preg[6:0] <= miq_dp_issue_read_data[MIQ_SRC1_PREG:MIQ_SRC1_PREG-6];
+  else
+    rf_pipe8_fwd_src1_preg[6:0] <= rf_pipe8_fwd_src1_preg[6:0];
+end
+
+//output to RF prf pregfile & fwd
+assign dp_prf_rf_pipe8_src0_preg[6:0] = rf_pipe8_prf_src0_preg[6:0];
+assign dp_fwd_rf_pipe8_src0_preg[6:0] = rf_pipe8_fwd_src0_preg[6:0];
+assign dp_prf_rf_pipe8_src1_preg[6:0] = rf_pipe8_prf_src1_preg[6:0];
+assign dp_fwd_rf_pipe8_src1_preg[6:0] = rf_pipe8_fwd_src1_preg[6:0];
+
+//----------------------------------------------------------
+//                  Rename for Data Path(DP)
+//----------------------------------------------------------
+//for issue queue
+assign dp_miq_rf_lch_entry[11:0]    = rf_pipe8_iq_entry[11:0];
+
+//----------------------------------------------------------
+//           RF stage Decoder for Matrix Type Select
+//----------------------------------------------------------
+assign pipe8_mat_decd_type[3:0] = rf_pipe8_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-3];
+ // TODO: 暂时不支持Special Mov between GPR & Matrix Reg
+assign dp_ctrl_rf_pipe8_fu_sel[2:0] = pipe8_mat_decd_type[2:0];
+
+assign pipe8_mat_decd_opcode[31:0] = rf_pipe8_data[MIQ_OPCODE:MIQ_OPCODE-31];
+assign pipe8_mat_decd_src0_vld = rf_pipe8_data[MIQ_SRC0_VLD];
+
+parameter MAT_ALU_DATA_WIDTH = 31;
+parameter MAT_LSU_DATA_WIDTH = 16;
+parameter MAT_CFG_DATA_WIDTH = 12;
+
+wire [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta;
+wire [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta;
+wire [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta;
+
+ct_idu_rf_pipe8_mat_decd i_ct_idu_rf_pipe8_mat_decd (
+  .pipe8_mat_decd_opcode  (pipe8_mat_decd_opcode  ),
+  .pipe8_mat_decd_type    (pipe8_mat_decd_type    ),
+  .pipe8_mat_decd_src0_vld(pipe8_mat_decd_src0_vld),
+  .pipe8_mat_alu_meta     (pipe8_mat_alu_meta     ),
+  .pipe8_mat_lsu_meta     (pipe8_mat_lsu_meta     ),
+  .pipe8_mat_cfg_meta     (pipe8_mat_cfg_meta     )
+);
+
+//----------------------------------------------------------
+//                    Source Operand 0
+//----------------------------------------------------------
+assign rf_pipe8_src0_data[63:0]     = (rf_pipe8_data[MIQ_SRC0_WB])
+                                      ? prf_dp_rf_pipe8_src0_data[63:0]
+                                      : fwd_dp_rf_pipe8_src0_data[63:0];
+assign rf_pipe8_src0_no_rdy         = rf_pipe8_data[MIQ_SRC0_VLD]
+                                      && !rf_pipe8_data[MIQ_SRC0_WB]
+                                      && fwd_dp_rf_pipe8_src0_no_fwd;
+
+//----------------------------------------------------------
+//                    Source Operand 1
+//----------------------------------------------------------
+assign rf_pipe8_src1_data[63:0]     = (rf_pipe8_data[BIQ_SRC1_WB])
+                                      ? prf_dp_rf_pipe8_src1_data[63:0]
+                                      : fwd_dp_rf_pipe8_src1_data[63:0];
+
+assign rf_pipe8_src1_no_rdy         = rf_pipe8_data[MIQ_SRC1_VLD]
+                                      && !rf_pipe8_data[MIQ_SRC1_WB]
+                                      && fwd_dp_rf_pipe8_src1_no_fwd;
+
+//----------------------------------------------------------
+//                 Source Not Ready Signal
+//----------------------------------------------------------
+//if source not ready, signal rf_ctrl launch fail and clear
+//issue queue ready
+assign dp_ctrl_rf_pipe8_src_no_rdy  = rf_pipe8_src0_no_rdy
+                                      || rf_pipe8_src1_no_rdy;
+assign dp_miq_rf_rdy_clr[0]         = rf_pipe8_src0_no_rdy;
+assign dp_miq_rf_rdy_clr[1]         = rf_pipe8_src1_no_rdy;
+
+//----------------------------------------------------------
+//                Output to Matrix Execution Units
+//----------------------------------------------------------
+assign idu_mat_rf_pipe8_alu_meta[30:0]    = pipe8_mat_alu_meta[30:0];
+assign idu_mat_rf_pipe8_alu_src0_vld      = rf_pipe8_data[MIQ_SRC0_VLD];
+assign idu_mat_rf_pipe8_alu_src0[63:0]    = rf_pipe8_src0_data[63:0];
+
+assign idu_mat_rf_pipe8_lsu_meta[15:0]    = pipe8_mat_lsu_meta[15:0];
+assign idu_mat_rf_pipe8_lsu_src0[63:0]    = rf_pipe8_src0_data[63:0];
+assign idu_mat_rf_pipe8_lsu_src1_vld      = rf_pipe8_data[MIQ_SRC1_VLD];
+assign idu_mat_rf_pipe8_lsu_src1[63:0]    = rf_pipe8_src1_data[63:0];
+
+assign idu_mat_rf_pipe8_cfg_meta[11:0]    = pipe8_mat_cfg_meta[11:0];
+assign idu_mat_rf_pipe8_cfg_dst_vld       = rf_pipe8_data[MIQ_DST_VLD];
+assign idu_mat_rf_pipe8_cfg_dst_preg[6:0] = rf_pipe8_data[MIQ_DST_PREG:MIQ_DST_PREG-6];
+assign idu_mat_rf_pipe8_cfg_src0_vld      = rf_pipe8_data[MIQ_SRC0_VLD];
+assign idu_mat_rf_pipe8_cfg_src0[63:0]    = rf_pipe8_src0_data[63:0];
 
 //==========================================================
 //                    Pipe3 Data Path

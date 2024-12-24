@@ -1588,7 +1588,7 @@ wire             aiq0_ctrl_full;
 wire             aiq0_ctrl_full_updt;                    
 wire             aiq0_ctrl_full_updt_clk_en;             
 wire    [7  :0]  aiq0_dp_issue_entry;                    
-wire    [226:0]  aiq0_dp_issue_read_data;                
+wire    [250:0]  aiq0_dp_issue_read_data;                
 wire    [3  :0]  aiq0_top_aiq0_entry_cnt;                
 wire             aiq0_xx_gateclk_issue_en;               
 wire             aiq0_xx_issue_en;                       
@@ -1602,7 +1602,7 @@ wire             aiq1_ctrl_full;
 wire             aiq1_ctrl_full_updt;                    
 wire             aiq1_ctrl_full_updt_clk_en;             
 wire    [7  :0]  aiq1_dp_issue_entry;                    
-wire    [213:0]  aiq1_dp_issue_read_data;                
+wire    [237:0]  aiq1_dp_issue_read_data;                
 wire    [3  :0]  aiq1_top_aiq1_entry_cnt;                
 wire             aiq1_xx_gateclk_issue_en;               
 wire             aiq1_xx_issue_en;                       
@@ -1890,18 +1890,18 @@ wire             ctrl_xx_rf_pipe7_vmla_lch_vld_dup0;
 wire             ctrl_xx_rf_pipe7_vmla_lch_vld_dup1;     
 wire             ctrl_xx_rf_pipe7_vmla_lch_vld_dup2;     
 wire             ctrl_xx_rf_pipe7_vmla_lch_vld_dup3;     
-wire    [226:0]  dp_aiq0_bypass_data;                    
-wire    [226:0]  dp_aiq0_create0_data;                   
-wire    [226:0]  dp_aiq0_create1_data;                   
+wire    [250:0]  dp_aiq0_bypass_data;                    
+wire    [250:0]  dp_aiq0_create0_data;                   
+wire    [250:0]  dp_aiq0_create1_data;                   
 wire             dp_aiq0_create_div;                     
 wire             dp_aiq0_create_src0_rdy_for_bypass;     
 wire             dp_aiq0_create_src1_rdy_for_bypass;     
 wire             dp_aiq0_create_src2_rdy_for_bypass;     
 wire    [7  :0]  dp_aiq0_rf_lch_entry;                   
 wire    [2  :0]  dp_aiq0_rf_rdy_clr;                     
-wire    [213:0]  dp_aiq1_bypass_data;                    
-wire    [213:0]  dp_aiq1_create0_data;                   
-wire    [213:0]  dp_aiq1_create1_data;                   
+wire    [237:0]  dp_aiq1_bypass_data;                    
+wire    [237:0]  dp_aiq1_create0_data;                   
+wire    [237:0]  dp_aiq1_create1_data;                   
 wire             dp_aiq1_create_alu;                     
 wire             dp_aiq1_create_src0_rdy_for_bypass;     
 wire             dp_aiq1_create_src1_rdy_for_bypass;     
@@ -1977,12 +1977,12 @@ wire             dp_ctrl_is_aiq0_issue_alu_short;
 wire             dp_ctrl_is_aiq0_issue_div;              
 wire             dp_ctrl_is_aiq0_issue_dst_vld;          
 wire             dp_ctrl_is_aiq0_issue_lch_preg;         
-wire    [107:0]  dp_ctrl_is_aiq0_issue_lch_rdy;          
+wire    [131:0]  dp_ctrl_is_aiq0_issue_lch_rdy;          
 wire             dp_ctrl_is_aiq0_issue_special;          
 wire             dp_ctrl_is_aiq1_issue_alu_short;        
 wire             dp_ctrl_is_aiq1_issue_dst_vld;          
 wire             dp_ctrl_is_aiq1_issue_lch_preg;         
-wire    [107:0]  dp_ctrl_is_aiq1_issue_lch_rdy;          
+wire    [131:0]  dp_ctrl_is_aiq1_issue_lch_rdy;          
 wire    [7  :0]  dp_ctrl_is_aiq1_issue_mla_lch_rdy;      
 wire             dp_ctrl_is_aiq1_issue_mla_vld;          
 wire    [12 :0]  dp_ctrl_is_dis_inst2_ctrl_info;         
@@ -3398,16 +3398,12 @@ ct_idu_id_ctrl  x_ct_idu_id_ctrl (
 
 wire        dp_id_pipedown_inst0_mat_vld ;
 wire [ 3:0] dp_id_pipedown_inst0_mat_type;
-wire [36:0] dp_id_pipedown_inst0_mat_data;
 wire        dp_id_pipedown_inst1_mat_vld ;
 wire [ 3:0] dp_id_pipedown_inst1_mat_type;
-wire [36:0] dp_id_pipedown_inst1_mat_data;
 wire        dp_id_pipedown_inst2_mat_vld ;
 wire [ 3:0] dp_id_pipedown_inst2_mat_type;
-wire [36:0] dp_id_pipedown_inst2_mat_data;
 wire        dp_id_pipedown_inst3_mat_vld ;
 wire [ 3:0] dp_id_pipedown_inst3_mat_type;
-wire [36:0] dp_id_pipedown_inst3_mat_data;
 
 // &Instance("ct_idu_id_dp", "x_ct_idu_id_dp"); @33
 ct_idu_id_dp x_ct_idu_id_dp (
@@ -3460,16 +3456,12 @@ ct_idu_id_dp x_ct_idu_id_dp (
   .dp_id_pipedown_inst3_data       (dp_id_pipedown_inst3_data      ),
   .dp_id_pipedown_inst0_mat_vld    (dp_id_pipedown_inst0_mat_vld   ),
   .dp_id_pipedown_inst0_mat_type   (dp_id_pipedown_inst0_mat_type  ),
-  .dp_id_pipedown_inst0_mat_data   (dp_id_pipedown_inst0_mat_data  ),
   .dp_id_pipedown_inst1_mat_vld    (dp_id_pipedown_inst1_mat_vld   ),
   .dp_id_pipedown_inst1_mat_type   (dp_id_pipedown_inst1_mat_type  ),
-  .dp_id_pipedown_inst1_mat_data   (dp_id_pipedown_inst1_mat_data  ),
   .dp_id_pipedown_inst2_mat_vld    (dp_id_pipedown_inst2_mat_vld   ),
   .dp_id_pipedown_inst2_mat_type   (dp_id_pipedown_inst2_mat_type  ),
-  .dp_id_pipedown_inst2_mat_data   (dp_id_pipedown_inst2_mat_data  ),
   .dp_id_pipedown_inst3_mat_vld    (dp_id_pipedown_inst3_mat_vld   ),
   .dp_id_pipedown_inst3_mat_type   (dp_id_pipedown_inst3_mat_type  ),
-  .dp_id_pipedown_inst3_mat_data   (dp_id_pipedown_inst3_mat_data  ),
   .fence_dp_inst0_data             (fence_dp_inst0_data            ),
   .fence_dp_inst1_data             (fence_dp_inst1_data            ),
   .fence_dp_inst2_data             (fence_dp_inst2_data            ),
@@ -3744,10 +3736,10 @@ ct_idu_ir_ctrl  x_ct_idu_ir_ctrl (
   .viq1_ctrl_entry_cnt_updt_vld        (viq1_ctrl_entry_cnt_updt_vld       )
 );
 
-wire [41:0] dp_ir_inst0_mat_meta;
-wire [41:0] dp_ir_inst1_mat_meta;
-wire [41:0] dp_ir_inst2_mat_meta;
-wire [41:0] dp_ir_inst3_mat_meta;
+wire [4 :0] dp_ir_inst0_mat_meta;
+wire [4 :0] dp_ir_inst1_mat_meta;
+wire [4 :0] dp_ir_inst2_mat_meta;
+wire [4 :0] dp_ir_inst3_mat_meta;
 // &Instance("ct_idu_ir_dp", "x_ct_idu_ir_dp"); @40
 ct_idu_ir_dp  x_ct_idu_ir_dp (
   .cp0_idu_icg_en             (cp0_idu_icg_en            ),
@@ -3850,16 +3842,12 @@ ct_idu_ir_dp  x_ct_idu_ir_dp (
   .dp_id_pipedown_inst3_data  (dp_id_pipedown_inst3_data ),
   .dp_id_pipedown_inst0_mat_vld    (dp_id_pipedown_inst0_mat_vld   ),
   .dp_id_pipedown_inst0_mat_type   (dp_id_pipedown_inst0_mat_type  ),
-  .dp_id_pipedown_inst0_mat_data   (dp_id_pipedown_inst0_mat_data  ),
   .dp_id_pipedown_inst1_mat_vld    (dp_id_pipedown_inst1_mat_vld   ),
   .dp_id_pipedown_inst1_mat_type   (dp_id_pipedown_inst1_mat_type  ),
-  .dp_id_pipedown_inst1_mat_data   (dp_id_pipedown_inst1_mat_data  ),
   .dp_id_pipedown_inst2_mat_vld    (dp_id_pipedown_inst2_mat_vld   ),
   .dp_id_pipedown_inst2_mat_type   (dp_id_pipedown_inst2_mat_type  ),
-  .dp_id_pipedown_inst2_mat_data   (dp_id_pipedown_inst2_mat_data  ),
   .dp_id_pipedown_inst3_mat_vld    (dp_id_pipedown_inst3_mat_vld   ),
   .dp_id_pipedown_inst3_mat_type   (dp_id_pipedown_inst3_mat_type  ),
-  .dp_id_pipedown_inst3_mat_data   (dp_id_pipedown_inst3_mat_data  ),
   .dp_ir_inst01_src_match     (dp_ir_inst01_src_match    ),
   .dp_ir_inst02_src_match     (dp_ir_inst02_src_match    ),
   .dp_ir_inst03_src_match     (dp_ir_inst03_src_match    ),
@@ -4361,6 +4349,11 @@ wire       ctrl_miq_create1_en           ;
 wire       ctrl_miq_create1_dp_en        ;
 wire       ctrl_miq_create1_gateclk_en   ;
 wire [1:0] ctrl_dp_is_dis_miq_create1_sel;
+wire       miq_ctrl_1_left_updt          ;
+wire       miq_ctrl_empty                ;
+wire       miq_ctrl_full                 ; // 用于 disable miq create
+wire       miq_ctrl_full_updt            ;
+wire       miq_ctrl_full_updt_clk_en     ;
 //==========================================================
 //                       IS Stage
 //==========================================================
@@ -4381,6 +4374,11 @@ ct_idu_is_ctrl  x_ct_idu_is_ctrl (
   .biq_ctrl_full                       (biq_ctrl_full                      ),
   .biq_ctrl_full_updt                  (biq_ctrl_full_updt                 ),
   .biq_ctrl_full_updt_clk_en           (biq_ctrl_full_updt_clk_en          ),
+  .miq_ctrl_1_left_updt                (miq_ctrl_1_left_updt               ),
+  .miq_ctrl_empty                      (miq_ctrl_empty                     ),
+  .miq_ctrl_full                       (miq_ctrl_full                      ),
+  .miq_ctrl_full_updt                  (miq_ctrl_full_updt                 ),
+  .miq_ctrl_full_updt_clk_en           (miq_ctrl_full_updt_clk_en          ),
   .cp0_idu_icg_en                      (cp0_idu_icg_en                     ),
   .cp0_yy_clk_en                       (cp0_yy_clk_en                      ),
   .cpurst_b                            (cpurst_b                           ),
@@ -4644,8 +4642,14 @@ ct_idu_is_ctrl  x_ct_idu_is_ctrl (
   .viq1_ctrl_full_updt_clk_en          (viq1_ctrl_full_updt_clk_en         )
 );
 
-wire    [11 :0]  miq_aiq_create0_entry;
-wire    [11 :0]  miq_aiq_create1_entry;
+wire [72:0] dp_miq_bypass_data               ;
+wire [72:0] dp_miq_create0_data              ;
+wire [72:0] dp_miq_create1_data              ;
+wire         dp_miq_create_src0_rdy_for_bypass;
+wire         dp_miq_create_src1_rdy_for_bypass;
+wire [ 11:0] miq_aiq_create0_entry            ;
+wire [ 11:0] miq_aiq_create1_entry            ;
+
 // &ConnRule(s/_dupx/_dup1/); @52
 // &Instance("ct_idu_is_dp", "x_ct_idu_is_dp"); @53
 ct_idu_is_dp  x_ct_idu_is_dp (
@@ -4778,6 +4782,11 @@ ct_idu_is_dp  x_ct_idu_is_dp (
   .dp_biq_create1_data                     (dp_biq_create1_data                    ),
   .dp_biq_create_src0_rdy_for_bypass       (dp_biq_create_src0_rdy_for_bypass      ),
   .dp_biq_create_src1_rdy_for_bypass       (dp_biq_create_src1_rdy_for_bypass      ),
+  .dp_miq_bypass_data                      (dp_miq_bypass_data                     ),
+  .dp_miq_create0_data                     (dp_miq_create0_data                    ),
+  .dp_miq_create1_data                     (dp_miq_create1_data                    ),
+  .dp_miq_create_src0_rdy_for_bypass       (dp_miq_create_src0_rdy_for_bypass      ),
+  .dp_miq_create_src1_rdy_for_bypass       (dp_miq_create_src1_rdy_for_bypass      ),
   .dp_ctrl_is_dis_inst2_ctrl_info          (dp_ctrl_is_dis_inst2_ctrl_info         ),
   .dp_ctrl_is_dis_inst3_ctrl_info          (dp_ctrl_is_dis_inst3_ctrl_info         ),
   .dp_ctrl_is_dis_inst2_mat_vld            (dp_ctrl_is_dis_inst2_mat_vld           ),
@@ -5019,6 +5028,8 @@ ct_idu_is_aiq0  x_ct_idu_is_aiq0 (
   .aiq1_aiq_create1_entry                  (aiq1_aiq_create1_entry                 ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_idu_iq_bypass_disable               (cp0_idu_iq_bypass_disable              ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
@@ -5043,12 +5054,18 @@ ct_idu_is_aiq0  x_ct_idu_is_aiq0 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -5140,6 +5157,8 @@ ct_idu_is_aiq1  x_ct_idu_is_aiq1 (
   .aiq1_xx_issue_en                        (aiq1_xx_issue_en                       ),
   .biq_aiq_create0_entry                   (biq_aiq_create0_entry                  ),
   .biq_aiq_create1_entry                   (biq_aiq_create1_entry                  ),
+  .miq_aiq_create0_entry                   (miq_aiq_create0_entry                  ),
+  .miq_aiq_create1_entry                   (miq_aiq_create1_entry                  ),
   .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
   .cp0_idu_iq_bypass_disable               (cp0_idu_iq_bypass_disable              ),
   .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
@@ -5165,12 +5184,18 @@ ct_idu_is_aiq1  x_ct_idu_is_aiq1 (
   .ctrl_biq_create0_gateclk_en             (ctrl_biq_create0_gateclk_en            ),
   .ctrl_biq_create1_dp_en                  (ctrl_biq_create1_dp_en                 ),
   .ctrl_biq_create1_gateclk_en             (ctrl_biq_create1_gateclk_en            ),
+  .ctrl_miq_create0_dp_en                  (ctrl_miq_create0_dp_en                 ),
+  .ctrl_miq_create0_gateclk_en             (ctrl_miq_create0_gateclk_en            ),
+  .ctrl_miq_create1_dp_en                  (ctrl_miq_create1_dp_en                 ),
+  .ctrl_miq_create1_gateclk_en             (ctrl_miq_create1_gateclk_en            ),
   .ctrl_dp_is_dis_aiq0_create0_sel         (ctrl_dp_is_dis_aiq0_create0_sel        ),
   .ctrl_dp_is_dis_aiq0_create1_sel         (ctrl_dp_is_dis_aiq0_create1_sel        ),
   .ctrl_dp_is_dis_aiq1_create0_sel         (ctrl_dp_is_dis_aiq1_create0_sel        ),
   .ctrl_dp_is_dis_aiq1_create1_sel         (ctrl_dp_is_dis_aiq1_create1_sel        ),
   .ctrl_dp_is_dis_biq_create0_sel          (ctrl_dp_is_dis_biq_create0_sel         ),
   .ctrl_dp_is_dis_biq_create1_sel          (ctrl_dp_is_dis_biq_create1_sel         ),
+  .ctrl_dp_is_dis_miq_create0_sel          (ctrl_dp_is_dis_miq_create0_sel         ),
+  .ctrl_dp_is_dis_miq_create1_sel          (ctrl_dp_is_dis_miq_create1_sel         ),
   .ctrl_dp_is_dis_lsiq_create0_sel         (ctrl_dp_is_dis_lsiq_create0_sel        ),
   .ctrl_dp_is_dis_lsiq_create1_sel         (ctrl_dp_is_dis_lsiq_create1_sel        ),
   .ctrl_dp_is_dis_sdiq_create0_sel         (ctrl_dp_is_dis_sdiq_create0_sel        ),
@@ -5306,6 +5331,123 @@ ct_idu_is_biq  x_ct_idu_is_biq (
   .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup4  ),
   .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dup4           )
 );
+
+wire [ 11:0] miq_dp_issue_entry     ;
+wire [ 72:0] miq_dp_issue_read_data ;
+wire [  3:0] miq_top_miq_entry_cnt  ;
+wire         miq_xx_gateclk_issue_en;
+wire         miq_xx_issue_en        ;
+
+wire        ctrl_miq_rf_lch_fail_vld          ;
+wire [23:0] ctrl_miq_rf_pipe0_alu_reg_fwd_vld ;
+wire [23:0] ctrl_miq_rf_pipe1_alu_reg_fwd_vld ;
+wire        ctrl_miq_rf_pop_vld               ;
+wire        ctrl_xx_rf_pipe0_preg_lch_vld_dup5;
+wire        ctrl_xx_rf_pipe1_preg_lch_vld_dup5;
+
+wire [11:0] dp_miq_rf_lch_entry               ;
+wire [ 1:0] dp_miq_rf_rdy_clr                 ;
+wire [ 6:0] dp_xx_rf_pipe0_dst_preg_dup5      ;
+wire [ 6:0] dp_xx_rf_pipe1_dst_preg_dup5      ;
+
+wire [6:0] iu_idu_div_preg_dup5               ;
+wire [6:0] iu_idu_ex2_pipe0_wb_preg_dup5      ;
+wire       iu_idu_ex2_pipe0_wb_preg_vld_dup5  ;
+wire       iu_idu_ex2_pipe1_mult_inst_vld_dup5;
+wire [6:0] iu_idu_ex2_pipe1_preg_dup5         ;
+wire [6:0] iu_idu_ex2_pipe1_wb_preg_dup5      ;
+wire       iu_idu_ex2_pipe1_wb_preg_vld_dup5  ;
+
+wire [6:0] lsu_idu_ag_pipe3_preg_dup5             ;
+wire       lsu_idu_dc_pipe3_load_fwd_inst_vld_dup5;
+wire       lsu_idu_dc_pipe3_load_inst_vld_dup5    ;
+wire [6:0] lsu_idu_dc_pipe3_preg_dup5             ;
+wire [6:0] lsu_idu_wb_pipe3_wb_preg_dup5          ;
+wire       lsu_idu_wb_pipe3_wb_preg_vld_dup5      ;
+
+wire       vfpu_idu_ex1_pipe6_mfvr_inst_vld_dup5;
+wire [6:0] vfpu_idu_ex1_pipe6_preg_dup5         ;
+wire       vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5;
+wire [6:0] vfpu_idu_ex1_pipe7_preg_dup5         ;
+
+  ct_idu_is_miq i_ct_idu_is_miq (
+    // to IS dp Mux dependency and aiq0/1 record & wakeup
+    .miq_aiq_create0_entry                  (miq_aiq_create0_entry                  ),
+    .miq_aiq_create1_entry                  (miq_aiq_create1_entry                  ),
+    // to IS ctrl for is stall and debug
+    .miq_ctrl_1_left_updt                   (miq_ctrl_1_left_updt                   ),
+    .miq_ctrl_empty                         (miq_ctrl_empty                         ),
+    .miq_ctrl_full                          (miq_ctrl_full                          ),
+    .miq_ctrl_full_updt                     (miq_ctrl_full_updt                     ),
+    .miq_ctrl_full_updt_clk_en              (miq_ctrl_full_updt_clk_en              ),
+    // to top // TODO
+    .miq_top_miq_entry_cnt                  (miq_top_miq_entry_cnt                  ),
+    /* from outside (cp0) */
+    .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+    .cp0_idu_iq_bypass_disable              (cp0_idu_iq_bypass_disable              ),
+    .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+    .cpurst_b                               (cpurst_b                               ),
+    .forever_cpuclk                         (forever_cpuclk                         ),
+    .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+    /* from IS ctrl */
+    .ctrl_miq_create0_dp_en                 (ctrl_miq_create0_dp_en                 ),
+    .ctrl_miq_create0_en                    (ctrl_miq_create0_en                    ),
+    .ctrl_miq_create0_gateclk_en            (ctrl_miq_create0_gateclk_en            ),
+    .ctrl_miq_create1_dp_en                 (ctrl_miq_create1_dp_en                 ),
+    .ctrl_miq_create1_en                    (ctrl_miq_create1_en                    ),
+    .ctrl_miq_create1_gateclk_en            (ctrl_miq_create1_gateclk_en            ),
+    /* from IS dp */
+    .dp_miq_bypass_data                     (dp_miq_bypass_data                     ),
+    .dp_miq_create0_data                    (dp_miq_create0_data                    ),
+    .dp_miq_create1_data                    (dp_miq_create1_data                    ),
+    .dp_miq_create_src0_rdy_for_bypass      (dp_miq_create_src0_rdy_for_bypass      ),
+    .dp_miq_create_src1_rdy_for_bypass      (dp_miq_create_src1_rdy_for_bypass      ),
+    /* from RF dp */
+    .dp_miq_rf_lch_entry                    (dp_miq_rf_lch_entry                    ),
+    .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+    .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dup5           ),
+    .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dup5           ),
+    /* to RF dp */
+    .miq_dp_issue_entry                     (miq_dp_issue_entry                     ),
+    .miq_dp_issue_read_data                 (miq_dp_issue_read_data                 ),
+    /* to RF ctrl & dp (which "xx" means) */
+    .miq_xx_gateclk_issue_en                (miq_xx_gateclk_issue_en                ),
+    .miq_xx_issue_en                        (miq_xx_issue_en                        ),
+    /* from RF ctrl */
+    .ctrl_miq_rf_lch_fail_vld               (ctrl_miq_rf_lch_fail_vld               ),
+    .ctrl_miq_rf_pipe0_alu_reg_fwd_vld      (ctrl_miq_rf_pipe0_alu_reg_fwd_vld      ),
+    .ctrl_miq_rf_pipe1_alu_reg_fwd_vld      (ctrl_miq_rf_pipe1_alu_reg_fwd_vld      ),
+    .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+    .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dup5     ),
+    .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dup5     ),
+    /* from outside (rtu) for flush*/
+    .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+    .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+    .rtu_yy_xx_flush                        (rtu_yy_xx_flush                        ),
+    /* from outside (iu) for WB info feedback */ // TODO
+    .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+    .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dup5                   ),
+    .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dup5          ),
+    .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dup5      ),
+    .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dup5    ),
+    .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dup5             ),
+    .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dup5          ),
+    .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dup5      ),
+    /* from outside (lsu) */ // TODO
+    .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+    .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dup5             ),
+    .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dup5),
+    .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dup5    ),
+    .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dup5             ),
+    .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dup5          ),
+    .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dup5      ),
+    /* from outside (vfpu) */ // TODO
+    .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dup5  ),
+    .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dup5           ),
+    .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5  ),
+    .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dup5           )
+  );
+
 
 // &ConnRule(s/_dupx/_dup1/); @60
 // &Instance("ct_idu_is_lsiq", "x_ct_idu_is_lsiq"); @61
@@ -5725,7 +5867,15 @@ ct_idu_is_viq1  x_ct_idu_is_viq1 (
   .viq1_xx_issue_en                      (viq1_xx_issue_en                     )
 );
 
+wire    [2  :0]  dp_ctrl_rf_pipe8_fu_sel;
+wire             dp_ctrl_rf_pipe8_src_no_rdy;
 
+wire             idu_mat_rf_alu_sel;
+wire             idu_mat_rf_alu_gateclk_sel;
+wire             idu_mat_rf_lsu_sel;
+wire             idu_mat_rf_lsu_gateclk_sel;
+wire             idu_mat_rf_cfg_sel;
+wire             idu_mat_rf_cfg_gateclk_sel;
 //==========================================================
 //                       RF Stage
 //==========================================================
@@ -5737,6 +5887,8 @@ ct_idu_rf_ctrl  x_ct_idu_rf_ctrl (
   .aiq1_xx_issue_en                     (aiq1_xx_issue_en                    ),
   .biq_xx_gateclk_issue_en              (biq_xx_gateclk_issue_en             ),
   .biq_xx_issue_en                      (biq_xx_issue_en                     ),
+  .miq_xx_gateclk_issue_en              (miq_xx_gateclk_issue_en             ),
+  .miq_xx_issue_en                      (miq_xx_issue_en                     ),
   .cp0_idu_icg_en                       (cp0_idu_icg_en                      ),
   .cp0_yy_clk_en                        (cp0_yy_clk_en                       ),
   .cpurst_b                             (cpurst_b                            ),
@@ -5757,6 +5909,10 @@ ct_idu_rf_ctrl  x_ct_idu_rf_ctrl (
   .ctrl_biq_rf_pipe0_alu_reg_fwd_vld    (ctrl_biq_rf_pipe0_alu_reg_fwd_vld   ),
   .ctrl_biq_rf_pipe1_alu_reg_fwd_vld    (ctrl_biq_rf_pipe1_alu_reg_fwd_vld   ),
   .ctrl_biq_rf_pop_vld                  (ctrl_biq_rf_pop_vld                 ),
+  .ctrl_miq_rf_lch_fail_vld             (ctrl_miq_rf_lch_fail_vld            ),
+  .ctrl_miq_rf_pipe0_alu_reg_fwd_vld    (ctrl_miq_rf_pipe0_alu_reg_fwd_vld   ),
+  .ctrl_miq_rf_pipe1_alu_reg_fwd_vld    (ctrl_miq_rf_pipe1_alu_reg_fwd_vld   ),
+  .ctrl_miq_rf_pop_vld                  (ctrl_miq_rf_pop_vld                 ),
   .ctrl_dp_rf_pipe0_other_lch_fail      (ctrl_dp_rf_pipe0_other_lch_fail     ),
   .ctrl_dp_rf_pipe3_other_lch_fail      (ctrl_dp_rf_pipe3_other_lch_fail     ),
   .ctrl_dp_rf_pipe4_other_lch_fail      (ctrl_dp_rf_pipe4_other_lch_fail     ),
@@ -5788,11 +5944,13 @@ ct_idu_rf_ctrl  x_ct_idu_rf_ctrl (
   .ctrl_xx_rf_pipe0_preg_lch_vld_dup2   (ctrl_xx_rf_pipe0_preg_lch_vld_dup2  ),
   .ctrl_xx_rf_pipe0_preg_lch_vld_dup3   (ctrl_xx_rf_pipe0_preg_lch_vld_dup3  ),
   .ctrl_xx_rf_pipe0_preg_lch_vld_dup4   (ctrl_xx_rf_pipe0_preg_lch_vld_dup4  ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dup5   (ctrl_xx_rf_pipe0_preg_lch_vld_dup5  ),
   .ctrl_xx_rf_pipe1_preg_lch_vld_dup0   (ctrl_xx_rf_pipe1_preg_lch_vld_dup0  ),
   .ctrl_xx_rf_pipe1_preg_lch_vld_dup1   (ctrl_xx_rf_pipe1_preg_lch_vld_dup1  ),
   .ctrl_xx_rf_pipe1_preg_lch_vld_dup2   (ctrl_xx_rf_pipe1_preg_lch_vld_dup2  ),
   .ctrl_xx_rf_pipe1_preg_lch_vld_dup3   (ctrl_xx_rf_pipe1_preg_lch_vld_dup3  ),
   .ctrl_xx_rf_pipe1_preg_lch_vld_dup4   (ctrl_xx_rf_pipe1_preg_lch_vld_dup4  ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dup5   (ctrl_xx_rf_pipe1_preg_lch_vld_dup5  ),
   .ctrl_xx_rf_pipe6_vmla_lch_vld_dup0   (ctrl_xx_rf_pipe6_vmla_lch_vld_dup0  ),
   .ctrl_xx_rf_pipe6_vmla_lch_vld_dup1   (ctrl_xx_rf_pipe6_vmla_lch_vld_dup1  ),
   .ctrl_xx_rf_pipe6_vmla_lch_vld_dup2   (ctrl_xx_rf_pipe6_vmla_lch_vld_dup2  ),
@@ -5847,6 +6005,10 @@ ct_idu_rf_ctrl  x_ct_idu_rf_ctrl (
   .dp_ctrl_rf_pipe7_src_no_rdy          (dp_ctrl_rf_pipe7_src_no_rdy         ),
   .dp_ctrl_rf_pipe7_srcv2_vld           (dp_ctrl_rf_pipe7_srcv2_vld          ),
   .dp_ctrl_rf_pipe7_vmul_unsplit        (dp_ctrl_rf_pipe7_vmul_unsplit       ),
+  // ----------------------------from RF dp-----------------------------------
+  .dp_ctrl_rf_pipe8_fu_sel              (dp_ctrl_rf_pipe8_fu_sel             ),
+  .dp_ctrl_rf_pipe8_src_no_rdy          (dp_ctrl_rf_pipe8_src_no_rdy         ),
+  // -------------------------------------------------------------------------
   .forever_cpuclk                       (forever_cpuclk                      ),
   .hpcp_idu_cnt_en                      (hpcp_idu_cnt_en                     ),
   .idu_cp0_rf_gateclk_sel               (idu_cp0_rf_gateclk_sel              ),
@@ -5914,8 +6076,27 @@ ct_idu_rf_ctrl  x_ct_idu_rf_ctrl (
   .viq0_xx_gateclk_issue_en             (viq0_xx_gateclk_issue_en            ),
   .viq0_xx_issue_en                     (viq0_xx_issue_en                    ),
   .viq1_xx_gateclk_issue_en             (viq1_xx_gateclk_issue_en            ),
-  .viq1_xx_issue_en                     (viq1_xx_issue_en                    )
+  .viq1_xx_issue_en                     (viq1_xx_issue_en                    ),
+  // TODO: to Matrix Unit
+  .idu_mat_rf_alu_sel                   (idu_mat_rf_alu_sel                  ),
+  .idu_mat_rf_alu_gateclk_sel           (idu_mat_rf_alu_gateclk_sel          ),
+  .idu_mat_rf_lsu_sel                   (idu_mat_rf_lsu_sel                  ),
+  .idu_mat_rf_lsu_gateclk_sel           (idu_mat_rf_lsu_gateclk_sel          ),
+  .idu_mat_rf_cfg_sel                   (idu_mat_rf_cfg_sel                  ),
+  .idu_mat_rf_cfg_gateclk_sel           (idu_mat_rf_cfg_gateclk_sel          )
 );
+
+wire    [6 :0]  dp_fwd_rf_pipe8_src0_preg;             
+wire    [6 :0]  dp_fwd_rf_pipe8_src1_preg;             
+wire    [63:0]  fwd_dp_rf_pipe8_src0_data;             
+wire            fwd_dp_rf_pipe8_src0_no_fwd;           
+wire    [63:0]  fwd_dp_rf_pipe8_src1_data;             
+wire            fwd_dp_rf_pipe8_src1_no_fwd;           
+
+wire    [6  :0]  dp_prf_rf_pipe8_src0_preg;             
+wire    [6  :0]  dp_prf_rf_pipe8_src1_preg;             
+wire    [63 :0]  prf_dp_rf_pipe8_src0_data;             
+wire    [63 :0]  prf_dp_rf_pipe8_src1_data;             
 
 // &Instance("ct_idu_rf_dp", "x_ct_idu_rf_dp"); @81
 ct_idu_rf_dp  x_ct_idu_rf_dp (
@@ -5931,6 +6112,10 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .biq_dp_issue_read_data                 (biq_dp_issue_read_data                ),
   .biq_xx_gateclk_issue_en                (biq_xx_gateclk_issue_en               ),
   .biq_xx_issue_en                        (biq_xx_issue_en                       ),
+  .miq_dp_issue_entry                     (miq_dp_issue_entry                    ),
+  .miq_dp_issue_read_data                 (miq_dp_issue_read_data                ),
+  .miq_xx_gateclk_issue_en                (miq_xx_gateclk_issue_en               ),
+  .miq_xx_issue_en                        (miq_xx_issue_en                       ),
   .cp0_idu_icg_en                         (cp0_idu_icg_en                        ),
   .cp0_lsu_fencei_broad_dis               (cp0_lsu_fencei_broad_dis              ),
   .cp0_lsu_fencerw_broad_dis              (cp0_lsu_fencerw_broad_dis             ),
@@ -5949,6 +6134,8 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .dp_aiq1_rf_rdy_clr                     (dp_aiq1_rf_rdy_clr                    ),
   .dp_biq_rf_lch_entry                    (dp_biq_rf_lch_entry                   ),
   .dp_biq_rf_rdy_clr                      (dp_biq_rf_rdy_clr                     ),
+  .dp_miq_rf_lch_entry                    (dp_miq_rf_lch_entry                   ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                     ),
   .dp_ctrl_is_aiq0_issue_alu_short        (dp_ctrl_is_aiq0_issue_alu_short       ),
   .dp_ctrl_is_aiq0_issue_div              (dp_ctrl_is_aiq0_issue_div             ),
   .dp_ctrl_is_aiq0_issue_dst_vld          (dp_ctrl_is_aiq0_issue_dst_vld         ),
@@ -5979,6 +6166,9 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .dp_ctrl_rf_pipe1_src2_vld              (dp_ctrl_rf_pipe1_src2_vld             ),
   .dp_ctrl_rf_pipe1_src_no_rdy            (dp_ctrl_rf_pipe1_src_no_rdy           ),
   .dp_ctrl_rf_pipe2_src_no_rdy            (dp_ctrl_rf_pipe2_src_no_rdy           ),
+  // to RF ctrl 
+  .dp_ctrl_rf_pipe8_fu_sel                (dp_ctrl_rf_pipe8_fu_sel               ),
+  .dp_ctrl_rf_pipe8_src_no_rdy            (dp_ctrl_rf_pipe8_src_no_rdy           ),
   .dp_ctrl_rf_pipe3_src1_vld              (dp_ctrl_rf_pipe3_src1_vld             ),
   .dp_ctrl_rf_pipe3_src_no_rdy            (dp_ctrl_rf_pipe3_src_no_rdy           ),
   .dp_ctrl_rf_pipe3_srcvm_vld             (dp_ctrl_rf_pipe3_srcvm_vld            ),
@@ -6002,6 +6192,10 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .dp_fwd_rf_pipe1_src1_preg              (dp_fwd_rf_pipe1_src1_preg             ),
   .dp_fwd_rf_pipe2_src0_preg              (dp_fwd_rf_pipe2_src0_preg             ),
   .dp_fwd_rf_pipe2_src1_preg              (dp_fwd_rf_pipe2_src1_preg             ),
+  // output to RF fwd to get the forward data
+  .dp_fwd_rf_pipe8_src0_preg              (dp_fwd_rf_pipe8_src0_preg             ),
+  .dp_fwd_rf_pipe8_src1_preg              (dp_fwd_rf_pipe8_src1_preg             ),
+  //
   .dp_fwd_rf_pipe3_src0_preg              (dp_fwd_rf_pipe3_src0_preg             ),
   .dp_fwd_rf_pipe3_src1_preg              (dp_fwd_rf_pipe3_src1_preg             ),
   .dp_fwd_rf_pipe4_src0_preg              (dp_fwd_rf_pipe4_src0_preg             ),
@@ -6028,6 +6222,10 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .dp_prf_rf_pipe1_src1_preg              (dp_prf_rf_pipe1_src1_preg             ),
   .dp_prf_rf_pipe2_src0_preg              (dp_prf_rf_pipe2_src0_preg             ),
   .dp_prf_rf_pipe2_src1_preg              (dp_prf_rf_pipe2_src1_preg             ),
+  // output to prf pregfile to read preg
+  .dp_prf_rf_pipe8_src0_preg              (dp_prf_rf_pipe8_src0_preg             ),
+  .dp_prf_rf_pipe8_src1_preg              (dp_prf_rf_pipe8_src1_preg             ),
+  //
   .dp_prf_rf_pipe3_src0_preg              (dp_prf_rf_pipe3_src0_preg             ),
   .dp_prf_rf_pipe3_src1_preg              (dp_prf_rf_pipe3_src1_preg             ),
   .dp_prf_rf_pipe4_src0_preg              (dp_prf_rf_pipe4_src0_preg             ),
@@ -6073,11 +6271,14 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .dp_xx_rf_pipe0_dst_preg_dup2           (dp_xx_rf_pipe0_dst_preg_dup2          ),
   .dp_xx_rf_pipe0_dst_preg_dup3           (dp_xx_rf_pipe0_dst_preg_dup3          ),
   .dp_xx_rf_pipe0_dst_preg_dup4           (dp_xx_rf_pipe0_dst_preg_dup4          ),
+  // output to MIQ to get the dependency 
+  .dp_xx_rf_pipe0_dst_preg_dup5           (dp_xx_rf_pipe0_dst_preg_dup5          ),
   .dp_xx_rf_pipe1_dst_preg_dup0           (dp_xx_rf_pipe1_dst_preg_dup0          ),
   .dp_xx_rf_pipe1_dst_preg_dup1           (dp_xx_rf_pipe1_dst_preg_dup1          ),
   .dp_xx_rf_pipe1_dst_preg_dup2           (dp_xx_rf_pipe1_dst_preg_dup2          ),
   .dp_xx_rf_pipe1_dst_preg_dup3           (dp_xx_rf_pipe1_dst_preg_dup3          ),
   .dp_xx_rf_pipe1_dst_preg_dup4           (dp_xx_rf_pipe1_dst_preg_dup4          ),
+  .dp_xx_rf_pipe1_dst_preg_dup5           (dp_xx_rf_pipe1_dst_preg_dup5          ),
   .dp_xx_rf_pipe6_dst_vreg_dup0           (dp_xx_rf_pipe6_dst_vreg_dup0          ),
   .dp_xx_rf_pipe6_dst_vreg_dup1           (dp_xx_rf_pipe6_dst_vreg_dup1          ),
   .dp_xx_rf_pipe6_dst_vreg_dup2           (dp_xx_rf_pipe6_dst_vreg_dup2          ),
@@ -6099,6 +6300,12 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .fwd_dp_rf_pipe2_src0_no_fwd            (fwd_dp_rf_pipe2_src0_no_fwd           ),
   .fwd_dp_rf_pipe2_src1_data              (fwd_dp_rf_pipe2_src1_data             ),
   .fwd_dp_rf_pipe2_src1_no_fwd            (fwd_dp_rf_pipe2_src1_no_fwd           ),
+  // forward data and "cannot forward" information input from RF fwd 
+  .fwd_dp_rf_pipe8_src0_data              (fwd_dp_rf_pipe8_src0_data             ),
+  .fwd_dp_rf_pipe8_src0_no_fwd            (fwd_dp_rf_pipe8_src0_no_fwd           ),
+  .fwd_dp_rf_pipe8_src1_data              (fwd_dp_rf_pipe8_src1_data             ),
+  .fwd_dp_rf_pipe8_src1_no_fwd            (fwd_dp_rf_pipe8_src1_no_fwd           ),
+  //
   .fwd_dp_rf_pipe3_src0_data              (fwd_dp_rf_pipe3_src0_data             ),
   .fwd_dp_rf_pipe3_src0_no_fwd            (fwd_dp_rf_pipe3_src0_no_fwd           ),
   .fwd_dp_rf_pipe3_src1_data              (fwd_dp_rf_pipe3_src1_data             ),
@@ -6332,6 +6539,10 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .prf_dp_rf_pipe0_src1_data              (prf_dp_rf_pipe0_src1_data             ),
   .prf_dp_rf_pipe2_src0_data              (prf_dp_rf_pipe2_src0_data             ),
   .prf_dp_rf_pipe2_src1_data              (prf_dp_rf_pipe2_src1_data             ),
+  // Physical Reg Data input from prf pregfile
+  .prf_dp_rf_pipe8_src0_data              (prf_dp_rf_pipe8_src0_data             ),
+  .prf_dp_rf_pipe8_src1_data              (prf_dp_rf_pipe8_src1_data             ),
+  // 
   .prf_dp_rf_pipe3_src0_data              (prf_dp_rf_pipe3_src0_data             ),
   .prf_dp_rf_pipe3_src1_data              (prf_dp_rf_pipe3_src1_data             ),
   .prf_dp_rf_pipe4_src0_data              (prf_dp_rf_pipe4_src0_data             ),
@@ -6391,6 +6602,8 @@ ct_idu_rf_fwd  x_ct_idu_rf_fwd (
   .dp_fwd_rf_pipe1_src1_preg              (dp_fwd_rf_pipe1_src1_preg             ),
   .dp_fwd_rf_pipe2_src0_preg              (dp_fwd_rf_pipe2_src0_preg             ),
   .dp_fwd_rf_pipe2_src1_preg              (dp_fwd_rf_pipe2_src1_preg             ),
+  .dp_fwd_rf_pipe8_src0_preg              (dp_fwd_rf_pipe8_src0_preg             ),
+  .dp_fwd_rf_pipe8_src1_preg              (dp_fwd_rf_pipe8_src1_preg             ),
   .dp_fwd_rf_pipe3_src0_preg              (dp_fwd_rf_pipe3_src0_preg             ),
   .dp_fwd_rf_pipe3_src1_preg              (dp_fwd_rf_pipe3_src1_preg             ),
   .dp_fwd_rf_pipe4_src0_preg              (dp_fwd_rf_pipe4_src0_preg             ),
@@ -6419,6 +6632,10 @@ ct_idu_rf_fwd  x_ct_idu_rf_fwd (
   .fwd_dp_rf_pipe2_src0_no_fwd            (fwd_dp_rf_pipe2_src0_no_fwd           ),
   .fwd_dp_rf_pipe2_src1_data              (fwd_dp_rf_pipe2_src1_data             ),
   .fwd_dp_rf_pipe2_src1_no_fwd            (fwd_dp_rf_pipe2_src1_no_fwd           ),
+  .fwd_dp_rf_pipe8_src0_data              (fwd_dp_rf_pipe8_src0_data             ),
+  .fwd_dp_rf_pipe8_src0_no_fwd            (fwd_dp_rf_pipe8_src0_no_fwd           ),
+  .fwd_dp_rf_pipe8_src1_data              (fwd_dp_rf_pipe8_src1_data             ),
+  .fwd_dp_rf_pipe8_src1_no_fwd            (fwd_dp_rf_pipe8_src1_no_fwd           ),
   .fwd_dp_rf_pipe3_src0_data              (fwd_dp_rf_pipe3_src0_data             ),
   .fwd_dp_rf_pipe3_src0_no_fwd            (fwd_dp_rf_pipe3_src0_no_fwd           ),
   .fwd_dp_rf_pipe3_src1_data              (fwd_dp_rf_pipe3_src1_data             ),
@@ -6543,6 +6760,8 @@ ct_idu_rf_prf_pregfile  x_ct_idu_rf_prf_pregfile (
   .dp_prf_rf_pipe1_src1_preg       (dp_prf_rf_pipe1_src1_preg      ),
   .dp_prf_rf_pipe2_src0_preg       (dp_prf_rf_pipe2_src0_preg      ),
   .dp_prf_rf_pipe2_src1_preg       (dp_prf_rf_pipe2_src1_preg      ),
+  .dp_prf_rf_pipe8_src0_preg       (dp_prf_rf_pipe8_src0_preg      ),
+  .dp_prf_rf_pipe8_src1_preg       (dp_prf_rf_pipe8_src1_preg      ),
   .dp_prf_rf_pipe3_src0_preg       (dp_prf_rf_pipe3_src0_preg      ),
   .dp_prf_rf_pipe3_src1_preg       (dp_prf_rf_pipe3_src1_preg      ),
   .dp_prf_rf_pipe4_src0_preg       (dp_prf_rf_pipe4_src0_preg      ),
@@ -6565,6 +6784,8 @@ ct_idu_rf_prf_pregfile  x_ct_idu_rf_prf_pregfile (
   .prf_dp_rf_pipe0_src1_data       (prf_dp_rf_pipe0_src1_data      ),
   .prf_dp_rf_pipe2_src0_data       (prf_dp_rf_pipe2_src0_data      ),
   .prf_dp_rf_pipe2_src1_data       (prf_dp_rf_pipe2_src1_data      ),
+  .prf_dp_rf_pipe8_src0_data       (prf_dp_rf_pipe8_src0_data      ),
+  .prf_dp_rf_pipe8_src1_data       (prf_dp_rf_pipe8_src1_data      ),
   .prf_dp_rf_pipe3_src0_data       (prf_dp_rf_pipe3_src0_data      ),
   .prf_dp_rf_pipe3_src1_data       (prf_dp_rf_pipe3_src1_data      ),
   .prf_dp_rf_pipe4_src0_data       (prf_dp_rf_pipe4_src0_data      ),

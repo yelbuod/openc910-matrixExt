@@ -124,16 +124,12 @@ module ct_idu_ir_dp(
   dp_id_pipedown_inst3_data,
   dp_id_pipedown_inst0_mat_vld, 
   dp_id_pipedown_inst0_mat_type,
-  dp_id_pipedown_inst0_mat_data,
   dp_id_pipedown_inst1_mat_vld, 
   dp_id_pipedown_inst1_mat_type,
-  dp_id_pipedown_inst1_mat_data,
   dp_id_pipedown_inst2_mat_vld, 
   dp_id_pipedown_inst2_mat_type,
-  dp_id_pipedown_inst2_mat_data,
   dp_id_pipedown_inst3_mat_vld, 
   dp_id_pipedown_inst3_mat_type,
-  dp_id_pipedown_inst3_mat_data,
   dp_ir_inst01_src_match,
   dp_ir_inst02_src_match,
   dp_ir_inst03_src_match,
@@ -336,16 +332,12 @@ input   [177:0]  dp_id_pipedown_inst2_data;
 input   [177:0]  dp_id_pipedown_inst3_data;
 input            dp_id_pipedown_inst0_mat_vld ;
 input   [ 3:0]   dp_id_pipedown_inst0_mat_type;
-input   [36:0]   dp_id_pipedown_inst0_mat_data;
 input            dp_id_pipedown_inst1_mat_vld ;
 input   [ 3:0]   dp_id_pipedown_inst1_mat_type;
-input   [36:0]   dp_id_pipedown_inst1_mat_data;
 input            dp_id_pipedown_inst2_mat_vld ;
 input   [ 3:0]   dp_id_pipedown_inst2_mat_type;
-input   [36:0]   dp_id_pipedown_inst2_mat_data;
 input            dp_id_pipedown_inst3_mat_vld ;
 input   [ 3:0]   dp_id_pipedown_inst3_mat_type;
-input   [36:0]   dp_id_pipedown_inst3_mat_data; 
 input            forever_cpuclk;            
 input            frt_dp_inst01_srcf2_match; 
 input            frt_dp_inst02_srcf2_match; 
@@ -535,10 +527,10 @@ output  [270:0]  dp_ir_inst1_data;
 output  [3  :0]  dp_ir_inst23_src_match;    
 output  [270:0]  dp_ir_inst2_data;          
 output  [270:0]  dp_ir_inst3_data;          
-output  [41 :0]  dp_ir_inst0_mat_meta;
-output  [41 :0]  dp_ir_inst1_mat_meta;
-output  [41 :0]  dp_ir_inst2_mat_meta;
-output  [41 :0]  dp_ir_inst3_mat_meta;
+output  [4  :0]  dp_ir_inst0_mat_meta;
+output  [4  :0]  dp_ir_inst1_mat_meta;
+output  [4  :0]  dp_ir_inst2_mat_meta;
+output  [4  :0]  dp_ir_inst3_mat_meta;
 output  [16 :0]  dp_rt_dep_info;            
 output  [6  :0]  dp_rt_inst0_dst_preg;      
 output  [5  :0]  dp_rt_inst0_dst_reg;       
@@ -724,16 +716,12 @@ wire    [177:0]  dp_id_pipedown_inst2_data;
 wire    [177:0]  dp_id_pipedown_inst3_data; 
 wire             dp_id_pipedown_inst0_mat_vld ;
 wire    [ 3:0]   dp_id_pipedown_inst0_mat_type;
-wire    [36:0]   dp_id_pipedown_inst0_mat_data;
 wire             dp_id_pipedown_inst1_mat_vld ;
 wire    [ 3:0]   dp_id_pipedown_inst1_mat_type;
-wire    [36:0]   dp_id_pipedown_inst1_mat_data;
 wire             dp_id_pipedown_inst2_mat_vld ;
 wire    [ 3:0]   dp_id_pipedown_inst2_mat_type;
-wire    [36:0]   dp_id_pipedown_inst2_mat_data;
 wire             dp_id_pipedown_inst3_mat_vld ;
 wire    [ 3:0]   dp_id_pipedown_inst3_mat_type;
-wire    [36:0]   dp_id_pipedown_inst3_mat_data;
 wire    [3  :0]  dp_ir_inst01_src_match;    
 wire    [3  :0]  dp_ir_inst02_src_match;    
 wire    [3  :0]  dp_ir_inst03_src_match;    
@@ -744,10 +732,10 @@ wire    [270:0]  dp_ir_inst1_data;
 wire    [3  :0]  dp_ir_inst23_src_match;    
 wire    [270:0]  dp_ir_inst2_data;          
 wire    [270:0]  dp_ir_inst3_data;          
-wire    [41 :0]  dp_ir_inst0_mat_meta;
-wire    [41 :0]  dp_ir_inst1_mat_meta;
-wire    [41 :0]  dp_ir_inst2_mat_meta;
-wire    [41 :0]  dp_ir_inst3_mat_meta;
+wire    [4  :0]  dp_ir_inst0_mat_meta;
+wire    [4  :0]  dp_ir_inst1_mat_meta;
+wire    [4  :0]  dp_ir_inst2_mat_meta;
+wire    [4  :0]  dp_ir_inst3_mat_meta;
 wire    [16 :0]  dp_rt_dep_info;            
 wire    [6  :0]  dp_rt_inst0_dst_preg;      
 wire    [5  :0]  dp_rt_inst0_dst_reg;       
@@ -1412,60 +1400,44 @@ end
 
 reg        ir_inst0_mat_vld ;
 reg [3:0]  ir_inst0_mat_type;
-reg [36:0] ir_inst0_mat_data;
 reg        ir_inst1_mat_vld ;
 reg [3:0]  ir_inst1_mat_type;
-reg [36:0] ir_inst1_mat_data;
 reg        ir_inst2_mat_vld ;
 reg [3:0]  ir_inst2_mat_type;
-reg [36:0] ir_inst2_mat_data;
 reg        ir_inst3_mat_vld ;
 reg [3:0]  ir_inst3_mat_type;
-reg [36:0] ir_inst3_mat_data;
 
 always @(posedge ir_inst_clk or negedge cpurst_b)
   begin
     if(!cpurst_b) begin
       ir_inst0_mat_vld        <= 1'd0;
       ir_inst0_mat_type[3:0]  <= 4'd0;
-      ir_inst0_mat_data[36:0] <= 37'd0;
       ir_inst1_mat_vld        <= 1'd0;
       ir_inst1_mat_type[3:0]  <= 4'd0;
-      ir_inst1_mat_data[36:0] <= 37'd0;
       ir_inst2_mat_vld        <= 1'd0;
       ir_inst2_mat_type[3:0]  <= 4'd0;
-      ir_inst2_mat_data[36:0] <= 37'd0;
       ir_inst3_mat_vld        <= 1'd0;
       ir_inst3_mat_type[3:0]  <= 4'd0;
-      ir_inst3_mat_data[36:0] <= 37'd0;
     end
     else if(!ctrl_ir_stall) begin
       ir_inst0_mat_vld        <= dp_id_pipedown_inst0_mat_vld       ;
       ir_inst0_mat_type[3:0]  <= dp_id_pipedown_inst0_mat_type[ 3:0];
-      ir_inst0_mat_data[36:0] <= dp_id_pipedown_inst0_mat_data[36:0];
       ir_inst1_mat_vld        <= dp_id_pipedown_inst1_mat_vld       ;
       ir_inst1_mat_type[3:0]  <= dp_id_pipedown_inst1_mat_type[ 3:0];
-      ir_inst1_mat_data[36:0] <= dp_id_pipedown_inst1_mat_data[36:0];
       ir_inst2_mat_vld        <= dp_id_pipedown_inst2_mat_vld       ;
       ir_inst2_mat_type[3:0]  <= dp_id_pipedown_inst2_mat_type[ 3:0];
-      ir_inst2_mat_data[36:0] <= dp_id_pipedown_inst2_mat_data[36:0];
       ir_inst3_mat_vld        <= dp_id_pipedown_inst3_mat_vld       ;
       ir_inst3_mat_type[3:0]  <= dp_id_pipedown_inst3_mat_type[ 3:0];
-      ir_inst3_mat_data[36:0] <= dp_id_pipedown_inst3_mat_data[36:0];
     end
     else begin
       ir_inst0_mat_vld        <= ir_inst0_mat_vld       ;
       ir_inst0_mat_type[3:0]  <= ir_inst0_mat_type[3:0] ;
-      ir_inst0_mat_data[36:0] <= ir_inst0_mat_data[36:0];
       ir_inst1_mat_vld        <= ir_inst1_mat_vld       ;
       ir_inst1_mat_type[3:0]  <= ir_inst1_mat_type[3:0] ;
-      ir_inst1_mat_data[36:0] <= ir_inst1_mat_data[36:0];
       ir_inst2_mat_vld        <= ir_inst2_mat_vld       ;
       ir_inst2_mat_type[3:0]  <= ir_inst2_mat_type[3:0] ;
-      ir_inst2_mat_data[36:0] <= ir_inst2_mat_data[36:0];
       ir_inst3_mat_vld        <= ir_inst3_mat_vld       ;
       ir_inst3_mat_type[3:0]  <= ir_inst3_mat_type[3:0] ;
-      ir_inst3_mat_data[36:0] <= ir_inst3_mat_data[36:0];
     end
   end
 
@@ -2598,10 +2570,10 @@ assign dp_ir_inst3_data[IS_SRC1_VLD]                       = ir_inst3_data[IR_SR
 assign dp_ir_inst3_data[IS_SRC0_VLD]                       = ir_inst3_data[IR_SRC0_VLD];
 assign dp_ir_inst3_data[IS_OPCODE:IS_OPCODE-31]            = ir_inst3_data[IR_OPCODE:IR_OPCODE-31];
 
-assign dp_ir_inst0_mat_meta[41:0] = {ir_inst0_mat_vld, ir_inst0_mat_type[3:0], ir_inst0_mat_data[36:0]};
-assign dp_ir_inst1_mat_meta[41:0] = {ir_inst1_mat_vld, ir_inst1_mat_type[3:0], ir_inst1_mat_data[36:0]};
-assign dp_ir_inst2_mat_meta[41:0] = {ir_inst2_mat_vld, ir_inst2_mat_type[3:0], ir_inst2_mat_data[36:0]};
-assign dp_ir_inst3_mat_meta[41:0] = {ir_inst3_mat_vld, ir_inst3_mat_type[3:0], ir_inst3_mat_data[36:0]};
+assign dp_ir_inst0_mat_meta[4:0] = {ir_inst0_mat_vld, ir_inst0_mat_type[3:0]};
+assign dp_ir_inst1_mat_meta[4:0] = {ir_inst1_mat_vld, ir_inst1_mat_type[3:0]};
+assign dp_ir_inst2_mat_meta[4:0] = {ir_inst2_mat_vld, ir_inst2_mat_type[3:0]};
+assign dp_ir_inst3_mat_meta[4:0] = {ir_inst3_mat_vld, ir_inst3_mat_type[3:0]};
 
 // &ModuleEnd; @1241
 endmodule
