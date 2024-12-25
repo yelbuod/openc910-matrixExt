@@ -2978,7 +2978,7 @@ begin
     rf_pipe8_iq_entry[11:0]       <= 12'b0;
     rf_pipe8_data[MIQ_WIDTH-1:0]  <= {MIQ_WIDTH{1'b0}};
   end
-  else if(biq_xx_issue_en) begin
+  else if(miq_xx_issue_en) begin
     rf_pipe8_iq_entry[11:0]       <= miq_dp_issue_entry[11:0];
     rf_pipe8_data[MIQ_WIDTH-1:0]  <= miq_dp_issue_read_data[MIQ_WIDTH-1:0];
   end
@@ -3079,7 +3079,7 @@ wire [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta;
 wire [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta;
 wire [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta;
 
-ct_idu_rf_pipe8_mat_decd i_ct_idu_rf_pipe8_mat_decd (
+ct_idu_rf_pipe8_mat_decd x_ct_idu_rf_pipe8_mat_decd (
   .pipe8_mat_decd_opcode  (pipe8_mat_decd_opcode  ),
   .pipe8_mat_decd_type    (pipe8_mat_decd_type    ),
   .pipe8_mat_decd_src0_vld(pipe8_mat_decd_src0_vld),

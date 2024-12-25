@@ -3518,12 +3518,10 @@ ct_idu_id_fence  x_ct_idu_id_fence (
   .rtu_idu_rob_empty        (rtu_idu_rob_empty       )
 );
 
-wire       ctrl_is_inst2_mat_vld               ;
-wire       ctrl_is_inst3_mat_vld               ;
-wire       ctrl_ir_pre_dis_miq_create0_en      ;
-wire [1:0] ctrl_ir_pre_dis_miq_create0_sel     ;
-wire       ctrl_ir_pre_dis_miq_create1_en      ;
-wire [1:0] ctrl_ir_pre_dis_miq_create1_sel     ;
+wire       ctrl_ir_pre_dis_miq_create0_en;
+wire [1:0] ctrl_ir_pre_dis_miq_create0_sel;
+wire       ctrl_ir_pre_dis_miq_create1_en;
+wire [1:0] ctrl_ir_pre_dis_miq_create1_sel;
 
 wire dp_ctrl_ir_inst0_mat_vld;
 wire dp_ctrl_ir_inst1_mat_vld;
@@ -3617,8 +3615,6 @@ ct_idu_ir_ctrl  x_ct_idu_ir_ctrl (
   .ctrl_is_dis_type_stall              (ctrl_is_dis_type_stall             ),
   .ctrl_is_inst2_vld                   (ctrl_is_inst2_vld                  ),
   .ctrl_is_inst3_vld                   (ctrl_is_inst3_vld                  ),
-  .ctrl_is_inst2_mat_vld               (ctrl_is_inst2_mat_vld              ),
-  .ctrl_is_inst3_mat_vld               (ctrl_is_inst3_mat_vld              ),
   .ctrl_is_stall                       (ctrl_is_stall                      ),
   .ctrl_lsiq_ir_bar_inst_vld           (ctrl_lsiq_ir_bar_inst_vld          ),
   .ctrl_rt_inst0_vld                   (ctrl_rt_inst0_vld                  ),
@@ -5370,7 +5366,7 @@ wire [6:0] vfpu_idu_ex1_pipe6_preg_dup5         ;
 wire       vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5;
 wire [6:0] vfpu_idu_ex1_pipe7_preg_dup5         ;
 
-  ct_idu_is_miq i_ct_idu_is_miq (
+  ct_idu_is_miq x_ct_idu_is_miq (
     // to IS dp Mux dependency and aiq0/1 record & wakeup
     .miq_aiq_create0_entry                  (miq_aiq_create0_entry                  ),
     .miq_aiq_create1_entry                  (miq_aiq_create1_entry                  ),

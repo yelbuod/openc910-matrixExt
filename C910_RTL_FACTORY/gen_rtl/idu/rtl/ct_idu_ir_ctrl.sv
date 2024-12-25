@@ -1048,9 +1048,9 @@ assign ir_pipedown_inst2_mat_vld =
          || ctrl_xx_is_inst_sel[1] && dp_ctrl_ir_inst1_mat_vld && !ctrl_ir_pipedown_stall
          || ctrl_xx_is_inst_sel[2] && dp_ctrl_ir_inst2_mat_vld && !ctrl_ir_pipedown_stall;
 assign ir_pipedown_inst3_mat_vld =
-            ctrl_xx_is_inst_sel[0] && ir_inst1_mat_vld && !ctrl_ir_pipedown_stall
-         || ctrl_xx_is_inst_sel[1] && ir_inst2_mat_vld && !ctrl_ir_pipedown_stall
-         || ctrl_xx_is_inst_sel[2] && ir_inst3_mat_vld && !ctrl_ir_pipedown_stall;
+            ctrl_xx_is_inst_sel[0] && dp_ctrl_ir_inst1_mat_vld && !ctrl_ir_pipedown_stall
+         || ctrl_xx_is_inst_sel[1] && dp_ctrl_ir_inst2_mat_vld && !ctrl_ir_pipedown_stall
+         || ctrl_xx_is_inst_sel[2] && dp_ctrl_ir_inst3_mat_vld && !ctrl_ir_pipedown_stall;
 
 //----------------------------------------------------------
 //            Rename Table inst valid signals

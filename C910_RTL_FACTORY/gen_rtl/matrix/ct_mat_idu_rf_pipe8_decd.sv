@@ -68,12 +68,6 @@ module ct_idu_rf_pipe8_mat_decd (
     output [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta,
     output [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta
 );
-    wire [31:0] pipe8_mat_decd_opcode  ;
-    wire [ 3:0] pipe8_mat_decd_type    ;
-    wire        pipe8_mat_decd_src0_vld;
-    wire [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta;
-    wire [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta;
-    wire [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta;
 
     logic [31:0] id_inst         ;
     logic [ 3:0] id_inst_mat_type;
