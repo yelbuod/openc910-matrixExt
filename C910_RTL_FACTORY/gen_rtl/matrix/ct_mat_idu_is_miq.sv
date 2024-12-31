@@ -366,6 +366,8 @@ wire    [11 :0]  miq_entry_create_gateclk_en;
 wire    [11 :0]  miq_entry_create_sel;                   
 wire    [11 :0]  miq_entry_issue_en;                     
 wire    [11 :0]  miq_entry_ready;                        
+wire    [11 :0]  miq_entry_oldest;                       
+wire    [11 :0]  miq_entry_oldest_ready;                         
 wire    [11 :0]  miq_entry_vld;                          
 wire    [11 :0]  miq_older_entry_ready;                  
 wire    [3  :0]  miq_top_miq_entry_cnt;                  
@@ -1101,6 +1103,21 @@ assign miq_entry10_alu1_reg_fwd_vld[1:0] = ctrl_miq_rf_pipe1_alu_reg_fwd_vld[21:
 assign miq_entry11_alu1_reg_fwd_vld[1:0] = ctrl_miq_rf_pipe1_alu_reg_fwd_vld[23:22];
 
 //-------------------issue enable signals-------------------
+// 表项 agevec 所有bit全为0则表示该表项oldest
+assign miq_entry_oldest[0]      = !(|miq_entry0_agevec[10:0]);
+assign miq_entry_oldest[1]      = !(|miq_entry1_agevec[10:0]);
+assign miq_entry_oldest[2]      = !(|miq_entry2_agevec[10:0]);
+assign miq_entry_oldest[3]      = !(|miq_entry3_agevec[10:0]);
+assign miq_entry_oldest[4]      = !(|miq_entry4_agevec[10:0]);
+assign miq_entry_oldest[5]      = !(|miq_entry5_agevec[10:0]);
+assign miq_entry_oldest[6]      = !(|miq_entry6_agevec[10:0]);
+assign miq_entry_oldest[7]      = !(|miq_entry7_agevec[10:0]);
+assign miq_entry_oldest[8]      = !(|miq_entry8_agevec[10:0]);
+assign miq_entry_oldest[9]      = !(|miq_entry9_agevec[10:0]);
+assign miq_entry_oldest[10]     = !(|miq_entry10_agevec[10:0]);
+assign miq_entry_oldest[11]     = !(|miq_entry11_agevec[10:0]);
+
+// iq_entryX_rdy信号由表项输出, 已经包含了!frz的判断, 排除已经发射到RF stage的指令参与仲裁
 assign miq_entry_ready[0]      = miq_entry0_rdy;
 assign miq_entry_ready[1]      = miq_entry1_rdy;
 assign miq_entry_ready[2]      = miq_entry2_rdy;
@@ -1113,9 +1130,12 @@ assign miq_entry_ready[8]      = miq_entry8_rdy;
 assign miq_entry_ready[9]      = miq_entry9_rdy;
 assign miq_entry_ready[10]     = miq_entry10_rdy;
 assign miq_entry_ready[11]     = miq_entry11_rdy;
+
+// oldest+ready, 仲裁最老且操作数ready的信号
+assign miq_entry_oldest_ready[11:0] = miq_entry_oldest[11:0] & miq_entry_ready[11:0];
 //if there is any entry ready or bypass enable, issue enable
 assign miq_xx_issue_en         = |{miq_bypass_en,
-                                   miq_entry_ready[11:0]};
+                                   miq_entry_oldest_ready[11:0]};
 //gate clock issue enable with timing optimization
 assign miq_xx_gateclk_issue_en = miq_bypass_gateclk_en
                                  || miq_entry0_vld_with_frz
@@ -1130,46 +1150,10 @@ assign miq_xx_gateclk_issue_en = miq_bypass_gateclk_en
                                  || miq_entry9_vld_with_frz
                                  || miq_entry10_vld_with_frz
                                  || miq_entry11_vld_with_frz;
-//first find older ready entry
-assign miq_older_entry_ready[0]  = |(miq_entry0_agevec[10:0]
-                                     & miq_entry_ready[11:1]);
-assign miq_older_entry_ready[1]  = |(miq_entry1_agevec[10:0]
-                                     & {miq_entry_ready[11:2],
-                                        miq_entry_ready[0]});
-assign miq_older_entry_ready[2]  = |(miq_entry2_agevec[10:0]
-                                     & {miq_entry_ready[11:3],
-                                        miq_entry_ready[1:0]});
-assign miq_older_entry_ready[3]  = |(miq_entry3_agevec[10:0]
-                                     & {miq_entry_ready[11:4],
-                                        miq_entry_ready[2:0]});
-assign miq_older_entry_ready[4]  = |(miq_entry4_agevec[10:0]
-                                     & {miq_entry_ready[11:5],
-                                        miq_entry_ready[3:0]});
-assign miq_older_entry_ready[5]  = |(miq_entry5_agevec[10:0]
-                                     & {miq_entry_ready[11:6],
-                                        miq_entry_ready[4:0]});
-assign miq_older_entry_ready[6]  = |(miq_entry6_agevec[10:0]
-                                     & {miq_entry_ready[11:7],
-                                        miq_entry_ready[5:0]});
-assign miq_older_entry_ready[7]  = |(miq_entry7_agevec[10:0]
-                                     & {miq_entry_ready[11:8],
-                                        miq_entry_ready[6:0]});
-assign miq_older_entry_ready[8]  = |(miq_entry8_agevec[10:0]
-                                     & {miq_entry_ready[11:9],
-                                        miq_entry_ready[7:0]});
-assign miq_older_entry_ready[9]  = |(miq_entry9_agevec[10:0]
-                                     & {miq_entry_ready[11:10],
-                                        miq_entry_ready[8:0]});
-assign miq_older_entry_ready[10] = |(miq_entry10_agevec[10:0]
-                                     & {miq_entry_ready[11],
-                                        miq_entry_ready[9:0]});
-assign miq_older_entry_ready[11] = |(miq_entry11_agevec[10:0]
-                                     & miq_entry_ready[10:0]);
 
 //------------------entry issue enable signals--------------
 //not ready if older ready exists
-assign miq_entry_issue_en[11:0]  = miq_entry_ready[11:0]
-                                   & ~miq_older_entry_ready[11:0];
+assign miq_entry_issue_en[11:0]  = miq_entry_oldest_ready[11:0];
 //rename for entries
 assign miq_entry0_issue_en      = miq_entry_issue_en[0];
 assign miq_entry1_issue_en      = miq_entry_issue_en[1];

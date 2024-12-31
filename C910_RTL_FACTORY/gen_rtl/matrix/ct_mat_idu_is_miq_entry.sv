@@ -316,8 +316,9 @@ begin
 end
 
 //==========================================================
-//        Age Vector(维护年龄用于仲裁oldest表项issue)
+//                        Age Vector
 //==========================================================
+// 维护年龄用于仲裁oldest表项to issue, 每bit为1表示对应位置的表项older than itself, 为0则反之.
 assign x_agevec[10:0] = agevec[10:0];
 always @(posedge entry_clk or negedge cpurst_b)
 begin
