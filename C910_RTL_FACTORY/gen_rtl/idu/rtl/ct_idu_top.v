@@ -403,6 +403,26 @@ module ct_idu_top(
   idu_vfpu_rf_pipe7_srcv1_fr,
   idu_vfpu_rf_pipe7_srcv2_fr,
   idu_vfpu_rf_pipe7_vmla_type,
+  // to Matrix Unit
+  idu_mat_rf_alu_sel,
+  idu_mat_rf_alu_gateclk_sel,
+  idu_mat_rf_lsu_sel,
+  idu_mat_rf_lsu_gateclk_sel,
+  idu_mat_rf_cfg_sel,
+  idu_mat_rf_cfg_gateclk_sel,
+  idu_mat_rf_pipe8_alu_meta,
+  idu_mat_rf_pipe8_alu_src0_vld,
+  idu_mat_rf_pipe8_alu_src0,
+  idu_mat_rf_pipe8_lsu_meta,
+  idu_mat_rf_pipe8_lsu_src0,
+  idu_mat_rf_pipe8_lsu_src1_vld,
+  idu_mat_rf_pipe8_lsu_src1,
+  idu_mat_rf_pipe8_cfg_meta,
+  idu_mat_rf_pipe8_cfg_dst_vld,
+  idu_mat_rf_pipe8_cfg_dst_preg,
+  idu_mat_rf_pipe8_cfg_src0_vld,
+  idu_mat_rf_pipe8_cfg_src0,
+  //
   ifu_idu_ib_inst0_data,
   ifu_idu_ib_inst0_vld,
   ifu_idu_ib_inst1_data,
@@ -1574,6 +1594,25 @@ output  [63 :0]  idu_vfpu_rf_pipe7_srcv0_fr;
 output  [63 :0]  idu_vfpu_rf_pipe7_srcv1_fr;             
 output  [63 :0]  idu_vfpu_rf_pipe7_srcv2_fr;             
 output  [2  :0]  idu_vfpu_rf_pipe7_vmla_type;            
+
+output        idu_mat_rf_alu_sel;
+output        idu_mat_rf_alu_gateclk_sel;
+output        idu_mat_rf_lsu_sel;
+output        idu_mat_rf_lsu_gateclk_sel;
+output        idu_mat_rf_cfg_sel;
+output        idu_mat_rf_cfg_gateclk_sel;
+output [30:0] idu_mat_rf_pipe8_alu_meta;
+output        idu_mat_rf_pipe8_alu_src0_vld;
+output [63:0] idu_mat_rf_pipe8_alu_src0;
+output [15:0] idu_mat_rf_pipe8_lsu_meta;
+output [63:0] idu_mat_rf_pipe8_lsu_src0;
+output        idu_mat_rf_pipe8_lsu_src1_vld;
+output [63:0] idu_mat_rf_pipe8_lsu_src1;
+output [11:0] idu_mat_rf_pipe8_cfg_meta;
+output        idu_mat_rf_pipe8_cfg_dst_vld;
+output [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
+output        idu_mat_rf_pipe8_cfg_src0_vld;
+output [63:0] idu_mat_rf_pipe8_cfg_src0;
 
 // &Regs; @26
 
@@ -5366,6 +5405,28 @@ wire [6:0] vfpu_idu_ex1_pipe6_preg_dup5         ;
 wire       vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5;
 wire [6:0] vfpu_idu_ex1_pipe7_preg_dup5         ;
 
+// TODO:
+// 与MIQ互联用于旁路的dup5信号暂时共用互联BIQ的dup4, 以实现功能
+// 关于来自IU/LSU/VFPU的旁路信息均是由同一source duplicate多个寄存器后旁路的, 因此目前的做法可实现同样的功能
+//  只是可能会引发fanout过大的问题, 留后续再考虑改成另加 duplicate 寄存器
+assign iu_idu_div_preg_dup5[6:0]               = iu_idu_div_preg_dup4[6:0];
+assign iu_idu_ex2_pipe0_wb_preg_dup5[6:0]      = iu_idu_ex2_pipe0_wb_preg_dup4[6:0];
+assign iu_idu_ex2_pipe0_wb_preg_vld_dup5       = iu_idu_ex2_pipe0_wb_preg_vld_dup4;
+assign iu_idu_ex2_pipe1_mult_inst_vld_dup5     = iu_idu_ex2_pipe1_mult_inst_vld_dup4;
+assign iu_idu_ex2_pipe1_preg_dup5[6:0]         = iu_idu_ex2_pipe1_preg_dup4[6:0];
+assign iu_idu_ex2_pipe1_wb_preg_dup5[6:0]      = iu_idu_ex2_pipe1_wb_preg_dup4[6:0];
+assign iu_idu_ex2_pipe1_wb_preg_vld_dup5       = iu_idu_ex2_pipe1_wb_preg_vld_dup4;
+assign lsu_idu_ag_pipe3_preg_dup5[6:0]         = lsu_idu_ag_pipe3_preg_dup4[6:0];
+assign lsu_idu_dc_pipe3_load_fwd_inst_vld_dup5 = lsu_idu_dc_pipe3_load_fwd_inst_vld_dup4;
+assign lsu_idu_dc_pipe3_load_inst_vld_dup5     = lsu_idu_dc_pipe3_load_inst_vld_dup4;
+assign lsu_idu_dc_pipe3_preg_dup5[6:0]         = lsu_idu_dc_pipe3_preg_dup4[6:0];
+assign lsu_idu_wb_pipe3_wb_preg_dup5[6:0]      = lsu_idu_wb_pipe3_wb_preg_dup4[6:0];
+assign lsu_idu_wb_pipe3_wb_preg_vld_dup5       = lsu_idu_wb_pipe3_wb_preg_vld_dup4;
+assign vfpu_idu_ex1_pipe6_mfvr_inst_vld_dup5   = vfpu_idu_ex1_pipe6_mfvr_inst_vld_dup4;
+assign vfpu_idu_ex1_pipe6_preg_dup5[6:0]       = vfpu_idu_ex1_pipe6_preg_dup4[6:0];
+assign vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5   = vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup4;
+assign vfpu_idu_ex1_pipe7_preg_dup5[6:0]       = vfpu_idu_ex1_pipe7_preg_dup4[6:0];
+
   ct_idu_is_miq x_ct_idu_is_miq (
     // to IS dp Mux dependency and aiq0/1 record & wakeup
     .miq_aiq_create0_entry                  (miq_aiq_create0_entry                  ),
@@ -5420,7 +5481,7 @@ wire [6:0] vfpu_idu_ex1_pipe7_preg_dup5         ;
     .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
     .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
     .rtu_yy_xx_flush                        (rtu_yy_xx_flush                        ),
-    /* from outside (iu) for WB info feedback */ // TODO
+    /* from outside (iu) for WB info feedback */
     .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
     .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dup5                   ),
     .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dup5          ),
@@ -5429,7 +5490,7 @@ wire [6:0] vfpu_idu_ex1_pipe7_preg_dup5         ;
     .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dup5             ),
     .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dup5          ),
     .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dup5      ),
-    /* from outside (lsu) */ // TODO
+    /* from outside (lsu) */
     .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
     .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dup5             ),
     .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dup5),
@@ -5437,7 +5498,7 @@ wire [6:0] vfpu_idu_ex1_pipe7_preg_dup5         ;
     .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dup5             ),
     .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dup5          ),
     .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dup5      ),
-    /* from outside (vfpu) */ // TODO
+    /* from outside (vfpu) */
     .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dup5  ),
     .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dup5           ),
     .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5  ),
@@ -5866,12 +5927,27 @@ ct_idu_is_viq1  x_ct_idu_is_viq1 (
 wire    [2  :0]  dp_ctrl_rf_pipe8_fu_sel;
 wire             dp_ctrl_rf_pipe8_src_no_rdy;
 
-wire             idu_mat_rf_alu_sel;
-wire             idu_mat_rf_alu_gateclk_sel;
-wire             idu_mat_rf_lsu_sel;
-wire             idu_mat_rf_lsu_gateclk_sel;
-wire             idu_mat_rf_cfg_sel;
-wire             idu_mat_rf_cfg_gateclk_sel;
+// from RF ctrl to IDU output port
+wire        idu_mat_rf_alu_sel;
+wire        idu_mat_rf_alu_gateclk_sel;
+wire        idu_mat_rf_lsu_sel;
+wire        idu_mat_rf_lsu_gateclk_sel;
+wire        idu_mat_rf_cfg_sel;
+wire        idu_mat_rf_cfg_gateclk_sel;
+// from RF dp to IDU output port
+wire [30:0] idu_mat_rf_pipe8_alu_meta;
+wire        idu_mat_rf_pipe8_alu_src0_vld;
+wire [63:0] idu_mat_rf_pipe8_alu_src0;
+wire [15:0] idu_mat_rf_pipe8_lsu_meta;
+wire [63:0] idu_mat_rf_pipe8_lsu_src0;
+wire        idu_mat_rf_pipe8_lsu_src1_vld;
+wire [63:0] idu_mat_rf_pipe8_lsu_src1;
+wire [11:0] idu_mat_rf_pipe8_cfg_meta;
+wire        idu_mat_rf_pipe8_cfg_dst_vld;
+wire [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
+wire        idu_mat_rf_pipe8_cfg_src0_vld;
+wire [63:0] idu_mat_rf_pipe8_cfg_src0;
+
 //==========================================================
 //                       RF Stage
 //==========================================================
@@ -6073,7 +6149,7 @@ ct_idu_rf_ctrl  x_ct_idu_rf_ctrl (
   .viq0_xx_issue_en                     (viq0_xx_issue_en                    ),
   .viq1_xx_gateclk_issue_en             (viq1_xx_gateclk_issue_en            ),
   .viq1_xx_issue_en                     (viq1_xx_issue_en                    ),
-  // TODO: to Matrix Unit
+  /* to Matrix Unit */
   .idu_mat_rf_alu_sel                   (idu_mat_rf_alu_sel                  ),
   .idu_mat_rf_alu_gateclk_sel           (idu_mat_rf_alu_gateclk_sel          ),
   .idu_mat_rf_lsu_sel                   (idu_mat_rf_lsu_sel                  ),
@@ -6519,6 +6595,20 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .idu_vfpu_rf_pipe7_srcv1_fr             (idu_vfpu_rf_pipe7_srcv1_fr            ),
   .idu_vfpu_rf_pipe7_srcv2_fr             (idu_vfpu_rf_pipe7_srcv2_fr            ),
   .idu_vfpu_rf_pipe7_vmla_type            (idu_vfpu_rf_pipe7_vmla_type           ),
+  /* to Matrix Unit */
+  .idu_mat_rf_pipe8_alu_meta              (idu_mat_rf_pipe8_alu_meta             ),
+  .idu_mat_rf_pipe8_alu_src0_vld          (idu_mat_rf_pipe8_alu_src0_vld         ),
+  .idu_mat_rf_pipe8_alu_src0              (idu_mat_rf_pipe8_alu_src0             ),
+  .idu_mat_rf_pipe8_lsu_meta              (idu_mat_rf_pipe8_lsu_meta             ),
+  .idu_mat_rf_pipe8_lsu_src0              (idu_mat_rf_pipe8_lsu_src0             ),
+  .idu_mat_rf_pipe8_lsu_src1_vld          (idu_mat_rf_pipe8_lsu_src1_vld         ),
+  .idu_mat_rf_pipe8_lsu_src1              (idu_mat_rf_pipe8_lsu_src1             ),
+  .idu_mat_rf_pipe8_cfg_meta              (idu_mat_rf_pipe8_cfg_meta             ),
+  .idu_mat_rf_pipe8_cfg_dst_vld           (idu_mat_rf_pipe8_cfg_dst_vld          ),
+  .idu_mat_rf_pipe8_cfg_dst_preg          (idu_mat_rf_pipe8_cfg_dst_preg         ),
+  .idu_mat_rf_pipe8_cfg_src0_vld          (idu_mat_rf_pipe8_cfg_src0_vld         ),
+  .idu_mat_rf_pipe8_cfg_src0              (idu_mat_rf_pipe8_cfg_src0             ),
+  // 
   .lsiq_dp_pipe3_issue_entry              (lsiq_dp_pipe3_issue_entry             ),
   .lsiq_dp_pipe3_issue_read_data          (lsiq_dp_pipe3_issue_read_data         ),
   .lsiq_dp_pipe4_issue_entry              (lsiq_dp_pipe4_issue_entry             ),
