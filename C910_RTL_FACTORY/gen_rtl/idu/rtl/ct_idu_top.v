@@ -420,7 +420,6 @@ module ct_idu_top(
   idu_mat_rf_pipe8_cfg_meta,
   idu_mat_rf_pipe8_cfg_dst_vld,
   idu_mat_rf_pipe8_cfg_dst_preg,
-  idu_mat_rf_pipe8_cfg_src0_vld,
   idu_mat_rf_pipe8_cfg_src0,
   //
   ifu_idu_ib_inst0_data,
@@ -1608,10 +1607,9 @@ output [15:0] idu_mat_rf_pipe8_lsu_meta;
 output [63:0] idu_mat_rf_pipe8_lsu_src0;
 output        idu_mat_rf_pipe8_lsu_src1_vld;
 output [63:0] idu_mat_rf_pipe8_lsu_src1;
-output [11:0] idu_mat_rf_pipe8_cfg_meta;
+output [4 :0] idu_mat_rf_pipe8_cfg_meta;
 output        idu_mat_rf_pipe8_cfg_dst_vld;
 output [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
-output        idu_mat_rf_pipe8_cfg_src0_vld;
 output [63:0] idu_mat_rf_pipe8_cfg_src0;
 
 // &Regs; @26
@@ -5942,10 +5940,9 @@ wire [15:0] idu_mat_rf_pipe8_lsu_meta;
 wire [63:0] idu_mat_rf_pipe8_lsu_src0;
 wire        idu_mat_rf_pipe8_lsu_src1_vld;
 wire [63:0] idu_mat_rf_pipe8_lsu_src1;
-wire [11:0] idu_mat_rf_pipe8_cfg_meta;
+wire [4 :0] idu_mat_rf_pipe8_cfg_meta;
 wire        idu_mat_rf_pipe8_cfg_dst_vld;
 wire [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
-wire        idu_mat_rf_pipe8_cfg_src0_vld;
 wire [63:0] idu_mat_rf_pipe8_cfg_src0;
 
 //==========================================================
@@ -6606,7 +6603,6 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .idu_mat_rf_pipe8_cfg_meta              (idu_mat_rf_pipe8_cfg_meta             ),
   .idu_mat_rf_pipe8_cfg_dst_vld           (idu_mat_rf_pipe8_cfg_dst_vld          ),
   .idu_mat_rf_pipe8_cfg_dst_preg          (idu_mat_rf_pipe8_cfg_dst_preg         ),
-  .idu_mat_rf_pipe8_cfg_src0_vld          (idu_mat_rf_pipe8_cfg_src0_vld         ),
   .idu_mat_rf_pipe8_cfg_src0              (idu_mat_rf_pipe8_cfg_src0             ),
   // 
   .lsiq_dp_pipe3_issue_entry              (lsiq_dp_pipe3_issue_entry             ),

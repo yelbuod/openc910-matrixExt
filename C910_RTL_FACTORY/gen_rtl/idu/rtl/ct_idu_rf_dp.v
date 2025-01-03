@@ -440,7 +440,6 @@ module ct_idu_rf_dp(
   idu_mat_rf_pipe8_cfg_meta,
   idu_mat_rf_pipe8_cfg_dst_vld,
   idu_mat_rf_pipe8_cfg_dst_preg,
-  idu_mat_rf_pipe8_cfg_src0_vld,
   idu_mat_rf_pipe8_cfg_src0,
   lsiq_dp_pipe3_issue_entry,
   lsiq_dp_pipe3_issue_read_data,
@@ -1578,7 +1577,6 @@ wire    [20 :0]  pipe2_decd_offset;
 wire    [31 :0]  pipe2_decd_opcode;                     
 wire    [63 :0]  pipe2_decd_src1_imm;                   
 wire    [3  :0]  pipe8_mat_decd_type;
-wire             pipe8_mat_decd_src0_vld;
 wire    [31 :0]  pipe8_mat_decd_opcode;
 wire             pipe3_decd_atomic;                     
 wire             pipe3_decd_inst_fls;                   
@@ -1839,10 +1837,9 @@ output [15:0] idu_mat_rf_pipe8_lsu_meta;
 output [63:0] idu_mat_rf_pipe8_lsu_src0;
 output        idu_mat_rf_pipe8_lsu_src1_vld;
 output [63:0] idu_mat_rf_pipe8_lsu_src1;
-output [11:0] idu_mat_rf_pipe8_cfg_meta;
+output [4 :0] idu_mat_rf_pipe8_cfg_meta;
 output        idu_mat_rf_pipe8_cfg_dst_vld;
 output [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
-output        idu_mat_rf_pipe8_cfg_src0_vld;
 output [63:0] idu_mat_rf_pipe8_cfg_src0;
 
 wire [30:0] idu_mat_rf_pipe8_alu_meta;
@@ -1852,10 +1849,9 @@ wire [15:0] idu_mat_rf_pipe8_lsu_meta;
 wire [63:0] idu_mat_rf_pipe8_lsu_src0;
 wire        idu_mat_rf_pipe8_lsu_src1_vld;
 wire [63:0] idu_mat_rf_pipe8_lsu_src1;
-wire [11:0] idu_mat_rf_pipe8_cfg_meta;
+wire [4 :0] idu_mat_rf_pipe8_cfg_meta;
 wire        idu_mat_rf_pipe8_cfg_dst_vld;
 wire [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
-wire        idu_mat_rf_pipe8_cfg_src0_vld;
 wire [63:0] idu_mat_rf_pipe8_cfg_src0;
 
 //==========================================================
@@ -3069,23 +3065,23 @@ assign pipe8_mat_decd_type[3:0] = rf_pipe8_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-3];
 assign dp_ctrl_rf_pipe8_fu_sel[2:0] = pipe8_mat_decd_type[2:0];
 
 assign pipe8_mat_decd_opcode[31:0] = rf_pipe8_data[MIQ_OPCODE:MIQ_OPCODE-31];
-assign pipe8_mat_decd_src0_vld = rf_pipe8_data[MIQ_SRC0_VLD];
 
 parameter MAT_ALU_DATA_WIDTH = 31;
 parameter MAT_LSU_DATA_WIDTH = 16;
-parameter MAT_CFG_DATA_WIDTH = 12;
+parameter MAT_CFG_DATA_WIDTH = 4;
 
 wire [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta;
 wire [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta;
 wire [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta;
+wire [                   6:0] pipe8_mat_decd_cfg_src0_uimm7;
 
 ct_idu_rf_pipe8_mat_decd x_ct_idu_rf_pipe8_mat_decd (
-  .pipe8_mat_decd_opcode  (pipe8_mat_decd_opcode  ),
-  .pipe8_mat_decd_type    (pipe8_mat_decd_type    ),
-  .pipe8_mat_decd_src0_vld(pipe8_mat_decd_src0_vld),
-  .pipe8_mat_alu_meta     (pipe8_mat_alu_meta     ),
-  .pipe8_mat_lsu_meta     (pipe8_mat_lsu_meta     ),
-  .pipe8_mat_cfg_meta     (pipe8_mat_cfg_meta     )
+  .pipe8_mat_decd_opcode        (pipe8_mat_decd_opcode        ),
+  .pipe8_mat_decd_type          (pipe8_mat_decd_type          ),
+  .pipe8_mat_alu_meta           (pipe8_mat_alu_meta           ),
+  .pipe8_mat_lsu_meta           (pipe8_mat_lsu_meta           ),
+  .pipe8_mat_cfg_meta           (pipe8_mat_cfg_meta           ),
+  .pipe8_mat_decd_cfg_src0_uimm7(pipe8_mat_decd_cfg_src0_uimm7)
 );
 
 //----------------------------------------------------------
@@ -3131,11 +3127,13 @@ assign idu_mat_rf_pipe8_lsu_src0[63:0]    = rf_pipe8_src0_data[63:0];
 assign idu_mat_rf_pipe8_lsu_src1_vld      = rf_pipe8_data[MIQ_SRC1_VLD];
 assign idu_mat_rf_pipe8_lsu_src1[63:0]    = rf_pipe8_src1_data[63:0];
 
-assign idu_mat_rf_pipe8_cfg_meta[11:0]    = pipe8_mat_cfg_meta[11:0];
+assign idu_mat_rf_pipe8_cfg_meta[4:0]     = pipe8_mat_cfg_meta[4:0];
 assign idu_mat_rf_pipe8_cfg_dst_vld       = rf_pipe8_data[MIQ_DST_VLD];
 assign idu_mat_rf_pipe8_cfg_dst_preg[6:0] = rf_pipe8_data[MIQ_DST_PREG:MIQ_DST_PREG-6];
-assign idu_mat_rf_pipe8_cfg_src0_vld      = rf_pipe8_data[MIQ_SRC0_VLD];
-assign idu_mat_rf_pipe8_cfg_src0[63:0]    = rf_pipe8_src0_data[63:0];
+// uimm7 与 uimm3 不同, matrix alu指令可能不使用rs的同时也不使用uimm3, 不是非此即彼的关系, 因此不能用rs0 vld来判断,
+//  而 matrix cfg 指令使用uimm7或rs0是非此即彼的关系, 因此可以不需要通过译码, 只需要通过特定指令类型(CFG)下用rs0 vld来判断选择相应的操作数即可
+assign idu_mat_rf_pipe8_cfg_src0[63:0]    = rf_pipe8_data[MIQ_SRC0_VLD] ? rf_pipe8_src0_data[63:0] :
+                                              {57'd0, pipe8_mat_decd_cfg_src0_uimm7[6:0]};
 
 //==========================================================
 //                    Pipe3 Data Path

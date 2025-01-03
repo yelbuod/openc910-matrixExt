@@ -1314,7 +1314,11 @@ assign x_raw_rdy = vld && !frz
 //----------------------older ready-------------------------
 //if older entry of same type raw ready, mask cur entry ready
 assign older_entry_rdy_mask = |(agevec[10:0] & x_other_raw_rdy[10:0]);
-
+// older_entry_rdy_mask屏蔽最终输出参与仲裁的rdy信号的做法实际上
+//  和其他IQ(AIQ/BIQ等)的 Xiq0_older_entry_ready 屏蔽各表项rdy信号,
+//  决定最后的issue信号, 仲裁出oldest ready的表项的做法一样, 只不过
+//  LSIQ把这个部分隐藏在entry模块内部了
+// (怀疑是同一个架构方案但是由不同的人完成, 因此产生了不同的写法)
 //----------------------final ready-------------------------
 //if older entry is ready, mask current entry ready
 assign x_rdy = x_raw_rdy && !older_entry_rdy_mask;

@@ -55,23 +55,20 @@ parameter MAT_LSU_NF_VLD     = 5 ;
 parameter MAT_LSU_NF         = 4 ; // 4:2
 parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
 
-parameter MAT_CFG_DATA_WIDTH = 12;
-parameter MAT_CFG_OP         = 11; // 11:8
-parameter MAT_CFG_UIMM7_VLD  = 7 ;
-parameter MAT_CFG_UIMM7      = 6 ; // 6:0
+parameter MAT_CFG_DATA_WIDTH = 4;
+parameter MAT_CFG_OP         = 3; // 3:0
 
 module ct_idu_rf_pipe8_mat_decd (
     input [31:0] pipe8_mat_decd_opcode  ,
     input [ 3:0] pipe8_mat_decd_type    ,
-    input        pipe8_mat_decd_src0_vld,
     output [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta,
     output [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta,
-    output [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta
+    output [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta,
+    output [6:0] pipe8_mat_decd_cfg_src0_uimm7
 );
 
     logic [31:0] id_inst         ;
     logic [ 3:0] id_inst_mat_type;
-    logic        id_inst_src0_vld;
     logic [ 3:0] id_inst_func    ;
     logic [ 2:0] id_inst_uop     ;
     logic        id_size         ;
@@ -88,8 +85,7 @@ module ct_idu_rf_pipe8_mat_decd (
     logic [2:0] id_srcm2_idx      ;
     logic       id_uimm3_vld      ; // uimm3 (arithmetic)
     logic [2:0] id_uimm3          ;
-    logic       id_uimm7_vld      ; // uimm7 (configuration)
-    logic [6:0] id_uimm7          ;
+    
     logic       id_nf_vld         ; // load/store instr 组合多个matrix reg一起load/store
     logic [2:0] id_nf             ; // 000/001/011/111 -> 1/2/4/8
     logic [1:0] id_elem_data_width; // 00/01/10/11 -> 8/16/32/64
@@ -101,7 +97,6 @@ module ct_idu_rf_pipe8_mat_decd (
     // use for decode
     assign id_inst[31:0]         = pipe8_mat_decd_opcode[31:0];
     assign id_inst_mat_type[3:0] = pipe8_mat_decd_type[3:0];
-    assign id_inst_src0_vld      = pipe8_mat_decd_src0_vld;
     assign id_inst_func[3:0]     = id_inst[31:28];
     assign id_inst_uop[2:0]      = id_inst[27:25];
     assign id_size               = id_inst[24];
@@ -112,9 +107,10 @@ module ct_idu_rf_pipe8_mat_decd (
     assign id_srcm1_idx[2:0]       = id_inst[23:21];
     assign id_srcm2_idx[2:0]       = id_inst[9:7]; // ms3
     assign id_uimm3[2:0]           = id_inst[9:7];
-    assign id_uimm7[6:0]           = id_inst[24:18];
     assign id_nf[2:0]              = id_inst[22:20];
     assign id_elem_data_width[1:0] = id_inst[11:10];
+
+    assign pipe8_mat_decd_cfg_src0_uimm7[6:0] = id_inst[24:18];
 
     /* --------------------------------------------------------------------- */
     /* ------------------------------ Matrix Data--------------------------- */
@@ -146,10 +142,6 @@ module ct_idu_rf_pipe8_mat_decd (
 
     /* ---------------------------CFG--------------------------- */
     assign pipe8_mat_cfg_meta[MAT_CFG_OP:MAT_CFG_OP-(MAT_CFG_OP_TYPE_WIDTH-1)] = id_mat_op[MAT_CFG_OP_TYPE_WIDTH-1:0];
-    // uimm7 与 uimm3 不同, matrix alu指令可能不使用rs同时也不使用uimm3, 不是非此即彼的关系, 因此不能用rs0 vld来判断,
-    //  而 matrix cfg 指令的 uimm7和rs0是非此即彼的关系, 因此可以不需要通过译码, 只需要通过特定指令类型(CFG)下用rs0 vld来判断即可
-    assign pipe8_mat_cfg_meta[MAT_CFG_UIMM7_VLD]                               = id_uimm7_vld;
-    assign pipe8_mat_cfg_meta[MAT_CFG_UIMM7:MAT_CFG_UIMM7-6]                   = id_uimm7[6:0];
 
     always_comb begin
         // uimm3位置信息被复用为1.立即数, 2.{p}mmaqa指令下两ms的有/无符号
@@ -190,7 +182,6 @@ module ct_idu_rf_pipe8_mat_decd (
         id_srcm1_vld      = 1'b0;
         id_srcm2_vld      = 1'b0;
         id_uimm3_vld      = 1'b0;
-        id_uimm7_vld      = 1'b0;
         id_nf_vld         = 1'b0;
         case ({id_inst_mat_type, id_inst_func, id_inst_uop, id_size})
             {MAT_CAL, 4'b0000, 3'b000, 1'b0} : // mmov.mm
@@ -476,22 +467,18 @@ module ct_idu_rf_pipe8_mat_decd (
             {MAT_CFG, 4'b?000, 3'b111, 1'b?} : // mcfgk{i} : 使用立即数或GPR由src0 vld决定
                 begin
                     id_mat_op    = MAT_CFG_K;
-                    id_uimm7_vld = !id_inst_src0_vld;
                 end
             {MAT_CFG, 4'b?001, 3'b111, 1'b?} : // mcfgm{i} : 使用立即数或GPR由src0 vld决定
                 begin
                     id_mat_op    = MAT_CFG_M;
-                    id_uimm7_vld = !id_inst_src0_vld;
                 end
             {MAT_CFG, 4'b?010, 3'b111, 1'b?} : // mcfgn{i} : 使用立即数或GPR由src0 vld决定
                 begin
                     id_mat_op    = MAT_CFG_N;
-                    id_uimm7_vld = !id_inst_src0_vld;
                 end
             {MAT_CFG, 4'b1111, 3'b111, 1'b0} : // mcfg : 使用GPR配置xmsize M/N/K三个参数
                 begin
                     id_mat_op = MAT_CFG_ALL;
-                    // id_uimm7_vld = 1'b0;
                 end
             default : /* default */;
         endcase
