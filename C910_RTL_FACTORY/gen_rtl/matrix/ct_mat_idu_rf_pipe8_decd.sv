@@ -59,12 +59,12 @@ parameter MAT_CFG_DATA_WIDTH = 4;
 parameter MAT_CFG_OP         = 3; // 3:0
 
 module ct_idu_rf_pipe8_mat_decd (
-    input [31:0] pipe8_mat_decd_opcode  ,
-    input [ 3:0] pipe8_mat_decd_type    ,
-    output [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta,
-    output [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta,
-    output [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta,
-    output [6:0] pipe8_mat_decd_cfg_src0_uimm7
+    input  [31:0] pipe8_mat_decd_opcode        ,
+    input  [ 3:0] pipe8_mat_decd_type          ,
+    output [30:0] pipe8_mat_alu_meta           ,
+    output [15:0] pipe8_mat_lsu_meta           ,
+    output [ 3:0] pipe8_mat_cfg_meta           ,
+    output [ 6:0] pipe8_mat_decd_cfg_src0_uimm7
 );
 
     logic [31:0] id_inst         ;

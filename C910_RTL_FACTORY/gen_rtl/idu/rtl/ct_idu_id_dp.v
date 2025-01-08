@@ -435,7 +435,8 @@ wire [3:0] id_inst1_m_inst_type;
 wire       id_inst2_m_inst_vld ;
 wire [3:0] id_inst2_m_inst_type;
 
-// TODO : id_inst0/1/2_m_data 将携带id流水级译码出的基础matrix指令信息, 包括m指令类型和GPR src/dst vld信号
+// TODO : (因该部分整体移动到RF stage, 待删除)
+// id_inst0/1/2_m_data 将携带id流水级译码出的基础matrix指令信息, 包括m指令类型和GPR src/dst vld信号
 //  但指令操作以及matrix reg src/dst等更多的信息需要在下一级matrix专属译码模块进行分类译码.
 parameter M_DATA_IR_WIDTH = 55;
 parameter M_INST     = 54;

@@ -430,6 +430,7 @@ module ct_idu_rf_dp(
   idu_vfpu_rf_pipe7_srcv1_fr,
   idu_vfpu_rf_pipe7_srcv2_fr,
   idu_vfpu_rf_pipe7_vmla_type,
+  idu_mat_rf_pipe8_iid,
   idu_mat_rf_pipe8_alu_meta,
   idu_mat_rf_pipe8_alu_src0_vld,
   idu_mat_rf_pipe8_alu_src0,
@@ -1830,6 +1831,7 @@ wire    [149:0]  viq1_dp_issue_read_data;
 wire             viq1_xx_gateclk_issue_en;              
 wire             viq1_xx_issue_en;                      
 
+output [6 :0] idu_mat_rf_pipe8_iid;
 output [30:0] idu_mat_rf_pipe8_alu_meta;
 output        idu_mat_rf_pipe8_alu_src0_vld;
 output [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -1837,11 +1839,12 @@ output [15:0] idu_mat_rf_pipe8_lsu_meta;
 output [63:0] idu_mat_rf_pipe8_lsu_src0;
 output        idu_mat_rf_pipe8_lsu_src1_vld;
 output [63:0] idu_mat_rf_pipe8_lsu_src1;
-output [4 :0] idu_mat_rf_pipe8_cfg_meta;
+output [3 :0] idu_mat_rf_pipe8_cfg_meta;
 output        idu_mat_rf_pipe8_cfg_dst_vld;
 output [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
 output [63:0] idu_mat_rf_pipe8_cfg_src0;
-
+  
+wire [6 :0] idu_mat_rf_pipe8_iid;
 wire [30:0] idu_mat_rf_pipe8_alu_meta;
 wire        idu_mat_rf_pipe8_alu_src0_vld;
 wire [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -1849,7 +1852,7 @@ wire [15:0] idu_mat_rf_pipe8_lsu_meta;
 wire [63:0] idu_mat_rf_pipe8_lsu_src0;
 wire        idu_mat_rf_pipe8_lsu_src1_vld;
 wire [63:0] idu_mat_rf_pipe8_lsu_src1;
-wire [4 :0] idu_mat_rf_pipe8_cfg_meta;
+wire [3 :0] idu_mat_rf_pipe8_cfg_meta;
 wire        idu_mat_rf_pipe8_cfg_dst_vld;
 wire [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
 wire [63:0] idu_mat_rf_pipe8_cfg_src0;
@@ -3070,10 +3073,10 @@ parameter MAT_ALU_DATA_WIDTH = 31;
 parameter MAT_LSU_DATA_WIDTH = 16;
 parameter MAT_CFG_DATA_WIDTH = 4;
 
-wire [MAT_ALU_DATA_WIDTH-1:0] pipe8_mat_alu_meta;
-wire [MAT_LSU_DATA_WIDTH-1:0] pipe8_mat_lsu_meta;
-wire [MAT_CFG_DATA_WIDTH-1:0] pipe8_mat_cfg_meta;
-wire [                   6:0] pipe8_mat_decd_cfg_src0_uimm7;
+wire [30:0] pipe8_mat_alu_meta;
+wire [15:0] pipe8_mat_lsu_meta;
+wire [3 :0] pipe8_mat_cfg_meta;
+wire [6 :0] pipe8_mat_decd_cfg_src0_uimm7;
 
 ct_idu_rf_pipe8_mat_decd x_ct_idu_rf_pipe8_mat_decd (
   .pipe8_mat_decd_opcode        (pipe8_mat_decd_opcode        ),
@@ -3118,6 +3121,8 @@ assign dp_miq_rf_rdy_clr[1]         = rf_pipe8_src1_no_rdy;
 //----------------------------------------------------------
 //                Output to Matrix Execution Units
 //----------------------------------------------------------
+assign idu_mat_rf_pipe8_iid[6:0] = rf_pipe8_data[MIQ_IID:MIQ_IID-6];
+
 assign idu_mat_rf_pipe8_alu_meta[30:0]    = pipe8_mat_alu_meta[30:0];
 assign idu_mat_rf_pipe8_alu_src0_vld      = rf_pipe8_data[MIQ_SRC0_VLD];
 assign idu_mat_rf_pipe8_alu_src0[63:0]    = rf_pipe8_src0_data[63:0];
@@ -3127,7 +3132,7 @@ assign idu_mat_rf_pipe8_lsu_src0[63:0]    = rf_pipe8_src0_data[63:0];
 assign idu_mat_rf_pipe8_lsu_src1_vld      = rf_pipe8_data[MIQ_SRC1_VLD];
 assign idu_mat_rf_pipe8_lsu_src1[63:0]    = rf_pipe8_src1_data[63:0];
 
-assign idu_mat_rf_pipe8_cfg_meta[4:0]     = pipe8_mat_cfg_meta[4:0];
+assign idu_mat_rf_pipe8_cfg_meta[3:0]     = pipe8_mat_cfg_meta[3:0];
 assign idu_mat_rf_pipe8_cfg_dst_vld       = rf_pipe8_data[MIQ_DST_VLD];
 assign idu_mat_rf_pipe8_cfg_dst_preg[6:0] = rf_pipe8_data[MIQ_DST_PREG:MIQ_DST_PREG-6];
 // uimm7 与 uimm3 不同, matrix alu指令可能不使用rs的同时也不使用uimm3, 不是非此即彼的关系, 因此不能用rs0 vld来判断,

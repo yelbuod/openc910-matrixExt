@@ -71,7 +71,7 @@ input           pad_yy_icg_scan_en;
 input           retire_rob_flush;                
 input           retire_rob_flush_gateclk;        
 input           x_cmplt_gateclk_vld;             
-input   [6 :0]  x_cmplt_vld;                     
+input   [7 :0]  x_cmplt_vld;                     
 input           x_create_dp_en;                  
 input           x_create_en;                     
 input           x_create_gateclk_en;             
@@ -149,7 +149,7 @@ wire            pad_yy_icg_scan_en;
 wire            retire_rob_flush;                
 wire            retire_rob_flush_gateclk;        
 wire            x_cmplt_gateclk_vld;             
-wire    [6 :0]  x_cmplt_vld;                     
+wire    [7 :0]  x_cmplt_vld;                     
 wire            x_create_dp_en;                  
 wire            x_create_en;                     
 wire            x_create_gateclk_en;             
@@ -324,7 +324,7 @@ assign cmplt_3_fold_inst =
 
 assign cmplt_cnt_cmplt_exist[1:0]  =
 // 2.1 0 inst cmplt
-    {2{!(|x_cmplt_vld[6:0])}} & cmplt_cnt_with_create[1:0]
+    {2{!(|x_cmplt_vld[7:0])}} & cmplt_cnt_with_create[1:0]
 // 2.2 1 fold inst cmplt
   | {2{cmplt_1_fold_inst}}    & (cmplt_cnt_with_create[1:0] - 2'd1)
 // 2.3 2 fold inst cmplt
@@ -332,7 +332,7 @@ assign cmplt_cnt_cmplt_exist[1:0]  =
 // 2.4 3 fold inst cmplt
   | {2{cmplt_3_fold_inst}}    & 2'd0
 // 2.5 other inst cmplt
-  | {2{(|x_cmplt_vld[6:2])}}  & 2'd0;
+  | {2{(|x_cmplt_vld[7:2])}}  & 2'd0;
 
 //----------------------------------------------------------
 //                        cmplt cnt
@@ -345,7 +345,7 @@ always @(posedge entry_clk or negedge cpurst_b)
 begin
   if(!cpurst_b)
     cmplt_cnt[1:0] <= 2'b0;
-  else if(|x_cmplt_vld[6:0])
+  else if(|x_cmplt_vld[7:0])
     cmplt_cnt[1:0] <= cmplt_cnt_cmplt_exist[1:0];
   else if(x_create_en)
     cmplt_cnt[1:0] <= x_create_data[ROB_CMPLT_CNT:ROB_CMPLT_CNT-1];
@@ -368,7 +368,7 @@ assign cmplt_updt_val =
 // 2.3 3 fold inst cmplt and (cmplt cnt is/must be 3)
   || (cmplt_3_fold_inst)
 // 2.4 other inst cmplt no matter cmplt cnt
-  || (|x_cmplt_vld[4:2]);
+  || (|{x_cmplt_vld[7], x_cmplt_vld[4:2]}); // pipe0/1/5/6 需要判断fold指令是否折叠/折叠了几条, 其余不需要
 
 //----------------------------------------------------------
 //                         cmplt 
@@ -377,7 +377,7 @@ always @(posedge entry_clk or negedge cpurst_b)
 begin
   if(!cpurst_b)
     cmplt <= 1'b0;
-  else if(|x_cmplt_vld[6:0])
+  else if(|x_cmplt_vld[7:0])
     cmplt <= cmplt_updt_val;
   else if(x_create_en)
     cmplt <= x_create_data[ROB_CMPLT];
@@ -412,7 +412,7 @@ begin
     no_spec_miss       <= 1'b0;
     no_spec_mispred    <= 1'b0;
   end
-  else if(|x_cmplt_vld[4:3]) begin
+  else if(|x_cmplt_vld[4:3]) begin // load/store 相关
     bkpta_data         <= bkpta_data_updt_val;
     bkptb_data         <= bkptb_data_updt_val;
     no_spec_hit        <= no_spec_hit_updt_val;

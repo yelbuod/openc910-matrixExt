@@ -1205,7 +1205,7 @@ always @( x_inst[14:12]
 begin
   //initialize decoded information value
   decd_32_inst_type[TYPE_WIDTH-1:0]    = {TYPE_WIDTH{1'b0}}; 
-  // TODO: 矩阵指令肯定会选通 decd_32_inst_type 作为最终的指令类型, 因此需要在译码类型中排除该类型, 
+  // 矩阵指令肯定会选通 decd_32_inst_type 作为最终的指令类型, 因此需要在译码类型中排除该类型, 
   //  其实已经自动排除(因为不满足任何一项译码条件), 但是需要修改成矩阵指令在这里有特定case, 不会被认为illegal
   //  这样就不会enqueue任何issue队列, 且要保证指令进入ROB.
   decd_m_inst_vld                      = 1'b0;

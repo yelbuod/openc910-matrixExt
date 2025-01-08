@@ -905,9 +905,9 @@ wire             ctrl_biq_create0_gateclk_en;
 wire             ctrl_biq_create1_dp_en;                 
 wire             ctrl_biq_create1_gateclk_en;            
 wire             ctrl_miq_create0_dp_en;                 
-wire             ctrl_miq_create0_gateclk_en;    // TODO: enable create data to miq        
+wire             ctrl_miq_create0_gateclk_en;    // enable create data to miq        
 wire             ctrl_miq_create1_dp_en;                 
-wire             ctrl_miq_create1_gateclk_en;    // TODO: enable create data to miq          
+wire             ctrl_miq_create1_gateclk_en;    // enable create data to miq          
 wire             ctrl_dp_dis_inst0_ereg_vld;             
 wire             ctrl_dp_dis_inst0_freg_vld;             
 wire             ctrl_dp_dis_inst0_preg_vld;             

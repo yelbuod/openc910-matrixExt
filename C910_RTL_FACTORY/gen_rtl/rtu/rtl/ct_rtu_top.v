@@ -465,7 +465,9 @@ module ct_rtu_top(
   vfpu_rtu_pipe6_cmplt,
   vfpu_rtu_pipe6_iid,
   vfpu_rtu_pipe7_cmplt,
-  vfpu_rtu_pipe7_iid
+  vfpu_rtu_pipe7_iid,
+  matsubsys_rtu_pipe8_cmplt,
+  matsubsys_rtu_pipe8_iid
 );
 
 // &Ports; @25
@@ -685,6 +687,9 @@ input            vfpu_rtu_pipe6_cmplt;
 input   [6  :0]  vfpu_rtu_pipe6_iid;                  
 input            vfpu_rtu_pipe7_cmplt;                
 input   [6  :0]  vfpu_rtu_pipe7_iid;                  
+input            matsubsys_rtu_pipe8_cmplt;
+input   [6  :0]  matsubsys_rtu_pipe8_iid;
+ // TODO: 写回GPR信号
 output  [63 :0]  rtu_cp0_epc;                         
 output           rtu_cp0_expt_gateclk_vld;            
 output  [63 :0]  rtu_cp0_expt_mtval;                  
@@ -1545,6 +1550,8 @@ wire             vfpu_rtu_pipe6_cmplt;
 wire    [6  :0]  vfpu_rtu_pipe6_iid;                  
 wire             vfpu_rtu_pipe7_cmplt;                
 wire    [6  :0]  vfpu_rtu_pipe7_iid;                  
+wire             matsubsys_rtu_pipe8_cmplt;
+wire    [6  :0]  matsubsys_rtu_pipe8_iid;
 
 
 
@@ -2127,7 +2134,9 @@ ct_rtu_rob  x_ct_rtu_rob (
   .vfpu_rtu_pipe6_cmplt                 (vfpu_rtu_pipe6_cmplt                ),
   .vfpu_rtu_pipe6_iid                   (vfpu_rtu_pipe6_iid                  ),
   .vfpu_rtu_pipe7_cmplt                 (vfpu_rtu_pipe7_cmplt                ),
-  .vfpu_rtu_pipe7_iid                   (vfpu_rtu_pipe7_iid                  )
+  .vfpu_rtu_pipe7_iid                   (vfpu_rtu_pipe7_iid                  ),
+  .matsubsys_rtu_pipe8_cmplt            (matsubsys_rtu_pipe8_cmplt           ),
+  .matsubsys_rtu_pipe8_iid              (matsubsys_rtu_pipe8_iid             )
 );
 
 // &Instance("ct_rtu_retire", "x_ct_rtu_retire"); @84

@@ -410,6 +410,7 @@ module ct_idu_top(
   idu_mat_rf_lsu_gateclk_sel,
   idu_mat_rf_cfg_sel,
   idu_mat_rf_cfg_gateclk_sel,
+  idu_mat_rf_pipe8_iid,
   idu_mat_rf_pipe8_alu_meta,
   idu_mat_rf_pipe8_alu_src0_vld,
   idu_mat_rf_pipe8_alu_src0,
@@ -1600,6 +1601,7 @@ output        idu_mat_rf_lsu_sel;
 output        idu_mat_rf_lsu_gateclk_sel;
 output        idu_mat_rf_cfg_sel;
 output        idu_mat_rf_cfg_gateclk_sel;
+output [6 :0] idu_mat_rf_pipe8_iid;
 output [30:0] idu_mat_rf_pipe8_alu_meta;
 output        idu_mat_rf_pipe8_alu_src0_vld;
 output [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -1607,7 +1609,7 @@ output [15:0] idu_mat_rf_pipe8_lsu_meta;
 output [63:0] idu_mat_rf_pipe8_lsu_src0;
 output        idu_mat_rf_pipe8_lsu_src1_vld;
 output [63:0] idu_mat_rf_pipe8_lsu_src1;
-output [4 :0] idu_mat_rf_pipe8_cfg_meta;
+output [3 :0] idu_mat_rf_pipe8_cfg_meta;
 output        idu_mat_rf_pipe8_cfg_dst_vld;
 output [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
 output [63:0] idu_mat_rf_pipe8_cfg_src0;
@@ -5933,6 +5935,7 @@ wire        idu_mat_rf_lsu_gateclk_sel;
 wire        idu_mat_rf_cfg_sel;
 wire        idu_mat_rf_cfg_gateclk_sel;
 // from RF dp to IDU output port
+wire [6 :0] idu_mat_rf_pipe8_iid;
 wire [30:0] idu_mat_rf_pipe8_alu_meta;
 wire        idu_mat_rf_pipe8_alu_src0_vld;
 wire [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -5940,7 +5943,7 @@ wire [15:0] idu_mat_rf_pipe8_lsu_meta;
 wire [63:0] idu_mat_rf_pipe8_lsu_src0;
 wire        idu_mat_rf_pipe8_lsu_src1_vld;
 wire [63:0] idu_mat_rf_pipe8_lsu_src1;
-wire [4 :0] idu_mat_rf_pipe8_cfg_meta;
+wire [3 :0] idu_mat_rf_pipe8_cfg_meta;
 wire        idu_mat_rf_pipe8_cfg_dst_vld;
 wire [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
 wire [63:0] idu_mat_rf_pipe8_cfg_src0;
@@ -6593,6 +6596,7 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .idu_vfpu_rf_pipe7_srcv2_fr             (idu_vfpu_rf_pipe7_srcv2_fr            ),
   .idu_vfpu_rf_pipe7_vmla_type            (idu_vfpu_rf_pipe7_vmla_type           ),
   /* to Matrix Unit */
+  .idu_mat_rf_pipe8_iid                   (idu_mat_rf_pipe8_iid                  ),
   .idu_mat_rf_pipe8_alu_meta              (idu_mat_rf_pipe8_alu_meta             ),
   .idu_mat_rf_pipe8_alu_src0_vld          (idu_mat_rf_pipe8_alu_src0_vld         ),
   .idu_mat_rf_pipe8_alu_src0              (idu_mat_rf_pipe8_alu_src0             ),
