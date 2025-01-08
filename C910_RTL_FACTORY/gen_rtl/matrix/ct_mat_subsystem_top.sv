@@ -52,6 +52,7 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
   // 如果会则需要使用拼接合并三条完成信号, 如果不会则可以使用"或"完成拼接:
   // mat_cfg_cbus_ex1_pipe8_sel  mat_alu_cbus_ex1_pipe8_sel  mat_lsu_cbus_ex1_pipe8_sel;
   // 完善matrix子系统连接IDU接收/写回寄存器并提交到RTU
+  
   logic mat_cfg_cbus_ex1_pipe8_sel;
   logic [6:0] mat_cfg_cbus_ex1_pipe8_iid;
 
