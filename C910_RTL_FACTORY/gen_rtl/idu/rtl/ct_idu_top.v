@@ -491,6 +491,12 @@ module ct_idu_top(
   iu_idu_pcfifo_dis_inst3_pid,
   iu_idu_pipe1_mla_src2_no_fwd,
   iu_yy_xx_cancel,
+  // from Matrix Unit WB
+  mat_cfg_idu_ex1_pipe8_wb_preg,
+  mat_cfg_idu_ex1_pipe8_wb_preg_data,
+  mat_cfg_idu_ex1_pipe8_wb_preg_expand,
+  mat_cfg_idu_ex1_pipe8_wb_preg_vld,
+  //
   lsu_idu_ag_pipe3_load_inst_vld,
   lsu_idu_ag_pipe3_preg_dup0,
   lsu_idu_ag_pipe3_preg_dup1,
@@ -908,6 +914,33 @@ input   [4  :0]  iu_idu_pcfifo_dis_inst2_pid;
 input   [4  :0]  iu_idu_pcfifo_dis_inst3_pid;            
 input            iu_idu_pipe1_mla_src2_no_fwd;           
 input            iu_yy_xx_cancel;                        
+
+// input            iu_idu_div_busy;                        
+// input            iu_idu_div_inst_vld;                    
+// input   [6  :0]  iu_idu_div_preg_dup0;                   
+// input   [6  :0]  iu_idu_div_preg_dup1;                   
+// input   [6  :0]  iu_idu_div_preg_dup2;                   
+// input   [6  :0]  iu_idu_div_preg_dup3;                   
+// input   [6  :0]  iu_idu_div_preg_dup4;                   
+// input            iu_idu_div_wb_stall;                    
+// input   [6  :0]  iu_idu_ex1_pipe8_fwd_preg;              
+// input   [63 :0]  iu_idu_ex1_pipe8_fwd_preg_data;         
+// input            iu_idu_ex1_pipe8_fwd_preg_vld;          
+input   [6  :0]  mat_cfg_idu_ex1_pipe8_wb_preg;               
+input   [63 :0]  mat_cfg_idu_ex1_pipe8_wb_preg_data;    
+// input   [6  :0]  mat_cfg_idu_ex1_pipe8_wb_preg_dup0;          
+// input   [6  :0]  mat_cfg_idu_ex1_pipe8_wb_preg_dup1;          
+// input   [6  :0]  mat_cfg_idu_ex1_pipe8_wb_preg_dup2;          
+// input   [6  :0]  mat_cfg_idu_ex1_pipe8_wb_preg_dup3;          
+// input   [6  :0]  mat_cfg_idu_ex1_pipe8_wb_preg_dup4;          
+input   [95 :0]  mat_cfg_idu_ex1_pipe8_wb_preg_expand;        
+input            mat_cfg_idu_ex1_pipe8_wb_preg_vld;           
+// input            mat_cfg_idu_ex1_pipe8_wb_preg_vld_dup0;      
+// input            mat_cfg_idu_ex1_pipe8_wb_preg_vld_dup1;      
+// input            mat_cfg_idu_ex1_pipe8_wb_preg_vld_dup2;      
+// input            mat_cfg_idu_ex1_pipe8_wb_preg_vld_dup3;      
+// input            mat_cfg_idu_ex1_pipe8_wb_preg_vld_dup4;      
+
 input            lsu_idu_ag_pipe3_load_inst_vld;         
 input   [6  :0]  lsu_idu_ag_pipe3_preg_dup0;             
 input   [6  :0]  lsu_idu_ag_pipe3_preg_dup1;             
@@ -2899,6 +2932,12 @@ wire    [4  :0]  iu_idu_pcfifo_dis_inst2_pid;
 wire    [4  :0]  iu_idu_pcfifo_dis_inst3_pid;            
 wire             iu_idu_pipe1_mla_src2_no_fwd;           
 wire             iu_yy_xx_cancel;                        
+// preg和preg vld还需dup多个传输到不同模块(操作数状态表)驱动操作数rdy状态, 用于后续参与issue仲裁
+// data不需要dup, 旁路部分只需传输到fwd模块, 在RF stage提供操作数
+wire    [6  :0]  mat_cfg_idu_ex1_pipe8_wb_preg; // 仅旁路
+wire    [63 :0]  mat_cfg_idu_ex1_pipe8_wb_preg_data; // 旁路&写回
+wire    [95 :0]  mat_cfg_idu_ex1_pipe8_wb_preg_expand; // 仅写回      
+wire             mat_cfg_idu_ex1_pipe8_wb_preg_vld; // 旁路&写回
 wire    [11 :0]  lsiq_aiq_create0_entry;                 
 wire    [11 :0]  lsiq_aiq_create1_entry;                 
 wire             lsiq_ctrl_1_left_updt;                  
@@ -6865,6 +6904,9 @@ ct_idu_rf_prf_pregfile  x_ct_idu_rf_prf_pregfile (
   .lsu_idu_wb_pipe3_wb_preg_data   (lsu_idu_wb_pipe3_wb_preg_data  ),
   .lsu_idu_wb_pipe3_wb_preg_expand (lsu_idu_wb_pipe3_wb_preg_expand),
   .lsu_idu_wb_pipe3_wb_preg_vld    (lsu_idu_wb_pipe3_wb_preg_vld   ),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data   (mat_cfg_idu_ex1_pipe8_wb_preg_data  ),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_expand (mat_cfg_idu_ex1_pipe8_wb_preg_expand),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_vld    (mat_cfg_idu_ex1_pipe8_wb_preg_vld   ),
   .pad_yy_icg_scan_en              (pad_yy_icg_scan_en             ),
   .prf_dp_rf_pipe0_src0_data       (prf_dp_rf_pipe0_src0_data      ),
   .prf_dp_rf_pipe0_src1_data       (prf_dp_rf_pipe0_src1_data      ),

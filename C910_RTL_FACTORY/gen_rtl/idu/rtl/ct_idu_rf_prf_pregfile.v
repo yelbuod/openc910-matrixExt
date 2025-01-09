@@ -42,6 +42,9 @@ module ct_idu_rf_prf_pregfile(
   lsu_idu_wb_pipe3_wb_preg_data,
   lsu_idu_wb_pipe3_wb_preg_expand,
   lsu_idu_wb_pipe3_wb_preg_vld,
+  mat_cfg_idu_ex1_pipe8_wb_preg_data,
+  mat_cfg_idu_ex1_pipe8_wb_preg_expand,
+  mat_cfg_idu_ex1_pipe8_wb_preg_vld,
   pad_yy_icg_scan_en,
   prf_dp_rf_pipe0_src0_data,
   prf_dp_rf_pipe0_src1_data,
@@ -85,6 +88,9 @@ input           iu_idu_ex2_pipe1_wb_preg_vld;
 input   [63:0]  lsu_idu_wb_pipe3_wb_preg_data;  
 input   [95:0]  lsu_idu_wb_pipe3_wb_preg_expand; 
 input           lsu_idu_wb_pipe3_wb_preg_vld;   
+input   [63:0]  mat_cfg_idu_ex1_pipe8_wb_preg_data;
+input   [95:0]  mat_cfg_idu_ex1_pipe8_wb_preg_expand;
+input           mat_cfg_idu_ex1_pipe8_wb_preg_vld;
 input           pad_yy_icg_scan_en;             
 input           rtu_yy_xx_dbgon;                
 output  [63:0]  idu_had_wb_data;                
@@ -146,202 +152,206 @@ wire            iu_idu_ex2_pipe1_wb_preg_vld;
 wire    [63:0]  lsu_idu_wb_pipe3_wb_preg_data;  
 wire    [95:0]  lsu_idu_wb_pipe3_wb_preg_expand; 
 wire            lsu_idu_wb_pipe3_wb_preg_vld;   
+wire    [63:0]  mat_cfg_idu_ex1_pipe8_wb_preg_data;
+wire    [95:0]  mat_cfg_idu_ex1_pipe8_wb_preg_expand;
+wire            mat_cfg_idu_ex1_pipe8_wb_preg_vld;
 wire            pad_yy_icg_scan_en;             
 wire    [95:0]  pipe0_wb_vld;                   
 wire    [95:0]  pipe1_wb_vld;                   
-wire    [95:0]  pipe3_wb_vld;                   
+wire    [95:0]  pipe3_wb_vld;
+wire    [95:0]  pipe8_wb_vld;
 wire    [63:0]  preg0_reg_dout;                 
-wire    [2 :0]  preg0_wb_vld;                   
+wire    [3 :0]  preg0_wb_vld;                   
 wire    [63:0]  preg10_reg_dout;                
-wire    [2 :0]  preg10_wb_vld;                  
+wire    [3 :0]  preg10_wb_vld;                  
 wire    [63:0]  preg11_reg_dout;                
-wire    [2 :0]  preg11_wb_vld;                  
+wire    [3 :0]  preg11_wb_vld;                  
 wire    [63:0]  preg12_reg_dout;                
-wire    [2 :0]  preg12_wb_vld;                  
+wire    [3 :0]  preg12_wb_vld;                  
 wire    [63:0]  preg13_reg_dout;                
-wire    [2 :0]  preg13_wb_vld;                  
+wire    [3 :0]  preg13_wb_vld;                  
 wire    [63:0]  preg14_reg_dout;                
-wire    [2 :0]  preg14_wb_vld;                  
+wire    [3 :0]  preg14_wb_vld;                  
 wire    [63:0]  preg15_reg_dout;                
-wire    [2 :0]  preg15_wb_vld;                  
+wire    [3 :0]  preg15_wb_vld;                  
 wire    [63:0]  preg16_reg_dout;                
-wire    [2 :0]  preg16_wb_vld;                  
+wire    [3 :0]  preg16_wb_vld;                  
 wire    [63:0]  preg17_reg_dout;                
-wire    [2 :0]  preg17_wb_vld;                  
+wire    [3 :0]  preg17_wb_vld;                  
 wire    [63:0]  preg18_reg_dout;                
-wire    [2 :0]  preg18_wb_vld;                  
+wire    [3 :0]  preg18_wb_vld;                  
 wire    [63:0]  preg19_reg_dout;                
-wire    [2 :0]  preg19_wb_vld;                  
+wire    [3 :0]  preg19_wb_vld;                  
 wire    [63:0]  preg1_reg_dout;                 
-wire    [2 :0]  preg1_wb_vld;                   
+wire    [3 :0]  preg1_wb_vld;                   
 wire    [63:0]  preg20_reg_dout;                
-wire    [2 :0]  preg20_wb_vld;                  
+wire    [3 :0]  preg20_wb_vld;                  
 wire    [63:0]  preg21_reg_dout;                
-wire    [2 :0]  preg21_wb_vld;                  
+wire    [3 :0]  preg21_wb_vld;                  
 wire    [63:0]  preg22_reg_dout;                
-wire    [2 :0]  preg22_wb_vld;                  
+wire    [3 :0]  preg22_wb_vld;                  
 wire    [63:0]  preg23_reg_dout;                
-wire    [2 :0]  preg23_wb_vld;                  
+wire    [3 :0]  preg23_wb_vld;                  
 wire    [63:0]  preg24_reg_dout;                
-wire    [2 :0]  preg24_wb_vld;                  
+wire    [3 :0]  preg24_wb_vld;                  
 wire    [63:0]  preg25_reg_dout;                
-wire    [2 :0]  preg25_wb_vld;                  
+wire    [3 :0]  preg25_wb_vld;                  
 wire    [63:0]  preg26_reg_dout;                
-wire    [2 :0]  preg26_wb_vld;                  
+wire    [3 :0]  preg26_wb_vld;                  
 wire    [63:0]  preg27_reg_dout;                
-wire    [2 :0]  preg27_wb_vld;                  
+wire    [3 :0]  preg27_wb_vld;                  
 wire    [63:0]  preg28_reg_dout;                
-wire    [2 :0]  preg28_wb_vld;                  
+wire    [3 :0]  preg28_wb_vld;                  
 wire    [63:0]  preg29_reg_dout;                
-wire    [2 :0]  preg29_wb_vld;                  
+wire    [3 :0]  preg29_wb_vld;                  
 wire    [63:0]  preg2_reg_dout;                 
-wire    [2 :0]  preg2_wb_vld;                   
+wire    [3 :0]  preg2_wb_vld;                   
 wire    [63:0]  preg30_reg_dout;                
-wire    [2 :0]  preg30_wb_vld;                  
+wire    [3 :0]  preg30_wb_vld;                  
 wire    [63:0]  preg31_reg_dout;                
-wire    [2 :0]  preg31_wb_vld;                  
+wire    [3 :0]  preg31_wb_vld;                  
 wire    [63:0]  preg32_reg_dout;                
-wire    [2 :0]  preg32_wb_vld;                  
+wire    [3 :0]  preg32_wb_vld;                  
 wire    [63:0]  preg33_reg_dout;                
-wire    [2 :0]  preg33_wb_vld;                  
+wire    [3 :0]  preg33_wb_vld;                  
 wire    [63:0]  preg34_reg_dout;                
-wire    [2 :0]  preg34_wb_vld;                  
+wire    [3 :0]  preg34_wb_vld;                  
 wire    [63:0]  preg35_reg_dout;                
-wire    [2 :0]  preg35_wb_vld;                  
+wire    [3 :0]  preg35_wb_vld;                  
 wire    [63:0]  preg36_reg_dout;                
-wire    [2 :0]  preg36_wb_vld;                  
+wire    [3 :0]  preg36_wb_vld;                  
 wire    [63:0]  preg37_reg_dout;                
-wire    [2 :0]  preg37_wb_vld;                  
+wire    [3 :0]  preg37_wb_vld;                  
 wire    [63:0]  preg38_reg_dout;                
-wire    [2 :0]  preg38_wb_vld;                  
+wire    [3 :0]  preg38_wb_vld;                  
 wire    [63:0]  preg39_reg_dout;                
-wire    [2 :0]  preg39_wb_vld;                  
+wire    [3 :0]  preg39_wb_vld;                  
 wire    [63:0]  preg3_reg_dout;                 
-wire    [2 :0]  preg3_wb_vld;                   
+wire    [3 :0]  preg3_wb_vld;                   
 wire    [63:0]  preg40_reg_dout;                
-wire    [2 :0]  preg40_wb_vld;                  
+wire    [3 :0]  preg40_wb_vld;                  
 wire    [63:0]  preg41_reg_dout;                
-wire    [2 :0]  preg41_wb_vld;                  
+wire    [3 :0]  preg41_wb_vld;                  
 wire    [63:0]  preg42_reg_dout;                
-wire    [2 :0]  preg42_wb_vld;                  
+wire    [3 :0]  preg42_wb_vld;                  
 wire    [63:0]  preg43_reg_dout;                
-wire    [2 :0]  preg43_wb_vld;                  
+wire    [3 :0]  preg43_wb_vld;                  
 wire    [63:0]  preg44_reg_dout;                
-wire    [2 :0]  preg44_wb_vld;                  
+wire    [3 :0]  preg44_wb_vld;                  
 wire    [63:0]  preg45_reg_dout;                
-wire    [2 :0]  preg45_wb_vld;                  
+wire    [3 :0]  preg45_wb_vld;                  
 wire    [63:0]  preg46_reg_dout;                
-wire    [2 :0]  preg46_wb_vld;                  
+wire    [3 :0]  preg46_wb_vld;                  
 wire    [63:0]  preg47_reg_dout;                
-wire    [2 :0]  preg47_wb_vld;                  
+wire    [3 :0]  preg47_wb_vld;                  
 wire    [63:0]  preg48_reg_dout;                
-wire    [2 :0]  preg48_wb_vld;                  
+wire    [3 :0]  preg48_wb_vld;                  
 wire    [63:0]  preg49_reg_dout;                
-wire    [2 :0]  preg49_wb_vld;                  
+wire    [3 :0]  preg49_wb_vld;                  
 wire    [63:0]  preg4_reg_dout;                 
-wire    [2 :0]  preg4_wb_vld;                   
+wire    [3 :0]  preg4_wb_vld;                   
 wire    [63:0]  preg50_reg_dout;                
-wire    [2 :0]  preg50_wb_vld;                  
+wire    [3 :0]  preg50_wb_vld;                  
 wire    [63:0]  preg51_reg_dout;                
-wire    [2 :0]  preg51_wb_vld;                  
+wire    [3 :0]  preg51_wb_vld;                  
 wire    [63:0]  preg52_reg_dout;                
-wire    [2 :0]  preg52_wb_vld;                  
+wire    [3 :0]  preg52_wb_vld;                  
 wire    [63:0]  preg53_reg_dout;                
-wire    [2 :0]  preg53_wb_vld;                  
+wire    [3 :0]  preg53_wb_vld;                  
 wire    [63:0]  preg54_reg_dout;                
-wire    [2 :0]  preg54_wb_vld;                  
+wire    [3 :0]  preg54_wb_vld;                  
 wire    [63:0]  preg55_reg_dout;                
-wire    [2 :0]  preg55_wb_vld;                  
+wire    [3 :0]  preg55_wb_vld;                  
 wire    [63:0]  preg56_reg_dout;                
-wire    [2 :0]  preg56_wb_vld;                  
+wire    [3 :0]  preg56_wb_vld;                  
 wire    [63:0]  preg57_reg_dout;                
-wire    [2 :0]  preg57_wb_vld;                  
+wire    [3 :0]  preg57_wb_vld;                  
 wire    [63:0]  preg58_reg_dout;                
-wire    [2 :0]  preg58_wb_vld;                  
+wire    [3 :0]  preg58_wb_vld;                  
 wire    [63:0]  preg59_reg_dout;                
-wire    [2 :0]  preg59_wb_vld;                  
+wire    [3 :0]  preg59_wb_vld;                  
 wire    [63:0]  preg5_reg_dout;                 
-wire    [2 :0]  preg5_wb_vld;                   
+wire    [3 :0]  preg5_wb_vld;                   
 wire    [63:0]  preg60_reg_dout;                
-wire    [2 :0]  preg60_wb_vld;                  
+wire    [3 :0]  preg60_wb_vld;                  
 wire    [63:0]  preg61_reg_dout;                
-wire    [2 :0]  preg61_wb_vld;                  
+wire    [3 :0]  preg61_wb_vld;                  
 wire    [63:0]  preg62_reg_dout;                
-wire    [2 :0]  preg62_wb_vld;                  
+wire    [3 :0]  preg62_wb_vld;                  
 wire    [63:0]  preg63_reg_dout;                
-wire    [2 :0]  preg63_wb_vld;                  
+wire    [3 :0]  preg63_wb_vld;                  
 wire    [63:0]  preg64_reg_dout;                
-wire    [2 :0]  preg64_wb_vld;                  
+wire    [3 :0]  preg64_wb_vld;                  
 wire    [63:0]  preg65_reg_dout;                
-wire    [2 :0]  preg65_wb_vld;                  
+wire    [3 :0]  preg65_wb_vld;                  
 wire    [63:0]  preg66_reg_dout;                
-wire    [2 :0]  preg66_wb_vld;                  
+wire    [3 :0]  preg66_wb_vld;                  
 wire    [63:0]  preg67_reg_dout;                
-wire    [2 :0]  preg67_wb_vld;                  
+wire    [3 :0]  preg67_wb_vld;                  
 wire    [63:0]  preg68_reg_dout;                
-wire    [2 :0]  preg68_wb_vld;                  
+wire    [3 :0]  preg68_wb_vld;                  
 wire    [63:0]  preg69_reg_dout;                
-wire    [2 :0]  preg69_wb_vld;                  
+wire    [3 :0]  preg69_wb_vld;                  
 wire    [63:0]  preg6_reg_dout;                 
-wire    [2 :0]  preg6_wb_vld;                   
+wire    [3 :0]  preg6_wb_vld;                   
 wire    [63:0]  preg70_reg_dout;                
-wire    [2 :0]  preg70_wb_vld;                  
+wire    [3 :0]  preg70_wb_vld;                  
 wire    [63:0]  preg71_reg_dout;                
-wire    [2 :0]  preg71_wb_vld;                  
+wire    [3 :0]  preg71_wb_vld;                  
 wire    [63:0]  preg72_reg_dout;                
-wire    [2 :0]  preg72_wb_vld;                  
+wire    [3 :0]  preg72_wb_vld;                  
 wire    [63:0]  preg73_reg_dout;                
-wire    [2 :0]  preg73_wb_vld;                  
+wire    [3 :0]  preg73_wb_vld;                  
 wire    [63:0]  preg74_reg_dout;                
-wire    [2 :0]  preg74_wb_vld;                  
+wire    [3 :0]  preg74_wb_vld;                  
 wire    [63:0]  preg75_reg_dout;                
-wire    [2 :0]  preg75_wb_vld;                  
+wire    [3 :0]  preg75_wb_vld;                  
 wire    [63:0]  preg76_reg_dout;                
-wire    [2 :0]  preg76_wb_vld;                  
+wire    [3 :0]  preg76_wb_vld;                  
 wire    [63:0]  preg77_reg_dout;                
-wire    [2 :0]  preg77_wb_vld;                  
+wire    [3 :0]  preg77_wb_vld;                  
 wire    [63:0]  preg78_reg_dout;                
-wire    [2 :0]  preg78_wb_vld;                  
+wire    [3 :0]  preg78_wb_vld;                  
 wire    [63:0]  preg79_reg_dout;                
-wire    [2 :0]  preg79_wb_vld;                  
+wire    [3 :0]  preg79_wb_vld;                  
 wire    [63:0]  preg7_reg_dout;                 
-wire    [2 :0]  preg7_wb_vld;                   
+wire    [3 :0]  preg7_wb_vld;                   
 wire    [63:0]  preg80_reg_dout;                
-wire    [2 :0]  preg80_wb_vld;                  
+wire    [3 :0]  preg80_wb_vld;                  
 wire    [63:0]  preg81_reg_dout;                
-wire    [2 :0]  preg81_wb_vld;                  
+wire    [3 :0]  preg81_wb_vld;                  
 wire    [63:0]  preg82_reg_dout;                
-wire    [2 :0]  preg82_wb_vld;                  
+wire    [3 :0]  preg82_wb_vld;                  
 wire    [63:0]  preg83_reg_dout;                
-wire    [2 :0]  preg83_wb_vld;                  
+wire    [3 :0]  preg83_wb_vld;                  
 wire    [63:0]  preg84_reg_dout;                
-wire    [2 :0]  preg84_wb_vld;                  
+wire    [3 :0]  preg84_wb_vld;                  
 wire    [63:0]  preg85_reg_dout;                
-wire    [2 :0]  preg85_wb_vld;                  
+wire    [3 :0]  preg85_wb_vld;                  
 wire    [63:0]  preg86_reg_dout;                
-wire    [2 :0]  preg86_wb_vld;                  
+wire    [3 :0]  preg86_wb_vld;                  
 wire    [63:0]  preg87_reg_dout;                
-wire    [2 :0]  preg87_wb_vld;                  
+wire    [3 :0]  preg87_wb_vld;                  
 wire    [63:0]  preg88_reg_dout;                
-wire    [2 :0]  preg88_wb_vld;                  
+wire    [3 :0]  preg88_wb_vld;                  
 wire    [63:0]  preg89_reg_dout;                
-wire    [2 :0]  preg89_wb_vld;                  
+wire    [3 :0]  preg89_wb_vld;                  
 wire    [63:0]  preg8_reg_dout;                 
-wire    [2 :0]  preg8_wb_vld;                   
+wire    [3 :0]  preg8_wb_vld;                   
 wire    [63:0]  preg90_reg_dout;                
-wire    [2 :0]  preg90_wb_vld;                  
+wire    [3 :0]  preg90_wb_vld;                  
 wire    [63:0]  preg91_reg_dout;                
-wire    [2 :0]  preg91_wb_vld;                  
+wire    [3 :0]  preg91_wb_vld;                  
 wire    [63:0]  preg92_reg_dout;                
-wire    [2 :0]  preg92_wb_vld;                  
+wire    [3 :0]  preg92_wb_vld;                  
 wire    [63:0]  preg93_reg_dout;                
-wire    [2 :0]  preg93_wb_vld;                  
+wire    [3 :0]  preg93_wb_vld;                  
 wire    [63:0]  preg94_reg_dout;                
-wire    [2 :0]  preg94_wb_vld;                  
+wire    [3 :0]  preg94_wb_vld;                  
 wire    [63:0]  preg95_reg_dout;                
-wire    [2 :0]  preg95_wb_vld;                  
+wire    [3 :0]  preg95_wb_vld;                  
 wire    [63:0]  preg9_reg_dout;                 
-wire    [2 :0]  preg9_wb_vld;                   
+wire    [3 :0]  preg9_wb_vld;                   
 wire            rtu_yy_xx_dbgon;                
 
 
@@ -368,6 +378,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(1))  x_ct_idu_rf_prf_preg1 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg1_reg_dout               ),
   .x_wb_vld                      (preg1_wb_vld                 )
@@ -382,6 +393,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(2))  x_ct_idu_rf_prf_preg2 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg2_reg_dout               ),
   .x_wb_vld                      (preg2_wb_vld                 )
@@ -396,6 +408,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(3))  x_ct_idu_rf_prf_preg3 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg3_reg_dout               ),
   .x_wb_vld                      (preg3_wb_vld                 )
@@ -410,6 +423,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(4))  x_ct_idu_rf_prf_preg4 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg4_reg_dout               ),
   .x_wb_vld                      (preg4_wb_vld                 )
@@ -424,6 +438,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(5))  x_ct_idu_rf_prf_preg5 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg5_reg_dout               ),
   .x_wb_vld                      (preg5_wb_vld                 )
@@ -438,6 +453,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(6))  x_ct_idu_rf_prf_preg6 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg6_reg_dout               ),
   .x_wb_vld                      (preg6_wb_vld                 )
@@ -452,6 +468,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(7))  x_ct_idu_rf_prf_preg7 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg7_reg_dout               ),
   .x_wb_vld                      (preg7_wb_vld                 )
@@ -466,6 +483,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(8))  x_ct_idu_rf_prf_preg8 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg8_reg_dout               ),
   .x_wb_vld                      (preg8_wb_vld                 )
@@ -480,6 +498,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(9))  x_ct_idu_rf_prf_preg9 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg9_reg_dout               ),
   .x_wb_vld                      (preg9_wb_vld                 )
@@ -494,6 +513,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(10))  x_ct_idu_rf_prf_preg10 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg10_reg_dout              ),
   .x_wb_vld                      (preg10_wb_vld                )
@@ -508,6 +528,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(11))  x_ct_idu_rf_prf_preg11 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg11_reg_dout              ),
   .x_wb_vld                      (preg11_wb_vld                )
@@ -522,6 +543,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(12))  x_ct_idu_rf_prf_preg12 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg12_reg_dout              ),
   .x_wb_vld                      (preg12_wb_vld                )
@@ -536,6 +558,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(13))  x_ct_idu_rf_prf_preg13 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg13_reg_dout              ),
   .x_wb_vld                      (preg13_wb_vld                )
@@ -550,6 +573,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(14))  x_ct_idu_rf_prf_preg14 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg14_reg_dout              ),
   .x_wb_vld                      (preg14_wb_vld                )
@@ -564,6 +588,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(15))  x_ct_idu_rf_prf_preg15 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg15_reg_dout              ),
   .x_wb_vld                      (preg15_wb_vld                )
@@ -578,6 +603,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(16))  x_ct_idu_rf_prf_preg16 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg16_reg_dout              ),
   .x_wb_vld                      (preg16_wb_vld                )
@@ -592,6 +618,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(17))  x_ct_idu_rf_prf_preg17 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg17_reg_dout              ),
   .x_wb_vld                      (preg17_wb_vld                )
@@ -606,6 +633,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(18))  x_ct_idu_rf_prf_preg18 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg18_reg_dout              ),
   .x_wb_vld                      (preg18_wb_vld                )
@@ -620,6 +648,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(19))  x_ct_idu_rf_prf_preg19 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg19_reg_dout              ),
   .x_wb_vld                      (preg19_wb_vld                )
@@ -634,6 +663,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(20))  x_ct_idu_rf_prf_preg20 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg20_reg_dout              ),
   .x_wb_vld                      (preg20_wb_vld                )
@@ -648,6 +678,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(21))  x_ct_idu_rf_prf_preg21 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg21_reg_dout              ),
   .x_wb_vld                      (preg21_wb_vld                )
@@ -662,6 +693,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(22))  x_ct_idu_rf_prf_preg22 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg22_reg_dout              ),
   .x_wb_vld                      (preg22_wb_vld                )
@@ -676,6 +708,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(23))  x_ct_idu_rf_prf_preg23 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg23_reg_dout              ),
   .x_wb_vld                      (preg23_wb_vld                )
@@ -690,6 +723,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(24))  x_ct_idu_rf_prf_preg24 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg24_reg_dout              ),
   .x_wb_vld                      (preg24_wb_vld                )
@@ -704,6 +738,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(25))  x_ct_idu_rf_prf_preg25 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg25_reg_dout              ),
   .x_wb_vld                      (preg25_wb_vld                )
@@ -718,6 +753,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(26))  x_ct_idu_rf_prf_preg26 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg26_reg_dout              ),
   .x_wb_vld                      (preg26_wb_vld                )
@@ -732,6 +768,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(27))  x_ct_idu_rf_prf_preg27 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg27_reg_dout              ),
   .x_wb_vld                      (preg27_wb_vld                )
@@ -746,6 +783,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(28))  x_ct_idu_rf_prf_preg28 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg28_reg_dout              ),
   .x_wb_vld                      (preg28_wb_vld                )
@@ -760,6 +798,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(29))  x_ct_idu_rf_prf_preg29 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg29_reg_dout              ),
   .x_wb_vld                      (preg29_wb_vld                )
@@ -774,6 +813,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(30))  x_ct_idu_rf_prf_preg30 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg30_reg_dout              ),
   .x_wb_vld                      (preg30_wb_vld                )
@@ -788,6 +828,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(31))  x_ct_idu_rf_prf_preg31 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg31_reg_dout              ),
   .x_wb_vld                      (preg31_wb_vld                )
@@ -802,6 +843,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(32))  x_ct_idu_rf_prf_preg32 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg32_reg_dout              ),
   .x_wb_vld                      (preg32_wb_vld                )
@@ -816,6 +858,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(33))  x_ct_idu_rf_prf_preg33 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg33_reg_dout              ),
   .x_wb_vld                      (preg33_wb_vld                )
@@ -830,6 +873,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(34))  x_ct_idu_rf_prf_preg34 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg34_reg_dout              ),
   .x_wb_vld                      (preg34_wb_vld                )
@@ -844,6 +888,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(35))  x_ct_idu_rf_prf_preg35 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg35_reg_dout              ),
   .x_wb_vld                      (preg35_wb_vld                )
@@ -858,6 +903,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(36))  x_ct_idu_rf_prf_preg36 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg36_reg_dout              ),
   .x_wb_vld                      (preg36_wb_vld                )
@@ -872,6 +918,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(37))  x_ct_idu_rf_prf_preg37 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg37_reg_dout              ),
   .x_wb_vld                      (preg37_wb_vld                )
@@ -886,6 +933,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(38))  x_ct_idu_rf_prf_preg38 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg38_reg_dout              ),
   .x_wb_vld                      (preg38_wb_vld                )
@@ -900,6 +948,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(39))  x_ct_idu_rf_prf_preg39 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg39_reg_dout              ),
   .x_wb_vld                      (preg39_wb_vld                )
@@ -914,6 +963,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(40))  x_ct_idu_rf_prf_preg40 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg40_reg_dout              ),
   .x_wb_vld                      (preg40_wb_vld                )
@@ -928,6 +978,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(41))  x_ct_idu_rf_prf_preg41 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg41_reg_dout              ),
   .x_wb_vld                      (preg41_wb_vld                )
@@ -942,6 +993,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(42))  x_ct_idu_rf_prf_preg42 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg42_reg_dout              ),
   .x_wb_vld                      (preg42_wb_vld                )
@@ -956,6 +1008,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(43))  x_ct_idu_rf_prf_preg43 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg43_reg_dout              ),
   .x_wb_vld                      (preg43_wb_vld                )
@@ -970,6 +1023,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(44))  x_ct_idu_rf_prf_preg44 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg44_reg_dout              ),
   .x_wb_vld                      (preg44_wb_vld                )
@@ -984,6 +1038,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(45))  x_ct_idu_rf_prf_preg45 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg45_reg_dout              ),
   .x_wb_vld                      (preg45_wb_vld                )
@@ -998,6 +1053,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(46))  x_ct_idu_rf_prf_preg46 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg46_reg_dout              ),
   .x_wb_vld                      (preg46_wb_vld                )
@@ -1012,6 +1068,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(47))  x_ct_idu_rf_prf_preg47 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg47_reg_dout              ),
   .x_wb_vld                      (preg47_wb_vld                )
@@ -1026,6 +1083,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(48))  x_ct_idu_rf_prf_preg48 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg48_reg_dout              ),
   .x_wb_vld                      (preg48_wb_vld                )
@@ -1040,6 +1098,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(49))  x_ct_idu_rf_prf_preg49 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg49_reg_dout              ),
   .x_wb_vld                      (preg49_wb_vld                )
@@ -1054,6 +1113,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(50))  x_ct_idu_rf_prf_preg50 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg50_reg_dout              ),
   .x_wb_vld                      (preg50_wb_vld                )
@@ -1068,6 +1128,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(51))  x_ct_idu_rf_prf_preg51 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg51_reg_dout              ),
   .x_wb_vld                      (preg51_wb_vld                )
@@ -1082,6 +1143,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(52))  x_ct_idu_rf_prf_preg52 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg52_reg_dout              ),
   .x_wb_vld                      (preg52_wb_vld                )
@@ -1096,6 +1158,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(53))  x_ct_idu_rf_prf_preg53 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg53_reg_dout              ),
   .x_wb_vld                      (preg53_wb_vld                )
@@ -1110,6 +1173,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(54))  x_ct_idu_rf_prf_preg54 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg54_reg_dout              ),
   .x_wb_vld                      (preg54_wb_vld                )
@@ -1124,6 +1188,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(55))  x_ct_idu_rf_prf_preg55 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg55_reg_dout              ),
   .x_wb_vld                      (preg55_wb_vld                )
@@ -1138,6 +1203,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(56))  x_ct_idu_rf_prf_preg56 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg56_reg_dout              ),
   .x_wb_vld                      (preg56_wb_vld                )
@@ -1152,6 +1218,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(57))  x_ct_idu_rf_prf_preg57 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg57_reg_dout              ),
   .x_wb_vld                      (preg57_wb_vld                )
@@ -1166,6 +1233,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(58))  x_ct_idu_rf_prf_preg58 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg58_reg_dout              ),
   .x_wb_vld                      (preg58_wb_vld                )
@@ -1180,6 +1248,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(59))  x_ct_idu_rf_prf_preg59 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg59_reg_dout              ),
   .x_wb_vld                      (preg59_wb_vld                )
@@ -1194,6 +1263,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(60))  x_ct_idu_rf_prf_preg60 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg60_reg_dout              ),
   .x_wb_vld                      (preg60_wb_vld                )
@@ -1208,6 +1278,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(61))  x_ct_idu_rf_prf_preg61 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg61_reg_dout              ),
   .x_wb_vld                      (preg61_wb_vld                )
@@ -1222,6 +1293,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(62))  x_ct_idu_rf_prf_preg62 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg62_reg_dout              ),
   .x_wb_vld                      (preg62_wb_vld                )
@@ -1236,6 +1308,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(63))  x_ct_idu_rf_prf_preg63 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg63_reg_dout              ),
   .x_wb_vld                      (preg63_wb_vld                )
@@ -1250,6 +1323,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(64))  x_ct_idu_rf_prf_preg64 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg64_reg_dout              ),
   .x_wb_vld                      (preg64_wb_vld                )
@@ -1264,6 +1338,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(65))  x_ct_idu_rf_prf_preg65 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg65_reg_dout              ),
   .x_wb_vld                      (preg65_wb_vld                )
@@ -1278,6 +1353,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(66))  x_ct_idu_rf_prf_preg66 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg66_reg_dout              ),
   .x_wb_vld                      (preg66_wb_vld                )
@@ -1292,6 +1368,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(67))  x_ct_idu_rf_prf_preg67 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg67_reg_dout              ),
   .x_wb_vld                      (preg67_wb_vld                )
@@ -1306,6 +1383,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(68))  x_ct_idu_rf_prf_preg68 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg68_reg_dout              ),
   .x_wb_vld                      (preg68_wb_vld                )
@@ -1320,6 +1398,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(69))  x_ct_idu_rf_prf_preg69 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg69_reg_dout              ),
   .x_wb_vld                      (preg69_wb_vld                )
@@ -1334,6 +1413,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(70))  x_ct_idu_rf_prf_preg70 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg70_reg_dout              ),
   .x_wb_vld                      (preg70_wb_vld                )
@@ -1348,6 +1428,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(71))  x_ct_idu_rf_prf_preg71 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg71_reg_dout              ),
   .x_wb_vld                      (preg71_wb_vld                )
@@ -1362,6 +1443,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(72))  x_ct_idu_rf_prf_preg72 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg72_reg_dout              ),
   .x_wb_vld                      (preg72_wb_vld                )
@@ -1376,6 +1458,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(73))  x_ct_idu_rf_prf_preg73 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg73_reg_dout              ),
   .x_wb_vld                      (preg73_wb_vld                )
@@ -1390,6 +1473,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(74))  x_ct_idu_rf_prf_preg74 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg74_reg_dout              ),
   .x_wb_vld                      (preg74_wb_vld                )
@@ -1404,6 +1488,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(75))  x_ct_idu_rf_prf_preg75 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg75_reg_dout              ),
   .x_wb_vld                      (preg75_wb_vld                )
@@ -1418,6 +1503,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(76))  x_ct_idu_rf_prf_preg76 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg76_reg_dout              ),
   .x_wb_vld                      (preg76_wb_vld                )
@@ -1432,6 +1518,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(77))  x_ct_idu_rf_prf_preg77 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg77_reg_dout              ),
   .x_wb_vld                      (preg77_wb_vld                )
@@ -1446,6 +1533,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(78))  x_ct_idu_rf_prf_preg78 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg78_reg_dout              ),
   .x_wb_vld                      (preg78_wb_vld                )
@@ -1460,6 +1548,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(79))  x_ct_idu_rf_prf_preg79 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg79_reg_dout              ),
   .x_wb_vld                      (preg79_wb_vld                )
@@ -1474,6 +1563,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(80))  x_ct_idu_rf_prf_preg80 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg80_reg_dout              ),
   .x_wb_vld                      (preg80_wb_vld                )
@@ -1488,6 +1578,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(81))  x_ct_idu_rf_prf_preg81 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg81_reg_dout              ),
   .x_wb_vld                      (preg81_wb_vld                )
@@ -1502,6 +1593,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(82))  x_ct_idu_rf_prf_preg82 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg82_reg_dout              ),
   .x_wb_vld                      (preg82_wb_vld                )
@@ -1516,6 +1608,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(83))  x_ct_idu_rf_prf_preg83 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg83_reg_dout              ),
   .x_wb_vld                      (preg83_wb_vld                )
@@ -1530,6 +1623,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(84))  x_ct_idu_rf_prf_preg84 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg84_reg_dout              ),
   .x_wb_vld                      (preg84_wb_vld                )
@@ -1544,6 +1638,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(85))  x_ct_idu_rf_prf_preg85 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg85_reg_dout              ),
   .x_wb_vld                      (preg85_wb_vld                )
@@ -1558,6 +1653,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(86))  x_ct_idu_rf_prf_preg86 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg86_reg_dout              ),
   .x_wb_vld                      (preg86_wb_vld                )
@@ -1572,6 +1668,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(87))  x_ct_idu_rf_prf_preg87 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg87_reg_dout              ),
   .x_wb_vld                      (preg87_wb_vld                )
@@ -1586,6 +1683,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(88))  x_ct_idu_rf_prf_preg88 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg88_reg_dout              ),
   .x_wb_vld                      (preg88_wb_vld                )
@@ -1600,6 +1698,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(89))  x_ct_idu_rf_prf_preg89 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg89_reg_dout              ),
   .x_wb_vld                      (preg89_wb_vld                )
@@ -1614,6 +1713,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(90))  x_ct_idu_rf_prf_preg90 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg90_reg_dout              ),
   .x_wb_vld                      (preg90_wb_vld                )
@@ -1628,6 +1728,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(91))  x_ct_idu_rf_prf_preg91 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg91_reg_dout              ),
   .x_wb_vld                      (preg91_wb_vld                )
@@ -1642,6 +1743,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(92))  x_ct_idu_rf_prf_preg92 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg92_reg_dout              ),
   .x_wb_vld                      (preg92_wb_vld                )
@@ -1656,6 +1758,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(93))  x_ct_idu_rf_prf_preg93 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg93_reg_dout              ),
   .x_wb_vld                      (preg93_wb_vld                )
@@ -1670,6 +1773,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(94))  x_ct_idu_rf_prf_preg94 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg94_reg_dout              ),
   .x_wb_vld                      (preg94_wb_vld                )
@@ -1684,6 +1788,7 @@ ct_idu_rf_prf_gated_preg#(.IDX(95))  x_ct_idu_rf_prf_preg95 (
   .iu_idu_ex2_pipe0_wb_preg_data (iu_idu_ex2_pipe0_wb_preg_data),
   .iu_idu_ex2_pipe1_wb_preg_data (iu_idu_ex2_pipe1_wb_preg_data),
   .lsu_idu_wb_pipe3_wb_preg_data (lsu_idu_wb_pipe3_wb_preg_data),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data(mat_cfg_idu_ex1_pipe8_wb_preg_data),
   .pad_yy_icg_scan_en            (pad_yy_icg_scan_en           ),
   .x_reg_dout                    (preg95_reg_dout              ),
   .x_wb_vld                      (preg95_wb_vld                )
@@ -1700,103 +1805,105 @@ assign pipe1_wb_vld[95:0] = {96{iu_idu_ex2_pipe1_wb_preg_vld}}
                             & iu_idu_ex2_pipe1_wb_preg_expand[95:0];
 assign pipe3_wb_vld[95:0] = {96{lsu_idu_wb_pipe3_wb_preg_vld}}
                             & lsu_idu_wb_pipe3_wb_preg_expand[95:0];
+assign pipe8_wb_vld[95:0] = {96{mat_cfg_idu_ex1_pipe8_wb_preg_vld}}
+                            & mat_cfg_idu_ex1_pipe8_wb_preg_expand[95:0];
 
-assign preg0_wb_vld[2:0]  = {pipe3_wb_vld[0], pipe1_wb_vld[0], pipe0_wb_vld[0]};
-assign preg1_wb_vld[2:0]  = {pipe3_wb_vld[1], pipe1_wb_vld[1], pipe0_wb_vld[1]};
-assign preg2_wb_vld[2:0]  = {pipe3_wb_vld[2], pipe1_wb_vld[2], pipe0_wb_vld[2]};
-assign preg3_wb_vld[2:0]  = {pipe3_wb_vld[3], pipe1_wb_vld[3], pipe0_wb_vld[3]};
-assign preg4_wb_vld[2:0]  = {pipe3_wb_vld[4], pipe1_wb_vld[4], pipe0_wb_vld[4]};
-assign preg5_wb_vld[2:0]  = {pipe3_wb_vld[5], pipe1_wb_vld[5], pipe0_wb_vld[5]};
-assign preg6_wb_vld[2:0]  = {pipe3_wb_vld[6], pipe1_wb_vld[6], pipe0_wb_vld[6]};
-assign preg7_wb_vld[2:0]  = {pipe3_wb_vld[7], pipe1_wb_vld[7], pipe0_wb_vld[7]};
-assign preg8_wb_vld[2:0]  = {pipe3_wb_vld[8], pipe1_wb_vld[8], pipe0_wb_vld[8]};
-assign preg9_wb_vld[2:0]  = {pipe3_wb_vld[9], pipe1_wb_vld[9], pipe0_wb_vld[9]};
-assign preg10_wb_vld[2:0] = {pipe3_wb_vld[10],pipe1_wb_vld[10],pipe0_wb_vld[10]};
-assign preg11_wb_vld[2:0] = {pipe3_wb_vld[11],pipe1_wb_vld[11],pipe0_wb_vld[11]};
-assign preg12_wb_vld[2:0] = {pipe3_wb_vld[12],pipe1_wb_vld[12],pipe0_wb_vld[12]};
-assign preg13_wb_vld[2:0] = {pipe3_wb_vld[13],pipe1_wb_vld[13],pipe0_wb_vld[13]};
-assign preg14_wb_vld[2:0] = {pipe3_wb_vld[14],pipe1_wb_vld[14],pipe0_wb_vld[14]};
-assign preg15_wb_vld[2:0] = {pipe3_wb_vld[15],pipe1_wb_vld[15],pipe0_wb_vld[15]};
-assign preg16_wb_vld[2:0] = {pipe3_wb_vld[16],pipe1_wb_vld[16],pipe0_wb_vld[16]};
-assign preg17_wb_vld[2:0] = {pipe3_wb_vld[17],pipe1_wb_vld[17],pipe0_wb_vld[17]};
-assign preg18_wb_vld[2:0] = {pipe3_wb_vld[18],pipe1_wb_vld[18],pipe0_wb_vld[18]};
-assign preg19_wb_vld[2:0] = {pipe3_wb_vld[19],pipe1_wb_vld[19],pipe0_wb_vld[19]};
-assign preg20_wb_vld[2:0] = {pipe3_wb_vld[20],pipe1_wb_vld[20],pipe0_wb_vld[20]};
-assign preg21_wb_vld[2:0] = {pipe3_wb_vld[21],pipe1_wb_vld[21],pipe0_wb_vld[21]};
-assign preg22_wb_vld[2:0] = {pipe3_wb_vld[22],pipe1_wb_vld[22],pipe0_wb_vld[22]};
-assign preg23_wb_vld[2:0] = {pipe3_wb_vld[23],pipe1_wb_vld[23],pipe0_wb_vld[23]};
-assign preg24_wb_vld[2:0] = {pipe3_wb_vld[24],pipe1_wb_vld[24],pipe0_wb_vld[24]};
-assign preg25_wb_vld[2:0] = {pipe3_wb_vld[25],pipe1_wb_vld[25],pipe0_wb_vld[25]};
-assign preg26_wb_vld[2:0] = {pipe3_wb_vld[26],pipe1_wb_vld[26],pipe0_wb_vld[26]};
-assign preg27_wb_vld[2:0] = {pipe3_wb_vld[27],pipe1_wb_vld[27],pipe0_wb_vld[27]};
-assign preg28_wb_vld[2:0] = {pipe3_wb_vld[28],pipe1_wb_vld[28],pipe0_wb_vld[28]};
-assign preg29_wb_vld[2:0] = {pipe3_wb_vld[29],pipe1_wb_vld[29],pipe0_wb_vld[29]};
-assign preg30_wb_vld[2:0] = {pipe3_wb_vld[30],pipe1_wb_vld[30],pipe0_wb_vld[30]};
-assign preg31_wb_vld[2:0] = {pipe3_wb_vld[31],pipe1_wb_vld[31],pipe0_wb_vld[31]};
-assign preg32_wb_vld[2:0] = {pipe3_wb_vld[32],pipe1_wb_vld[32],pipe0_wb_vld[32]};
-assign preg33_wb_vld[2:0] = {pipe3_wb_vld[33],pipe1_wb_vld[33],pipe0_wb_vld[33]};
-assign preg34_wb_vld[2:0] = {pipe3_wb_vld[34],pipe1_wb_vld[34],pipe0_wb_vld[34]};
-assign preg35_wb_vld[2:0] = {pipe3_wb_vld[35],pipe1_wb_vld[35],pipe0_wb_vld[35]};
-assign preg36_wb_vld[2:0] = {pipe3_wb_vld[36],pipe1_wb_vld[36],pipe0_wb_vld[36]};
-assign preg37_wb_vld[2:0] = {pipe3_wb_vld[37],pipe1_wb_vld[37],pipe0_wb_vld[37]};
-assign preg38_wb_vld[2:0] = {pipe3_wb_vld[38],pipe1_wb_vld[38],pipe0_wb_vld[38]};
-assign preg39_wb_vld[2:0] = {pipe3_wb_vld[39],pipe1_wb_vld[39],pipe0_wb_vld[39]};
-assign preg40_wb_vld[2:0] = {pipe3_wb_vld[40],pipe1_wb_vld[40],pipe0_wb_vld[40]};
-assign preg41_wb_vld[2:0] = {pipe3_wb_vld[41],pipe1_wb_vld[41],pipe0_wb_vld[41]};
-assign preg42_wb_vld[2:0] = {pipe3_wb_vld[42],pipe1_wb_vld[42],pipe0_wb_vld[42]};
-assign preg43_wb_vld[2:0] = {pipe3_wb_vld[43],pipe1_wb_vld[43],pipe0_wb_vld[43]};
-assign preg44_wb_vld[2:0] = {pipe3_wb_vld[44],pipe1_wb_vld[44],pipe0_wb_vld[44]};
-assign preg45_wb_vld[2:0] = {pipe3_wb_vld[45],pipe1_wb_vld[45],pipe0_wb_vld[45]};
-assign preg46_wb_vld[2:0] = {pipe3_wb_vld[46],pipe1_wb_vld[46],pipe0_wb_vld[46]};
-assign preg47_wb_vld[2:0] = {pipe3_wb_vld[47],pipe1_wb_vld[47],pipe0_wb_vld[47]};
-assign preg48_wb_vld[2:0] = {pipe3_wb_vld[48],pipe1_wb_vld[48],pipe0_wb_vld[48]};
-assign preg49_wb_vld[2:0] = {pipe3_wb_vld[49],pipe1_wb_vld[49],pipe0_wb_vld[49]};
-assign preg50_wb_vld[2:0] = {pipe3_wb_vld[50],pipe1_wb_vld[50],pipe0_wb_vld[50]};
-assign preg51_wb_vld[2:0] = {pipe3_wb_vld[51],pipe1_wb_vld[51],pipe0_wb_vld[51]};
-assign preg52_wb_vld[2:0] = {pipe3_wb_vld[52],pipe1_wb_vld[52],pipe0_wb_vld[52]};
-assign preg53_wb_vld[2:0] = {pipe3_wb_vld[53],pipe1_wb_vld[53],pipe0_wb_vld[53]};
-assign preg54_wb_vld[2:0] = {pipe3_wb_vld[54],pipe1_wb_vld[54],pipe0_wb_vld[54]};
-assign preg55_wb_vld[2:0] = {pipe3_wb_vld[55],pipe1_wb_vld[55],pipe0_wb_vld[55]};
-assign preg56_wb_vld[2:0] = {pipe3_wb_vld[56],pipe1_wb_vld[56],pipe0_wb_vld[56]};
-assign preg57_wb_vld[2:0] = {pipe3_wb_vld[57],pipe1_wb_vld[57],pipe0_wb_vld[57]};
-assign preg58_wb_vld[2:0] = {pipe3_wb_vld[58],pipe1_wb_vld[58],pipe0_wb_vld[58]};
-assign preg59_wb_vld[2:0] = {pipe3_wb_vld[59],pipe1_wb_vld[59],pipe0_wb_vld[59]};
-assign preg60_wb_vld[2:0] = {pipe3_wb_vld[60],pipe1_wb_vld[60],pipe0_wb_vld[60]};
-assign preg61_wb_vld[2:0] = {pipe3_wb_vld[61],pipe1_wb_vld[61],pipe0_wb_vld[61]};
-assign preg62_wb_vld[2:0] = {pipe3_wb_vld[62],pipe1_wb_vld[62],pipe0_wb_vld[62]};
-assign preg63_wb_vld[2:0] = {pipe3_wb_vld[63],pipe1_wb_vld[63],pipe0_wb_vld[63]};
-assign preg64_wb_vld[2:0] = {pipe3_wb_vld[64],pipe1_wb_vld[64],pipe0_wb_vld[64]};
-assign preg65_wb_vld[2:0] = {pipe3_wb_vld[65],pipe1_wb_vld[65],pipe0_wb_vld[65]};
-assign preg66_wb_vld[2:0] = {pipe3_wb_vld[66],pipe1_wb_vld[66],pipe0_wb_vld[66]};
-assign preg67_wb_vld[2:0] = {pipe3_wb_vld[67],pipe1_wb_vld[67],pipe0_wb_vld[67]};
-assign preg68_wb_vld[2:0] = {pipe3_wb_vld[68],pipe1_wb_vld[68],pipe0_wb_vld[68]};
-assign preg69_wb_vld[2:0] = {pipe3_wb_vld[69],pipe1_wb_vld[69],pipe0_wb_vld[69]};
-assign preg70_wb_vld[2:0] = {pipe3_wb_vld[70],pipe1_wb_vld[70],pipe0_wb_vld[70]};
-assign preg71_wb_vld[2:0] = {pipe3_wb_vld[71],pipe1_wb_vld[71],pipe0_wb_vld[71]};
-assign preg72_wb_vld[2:0] = {pipe3_wb_vld[72],pipe1_wb_vld[72],pipe0_wb_vld[72]};
-assign preg73_wb_vld[2:0] = {pipe3_wb_vld[73],pipe1_wb_vld[73],pipe0_wb_vld[73]};
-assign preg74_wb_vld[2:0] = {pipe3_wb_vld[74],pipe1_wb_vld[74],pipe0_wb_vld[74]};
-assign preg75_wb_vld[2:0] = {pipe3_wb_vld[75],pipe1_wb_vld[75],pipe0_wb_vld[75]};
-assign preg76_wb_vld[2:0] = {pipe3_wb_vld[76],pipe1_wb_vld[76],pipe0_wb_vld[76]};
-assign preg77_wb_vld[2:0] = {pipe3_wb_vld[77],pipe1_wb_vld[77],pipe0_wb_vld[77]};
-assign preg78_wb_vld[2:0] = {pipe3_wb_vld[78],pipe1_wb_vld[78],pipe0_wb_vld[78]};
-assign preg79_wb_vld[2:0] = {pipe3_wb_vld[79],pipe1_wb_vld[79],pipe0_wb_vld[79]};
-assign preg80_wb_vld[2:0] = {pipe3_wb_vld[80],pipe1_wb_vld[80],pipe0_wb_vld[80]};
-assign preg81_wb_vld[2:0] = {pipe3_wb_vld[81],pipe1_wb_vld[81],pipe0_wb_vld[81]};
-assign preg82_wb_vld[2:0] = {pipe3_wb_vld[82],pipe1_wb_vld[82],pipe0_wb_vld[82]};
-assign preg83_wb_vld[2:0] = {pipe3_wb_vld[83],pipe1_wb_vld[83],pipe0_wb_vld[83]};
-assign preg84_wb_vld[2:0] = {pipe3_wb_vld[84],pipe1_wb_vld[84],pipe0_wb_vld[84]};
-assign preg85_wb_vld[2:0] = {pipe3_wb_vld[85],pipe1_wb_vld[85],pipe0_wb_vld[85]};
-assign preg86_wb_vld[2:0] = {pipe3_wb_vld[86],pipe1_wb_vld[86],pipe0_wb_vld[86]};
-assign preg87_wb_vld[2:0] = {pipe3_wb_vld[87],pipe1_wb_vld[87],pipe0_wb_vld[87]};
-assign preg88_wb_vld[2:0] = {pipe3_wb_vld[88],pipe1_wb_vld[88],pipe0_wb_vld[88]};
-assign preg89_wb_vld[2:0] = {pipe3_wb_vld[89],pipe1_wb_vld[89],pipe0_wb_vld[89]};
-assign preg90_wb_vld[2:0] = {pipe3_wb_vld[90],pipe1_wb_vld[90],pipe0_wb_vld[90]};
-assign preg91_wb_vld[2:0] = {pipe3_wb_vld[91],pipe1_wb_vld[91],pipe0_wb_vld[91]};
-assign preg92_wb_vld[2:0] = {pipe3_wb_vld[92],pipe1_wb_vld[92],pipe0_wb_vld[92]};
-assign preg93_wb_vld[2:0] = {pipe3_wb_vld[93],pipe1_wb_vld[93],pipe0_wb_vld[93]};
-assign preg94_wb_vld[2:0] = {pipe3_wb_vld[94],pipe1_wb_vld[94],pipe0_wb_vld[94]};
-assign preg95_wb_vld[2:0] = {pipe3_wb_vld[95],pipe1_wb_vld[95],pipe0_wb_vld[95]};
+assign preg0_wb_vld[3:0]  = {pipe8_wb_vld[0], pipe3_wb_vld[0], pipe1_wb_vld[0], pipe0_wb_vld[0]};
+assign preg1_wb_vld[3:0]  = {pipe8_wb_vld[1], pipe3_wb_vld[1], pipe1_wb_vld[1], pipe0_wb_vld[1]};
+assign preg2_wb_vld[3:0]  = {pipe8_wb_vld[2], pipe3_wb_vld[2], pipe1_wb_vld[2], pipe0_wb_vld[2]};
+assign preg3_wb_vld[3:0]  = {pipe8_wb_vld[3], pipe3_wb_vld[3], pipe1_wb_vld[3], pipe0_wb_vld[3]};
+assign preg4_wb_vld[3:0]  = {pipe8_wb_vld[4], pipe3_wb_vld[4], pipe1_wb_vld[4], pipe0_wb_vld[4]};
+assign preg5_wb_vld[3:0]  = {pipe8_wb_vld[5], pipe3_wb_vld[5], pipe1_wb_vld[5], pipe0_wb_vld[5]};
+assign preg6_wb_vld[3:0]  = {pipe8_wb_vld[6], pipe3_wb_vld[6], pipe1_wb_vld[6], pipe0_wb_vld[6]};
+assign preg7_wb_vld[3:0]  = {pipe8_wb_vld[7], pipe3_wb_vld[7], pipe1_wb_vld[7], pipe0_wb_vld[7]};
+assign preg8_wb_vld[3:0]  = {pipe8_wb_vld[8], pipe3_wb_vld[8], pipe1_wb_vld[8], pipe0_wb_vld[8]};
+assign preg9_wb_vld[3:0]  = {pipe8_wb_vld[9], pipe3_wb_vld[9], pipe1_wb_vld[9], pipe0_wb_vld[9]};
+assign preg10_wb_vld[3:0] = {pipe8_wb_vld[10],pipe3_wb_vld[10],pipe1_wb_vld[10],pipe0_wb_vld[10]};
+assign preg11_wb_vld[3:0] = {pipe8_wb_vld[11],pipe3_wb_vld[11],pipe1_wb_vld[11],pipe0_wb_vld[11]};
+assign preg12_wb_vld[3:0] = {pipe8_wb_vld[12],pipe3_wb_vld[12],pipe1_wb_vld[12],pipe0_wb_vld[12]};
+assign preg13_wb_vld[3:0] = {pipe8_wb_vld[13],pipe3_wb_vld[13],pipe1_wb_vld[13],pipe0_wb_vld[13]};
+assign preg14_wb_vld[3:0] = {pipe8_wb_vld[14],pipe3_wb_vld[14],pipe1_wb_vld[14],pipe0_wb_vld[14]};
+assign preg15_wb_vld[3:0] = {pipe8_wb_vld[15],pipe3_wb_vld[15],pipe1_wb_vld[15],pipe0_wb_vld[15]};
+assign preg16_wb_vld[3:0] = {pipe8_wb_vld[16],pipe3_wb_vld[16],pipe1_wb_vld[16],pipe0_wb_vld[16]};
+assign preg17_wb_vld[3:0] = {pipe8_wb_vld[17],pipe3_wb_vld[17],pipe1_wb_vld[17],pipe0_wb_vld[17]};
+assign preg18_wb_vld[3:0] = {pipe8_wb_vld[18],pipe3_wb_vld[18],pipe1_wb_vld[18],pipe0_wb_vld[18]};
+assign preg19_wb_vld[3:0] = {pipe8_wb_vld[19],pipe3_wb_vld[19],pipe1_wb_vld[19],pipe0_wb_vld[19]};
+assign preg20_wb_vld[3:0] = {pipe8_wb_vld[20],pipe3_wb_vld[20],pipe1_wb_vld[20],pipe0_wb_vld[20]};
+assign preg21_wb_vld[3:0] = {pipe8_wb_vld[21],pipe3_wb_vld[21],pipe1_wb_vld[21],pipe0_wb_vld[21]};
+assign preg22_wb_vld[3:0] = {pipe8_wb_vld[22],pipe3_wb_vld[22],pipe1_wb_vld[22],pipe0_wb_vld[22]};
+assign preg23_wb_vld[3:0] = {pipe8_wb_vld[23],pipe3_wb_vld[23],pipe1_wb_vld[23],pipe0_wb_vld[23]};
+assign preg24_wb_vld[3:0] = {pipe8_wb_vld[24],pipe3_wb_vld[24],pipe1_wb_vld[24],pipe0_wb_vld[24]};
+assign preg25_wb_vld[3:0] = {pipe8_wb_vld[25],pipe3_wb_vld[25],pipe1_wb_vld[25],pipe0_wb_vld[25]};
+assign preg26_wb_vld[3:0] = {pipe8_wb_vld[26],pipe3_wb_vld[26],pipe1_wb_vld[26],pipe0_wb_vld[26]};
+assign preg27_wb_vld[3:0] = {pipe8_wb_vld[27],pipe3_wb_vld[27],pipe1_wb_vld[27],pipe0_wb_vld[27]};
+assign preg28_wb_vld[3:0] = {pipe8_wb_vld[28],pipe3_wb_vld[28],pipe1_wb_vld[28],pipe0_wb_vld[28]};
+assign preg29_wb_vld[3:0] = {pipe8_wb_vld[29],pipe3_wb_vld[29],pipe1_wb_vld[29],pipe0_wb_vld[29]};
+assign preg30_wb_vld[3:0] = {pipe8_wb_vld[30],pipe3_wb_vld[30],pipe1_wb_vld[30],pipe0_wb_vld[30]};
+assign preg31_wb_vld[3:0] = {pipe8_wb_vld[31],pipe3_wb_vld[31],pipe1_wb_vld[31],pipe0_wb_vld[31]};
+assign preg32_wb_vld[3:0] = {pipe8_wb_vld[32],pipe3_wb_vld[32],pipe1_wb_vld[32],pipe0_wb_vld[32]};
+assign preg33_wb_vld[3:0] = {pipe8_wb_vld[33],pipe3_wb_vld[33],pipe1_wb_vld[33],pipe0_wb_vld[33]};
+assign preg34_wb_vld[3:0] = {pipe8_wb_vld[34],pipe3_wb_vld[34],pipe1_wb_vld[34],pipe0_wb_vld[34]};
+assign preg35_wb_vld[3:0] = {pipe8_wb_vld[35],pipe3_wb_vld[35],pipe1_wb_vld[35],pipe0_wb_vld[35]};
+assign preg36_wb_vld[3:0] = {pipe8_wb_vld[36],pipe3_wb_vld[36],pipe1_wb_vld[36],pipe0_wb_vld[36]};
+assign preg37_wb_vld[3:0] = {pipe8_wb_vld[37],pipe3_wb_vld[37],pipe1_wb_vld[37],pipe0_wb_vld[37]};
+assign preg38_wb_vld[3:0] = {pipe8_wb_vld[38],pipe3_wb_vld[38],pipe1_wb_vld[38],pipe0_wb_vld[38]};
+assign preg39_wb_vld[3:0] = {pipe8_wb_vld[39],pipe3_wb_vld[39],pipe1_wb_vld[39],pipe0_wb_vld[39]};
+assign preg40_wb_vld[3:0] = {pipe8_wb_vld[40],pipe3_wb_vld[40],pipe1_wb_vld[40],pipe0_wb_vld[40]};
+assign preg41_wb_vld[3:0] = {pipe8_wb_vld[41],pipe3_wb_vld[41],pipe1_wb_vld[41],pipe0_wb_vld[41]};
+assign preg42_wb_vld[3:0] = {pipe8_wb_vld[42],pipe3_wb_vld[42],pipe1_wb_vld[42],pipe0_wb_vld[42]};
+assign preg43_wb_vld[3:0] = {pipe8_wb_vld[43],pipe3_wb_vld[43],pipe1_wb_vld[43],pipe0_wb_vld[43]};
+assign preg44_wb_vld[3:0] = {pipe8_wb_vld[44],pipe3_wb_vld[44],pipe1_wb_vld[44],pipe0_wb_vld[44]};
+assign preg45_wb_vld[3:0] = {pipe8_wb_vld[45],pipe3_wb_vld[45],pipe1_wb_vld[45],pipe0_wb_vld[45]};
+assign preg46_wb_vld[3:0] = {pipe8_wb_vld[46],pipe3_wb_vld[46],pipe1_wb_vld[46],pipe0_wb_vld[46]};
+assign preg47_wb_vld[3:0] = {pipe8_wb_vld[47],pipe3_wb_vld[47],pipe1_wb_vld[47],pipe0_wb_vld[47]};
+assign preg48_wb_vld[3:0] = {pipe8_wb_vld[48],pipe3_wb_vld[48],pipe1_wb_vld[48],pipe0_wb_vld[48]};
+assign preg49_wb_vld[3:0] = {pipe8_wb_vld[49],pipe3_wb_vld[49],pipe1_wb_vld[49],pipe0_wb_vld[49]};
+assign preg50_wb_vld[3:0] = {pipe8_wb_vld[50],pipe3_wb_vld[50],pipe1_wb_vld[50],pipe0_wb_vld[50]};
+assign preg51_wb_vld[3:0] = {pipe8_wb_vld[51],pipe3_wb_vld[51],pipe1_wb_vld[51],pipe0_wb_vld[51]};
+assign preg52_wb_vld[3:0] = {pipe8_wb_vld[52],pipe3_wb_vld[52],pipe1_wb_vld[52],pipe0_wb_vld[52]};
+assign preg53_wb_vld[3:0] = {pipe8_wb_vld[53],pipe3_wb_vld[53],pipe1_wb_vld[53],pipe0_wb_vld[53]};
+assign preg54_wb_vld[3:0] = {pipe8_wb_vld[54],pipe3_wb_vld[54],pipe1_wb_vld[54],pipe0_wb_vld[54]};
+assign preg55_wb_vld[3:0] = {pipe8_wb_vld[55],pipe3_wb_vld[55],pipe1_wb_vld[55],pipe0_wb_vld[55]};
+assign preg56_wb_vld[3:0] = {pipe8_wb_vld[56],pipe3_wb_vld[56],pipe1_wb_vld[56],pipe0_wb_vld[56]};
+assign preg57_wb_vld[3:0] = {pipe8_wb_vld[57],pipe3_wb_vld[57],pipe1_wb_vld[57],pipe0_wb_vld[57]};
+assign preg58_wb_vld[3:0] = {pipe8_wb_vld[58],pipe3_wb_vld[58],pipe1_wb_vld[58],pipe0_wb_vld[58]};
+assign preg59_wb_vld[3:0] = {pipe8_wb_vld[59],pipe3_wb_vld[59],pipe1_wb_vld[59],pipe0_wb_vld[59]};
+assign preg60_wb_vld[3:0] = {pipe8_wb_vld[60],pipe3_wb_vld[60],pipe1_wb_vld[60],pipe0_wb_vld[60]};
+assign preg61_wb_vld[3:0] = {pipe8_wb_vld[61],pipe3_wb_vld[61],pipe1_wb_vld[61],pipe0_wb_vld[61]};
+assign preg62_wb_vld[3:0] = {pipe8_wb_vld[62],pipe3_wb_vld[62],pipe1_wb_vld[62],pipe0_wb_vld[62]};
+assign preg63_wb_vld[3:0] = {pipe8_wb_vld[63],pipe3_wb_vld[63],pipe1_wb_vld[63],pipe0_wb_vld[63]};
+assign preg64_wb_vld[3:0] = {pipe8_wb_vld[64],pipe3_wb_vld[64],pipe1_wb_vld[64],pipe0_wb_vld[64]};
+assign preg65_wb_vld[3:0] = {pipe8_wb_vld[65],pipe3_wb_vld[65],pipe1_wb_vld[65],pipe0_wb_vld[65]};
+assign preg66_wb_vld[3:0] = {pipe8_wb_vld[66],pipe3_wb_vld[66],pipe1_wb_vld[66],pipe0_wb_vld[66]};
+assign preg67_wb_vld[3:0] = {pipe8_wb_vld[67],pipe3_wb_vld[67],pipe1_wb_vld[67],pipe0_wb_vld[67]};
+assign preg68_wb_vld[3:0] = {pipe8_wb_vld[68],pipe3_wb_vld[68],pipe1_wb_vld[68],pipe0_wb_vld[68]};
+assign preg69_wb_vld[3:0] = {pipe8_wb_vld[69],pipe3_wb_vld[69],pipe1_wb_vld[69],pipe0_wb_vld[69]};
+assign preg70_wb_vld[3:0] = {pipe8_wb_vld[70],pipe3_wb_vld[70],pipe1_wb_vld[70],pipe0_wb_vld[70]};
+assign preg71_wb_vld[3:0] = {pipe8_wb_vld[71],pipe3_wb_vld[71],pipe1_wb_vld[71],pipe0_wb_vld[71]};
+assign preg72_wb_vld[3:0] = {pipe8_wb_vld[72],pipe3_wb_vld[72],pipe1_wb_vld[72],pipe0_wb_vld[72]};
+assign preg73_wb_vld[3:0] = {pipe8_wb_vld[73],pipe3_wb_vld[73],pipe1_wb_vld[73],pipe0_wb_vld[73]};
+assign preg74_wb_vld[3:0] = {pipe8_wb_vld[74],pipe3_wb_vld[74],pipe1_wb_vld[74],pipe0_wb_vld[74]};
+assign preg75_wb_vld[3:0] = {pipe8_wb_vld[75],pipe3_wb_vld[75],pipe1_wb_vld[75],pipe0_wb_vld[75]};
+assign preg76_wb_vld[3:0] = {pipe8_wb_vld[76],pipe3_wb_vld[76],pipe1_wb_vld[76],pipe0_wb_vld[76]};
+assign preg77_wb_vld[3:0] = {pipe8_wb_vld[77],pipe3_wb_vld[77],pipe1_wb_vld[77],pipe0_wb_vld[77]};
+assign preg78_wb_vld[3:0] = {pipe8_wb_vld[78],pipe3_wb_vld[78],pipe1_wb_vld[78],pipe0_wb_vld[78]};
+assign preg79_wb_vld[3:0] = {pipe8_wb_vld[79],pipe3_wb_vld[79],pipe1_wb_vld[79],pipe0_wb_vld[79]};
+assign preg80_wb_vld[3:0] = {pipe8_wb_vld[80],pipe3_wb_vld[80],pipe1_wb_vld[80],pipe0_wb_vld[80]};
+assign preg81_wb_vld[3:0] = {pipe8_wb_vld[81],pipe3_wb_vld[81],pipe1_wb_vld[81],pipe0_wb_vld[81]};
+assign preg82_wb_vld[3:0] = {pipe8_wb_vld[82],pipe3_wb_vld[82],pipe1_wb_vld[82],pipe0_wb_vld[82]};
+assign preg83_wb_vld[3:0] = {pipe8_wb_vld[83],pipe3_wb_vld[83],pipe1_wb_vld[83],pipe0_wb_vld[83]};
+assign preg84_wb_vld[3:0] = {pipe8_wb_vld[84],pipe3_wb_vld[84],pipe1_wb_vld[84],pipe0_wb_vld[84]};
+assign preg85_wb_vld[3:0] = {pipe8_wb_vld[85],pipe3_wb_vld[85],pipe1_wb_vld[85],pipe0_wb_vld[85]};
+assign preg86_wb_vld[3:0] = {pipe8_wb_vld[86],pipe3_wb_vld[86],pipe1_wb_vld[86],pipe0_wb_vld[86]};
+assign preg87_wb_vld[3:0] = {pipe8_wb_vld[87],pipe3_wb_vld[87],pipe1_wb_vld[87],pipe0_wb_vld[87]};
+assign preg88_wb_vld[3:0] = {pipe8_wb_vld[88],pipe3_wb_vld[88],pipe1_wb_vld[88],pipe0_wb_vld[88]};
+assign preg89_wb_vld[3:0] = {pipe8_wb_vld[89],pipe3_wb_vld[89],pipe1_wb_vld[89],pipe0_wb_vld[89]};
+assign preg90_wb_vld[3:0] = {pipe8_wb_vld[90],pipe3_wb_vld[90],pipe1_wb_vld[90],pipe0_wb_vld[90]};
+assign preg91_wb_vld[3:0] = {pipe8_wb_vld[91],pipe3_wb_vld[91],pipe1_wb_vld[91],pipe0_wb_vld[91]};
+assign preg92_wb_vld[3:0] = {pipe8_wb_vld[92],pipe3_wb_vld[92],pipe1_wb_vld[92],pipe0_wb_vld[92]};
+assign preg93_wb_vld[3:0] = {pipe8_wb_vld[93],pipe3_wb_vld[93],pipe1_wb_vld[93],pipe0_wb_vld[93]};
+assign preg94_wb_vld[3:0] = {pipe8_wb_vld[94],pipe3_wb_vld[94],pipe1_wb_vld[94],pipe0_wb_vld[94]};
+assign preg95_wb_vld[3:0] = {pipe8_wb_vld[95],pipe3_wb_vld[95],pipe1_wb_vld[95],pipe0_wb_vld[95]};
 
 //==========================================================
 //                       Write Port 
@@ -1805,7 +1912,7 @@ assign idu_had_wb_vld = rtu_yy_xx_dbgon
                         && (iu_idu_ex2_pipe0_wb_preg_vld
                          || iu_idu_ex2_pipe1_wb_preg_vld
                          || lsu_idu_wb_pipe3_wb_preg_vld);
-assign idu_had_wb_data[63:0] =
+assign idu_had_wb_data[63:0] = // TODO: ? 不会同时写回导致多个数据混合?
            {64{iu_idu_ex2_pipe0_wb_preg_vld}} & iu_idu_ex2_pipe0_wb_preg_data[63:0]
          | {64{iu_idu_ex2_pipe1_wb_preg_vld}} & iu_idu_ex2_pipe1_wb_preg_data[63:0]
          | {64{lsu_idu_wb_pipe3_wb_preg_vld}} & lsu_idu_wb_pipe3_wb_preg_data[63:0];

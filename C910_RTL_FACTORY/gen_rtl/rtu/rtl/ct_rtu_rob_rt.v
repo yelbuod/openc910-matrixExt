@@ -245,8 +245,8 @@ module ct_rtu_rob_rt(
   vfpu_rtu_pipe6_iid,
   vfpu_rtu_pipe7_cmplt,
   vfpu_rtu_pipe7_iid,
-  matsubsys_rtu_pipe8_cmplt,
-  matsubsys_rtu_pipe8_iid
+  mat_rtu_pipe8_cmplt,
+  mat_rtu_pipe8_iid
 );
 
 // &Ports; @29
@@ -324,8 +324,8 @@ input           vfpu_rtu_pipe6_cmplt;
 input   [6 :0]  vfpu_rtu_pipe6_iid;                
 input           vfpu_rtu_pipe7_cmplt;              
 input   [6 :0]  vfpu_rtu_pipe7_iid;                
-input           matsubsys_rtu_pipe8_cmplt;
-input   [6 :0]  matsubsys_rtu_pipe8_iid;
+input           mat_rtu_pipe8_cmplt;
+input   [6 :0]  mat_rtu_pipe8_iid;
 output          retire_entry0_updt_gateclk_vld;    
 output          retire_entry0_updt_vld;            
 output          retire_entry1_updt_vld;            
@@ -965,8 +965,8 @@ wire            vfpu_rtu_pipe6_cmplt;
 wire    [6 :0]  vfpu_rtu_pipe6_iid;                
 wire            vfpu_rtu_pipe7_cmplt;              
 wire    [6 :0]  vfpu_rtu_pipe7_iid;                
-wire            matsubsys_rtu_pipe8_cmplt;
-wire    [6 :0]  matsubsys_rtu_pipe8_iid;
+wire            mat_rtu_pipe8_cmplt;
+wire    [6 :0]  mat_rtu_pipe8_iid;
 
 
 //==========================================================
@@ -1051,9 +1051,9 @@ assign rob_read0_pipe6_cmplt = vfpu_rtu_pipe6_cmplt
 assign rob_read0_pipe7_cmplt = vfpu_rtu_pipe7_cmplt
                                && (rob_read0_iid[6:0]
                                    == vfpu_rtu_pipe7_iid[6:0]);
-assign rob_read0_pipe8_cmplt = matsubsys_rtu_pipe8_cmplt
+assign rob_read0_pipe8_cmplt = mat_rtu_pipe8_cmplt
                                && (rob_read0_iid[6:0]
-                                   == matsubsys_rtu_pipe8_iid[6:0]);
+                                   == mat_rtu_pipe8_iid[6:0]);
 
 assign rob_read1_pipe0_cmplt = iu_rtu_pipe0_cmplt
                                && (rob_read1_iid[6:0]
@@ -1076,9 +1076,9 @@ assign rob_read1_pipe6_cmplt = vfpu_rtu_pipe6_cmplt
 assign rob_read1_pipe7_cmplt = vfpu_rtu_pipe7_cmplt
                                && (rob_read1_iid[6:0]
                                    == vfpu_rtu_pipe7_iid[6:0]);
-assign rob_read1_pipe8_cmplt = matsubsys_rtu_pipe8_cmplt
+assign rob_read1_pipe8_cmplt = mat_rtu_pipe8_cmplt
                                && (rob_read1_iid[6:0]
-                                   == matsubsys_rtu_pipe8_iid[6:0]);
+                                   == mat_rtu_pipe8_iid[6:0]);
 
 assign rob_read2_pipe0_cmplt = iu_rtu_pipe0_cmplt
                                && (rob_read2_iid[6:0]
@@ -1101,9 +1101,9 @@ assign rob_read2_pipe6_cmplt = vfpu_rtu_pipe6_cmplt
 assign rob_read2_pipe7_cmplt = vfpu_rtu_pipe7_cmplt
                                && (rob_read2_iid[6:0]
                                    == vfpu_rtu_pipe7_iid[6:0]);
-assign rob_read2_pipe8_cmplt = matsubsys_rtu_pipe8_cmplt
+assign rob_read2_pipe8_cmplt = mat_rtu_pipe8_cmplt
                                && (rob_read2_iid[6:0]
-                                   == matsubsys_rtu_pipe8_iid[6:0]);
+                                   == mat_rtu_pipe8_iid[6:0]);
 // TODO: 暂时假设Matrix指令(pipe8)不会产生异常
 assign rob_read0_pipe0_abnormal = rob_read0_pipe0_cmplt
                                   && iu_rtu_pipe0_abnormal;

@@ -2698,6 +2698,13 @@ wire [3 :0] idu_mat_rf_pipe8_cfg_meta;
 wire        idu_mat_rf_pipe8_cfg_dst_vld;
 wire [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
 wire [63:0] idu_mat_rf_pipe8_cfg_src0;
+// from Matrix Unit Cfg WB to IDU 
+wire        mat_cfg_idu_ex1_pipe8_wb_preg_vld    ;
+wire [ 6:0] mat_cfg_idu_ex1_pipe8_wb_preg        ;
+wire [95:0] mat_cfg_idu_ex1_pipe8_wb_preg_expand ;
+wire [63:0] mat_cfg_idu_ex1_pipe8_wb_preg_data   ;
+wire [63:0] mat_cfg_idu_ex1_pipe8_sync_xmsize_csr;
+
 //==========================================================
 //  Instance ct_idu_top sub module 
 //==========================================================
@@ -3091,7 +3098,7 @@ ct_idu_top  x_ct_idu_top (
   .idu_vfpu_rf_pipe7_srcv1_fr              (idu_vfpu_rf_pipe7_srcv1_fr             ),
   .idu_vfpu_rf_pipe7_srcv2_fr              (idu_vfpu_rf_pipe7_srcv2_fr             ),
   .idu_vfpu_rf_pipe7_vmla_type             (idu_vfpu_rf_pipe7_vmla_type            ),
-  // TODO: output to Matrix Unit
+  // output to Matrix Unit
   .idu_mat_rf_alu_sel                      (idu_mat_rf_alu_sel                     ),
   .idu_mat_rf_alu_gateclk_sel              (idu_mat_rf_alu_gateclk_sel             ),
   .idu_mat_rf_lsu_sel                      (idu_mat_rf_lsu_sel                     ),
@@ -3179,6 +3186,10 @@ ct_idu_top  x_ct_idu_top (
   .iu_idu_pcfifo_dis_inst3_pid             (iu_idu_pcfifo_dis_inst3_pid            ),
   .iu_idu_pipe1_mla_src2_no_fwd            (iu_idu_pipe1_mla_src2_no_fwd           ),
   .iu_yy_xx_cancel                         (iu_yy_xx_cancel                        ),
+  .mat_cfg_idu_ex1_pipe8_wb_preg           (mat_cfg_idu_ex1_pipe8_wb_preg          ),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_data      (mat_cfg_idu_ex1_pipe8_wb_preg_data     ),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_expand    (mat_cfg_idu_ex1_pipe8_wb_preg_expand   ),
+  .mat_cfg_idu_ex1_pipe8_wb_preg_vld       (mat_cfg_idu_ex1_pipe8_wb_preg_vld      ),
   .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
   .lsu_idu_ag_pipe3_preg_dup0              (lsu_idu_ag_pipe3_preg_dup0             ),
   .lsu_idu_ag_pipe3_preg_dup1              (lsu_idu_ag_pipe3_preg_dup1             ),
@@ -3504,6 +3515,55 @@ ct_idu_top  x_ct_idu_top (
 );
 
 // &Connect(.cpurst_b   (idu_rst_b)); @52
+
+//==========================================================
+//  Instance ct_mat_subsystem_top sub module 
+//==========================================================
+
+  wire cp0_mat_icg_en;
+  assign cp0_mat_icg_en = cp0_iu_icg_en; // TODO: 暂时借用
+
+  wire        mat_cfg_rtu_ex1_pipe8_wb_preg_vld    ;
+  wire [95:0] mat_cfg_rtu_ex1_pipe8_wb_preg_expand ;
+  wire        mat_rtu_pipe8_cmplt                  ;
+  wire [ 6:0] mat_rtu_pipe8_iid                    ;
+
+  ct_mat_subsystem_top #(.RLEN(512)) i_ct_mat_subsystem_top (
+    .cpurst_b                             (idu_rst_b                            ),
+    .forever_cpuclk                       (forever_cpuclk                       ),
+    .cp0_mat_icg_en                       (cp0_mat_icg_en                       ),
+    .cp0_yy_clk_en                        (cp0_yy_clk_en                        ),
+    .pad_yy_icg_scan_en                   (pad_yy_icg_scan_en                   ),
+    .rtu_yy_xx_flush                      (rtu_yy_xx_flush                      ),
+    .idu_mat_rf_pipe8_iid                 (idu_mat_rf_pipe8_iid                 ),
+    .idu_mat_rf_alu_sel                   (idu_mat_rf_alu_sel                   ),
+    .idu_mat_rf_alu_gateclk_sel           (idu_mat_rf_alu_gateclk_sel           ),
+    .idu_mat_rf_pipe8_alu_meta            (idu_mat_rf_pipe8_alu_meta            ),
+    .idu_mat_rf_pipe8_alu_src0_vld        (idu_mat_rf_pipe8_alu_src0_vld        ),
+    .idu_mat_rf_pipe8_alu_src0            (idu_mat_rf_pipe8_alu_src0            ),
+    .idu_mat_rf_lsu_sel                   (idu_mat_rf_lsu_sel                   ),
+    .idu_mat_rf_lsu_gateclk_sel           (idu_mat_rf_lsu_gateclk_sel           ),
+    .idu_mat_rf_pipe8_lsu_meta            (idu_mat_rf_pipe8_lsu_meta            ),
+    .idu_mat_rf_pipe8_lsu_src0            (idu_mat_rf_pipe8_lsu_src0            ),
+    .idu_mat_rf_pipe8_lsu_src1_vld        (idu_mat_rf_pipe8_lsu_src1_vld        ),
+    .idu_mat_rf_pipe8_lsu_src1            (idu_mat_rf_pipe8_lsu_src1            ),
+    .idu_mat_rf_cfg_sel                   (idu_mat_rf_cfg_sel                   ),
+    .idu_mat_rf_cfg_gateclk_sel           (idu_mat_rf_cfg_gateclk_sel           ),
+    .idu_mat_rf_pipe8_cfg_meta            (idu_mat_rf_pipe8_cfg_meta            ),
+    .idu_mat_rf_pipe8_cfg_dst_vld         (idu_mat_rf_pipe8_cfg_dst_vld         ),
+    .idu_mat_rf_pipe8_cfg_dst_preg        (idu_mat_rf_pipe8_cfg_dst_preg        ),
+    .idu_mat_rf_pipe8_cfg_src0            (idu_mat_rf_pipe8_cfg_src0            ),
+    .mat_cfg_idu_ex1_pipe8_wb_preg_vld    (mat_cfg_idu_ex1_pipe8_wb_preg_vld    ),
+    .mat_cfg_idu_ex1_pipe8_wb_preg        (mat_cfg_idu_ex1_pipe8_wb_preg        ),
+    .mat_cfg_idu_ex1_pipe8_wb_preg_expand (mat_cfg_idu_ex1_pipe8_wb_preg_expand ),
+    .mat_cfg_idu_ex1_pipe8_wb_preg_data   (mat_cfg_idu_ex1_pipe8_wb_preg_data   ),
+    .mat_cfg_rtu_ex1_pipe8_wb_preg_vld    (mat_cfg_rtu_ex1_pipe8_wb_preg_vld    ),
+    .mat_cfg_rtu_ex1_pipe8_wb_preg_expand (mat_cfg_rtu_ex1_pipe8_wb_preg_expand ),
+    .mat_rtu_pipe8_cmplt                  (mat_rtu_pipe8_cmplt                  ),
+    .mat_rtu_pipe8_iid                    (mat_rtu_pipe8_iid                    ),
+    .mat_cfg_idu_ex1_pipe8_sync_xmsize_csr(mat_cfg_idu_ex1_pipe8_sync_xmsize_csr)
+  );
+
 
 //==========================================================
 //  Instance ct_iu_top sub module 
@@ -5203,7 +5263,11 @@ ct_rtu_top  x_ct_rtu_top (
   .vfpu_rtu_pipe6_cmplt                 (vfpu_rtu_pipe6_cmplt                ),
   .vfpu_rtu_pipe6_iid                   (vfpu_rtu_pipe6_iid                  ),
   .vfpu_rtu_pipe7_cmplt                 (vfpu_rtu_pipe7_cmplt                ),
-  .vfpu_rtu_pipe7_iid                   (vfpu_rtu_pipe7_iid                  )
+  .vfpu_rtu_pipe7_iid                   (vfpu_rtu_pipe7_iid                  ),
+  .mat_cfg_rtu_ex1_pipe8_wb_preg_expand (mat_cfg_rtu_ex1_pipe8_wb_preg_expand),
+  .mat_cfg_rtu_ex1_pipe8_wb_preg_vld    (mat_cfg_rtu_ex1_pipe8_wb_preg_vld   ),
+  .mat_rtu_pipe8_cmplt                  (mat_rtu_pipe8_cmplt                 ),
+  .mat_rtu_pipe8_iid                    (mat_rtu_pipe8_iid                   )
 );
 
 // &Connect(.cpurst_b   (idu_rst_b)); @88

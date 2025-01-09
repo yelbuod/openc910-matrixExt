@@ -26,6 +26,7 @@ module ct_idu_rf_prf_gated_preg#(parameter IDX = 0)(
   iu_idu_ex2_pipe0_wb_preg_data,
   iu_idu_ex2_pipe1_wb_preg_data,
   lsu_idu_wb_pipe3_wb_preg_data,
+  mat_cfg_idu_ex1_pipe8_wb_preg_data,
   pad_yy_icg_scan_en,
   x_reg_dout,
   x_wb_vld
@@ -38,8 +39,9 @@ input           forever_cpuclk;
 input   [63:0]  iu_idu_ex2_pipe0_wb_preg_data; 
 input   [63:0]  iu_idu_ex2_pipe1_wb_preg_data; 
 input   [63:0]  lsu_idu_wb_pipe3_wb_preg_data; 
+input   [63:0]  mat_cfg_idu_ex1_pipe8_wb_preg_data;
 input           pad_yy_icg_scan_en;           
-input   [2 :0]  x_wb_vld;                     
+input   [3 :0]  x_wb_vld;                     
 output  [63:0]  x_reg_dout;                   
 
 // &Regs; @29
@@ -53,12 +55,13 @@ wire            forever_cpuclk;
 wire    [63:0]  iu_idu_ex2_pipe0_wb_preg_data; 
 wire    [63:0]  iu_idu_ex2_pipe1_wb_preg_data; 
 wire    [63:0]  lsu_idu_wb_pipe3_wb_preg_data; 
+wire    [63:0]  mat_cfg_idu_ex1_pipe8_wb_preg_data;
 wire            pad_yy_icg_scan_en;           
 wire            preg_clk;                     
 wire            preg_clk_en;                  
 wire            write_en;                     
 wire    [63:0]  x_reg_dout;                   
-wire    [2 :0]  x_wb_vld;                     
+wire    [3 :0]  x_wb_vld;                     
 
 
 
@@ -87,17 +90,19 @@ gated_clk_cell  x_preg_gated_clk (
 //==========================================================
 //                     Write Port
 //==========================================================
-assign write_en = |x_wb_vld[2:0];
+assign write_en = |x_wb_vld[3:0];
 // &CombBeg; @49
 always @( iu_idu_ex2_pipe0_wb_preg_data[63:0]
-       or x_wb_vld[2:0]
+       or x_wb_vld[3:0]
        or lsu_idu_wb_pipe3_wb_preg_data[63:0]
+       or mat_cfg_idu_ex1_pipe8_wb_preg_data[63:0]
        or iu_idu_ex2_pipe1_wb_preg_data[63:0])
 begin
-  case (x_wb_vld[2:0])
-    3'b001 : write_data[63:0] = iu_idu_ex2_pipe0_wb_preg_data[63:0];
-    3'b010 : write_data[63:0] = iu_idu_ex2_pipe1_wb_preg_data[63:0];
-    3'b100 : write_data[63:0] = lsu_idu_wb_pipe3_wb_preg_data[63:0];
+  case (x_wb_vld[3:0])
+    4'b0001 : write_data[63:0] = iu_idu_ex2_pipe0_wb_preg_data[63:0];
+    4'b0010 : write_data[63:0] = iu_idu_ex2_pipe1_wb_preg_data[63:0];
+    4'b0100 : write_data[63:0] = lsu_idu_wb_pipe3_wb_preg_data[63:0];
+    4'b1000 : write_data[63:0] = mat_cfg_idu_ex1_pipe8_wb_preg_data[63:0];
     default: write_data[63:0] = {64{1'bx}};
   endcase
 // &CombEnd; @56

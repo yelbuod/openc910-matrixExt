@@ -52,6 +52,8 @@ module ct_rtu_pst_preg(
   iu_rtu_ex2_pipe1_wb_preg_vld,
   lsu_rtu_wb_pipe3_wb_preg_expand,
   lsu_rtu_wb_pipe3_wb_preg_vld,
+  mat_cfg_rtu_ex1_pipe8_wb_preg_expand,
+  mat_cfg_rtu_ex1_pipe8_wb_preg_vld,
   pad_yy_icg_scan_en,
   pst_retire_retired_reg_wb,
   pst_retired_ereg_wb,
@@ -120,6 +122,8 @@ input   [95 :0]  iu_rtu_ex2_pipe1_wb_preg_expand;
 input            iu_rtu_ex2_pipe1_wb_preg_vld;       
 input   [95 :0]  lsu_rtu_wb_pipe3_wb_preg_expand;    
 input            lsu_rtu_wb_pipe3_wb_preg_vld;       
+input   [95 :0]  mat_cfg_rtu_ex1_pipe8_wb_preg_expand;
+input            mat_cfg_rtu_ex1_pipe8_wb_preg_vld;
 input            pad_yy_icg_scan_en;                 
 input            pst_retired_ereg_wb;                
 input            pst_retired_freg_wb;                
@@ -234,6 +238,8 @@ wire    [95 :0]  iu_rtu_ex2_pipe1_wb_preg_expand;
 wire             iu_rtu_ex2_pipe1_wb_preg_vld;       
 wire    [95 :0]  lsu_rtu_wb_pipe3_wb_preg_expand;    
 wire             lsu_rtu_wb_pipe3_wb_preg_vld;       
+wire    [95 :0]  mat_cfg_rtu_ex1_pipe8_wb_preg_expand;
+wire             mat_cfg_rtu_ex1_pipe8_wb_preg_vld;
 wire             pad_yy_icg_scan_en;                 
 wire    [3  :0]  preg0_create_vld;                   
 wire             preg0_cur_state_dealloc;            
@@ -6131,7 +6137,8 @@ assign preg95_create_vld[3:0] = {d3_preg[95],d2_preg[95],d1_preg[95],d0_preg[95]
 assign wb_vld[95:0] =
     {96{iu_rtu_ex2_pipe0_wb_preg_vld}} & iu_rtu_ex2_pipe0_wb_preg_expand[95:0]
   | {96{iu_rtu_ex2_pipe1_wb_preg_vld}} & iu_rtu_ex2_pipe1_wb_preg_expand[95:0]
-  | {96{lsu_rtu_wb_pipe3_wb_preg_vld}} & lsu_rtu_wb_pipe3_wb_preg_expand[95:0];
+  | {96{lsu_rtu_wb_pipe3_wb_preg_vld}} & lsu_rtu_wb_pipe3_wb_preg_expand[95:0]
+  | {96{mat_cfg_rtu_ex1_pipe8_wb_preg_vld}} & mat_cfg_rtu_ex1_pipe8_wb_preg_expand[95:0];
 
 assign preg0_wb_vld  = wb_vld[0];
 assign preg1_wb_vld  = wb_vld[1];

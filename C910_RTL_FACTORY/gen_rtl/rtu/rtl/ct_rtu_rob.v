@@ -318,8 +318,8 @@ module ct_rtu_rob(
   vfpu_rtu_pipe6_iid,
   vfpu_rtu_pipe7_cmplt,
   vfpu_rtu_pipe7_iid,
-  matsubsys_rtu_pipe8_cmplt,
-  matsubsys_rtu_pipe8_iid
+  mat_rtu_pipe8_cmplt,
+  mat_rtu_pipe8_iid
 );
 
 // &Ports; @29
@@ -439,8 +439,8 @@ input           vfpu_rtu_pipe6_cmplt;
 input   [6 :0]  vfpu_rtu_pipe6_iid;                  
 input           vfpu_rtu_pipe7_cmplt;                
 input   [6 :0]  vfpu_rtu_pipe7_iid;                  
-input           matsubsys_rtu_pipe8_cmplt;
-input   [6 :0]  matsubsys_rtu_pipe8_iid;
+input           mat_rtu_pipe8_cmplt;
+input   [6 :0]  mat_rtu_pipe8_iid;
 output          rob_pst_retire_inst0_gateclk_vld;    
 output  [6 :0]  rob_pst_retire_inst0_iid;            
 output  [6 :0]  rob_pst_retire_inst0_iid_updt_val;   
@@ -1604,10 +1604,10 @@ wire            vfpu_rtu_pipe7_cmplt;
 wire    [6 :0]  vfpu_rtu_pipe7_iid;                  
 wire    [5 :0]  vfpu_rtu_pipe7_iid_lsb_6;            
 wire    [63:0]  vfpu_rtu_pipe7_iid_lsb_6_expand;     
-wire            matsubsys_rtu_pipe8_cmplt;
-wire    [6 :0]  matsubsys_rtu_pipe8_iid;
-wire    [5 :0]  matsubsys_rtu_pipe8_iid_lsb_6;              
-wire    [63:0]  matsubsys_rtu_pipe8_iid_lsb_6_expand;       
+wire            mat_rtu_pipe8_cmplt;
+wire    [6 :0]  mat_rtu_pipe8_iid;
+wire    [5 :0]  mat_rtu_pipe8_iid_lsb_6;              
+wire    [63:0]  mat_rtu_pipe8_iid_lsb_6_expand;       
 
 
 //==========================================================
@@ -4602,7 +4602,7 @@ assign lsu_rtu_wb_pipe3_iid_lsb_6[5:0] = lsu_rtu_wb_pipe3_iid[5:0];
 assign lsu_rtu_wb_pipe4_iid_lsb_6[5:0] = lsu_rtu_wb_pipe4_iid[5:0];
 assign vfpu_rtu_pipe6_iid_lsb_6[5:0]   = vfpu_rtu_pipe6_iid[5:0];
 assign vfpu_rtu_pipe7_iid_lsb_6[5:0]   = vfpu_rtu_pipe7_iid[5:0];
-assign matsubsys_rtu_pipe8_iid_lsb_6[5:0] = matsubsys_rtu_pipe8_iid[5:0]; // 2^6=64项ROB, 最高位是位置位
+assign mat_rtu_pipe8_iid_lsb_6[5:0]    = mat_rtu_pipe8_iid[5:0]; // 2^6=64项ROB, 最高位是位置位
 // &ConnRule(s/^x_num/iu_rtu_pipe0_iid_lsb_6/); @783
 // &Instance("ct_rtu_expand_64","x_ct_rtu_expand_64_iu_rtu_pipe0_iid_lsb_6"); @784
 ct_rtu_expand_64  x_ct_rtu_expand_64_iu_rtu_pipe0_iid_lsb_6 (
@@ -4652,9 +4652,9 @@ ct_rtu_expand_64  x_ct_rtu_expand_64_vfpu_rtu_pipe7_iid_lsb_6 (
   .x_num_expand                    (vfpu_rtu_pipe7_iid_lsb_6_expand)
 );
 
-ct_rtu_expand_64  x_ct_rtu_expand_64_matsubsys_rtu_pipe8_iid_lsb_6 (
-  .x_num                           (matsubsys_rtu_pipe8_iid_lsb_6       ),
-  .x_num_expand                    (matsubsys_rtu_pipe8_iid_lsb_6_expand)
+ct_rtu_expand_64  x_ct_rtu_expand_64_mat_rtu_pipe8_iid_lsb_6 (
+  .x_num                           (mat_rtu_pipe8_iid_lsb_6       ),
+  .x_num_expand                    (mat_rtu_pipe8_iid_lsb_6_expand)
 );
 
 //cbus_cmplt0_vld[63:0]
@@ -4680,8 +4680,8 @@ assign clt6[63:0] = {64{vfpu_rtu_pipe7_cmplt}}
                     & vfpu_rtu_pipe7_iid_lsb_6_expand[63:0];
 
 //cbus_cmplt7_vld[63:0]
-assign clt7[63:0] = {64{matsubsys_rtu_pipe8_cmplt}}
-                    & matsubsys_rtu_pipe8_iid_lsb_6_expand[63:0];
+assign clt7[63:0] = {64{mat_rtu_pipe8_cmplt}}
+                    & mat_rtu_pipe8_iid_lsb_6_expand[63:0];
 
 assign entry0_cmplt_vld[7:0]  = {clt7[0], clt6[0], clt5[0], clt4[0], clt3[0], clt2[0], clt1[0], clt0[0]};
 assign entry1_cmplt_vld[7:0]  = {clt7[1], clt6[1], clt5[1], clt4[1], clt3[1], clt2[1], clt1[1], clt0[1]};
@@ -5778,7 +5778,7 @@ assign read_entry2_create_sel[3:0]   = 4'b1;
 //                Read entry complete port
 //----------------------------------------------------------
 assign read_entry0_cmplt_vld[6:0] =
-  {matsubsys_rtu_pipe8_cmplt && (matsubsys_rtu_pipe8_iid[5:0] == rob_read_entry0_updt_iid[5:0]),
+  {mat_rtu_pipe8_cmplt    && (mat_rtu_pipe8_iid[5:0]    == rob_read_entry0_updt_iid[5:0]),
    vfpu_rtu_pipe7_cmplt   && (vfpu_rtu_pipe7_iid[5:0]   == rob_read_entry0_updt_iid[5:0]),
    vfpu_rtu_pipe6_cmplt   && (vfpu_rtu_pipe6_iid[5:0]   == rob_read_entry0_updt_iid[5:0]),
    lsu_rtu_wb_pipe4_cmplt && (lsu_rtu_wb_pipe4_iid[5:0] == rob_read_entry0_updt_iid[5:0]),
@@ -5788,7 +5788,7 @@ assign read_entry0_cmplt_vld[6:0] =
    iu_rtu_pipe0_cmplt     && (iu_rtu_pipe0_iid[5:0]     == rob_read_entry0_updt_iid[5:0])};
 
 assign read_entry1_cmplt_vld[6:0] =
-  {matsubsys_rtu_pipe8_cmplt && (matsubsys_rtu_pipe8_iid[5:0] == rob_read_entry1_updt_iid[5:0]),
+  {mat_rtu_pipe8_cmplt    && (mat_rtu_pipe8_iid[5:0]    == rob_read_entry1_updt_iid[5:0]),
    vfpu_rtu_pipe7_cmplt   && (vfpu_rtu_pipe7_iid[5:0]   == rob_read_entry1_updt_iid[5:0]),
    vfpu_rtu_pipe6_cmplt   && (vfpu_rtu_pipe6_iid[5:0]   == rob_read_entry1_updt_iid[5:0]),
    lsu_rtu_wb_pipe4_cmplt && (lsu_rtu_wb_pipe4_iid[5:0] == rob_read_entry1_updt_iid[5:0]),
@@ -5798,7 +5798,7 @@ assign read_entry1_cmplt_vld[6:0] =
    iu_rtu_pipe0_cmplt     && (iu_rtu_pipe0_iid[5:0]     == rob_read_entry1_updt_iid[5:0])};
 
 assign read_entry2_cmplt_vld[6:0] =
-  {matsubsys_rtu_pipe8_cmplt && (matsubsys_rtu_pipe8_iid[5:0] == rob_read_entry2_updt_iid[5:0]),
+  {mat_rtu_pipe8_cmplt    && (mat_rtu_pipe8_iid[5:0]    == rob_read_entry2_updt_iid[5:0]),
    vfpu_rtu_pipe7_cmplt   && (vfpu_rtu_pipe7_iid[5:0]   == rob_read_entry2_updt_iid[5:0]),
    vfpu_rtu_pipe6_cmplt   && (vfpu_rtu_pipe6_iid[5:0]   == rob_read_entry2_updt_iid[5:0]),
    lsu_rtu_wb_pipe4_cmplt && (lsu_rtu_wb_pipe4_iid[5:0] == rob_read_entry2_updt_iid[5:0]),
@@ -5807,7 +5807,7 @@ assign read_entry2_cmplt_vld[6:0] =
    iu_rtu_pipe1_cmplt     && (iu_rtu_pipe1_iid[5:0]     == rob_read_entry2_updt_iid[5:0]),
    iu_rtu_pipe0_cmplt     && (iu_rtu_pipe0_iid[5:0]     == rob_read_entry2_updt_iid[5:0])};
 
-assign read_entry_cmplt_gateclk_vld = matsubsys_rtu_pipe8_cmplt
+assign read_entry_cmplt_gateclk_vld = mat_rtu_pipe8_cmplt
                                       || vfpu_rtu_pipe7_cmplt
                                       || vfpu_rtu_pipe6_cmplt
                                       || lsu_rtu_wb_pipe4_cmplt
@@ -6499,8 +6499,8 @@ ct_rtu_rob_rt  x_ct_rtu_rob_rt (
   .vfpu_rtu_pipe6_iid                 (vfpu_rtu_pipe6_iid                ),
   .vfpu_rtu_pipe7_cmplt               (vfpu_rtu_pipe7_cmplt              ),
   .vfpu_rtu_pipe7_iid                 (vfpu_rtu_pipe7_iid                ),
-  .matsubsys_rtu_pipe8_cmplt          (matsubsys_rtu_pipe8_cmplt         ),
-  .matsubsys_rtu_pipe8_iid            (matsubsys_rtu_pipe8_iid           )
+  .mat_rtu_pipe8_cmplt                (mat_rtu_pipe8_cmplt               ),
+  .mat_rtu_pipe8_iid                  (mat_rtu_pipe8_iid                 )
 );
 
 

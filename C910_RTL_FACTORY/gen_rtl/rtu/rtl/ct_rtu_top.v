@@ -466,8 +466,10 @@ module ct_rtu_top(
   vfpu_rtu_pipe6_iid,
   vfpu_rtu_pipe7_cmplt,
   vfpu_rtu_pipe7_iid,
-  matsubsys_rtu_pipe8_cmplt,
-  matsubsys_rtu_pipe8_iid
+  mat_cfg_rtu_ex1_pipe8_wb_preg_expand,
+  mat_cfg_rtu_ex1_pipe8_wb_preg_vld,
+  mat_rtu_pipe8_cmplt,
+  mat_rtu_pipe8_iid
 );
 
 // &Ports; @25
@@ -687,8 +689,10 @@ input            vfpu_rtu_pipe6_cmplt;
 input   [6  :0]  vfpu_rtu_pipe6_iid;                  
 input            vfpu_rtu_pipe7_cmplt;                
 input   [6  :0]  vfpu_rtu_pipe7_iid;                  
-input            matsubsys_rtu_pipe8_cmplt;
-input   [6  :0]  matsubsys_rtu_pipe8_iid;
+input   [95 :0]  mat_cfg_rtu_ex1_pipe8_wb_preg_expand;
+input            mat_cfg_rtu_ex1_pipe8_wb_preg_vld;
+input            mat_rtu_pipe8_cmplt;
+input   [6  :0]  mat_rtu_pipe8_iid;
  // TODO: 写回GPR信号
 output  [63 :0]  rtu_cp0_epc;                         
 output           rtu_cp0_expt_gateclk_vld;            
@@ -1550,8 +1554,10 @@ wire             vfpu_rtu_pipe6_cmplt;
 wire    [6  :0]  vfpu_rtu_pipe6_iid;                  
 wire             vfpu_rtu_pipe7_cmplt;                
 wire    [6  :0]  vfpu_rtu_pipe7_iid;                  
-wire             matsubsys_rtu_pipe8_cmplt;
-wire    [6  :0]  matsubsys_rtu_pipe8_iid;
+wire    [95 :0]  mat_cfg_rtu_ex1_pipe8_wb_preg_expand;
+wire             mat_cfg_rtu_ex1_pipe8_wb_preg_vld;
+wire             mat_rtu_pipe8_cmplt;
+wire    [6  :0]  mat_rtu_pipe8_iid;
 
 
 
@@ -1597,6 +1603,8 @@ ct_rtu_pst_preg  x_ct_rtu_pst_preg (
   .iu_rtu_ex2_pipe1_wb_preg_vld        (iu_rtu_ex2_pipe1_wb_preg_vld       ),
   .lsu_rtu_wb_pipe3_wb_preg_expand     (lsu_rtu_wb_pipe3_wb_preg_expand    ),
   .lsu_rtu_wb_pipe3_wb_preg_vld        (lsu_rtu_wb_pipe3_wb_preg_vld       ),
+  .mat_cfg_rtu_ex1_pipe8_wb_preg_expand(mat_cfg_rtu_ex1_pipe8_wb_preg_expand),
+  .mat_cfg_rtu_ex1_pipe8_wb_preg_vld   (mat_cfg_rtu_ex1_pipe8_wb_preg_vld  ),
   .pad_yy_icg_scan_en                  (pad_yy_icg_scan_en                 ),
   .pst_retire_retired_reg_wb           (pst_retire_retired_reg_wb          ),
   .pst_retired_ereg_wb                 (pst_retired_ereg_wb                ),
@@ -2135,8 +2143,8 @@ ct_rtu_rob  x_ct_rtu_rob (
   .vfpu_rtu_pipe6_iid                   (vfpu_rtu_pipe6_iid                  ),
   .vfpu_rtu_pipe7_cmplt                 (vfpu_rtu_pipe7_cmplt                ),
   .vfpu_rtu_pipe7_iid                   (vfpu_rtu_pipe7_iid                  ),
-  .matsubsys_rtu_pipe8_cmplt            (matsubsys_rtu_pipe8_cmplt           ),
-  .matsubsys_rtu_pipe8_iid              (matsubsys_rtu_pipe8_iid             )
+  .mat_rtu_pipe8_cmplt                  (mat_rtu_pipe8_cmplt                 ),
+  .mat_rtu_pipe8_iid                    (mat_rtu_pipe8_iid                   )
 );
 
 // &Instance("ct_rtu_retire", "x_ct_rtu_retire"); @84
