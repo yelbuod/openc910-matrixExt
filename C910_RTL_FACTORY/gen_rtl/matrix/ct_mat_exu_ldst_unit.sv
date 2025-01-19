@@ -48,7 +48,7 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
   reg        mat_lsu_ex1_src1_vld;
   reg [63:0] mat_lsu_ex1_src1    ;
   // lsu execution info meta
-  reg [1:0] mat_lsu_ex1_mat_op         ;
+  reg [1:0] mat_lsu_ex1_optype         ;
   reg       mat_lsu_ex1_dstm_9_7_vld   ;
   reg [2:0] mat_lsu_ex1_dstm_idx_9_7   ;
   reg       mat_lsu_ex1_srcm2_vld      ;
@@ -100,10 +100,13 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
 //----------------------------------------------------------
 //               Matrix Cfg EX1 Instruction Data
 //----------------------------------------------------------
-  always_ff @(posedge ex1_inst_clk or negedge cpurst_b) begin : proc_mat_alu_ex1_data
+  always_ff @(posedge ex1_inst_clk or negedge cpurst_b) begin : proc_mat_lsu_ex1_data
     if(!cpurst_b) begin
       mat_lsu_ex1_iid[6:0]                          <= 7'b0;
-      mat_lsu_ex1_mat_op[MAT_LSU_OP_TYPE_WIDTH-1:0] <= {MAT_LSU_OP_TYPE_WIDTH{1'b0}};
+      mat_lsu_ex1_src0[63:0]                        <= 64'b0;
+      mat_lsu_ex1_src1_vld                          <= 1'b0;
+      mat_lsu_ex1_src1[63:0]                        <= 64'b0;
+      mat_lsu_ex1_optype[MAT_LSU_OP_TYPE_WIDTH-1:0] <= {MAT_LSU_OP_TYPE_WIDTH{1'b0}};
       mat_lsu_ex1_dstm_9_7_vld                      <= 1'b0;
       mat_lsu_ex1_dstm_idx_9_7[2:0]                 <= 3'b0;
       mat_lsu_ex1_srcm2_vld                         <= 1'b0;
@@ -113,7 +116,10 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
       mat_lsu_ex1_elem_data_width[1:0]              <= 2'b0;
     end else if(idu_mat_rf_lsu_gateclk_sel) begin
       mat_lsu_ex1_iid[6:0]                          <= idu_mat_rf_pipe8_iid[6:0];
-      mat_lsu_ex1_mat_op[MAT_LSU_OP_TYPE_WIDTH-1:0] <= idu_mat_rf_pipe8_lsu_meta[MAT_LSU_OP:MAT_LSU_OP-(MAT_LSU_OP_TYPE_WIDTH-1)] ;
+      mat_lsu_ex1_src0[63:0]                        <= idu_mat_rf_pipe8_lsu_src0[63:0];
+      mat_lsu_ex1_src1_vld                          <= idu_mat_rf_pipe8_lsu_src1_vld;
+      mat_lsu_ex1_src1[63:0]                        <= idu_mat_rf_pipe8_lsu_src1[63:0];
+      mat_lsu_ex1_optype[MAT_LSU_OP_TYPE_WIDTH-1:0] <= idu_mat_rf_pipe8_lsu_meta[MAT_LSU_OP:MAT_LSU_OP-(MAT_LSU_OP_TYPE_WIDTH-1)] ;
       mat_lsu_ex1_dstm_9_7_vld                      <= idu_mat_rf_pipe8_lsu_meta[MAT_LSU_DSTM_VLD]                                ;
       mat_lsu_ex1_dstm_idx_9_7[2:0]                 <= idu_mat_rf_pipe8_lsu_meta[MAT_LSU_DSTM_IDX:MAT_LSU_DSTM_IDX-2]             ;
       mat_lsu_ex1_srcm2_vld                         <= idu_mat_rf_pipe8_lsu_meta[MAT_LSU_SRC2M_VLD]                               ;

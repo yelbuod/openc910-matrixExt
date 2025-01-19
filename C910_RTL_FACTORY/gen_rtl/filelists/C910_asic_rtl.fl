@@ -488,3 +488,8 @@ ${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_idu_is_miq_entry.sv
 ${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_idu_is_miq.sv
 ${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_idu_rf_pipe8_decd.sv
 ${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_idu_top.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_subsystem_top.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_exu_arithmetic_unit.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_exu_config_unit.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_exu_ldst_unit.sv
+ 

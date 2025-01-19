@@ -183,7 +183,7 @@ module ct_idu_rf_pipe8_mat_decd (
         id_srcm2_vld      = 1'b0;
         id_uimm3_vld      = 1'b0;
         id_nf_vld         = 1'b0;
-        case ({id_inst_mat_type, id_inst_func, id_inst_uop, id_size})
+        casez ({id_inst_mat_type, id_inst_func, id_inst_uop, id_size})
             {MAT_CAL, 4'b0000, 3'b000, 1'b0} : // mmov.mm
                 begin
                     id_mat_op         = MAT_CAL_MMOV;

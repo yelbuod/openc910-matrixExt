@@ -3528,7 +3528,7 @@ ct_idu_top  x_ct_idu_top (
   wire        mat_rtu_pipe8_cmplt                  ;
   wire [ 6:0] mat_rtu_pipe8_iid                    ;
 
-  ct_mat_subsystem_top #(.RLEN(512)) i_ct_mat_subsystem_top (
+  ct_mat_subsystem_top #(.RLEN(512)) x_ct_mat_subsystem_top (
     .cpurst_b                             (idu_rst_b                            ),
     .forever_cpuclk                       (forever_cpuclk                       ),
     .cp0_mat_icg_en                       (cp0_mat_icg_en                       ),

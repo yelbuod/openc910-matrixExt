@@ -59,7 +59,7 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
   reg        mat_alu_ex1_src0_vld;
   reg [63:0] mat_alu_ex1_src0    ;
   // alu execute info meta
-  reg [10:0] mat_alu_ex1_mat_op         ;
+  reg [10:0] mat_alu_ex1_optype         ;
   reg        mat_alu_ex1_dstm_17_15_vld ;
   reg [ 2:0] mat_alu_ex1_dstm_idx_17_15 ;
   reg        mat_alu_ex1_srcm1_vld      ;
@@ -118,7 +118,9 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
   always_ff @(posedge ex1_inst_clk or negedge cpurst_b) begin : proc_mat_alu_ex1_data
     if(!cpurst_b) begin
       mat_alu_ex1_iid[6:0]                          <= 7'b0;
-      mat_alu_ex1_mat_op[MAT_ALU_OP_TYPE_WIDTH-1:0] <= {MAT_ALU_OP_TYPE_WIDTH{1'b0}};
+      mat_alu_ex1_src0_vld                          <= 1'b0;
+      mat_alu_ex1_src0[63:0]                        <= 64'b0;
+      mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0] <= {MAT_ALU_OP_TYPE_WIDTH{1'b0}};
       mat_alu_ex1_dstm_17_15_vld                    <= 1'b0;
       mat_alu_ex1_dstm_idx_17_15[2:0]               <= 3'b0;
       mat_alu_ex1_srcm1_vld                         <= 1'b0;
@@ -132,7 +134,9 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
       mat_alu_ex1_elem_data_width[1:0]              <= 2'b0;
     end else if(idu_mat_rf_alu_gateclk_sel) begin
       mat_alu_ex1_iid[6:0]                          <= idu_mat_rf_pipe8_iid[6:0];
-      mat_alu_ex1_mat_op[MAT_ALU_OP_TYPE_WIDTH-1:0] <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_OP:MAT_ALU_OP-(MAT_ALU_OP_TYPE_WIDTH-1)] ;
+      mat_alu_ex1_src0_vld                          <= idu_mat_rf_pipe8_alu_src0_vld;
+      mat_alu_ex1_src0[63:0]                        <= idu_mat_rf_pipe8_alu_src0[63:0];
+      mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0] <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_OP:MAT_ALU_OP-(MAT_ALU_OP_TYPE_WIDTH-1)] ;
       mat_alu_ex1_dstm_17_15_vld                    <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_DSTM_VLD]                                ;
       mat_alu_ex1_dstm_idx_17_15[2:0]               <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_DSTM_IDX:MAT_ALU_DSTM_IDX-2]             ;
       mat_alu_ex1_srcm1_vld                         <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_SRC1M_VLD]                               ;

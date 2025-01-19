@@ -99,7 +99,7 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
     .mat_cfg_idu_ex1_pipe8_sync_xmsize_csr(mat_cfg_idu_ex1_pipe8_sync_xmsize_csr)
   );
 
-  ct_mat_exu_arithmetic_unit i_ct_mat_exu_arithmetic_unit (
+  ct_mat_exu_arithmetic_unit x_ct_mat_exu_arithmetic_unit (
     .cpurst_b                     (cpurst_b                     ),
     .forever_cpuclk               (forever_cpuclk               ),
     .cp0_mat_icg_en               (cp0_mat_icg_en               ),
@@ -119,7 +119,7 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
     .mat_alu_cbus_ex1_pipe8_iid   (mat_alu_cbus_ex1_pipe8_iid   )
   );
 
-  ct_mat_exu_ldst_unit i_ct_mat_exu_ldst_unit (
+  ct_mat_exu_ldst_unit x_ct_mat_exu_ldst_unit (
     .cpurst_b                     (cpurst_b                     ),
     .forever_cpuclk               (forever_cpuclk               ),
     .cp0_mat_icg_en               (cp0_mat_icg_en               ),
