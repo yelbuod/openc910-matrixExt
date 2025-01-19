@@ -77,7 +77,8 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
   //----------------------------------------------------------
   //                 Instance of Gated Cell  
   //----------------------------------------------------------
-  // 控制信号需要接收flush, 因此在"创建时"和"有效时"均使能门控时钟
+  // 用于控制信号mat_cfg_ex1_inst_vld从rf->ex1的使能以及ex1->ex2的传递,
+  //  因此在"创建时"和"有效时"均使能门控时钟
   assign ctrl_clk_en = idu_mat_rf_alu_gateclk_sel || mat_alu_ex1_inst_vld; 
   gated_clk_cell  x_ctrl_gated_clk (
     .clk_in             (forever_cpuclk    ),

@@ -82,7 +82,8 @@ module ct_mat_exu_config_unit (
   //----------------------------------------------------------
   //                 Instance of Gated Cell  
   //----------------------------------------------------------
-  // 控制信号需要接收flush, 因此在"创建时"和"有效时"均使能门控时钟
+  // 用于控制信号mat_cfg_ex1_inst_vld从rf->ex1的使能以及ex1->ex2的传递, 
+  //  因此在"创建时"和"有效时"均使能门控时钟
   assign ctrl_clk_en = idu_mat_rf_cfg_gateclk_sel || mat_cfg_ex1_inst_vld; 
   gated_clk_cell  x_ctrl_gated_clk (
     .clk_in             (forever_cpuclk    ),
@@ -149,9 +150,9 @@ module ct_mat_exu_config_unit (
   assign mat_cfg_sizeN = mat_cfg_ex1_optype[2];
   assign mat_cfg_all   = mat_cfg_ex1_optype[3];
 
-  assign sizeK_wen = mat_cfg_sizeK || mat_cfg_all; // MAT_CFG_K or MAT_CFG_ALL
-  assign sizeM_wen = mat_cfg_sizeM || mat_cfg_all; // MAT_CFG_M or MAT_CFG_ALL
-  assign sizeN_wen = mat_cfg_sizeN || mat_cfg_all; // MAT_CFG_N or MAT_CFG_ALL
+  assign sizeK_wen = mat_cfg_ex1_inst_vld && (mat_cfg_sizeK || mat_cfg_all); // MAT_CFG_K or MAT_CFG_ALL
+  assign sizeM_wen = mat_cfg_ex1_inst_vld && (mat_cfg_sizeM || mat_cfg_all); // MAT_CFG_M or MAT_CFG_ALL
+  assign sizeN_wen = mat_cfg_ex1_inst_vld && (mat_cfg_sizeN || mat_cfg_all); // MAT_CFG_N or MAT_CFG_ALL
 
   assign sizeK_wdata[15:0] =  
       ({SIZE_K_WIDTH{mat_cfg_sizeK}} & mat_cfg_ex1_src0[15:0])
@@ -165,8 +166,8 @@ module ct_mat_exu_config_unit (
       ({SIZE_N_WIDTH{mat_cfg_sizeN}} & mat_cfg_ex1_src0[7:0]) 
     | ({SIZE_N_WIDTH{mat_cfg_all}}   & mat_cfg_ex1_src0[15:8]);    
 
-  // TODO : gate clk
-  always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_configure_sizeK
+  // 需要在EX1阶段仍保持时钟使能, 以完成EX1的写入操作
+  always_ff @(posedge ctrl_clk or negedge cpurst_b) begin : proc_configure_sizeK
     if(!cpurst_b) begin
       sizeK[SIZE_K_WIDTH-1:0] <= {SIZE_K_WIDTH{1'b0}};
     end 
@@ -175,7 +176,7 @@ module ct_mat_exu_config_unit (
     end
   end
 
-  always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_configure_sizeM
+  always_ff @(posedge ctrl_clk or negedge cpurst_b) begin : proc_configure_sizeM
     if(!cpurst_b) begin
       sizeM[SIZE_M_WIDTH-1:0] <= {SIZE_M_WIDTH{1'b0}};
     end 
@@ -184,7 +185,7 @@ module ct_mat_exu_config_unit (
     end
   end
 
-  always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_configure_sizeN
+  always_ff @(posedge ctrl_clk or negedge cpurst_b) begin : proc_configure_sizeN
     if(!cpurst_b) begin
       sizeN[SIZE_N_WIDTH-1:0] <= {SIZE_N_WIDTH{1'b0}};
     end 
