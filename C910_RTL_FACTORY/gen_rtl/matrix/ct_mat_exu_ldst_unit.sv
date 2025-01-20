@@ -1,3 +1,14 @@
+import "DPI-C" function void hart_matrixMemAccess(
+  byte unsigned mem_access_type, // memory access type
+  byte unsigned matrix_reg_idx, // load dest/store src
+  longint unsigned base_addr,
+  byte unsigned number_of_rows, // matrix rows to load, sizeM
+  longint unsigned row_stride, // matrix row stride to get next startline
+  shortint unsigned bytes_per_row, // bytes in each row, sizeK
+  byte unsigned whold_reg_mode, // whole register load/store, nf_vld
+  byte unsigned nf_filed // how many matrix reg groups to load/store
+);
+
 module ct_mat_exu_ldst_unit (
   /* common */
   input         cpurst_b                     ,
@@ -131,7 +142,52 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
     end
   end
 
+  // TODO: 暂时不执行直接提交查看通路正确性
   assign mat_lsu_cbus_ex1_pipe8_sel      = mat_lsu_ex1_inst_vld;
   assign mat_lsu_cbus_ex1_pipe8_iid[6:0] = mat_lsu_ex1_iid[6:0];
+
+  // 计算总共需要load/store的byte数
+  always@(posedge ex1_inst_clk) begin
+    if(mat_lsu_ex1_inst_vld) begin
+    case ({mat_lsu_ex1_optype[1:0], mat_lsu_ex1_nf_vld})
+      {MAT_LSU_LOAD, 1'b0} : begin
+        assert (mat_lsu_ex1_src1_vld) 
+        else   $error("single matrix reg load: rs2(src1) must be valid");
+        // mem_access_type: load/store, 0/1
+        // matrix_reg_idx: load dest/store src->mat_lsu_ex1_dstm_idx_9_7[2:0] or mat_lsu_ex1_srcm2_idx[2:0]
+        // base_addr: mat_lsu_ex1_src0[63:0]
+        // number_of_rows: x_sizeM[7:0]
+        // row_stride: mat_lsu_ex1_src1[63:0]
+        // bytes_per_row: x_sizeK[15:0]
+        // whold_reg_mode: mat_lsu_ex1_nf_vld
+        // nf_filed: mat_lsu_ex1_nf[2:0]
+        hart_matrixMemAccess(0, mat_lsu_ex1_dstm_idx_9_7[2:0], mat_lsu_ex1_src0[63:0], 
+                            x_sizeM[7:0], mat_lsu_ex1_src1[63:0],
+                            x_sizeK[15:0], mat_lsu_ex1_nf_vld, mat_lsu_ex1_nf[2:0]);
+      end
+      {MAT_LSU_LOAD, 1'b1} : begin
+        assert (mat_lsu_ex1_src1_vld==0) 
+        else   $error("whold matrix reg load: rs2(src1) must not be valid");
+        hart_matrixMemAccess(0, mat_lsu_ex1_dstm_idx_9_7[2:0],mat_lsu_ex1_src0[63:0], 
+                            x_sizeM[7:0], mat_lsu_ex1_src1[63:0],
+                            x_sizeK[15:0], mat_lsu_ex1_nf_vld, mat_lsu_ex1_nf[2:0]);
+      end
+      {MAT_LSU_STORE, 1'b0} : begin
+        assert (mat_lsu_ex1_src1_vld) 
+        else   $error("single matrix reg store: rs2(src1) must be valid");
+        hart_matrixMemAccess(1, mat_lsu_ex1_srcm2_idx[2:0], mat_lsu_ex1_src0[63:0], 
+                            x_sizeM[7:0], mat_lsu_ex1_src1[63:0],
+                            x_sizeK[15:0], mat_lsu_ex1_nf_vld, mat_lsu_ex1_nf[2:0]);
+      end
+      {MAT_LSU_STORE, 1'b1} : begin
+        assert (mat_lsu_ex1_src1_vld==0) 
+        else   $error("whold matrix reg store: rs2(src1) must not be valid");
+        hart_matrixMemAccess(1, mat_lsu_ex1_srcm2_idx[2:0], mat_lsu_ex1_src0[63:0], 
+                            x_sizeM[7:0], mat_lsu_ex1_src1[63:0],
+                            x_sizeK[15:0], mat_lsu_ex1_nf_vld, mat_lsu_ex1_nf[2:0]);
+      end
+    endcase
+    end
+  end 
 
 endmodule : ct_mat_exu_ldst_unit

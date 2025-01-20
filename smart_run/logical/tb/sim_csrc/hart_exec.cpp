@@ -240,6 +240,40 @@ extern "C" void hart_IRDpStatusSync(
   IRStatus.dependencies.wordfield = *(uint32_t*)depInsideInstPack;
 }
 
+extern "C" void hart_matrixMemAccess(
+  uint8_t mem_access_type, // memory access type
+  uint8_t matrix_reg_idx, // load dest/store src
+  uint64_t base_addr,
+  uint8_t number_of_rows, // matrix rows to load, sizeM
+  uint64_t row_stride, // matrix row stride to get next startline
+  uint16_t bytes_per_row, // bytes in each row, sizeK
+  uint8_t whold_reg_mode, // whole register load/store, nf_vld
+  uint8_t nf_filed // how many matrix reg groups to load/store
+){
+  uint64_t rows_per_group;
+  uint64_t row_groups;
+  uint64_t total_bytes;
+
+  if(mem_access_type == 0) {
+    printf("MATRIX LOAD to m%d: base address: %08x, ", matrix_reg_idx, base_addr);
+  } else {
+    printf("MATRIX STORE from m%d: base address: %08x, ", matrix_reg_idx, base_addr);
+  }
+
+  if(whold_reg_mode == 0) {
+    // printf("number_of_rows: %x, row_stride: %x, bytes_per_row: %x\n", 
+    //         number_of_rows, row_stride, bytes_per_row);
+    rows_per_group = row_stride/bytes_per_row; // 表示每几行看作一组
+    row_groups = number_of_rows/rows_per_group; // 表示在stride下实际有几组load/store
+    total_bytes = row_groups*bytes_per_row; // 总共访问的字节数
+  } else {
+    // 总共访问的字节数
+    total_bytes = number_of_rows*bytes_per_row*(nf_filed+1); // nf_field: 000/001/011/111->1/2/4/8
+  }
+
+  printf("total bytes access: %d\n", total_bytes);
+}
+
 // traverse all watchpoint elements in head link array
 void WP_trigcheck() {
   bool trigger = traverse_check_trigger();
