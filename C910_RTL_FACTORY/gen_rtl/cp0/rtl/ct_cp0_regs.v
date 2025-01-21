@@ -1043,6 +1043,8 @@ wire             wb;
 wire             wbr;                            
 wire    [1  :0]  xs;                             
 
+wire    [63 :0]  xmlenb_value;
+wire    [63 :0]  xrlenb_value;
 
 //==========================================================
 //                 Instance of Gated Cell  
@@ -1308,6 +1310,8 @@ parameter VL       = 12'hC20;
 parameter VTYPE    = 12'hC21;
 parameter VLENB    = 12'hC22;
 
+parameter XMLENB   = 12'hCC0;
+parameter XRLENB   = 12'hCC1;
 
 // 4. C-SKY Extension CSRs
 // Processor Control and Status Extension; M-Mode
@@ -2627,6 +2631,12 @@ assign cp0_iu_vl[7:0]   = vl_vl[7:0];
 assign vlenb_value[63:0] = 64'd16; //VLEN 128 bit
 
 //==========================================================
+//               Define the MATRIX register
+//==========================================================
+assign xmlenb_value[63:0] = 64'd1024; // RELN/32*xrlenb = 512/32*64 = 1024
+assign xrlenb_value[63:0] = 64'd64; // RELN/8 = 512/8
+
+//==========================================================
 // 4. C-SKY Extension CSRs
 //==========================================================
 
@@ -3804,7 +3814,8 @@ assign cp0_regs_sel = iui_regs_addr[11:8] == 4'hF  // M-Infor
                    || iui_regs_addr[11:8] == 4'h8  // FXCR
                    || iui_regs_addr[11:8] == 4'h6  // Hypervisor CSR
                    || iui_regs_addr[11:8] == 4'h2  // VS CSR
-                   || iui_regs_addr[11:4] == 8'hC2;// Vector
+                   || iui_regs_addr[11:4] == 8'hC2 // Vector
+                   || iui_regs_addr[11:4] == 8'hCC; // Matrix;
 
 assign pmp_regs_sel = iui_regs_addr[11:4] == 8'h3A
                    || iui_regs_addr[11:4] == 8'h3B;
@@ -3937,6 +3948,9 @@ begin
     VL        : data_out[63:0] = vl_value[63:0];
     VTYPE     : data_out[63:0] = vtype_value[63:0];
     VLENB     : data_out[63:0] = vlenb_value[63:0];
+
+    XMLENB    : data_out[63:0] = xmlenb_value[63:0];
+    XRLENB    : data_out[63:0] = xrlenb_value[63:0];
 
     MXSTATUS  : data_out[63:0] = mxstatus_value[63:0];
     MHCR      : data_out[63:0] = mhcr_value[63:0];
