@@ -104,9 +104,14 @@ static int cmd_info(char *args) {
 	// TODO:
     info_watchpoint();
   }
-  else if (args[0] == 'i') {
-    if(args[1] == 'r') {
+  else if (args[0] == 'I') {
+    if(args[1] == 'R') {
       display_IRStatus();
+    }
+  }
+  else if (args[0] == 'R') {
+    if(args[1] == 'F') {
+      display_RFStatus();
     }
   }
   else {

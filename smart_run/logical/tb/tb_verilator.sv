@@ -49,12 +49,56 @@ limitations under the License.
 `define CP0_RSLT_VLD        `CPU_TOP.x_ct_top_0.x_ct_core.x_ct_cp0_top.x_ct_cp0_iui.cp0_iu_ex3_rslt_vld
 `define CP0_RSLT            `CPU_TOP.x_ct_top_0.x_ct_core.x_ct_cp0_top.x_ct_cp0_iui.cp0_iu_ex3_rslt_data[63:0]
 
+`define CT0_IDU_RF_DP       `CPU_TOP.x_ct_top_0.x_ct_core.x_ct_idu_top.x_ct_idu_rf_dp
+`define CT0_IDU_RF_CTRL     `CPU_TOP.x_ct_top_0.x_ct_core.x_ct_idu_top.x_ct_idu_rf_ctrl
+
+`define CT0_IDU_RF_PIPE0_INST `CT0_IDU_RF_DP.pipe0_decd_opcode[31:0]
+`define CT0_IDU_RF_PIPE1_INST `CT0_IDU_RF_DP.pipe1_decd_opcode[31:0]
+`define CT0_IDU_RF_PIPE2_INST `CT0_IDU_RF_DP.pipe2_decd_opcode[31:0]
+`define CT0_IDU_RF_PIPE3_INST `CT0_IDU_RF_DP.pipe3_decd_opcode[31:0]
+`define CT0_IDU_RF_PIPE4_INST `CT0_IDU_RF_DP.pipe4_decd_opcode[31:0]
+`define CT0_IDU_RF_PIPE5_INST `CT0_IDU_RF_DP.pipe4_decd_opcode[31:0] // sdiq和lsiq属于同一指令
+`define CT0_IDU_RF_PIPE6_INST `CT0_IDU_RF_DP.pipe6_decd_opcode[31:0]
+`define CT0_IDU_RF_PIPE7_INST `CT0_IDU_RF_DP.pipe7_decd_opcode[31:0]
+`define CT0_IDU_RF_PIPE8_INST `CT0_IDU_RF_DP.pipe8_mat_decd_opcode[31:0]
+
+`define CT0_IDU_RF_PIPE0_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe0_pipedown_vld
+`define CT0_IDU_RF_PIPE1_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe1_pipedown_vld
+`define CT0_IDU_RF_PIPE2_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe2_pipedown_vld
+`define CT0_IDU_RF_PIPE3_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe3_pipedown_vld
+`define CT0_IDU_RF_PIPE4_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe4_pipedown_vld
+`define CT0_IDU_RF_PIPE5_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe5_pipedown_vld
+`define CT0_IDU_RF_PIPE6_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe6_pipedown_vld
+`define CT0_IDU_RF_PIPE7_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe7_pipedown_vld
+`define CT0_IDU_RF_PIPE8_PIPEDWN_VLD `CT0_IDU_RF_CTRL.ctrl_rf_pipe8_pipedown_vld
+
 // `define APB_BASE_ADDR       40'h4000000000
 `define APB_BASE_ADDR       40'hb0000000
 
 import "DPI-C" function void hart_commitInst(
   int unsigned retire_idx,
   longint unsigned retire_pc
+);
+
+import "DPI-C" function void hart_IdRFStatus_InstSync(
+  byte unsigned pipe0_pipedwn_vld,
+  input logic [31:0] pipe0_inst,
+  byte unsigned pipe1_pipedwn_vld,
+  input logic [31:0] pipe1_inst,
+  byte unsigned pipe2_pipedwn_vld,
+  input logic [31:0] pipe2_inst,
+  byte unsigned pipe3_pipedwn_vld,
+  input logic [31:0] pipe3_inst,
+  byte unsigned pipe4_pipedwn_vld,
+  input logic [31:0] pipe4_inst,
+  byte unsigned pipe5_pipedwn_vld,
+  input logic [31:0] pipe5_inst,
+  byte unsigned pipe6_pipedwn_vld,
+  input logic [31:0] pipe6_inst,
+  byte unsigned pipe7_pipedwn_vld,
+  input logic [31:0] pipe7_inst,
+  byte unsigned pipe8_pipedwn_vld,
+  input logic [31:0] pipe8_inst
 );
 
 module top(
@@ -84,7 +128,39 @@ module top(
   //  end
   //end
   
-
+  always @(posedge clk) begin
+    if(`CT0_IDU_RF_PIPE0_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE1_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE2_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE3_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE4_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE5_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE6_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE7_PIPEDWN_VLD ||
+       `CT0_IDU_RF_PIPE8_PIPEDWN_VLD) 
+      begin
+      hart_IdRFStatus_InstSync(
+        `CT0_IDU_RF_PIPE0_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE0_INST,
+        `CT0_IDU_RF_PIPE1_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE1_INST,
+        `CT0_IDU_RF_PIPE2_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE2_INST,
+        `CT0_IDU_RF_PIPE3_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE3_INST,
+        `CT0_IDU_RF_PIPE4_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE4_INST,
+        `CT0_IDU_RF_PIPE5_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE5_INST,
+        `CT0_IDU_RF_PIPE6_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE6_INST,
+        `CT0_IDU_RF_PIPE7_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE7_INST,
+        `CT0_IDU_RF_PIPE8_PIPEDWN_VLD,
+        `CT0_IDU_RF_PIPE8_INST
+      );
+    end
+  end
 
   integer jclkCnt;
   initial 

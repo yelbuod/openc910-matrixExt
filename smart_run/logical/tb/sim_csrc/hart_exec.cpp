@@ -125,6 +125,13 @@ extern "C" void hart_commitInst(
   sync_hart_pc(retire_pc);
 }
 
+typedef struct {
+  uint32_t inst3;  // 第0个32-bit inst 
+  uint32_t inst2;  // 第1个32-bit inst 
+  uint32_t inst1;  // 第2个32-bit inst 
+  uint32_t inst0;  // 第3个32-bit inst 
+} inst_packet_t;
+
 static struct {
   union {
     struct {
@@ -140,12 +147,7 @@ static struct {
     uint8_t bytefield;
   } inst_pipeInst_vld;
 
-  struct {
-      uint32_t inst3;  // 第0个32-bit inst 
-      uint32_t inst2;  // 第1个32-bit inst 
-      uint32_t inst1;  // 第2个32-bit inst 
-      uint32_t inst0;  // 第3个32-bit inst 
-  } instPacket;
+  inst_packet_t instPacket;
 
   union {
     struct {
@@ -240,6 +242,83 @@ extern "C" void hart_IRDpStatusSync(
   IRStatus.dependencies.wordfield = *(uint32_t*)depInsideInstPack;
 }
 
+static union {
+  struct {
+    uint32_t pipe0_inst;
+    uint32_t pipe1_inst;
+    uint32_t pipe2_inst;
+    uint32_t pipe3_inst;
+    uint32_t pipe4_inst;
+    uint32_t pipe5_inst;
+    uint32_t pipe6_inst;
+    uint32_t pipe7_inst;
+    uint32_t pipe8_inst;
+  } elem;
+  uint32_t pipe_int[9];
+} IdRFStatus;
+
+extern "C" void hart_IdRFStatus_InstSync(
+  uint8_t pipe0_pipedwn_vld,
+  const svLogicVecVal* pipe0_inst,
+  uint8_t pipe1_pipedwn_vld,
+  const svLogicVecVal* pipe1_inst,
+  uint8_t pipe2_pipedwn_vld,
+  const svLogicVecVal* pipe2_inst,
+  uint8_t pipe3_pipedwn_vld,
+  const svLogicVecVal* pipe3_inst,
+  uint8_t pipe4_pipedwn_vld,
+  const svLogicVecVal* pipe4_inst,
+  uint8_t pipe5_pipedwn_vld,
+  const svLogicVecVal* pipe5_inst,
+  uint8_t pipe6_pipedwn_vld,
+  const svLogicVecVal* pipe6_inst,
+  uint8_t pipe7_pipedwn_vld,
+  const svLogicVecVal* pipe7_inst,
+  uint8_t pipe8_pipedwn_vld,
+  const svLogicVecVal* pipe8_inst
+){
+  if(pipe0_pipedwn_vld)
+    IdRFStatus.elem.pipe0_inst = *(uint32_t*)pipe0_inst;
+  if(pipe1_pipedwn_vld)
+    IdRFStatus.elem.pipe1_inst = *(uint32_t*)pipe1_inst;
+  if(pipe2_pipedwn_vld)
+    IdRFStatus.elem.pipe2_inst = *(uint32_t*)pipe2_inst;
+  if(pipe3_pipedwn_vld)
+    IdRFStatus.elem.pipe3_inst = *(uint32_t*)pipe3_inst;
+  if(pipe4_pipedwn_vld)
+    IdRFStatus.elem.pipe4_inst = *(uint32_t*)pipe4_inst;
+  if(pipe5_pipedwn_vld)
+    IdRFStatus.elem.pipe5_inst = *(uint32_t*)pipe5_inst;
+  if(pipe6_pipedwn_vld)
+    IdRFStatus.elem.pipe6_inst = *(uint32_t*)pipe6_inst;
+  if(pipe7_pipedwn_vld)
+    IdRFStatus.elem.pipe7_inst = *(uint32_t*)pipe7_inst;
+  if(pipe8_pipedwn_vld)
+    IdRFStatus.elem.pipe8_inst = *(uint32_t*)pipe8_inst;
+}
+
+void display_RFStatus() {
+    printf("RF pipedown inst: \n");
+    printf("\tpipe0: %08x, pipe1: %08x, pipe2: %08x, pipe3: %08x\npipe4: %08x, pipe5: %08x, pipe6: %08x, pipe7: %08x, pipe8: %08x\n", 
+            IdRFStatus.elem.pipe0_inst, IdRFStatus.elem.pipe1_inst, IdRFStatus.elem.pipe2_inst, 
+            IdRFStatus.elem.pipe3_inst, IdRFStatus.elem.pipe4_inst, IdRFStatus.elem.pipe5_inst, 
+            IdRFStatus.elem.pipe6_inst, IdRFStatus.elem.pipe7_inst, IdRFStatus.elem.pipe8_inst);
+    // for (int i = 0; i < 8; i++) {
+    //   printf("pipe%d: %08x, ", i, IdRFStatus.pipe_int[i]);
+    // }
+    printf("\n");
+}
+
+word_t get_rf_pipeinst(int pipe_idx, bool *success) {
+  if(pipe_idx >= 0 && pipe_idx <= 8) {
+    *success = true;
+    return IdRFStatus.pipe_int[pipe_idx];
+  }
+  else {
+    *success = false;
+  }
+}
+
 extern "C" void hart_matrixMemAccess(
   uint8_t mem_access_type, // memory access type
   uint8_t matrix_reg_idx, // load dest/store src
@@ -266,11 +345,12 @@ extern "C" void hart_matrixMemAccess(
     rows_per_group = row_stride/bytes_per_row; // 表示每几行看作一组
     row_groups = number_of_rows/rows_per_group; // 表示在stride下实际有几组load/store
     total_bytes = row_groups*bytes_per_row; // 总共访问的字节数
+    printf("single reg, ");
   } else {
     // 总共访问的字节数
     total_bytes = number_of_rows*bytes_per_row*(nf_filed+1); // nf_field: 000/001/011/111->1/2/4/8
+    printf("whole reg, ");
   }
-
   printf("total bytes access: %d\n", total_bytes);
 }
 

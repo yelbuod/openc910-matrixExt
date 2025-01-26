@@ -19,11 +19,15 @@
 #include <regex.h>
 #include <debug.h>
 #include <macro.h>
+#include <ctype.h>
 #include "reg.h"
+#include "hart_exec.h"
 
 enum {
+  // 从256开始, 避免与ASCII码混淆
   TK_NOTYPE = 256, TK_DEC_INTEGER, TK_HEX_INTEGER, TK_REG_NAME, TK_EQ, TK_UEQ, TK_AND, TK_DEREF,
-
+  TK_IDU_RF_INST, 
+  
   /* TODO: Add more token types */
 
 };
@@ -45,6 +49,7 @@ static struct rule {
   {"0x[0-9A-Fa-f]+", TK_HEX_INTEGER}, // hexadecimal integer
   {"[0-9]+", TK_DEC_INTEGER}, // decimal integer
   {"[\\$]{1}[\\$a-z]{1}[0-9a-z]{1}[0-9]{,1}", TK_REG_NAME}, // register name
+  {"idu_rf_pipe[0-8]_inst", TK_IDU_RF_INST},
   {"\\(", '('},         // (
   {"\\)", ')'},         // )
   {"==", TK_EQ},        // equal
@@ -111,7 +116,7 @@ static bool make_token(char *e) {
         switch (rules[i].token_type) {
           case TK_NOTYPE:
             break; // Blank String is not recorded
-          case TK_DEC_INTEGER: case TK_HEX_INTEGER: case TK_REG_NAME:
+          case TK_DEC_INTEGER: case TK_HEX_INTEGER: case TK_REG_NAME: case TK_IDU_RF_INST:
             if(substr_len <= 32) {
               memset(tokens[nr_token].str, '\0', sizeof(tokens[nr_token].str));
               // tokens[nr_token].str no need to be null-terminated because 'strtol' func no need nptr param to be null-terminated
@@ -227,7 +232,25 @@ word_t eval(int p, int q) {
       if(success)
         return reg_val;
       else {
-        Log("Register does not exist, get default zero");
+        Log("Register does not exist, return default zero");
+        return 0;
+      }
+    }
+    else if (tokens[p].type == TK_IDU_RF_INST) {
+      bool success;
+      int number = 0;
+      char digit_char = tokens[p].str[11];
+      if(isdigit(digit_char)) {
+        number = digit_char - '0';
+      } else {
+        Log("Wrong expression: %c, return default zero", digit_char);
+        return 0;
+      }
+      word_t inst_val = get_rf_pipeinst(number, &success);
+      if(success)
+        return inst_val;
+      else {
+        Log("PipeX out of range 0~8, return default zero");
         return 0;
       }
     }
@@ -249,7 +272,7 @@ word_t eval(int p, int q) {
     /* We need to find 主运算符 and use it to split a long expression into two subexpression. */
     for(int i = p; i <= q; i++) {
       if(tokens[i].type == TK_DEC_INTEGER || tokens[i].type == TK_HEX_INTEGER || 
-         tokens[i].type == TK_REG_NAME || tokens[i].type == '(' || tokens[i].type == ')')
+         tokens[i].type == TK_REG_NAME || tokens[i].type == TK_IDU_RF_INST || tokens[i].type == '(' || tokens[i].type == ')')
         continue;
       else {
         int no_main_op = 0;

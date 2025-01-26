@@ -16,6 +16,10 @@ void assert_fail_msg();
 
 void display_IRStatus();
 
+void display_RFStatus();
+
+word_t get_rf_pipeinst(int pipe_idx, bool *success);
+
 // npc execute N step
 void execute();
 
