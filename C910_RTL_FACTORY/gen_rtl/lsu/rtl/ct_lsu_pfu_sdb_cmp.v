@@ -504,6 +504,7 @@ assign entry_addr_1_next[`PA_WIDTH-1:0] = pipe_va[`PA_WIDTH-1:0];
 assign entry_iid_1_next[6:0]            = ld_da_iid[6:0];
 //------------------2-------------------
 //for sel signal, 1 means use last entry
+// entry 1 和 entry 2 位置可调换, 用于保存比entry0更新或更旧的地址, 组成连续的地址
 assign entry_sel_2 = entry_newer_than_ld_da[1];
 assign entry_addr_2_next[`PA_WIDTH-1:0] = entry_sel_2
                                           ? entry_addr_1[`PA_WIDTH-1:0]

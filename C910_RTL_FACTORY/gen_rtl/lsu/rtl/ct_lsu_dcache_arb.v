@@ -240,7 +240,7 @@ input            ag_dcache_arb_st_tag_req;
 input            cp0_lsu_icg_en;                    
 input            cpurst_b;                          
 input            forever_cpuclk;                    
-input            icc_dcache_arb_data_way;           
+input            icc_dcache_arb_data_way; // icc: invalid clear cache           
 input            icc_dcache_arb_ld_borrow_req;      
 input   [7  :0]  icc_dcache_arb_ld_data_gateclk_en; 
 input   [10 :0]  icc_dcache_arb_ld_data_high_idx;   
@@ -263,7 +263,7 @@ input            icc_dcache_arb_st_tag_gateclk_en;
 input   [8  :0]  icc_dcache_arb_st_tag_idx;         
 input            icc_dcache_arb_st_tag_req;         
 input            icc_dcache_arb_way;                
-input   [7  :0]  lfb_dcache_arb_ld_data_gateclk_en; 
+input   [7  :0]  lfb_dcache_arb_ld_data_gateclk_en; // lfb: line fill buffer
 input   [127:0]  lfb_dcache_arb_ld_data_high_din;   
 input   [10 :0]  lfb_dcache_arb_ld_data_idx;        
 input   [127:0]  lfb_dcache_arb_ld_data_low_din;    
@@ -806,7 +806,7 @@ casez(dcache_arb_ld_req[6:0])
   7'b000_001?:dcache_arb_ld_sel[2]  = 1'b1;
   7'b000_0001:dcache_arb_ld_sel[1]  = 1'b1;
   7'b000_0000:dcache_arb_ld_sel[0]  = 1'b1;
-  default:dcache_arb_ld_sel[6:0] = 7'b0;
+  default:dcache_arb_ld_sel[6:0] = 7'b0; // 对应 dcache_arb_serial_vld
 endcase
 // &CombEnd; @117
 end
@@ -1238,6 +1238,7 @@ end
 
 //only lfb can write tag array
 // &Force("output","lsu_dcache_st_tag_din"); @551
+// lfb: line fill buffer 会填充tag, 其他不需要
 assign lsu_dcache_st_tag_din[51:0] = lfb_dcache_arb_st_tag_din[51:0];
 assign lsu_dcache_st_tag_gwen      = dcache_arb_lfb_st_dp_sel;
 assign lsu_dcache_st_tag_wen[1:0]  = {2{dcache_arb_lfb_st_dp_sel}} & lfb_dcache_arb_st_tag_wen[1:0];

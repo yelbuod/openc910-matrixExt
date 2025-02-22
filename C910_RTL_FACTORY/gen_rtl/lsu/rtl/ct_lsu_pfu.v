@@ -2125,11 +2125,14 @@ assign pfu_pfb_entry_biu_pe_req_grnt[PFB_ENTRY-1:0] =
                 & pfu_biu_pe_req_ptr[PFB_ENTRY-1:0];
 assign pfu_gpfb_biu_pe_req_grnt = pfu_biu_pe_req_grnt  &&  pfu_biu_pe_req_ptr[8];
 //---------------------update info--------------------------
+// 筛选优先级为0的请求 和 优先级为1的请求
 assign pfu_all_pfb_biu_pe_req_ptiority_0[PFB_ENTRY:0] = pfu_all_pfb_biu_pe_req[PFB_ENTRY:0]
                                                         & (~pfu_biu_req_priority[PFB_ENTRY:0]);
 assign pfu_all_pfb_biu_pe_req_ptiority_1[PFB_ENTRY:0] = pfu_all_pfb_biu_pe_req[PFB_ENTRY:0]
                                                         & pfu_biu_req_priority[PFB_ENTRY:0];
-
+// 0优先级 > 1优先级 因此该位决定了最终发出的请求 pfu_biu_pe_req_ptr 优先从req_ptiority_0(优先级为0)选择
+//  最终仲裁出的请求会使用"屏蔽本次被仲裁的请求及其更低位请求"的机制决定出下一轮仲裁的优先级:
+//   pfu_biu_req_priority_next, 写入pfu_biu_req_priority影响下一轮请求的仲裁
 assign pfu_biu_pe_req_ptiority_0 = |pfu_all_pfb_biu_pe_req_ptiority_0[PFB_ENTRY:0];
 //----------------req_ptr---------------
 //sel priority 0 first, then priority 1

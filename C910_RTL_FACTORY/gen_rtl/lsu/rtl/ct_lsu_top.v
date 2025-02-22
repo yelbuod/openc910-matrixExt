@@ -652,6 +652,7 @@ input   [63 :0]  idu_lsu_rf_pipe5_srcv0_vr0;
 input   [63 :0]  idu_lsu_rf_pipe5_srcv0_vr1;             
 input            idu_lsu_rf_pipe5_stdata1_vld;           
 input            idu_lsu_rf_pipe5_unalign;               
+// idu_lsu_vmb: 向量有关, 已阉割
 input            idu_lsu_vmb_create0_dp_en;              
 input            idu_lsu_vmb_create0_dst_ready;          
 input            idu_lsu_vmb_create0_en;                 
@@ -887,6 +888,7 @@ output  [11 :0]  lsu_idu_tlb_busy;
 output           lsu_idu_tlb_busy_gateclk_en;            
 output  [11 :0]  lsu_idu_tlb_wakeup;                     
 output  [11 :0]  lsu_idu_unalign_gateclk_en;             
+// vmb: 向量相关, 已阉割
 output           lsu_idu_vmb_1_left_updt;                
 output  [7  :0]  lsu_idu_vmb_create0_entry;              
 output  [7  :0]  lsu_idu_vmb_create1_entry;              

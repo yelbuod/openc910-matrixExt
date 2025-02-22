@@ -3194,7 +3194,7 @@ begin
     rf_pipe3_iq_entry[11:0]        <= 12'b0;
     rf_pipe3_data[LSIQ_WIDTH-1:0]  <= {LSIQ_WIDTH{1'b0}};
   end
-  else if(lsiq_xx_pipe3_issue_en) begin
+  else if(lsiq_xx_pipe3_issue_en) begin // TODO: 加入握手机制, 使未被LSU ld/st AG接收的信号不被更新
     rf_pipe3_iq_entry[11:0]        <= lsiq_dp_pipe3_issue_entry[11:0];
     rf_pipe3_data[LSIQ_WIDTH-1:0]  <=
       lsiq_dp_pipe3_issue_read_data[LSIQ_WIDTH-1:0];

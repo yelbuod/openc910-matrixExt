@@ -1239,7 +1239,7 @@ assign sq_entry_age_vec_surplus1_ptr  = sq_entry_vld
 //---------------------pop req------------------------------
 assign sq_entry_pop_req = sq_pop_ptr
                           &&  sq_entry_vld
-                          &&  sq_entry_cmit
+                          &&  sq_entry_cmit // 已在rtu提交
                           &&  sq_entry_data_vld
                           &&  sq_entry_no_restart
                           &&  !sq_entry_in_wmb_ce;

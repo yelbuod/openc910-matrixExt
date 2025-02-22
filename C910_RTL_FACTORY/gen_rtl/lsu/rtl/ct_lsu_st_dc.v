@@ -1054,6 +1054,10 @@ assign st_dc_sq_create_gateclk_en   = st_dc_sq_create_dp_vld;
 
 
 // &Force("output","st_dc_sq_data_vld"); @502
+// st_dc_staddr 会被store uop使能, 可以理解成 如果是store, st_dc_staddr为1
+//  则在指令有效时创建sq entry, 写入 sq_entry_data_vld=0. 在后续 uop进入
+//  lsu rf ex1会将待存储的数据写入sd queue, 同时sq_entry内部保存的pipe4->sdid与
+//  进入lsu rf ex1的uop的sdid匹配后使能sq_entry_data_vld=1
 assign st_dc_sq_data_vld            = st_dc_inst_vld
                                       &&  !st_dc_staddr;
 //----------------success signal----------------------------

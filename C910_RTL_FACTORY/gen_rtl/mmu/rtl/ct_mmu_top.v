@@ -229,7 +229,7 @@ output          mmu_lsu_so0;
 output          mmu_lsu_so1;                
 output          mmu_lsu_stall0;             
 output          mmu_lsu_stall1;             
-output          mmu_lsu_tlb_busy;           
+output          mmu_lsu_tlb_busy; // tlb busy就是tlb miss->进入refill状态, 因此导致LSIQ指令重发          
 output          mmu_lsu_tlb_inv_done;       
 output  [11:0]  mmu_lsu_tlb_wakeup;         
 output          mmu_pmp_fetch3;             

@@ -337,7 +337,7 @@ reg     [3 :0]  st_ag_offset_shift;
 reg             st_ag_old;                          
 reg     [14:0]  st_ag_pc;                           
 reg     [11:0]  st_ag_sdid_oh;                      
-reg             st_ag_secd;                         
+reg             st_ag_secd; // secondary: 跨边界时使能                         
 reg             st_ag_split;                        
 reg             st_ag_st;                           
 reg             st_ag_staddr;                       
@@ -792,6 +792,7 @@ assign st_ag_inst_stall_gateclk_en  = st_ag_inst_vld;
 // for first boundary inst, use addr+offset+128 as va instead of addr+offset
 //for secd boundary,use addr+offset as va
 assign st_ag_offset_aftershift[63:0]  = {64{st_ag_offset_shift[0]}} & st_ag_offset[63:0]
+                                        // t-head instr extension: srb/srh/... addr offset with shift
                                         | {64{st_ag_offset_shift[1]}} & {st_ag_offset[62:0],1'b0}
                                         | {64{st_ag_offset_shift[2]}} & {st_ag_offset[61:0],2'b0}
                                         | {64{st_ag_offset_shift[3]}} & {st_ag_offset[60:0],3'b0};
