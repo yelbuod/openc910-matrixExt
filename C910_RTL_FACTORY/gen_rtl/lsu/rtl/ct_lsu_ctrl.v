@@ -32,11 +32,20 @@ module ct_lsu_ctrl(
   idu_lsu_rf_pipe4_gateclk_sel,
   idu_lsu_rf_pipe4_sel,
   idu_lsu_rf_pipe5_gateclk_sel,
+  
+  idu_mat_rf_lsu_gateclk_sel,
+  idu_mat_rf_lsu_sel,
+
   idu_lsu_vmb_create0_gateclk_en,
   idu_lsu_vmb_create1_gateclk_en,
   ld_ag_inst_vld,
   ld_ag_stall_ori,
   ld_ag_stall_restart_entry,
+
+  ld_ag_pipe3,
+  ld_ag_no_fire_restart_entry,
+  idu_lsu_rf_pipe3_fire,
+
   ld_da_borrow_vld,
   ld_da_ecc_wakeup,
   ld_da_idu_already_da,
@@ -235,11 +244,20 @@ input            idu_lsu_rf_pipe3_sel;
 input            idu_lsu_rf_pipe4_gateclk_sel;     
 input            idu_lsu_rf_pipe4_sel;             
 input            idu_lsu_rf_pipe5_gateclk_sel;     
+
+input            idu_mat_rf_lsu_gateclk_sel;
+input            idu_mat_rf_lsu_sel;
+
 input            idu_lsu_vmb_create0_gateclk_en;   
 input            idu_lsu_vmb_create1_gateclk_en;   
 input            ld_ag_inst_vld;                   
 input            ld_ag_stall_ori;                  
 input   [11 :0]  ld_ag_stall_restart_entry;        
+
+input            ld_ag_pipe3;
+input   [11 :0]  ld_ag_no_fire_restart_entry;        
+input            idu_lsu_rf_pipe3_fire;
+
 input            ld_da_borrow_vld;                 
 input   [11 :0]  ld_da_ecc_wakeup;                 
 input   [11 :0]  ld_da_idu_already_da;             
@@ -464,11 +482,20 @@ wire             idu_lsu_rf_pipe3_sel;
 wire             idu_lsu_rf_pipe4_gateclk_sel;     
 wire             idu_lsu_rf_pipe4_sel;             
 wire             idu_lsu_rf_pipe5_gateclk_sel;     
+// TODO: 
+wire             idu_mat_rf_lsu_gateclk_sel;
+wire             idu_mat_rf_lsu_sel;
+
 wire             idu_lsu_vmb_create0_gateclk_en;   
 wire             idu_lsu_vmb_create1_gateclk_en;   
 wire             ld_ag_inst_vld;                   
 wire             ld_ag_stall_ori;                  
 wire    [11 :0]  ld_ag_stall_restart_entry;        
+
+wire             ld_ag_pipe3;
+wire    [11 :0]  ld_ag_no_fire_restart_entry;        
+wire             idu_lsu_rf_pipe3_fire;
+
 wire             ld_da_borrow_vld;                 
 wire    [11 :0]  ld_da_ecc_wakeup;                 
 wire    [11 :0]  ld_da_idu_already_da;             
@@ -493,6 +520,10 @@ wire             ld_dc_inst_vld;
 wire             ld_dc_lq_full_gateclk_en;         
 wire             ld_dc_tlb_busy_gateclk_en;        
 wire    [11 :0]  ld_rf_imme_wakeup;                
+
+wire             ld_rf_no_fire_restart_vld;
+wire    [11 :0]  ld_rf_no_fire_imme_wakeup;                
+
 wire             ld_rf_restart_vld;                
 wire             ld_wb_data_vld;                   
 wire             ld_wb_inst_vld;                   
@@ -689,6 +720,7 @@ gated_clk_cell  x_lsu_special_clk (
 //==========================================================
 //ctrl_ld_clk is used for ld pipe
 assign ctrl_ld_clk_en = idu_lsu_rf_pipe3_gateclk_sel
+                        ||  idu_mat_rf_lsu_gateclk_sel
                         ||  ld_ag_inst_vld
                         ||  ld_dc_inst_vld
                         ||  ld_da_inst_vld
@@ -897,10 +929,19 @@ end
 //        Pipeline signal
 //==========================================================
 //------------------rf stage--------------------------------
+// ld_ag_stall_mask为高会导致AG放弃当前阶段的指令: ld_ag_lsid,
+//  但首先是因为stall导致的阻塞, 且pipe3有更旧的指令, 才会需要新旧指令对比判断是否需要放弃, 
+//  因此restart_vld的前提是ld_ag_stall_ori和idu_lsu_rf_pipe3_sel, 并且ld_rf_restart_vld->ld_rf_imme_wakeup
+//  并且是针对LSIQ重发的因此需要在引入矩阵访存时判断AG阶段是否是LSIQ发出的访存(ld_ag_pipe3)
 assign ld_rf_restart_vld                  = idu_lsu_rf_pipe3_sel
-                                            &&  ld_ag_stall_ori;
+                                            &&  ld_ag_stall_ori && ld_ag_pipe3;
 assign ld_rf_imme_wakeup[LSIQ_ENTRY-1:0]  = ld_ag_stall_restart_entry[LSIQ_ENTRY-1:0]
                                             & {LSIQ_ENTRY{ld_rf_restart_vld}};
+// 因矩阵访存冲突导致no fire->immediately wakeup restart(对 LSIQ 的快速唤醒重发)
+assign ld_rf_no_fire_restart_vld          = idu_lsu_rf_pipe3_sel // 真正的pipedown, 排除lch fail的表项
+                                            &&  !idu_lsu_rf_pipe3_fire;
+assign ld_rf_no_fire_imme_wakeup[LSIQ_ENTRY-1:0]  = ld_ag_no_fire_restart_entry[LSIQ_ENTRY-1:0]
+                                            & {LSIQ_ENTRY{ld_rf_no_fire_restart_vld}};
 
 assign st_rf_restart_vld                  = idu_lsu_rf_pipe4_sel
                                             &&  st_ag_stall_ori;
@@ -960,6 +1001,7 @@ assign lsu_idu_wait_fence_gateclk_en= ld_da_wait_fence_gateclk_en
 //        Imme & Buffer maintain restart
 //==========================================================
 assign lsu_idu_wakeup[LSIQ_ENTRY-1:0]       = ld_rf_imme_wakeup[LSIQ_ENTRY-1:0]
+                                              | ld_rf_no_fire_imme_wakeup[LSIQ_ENTRY-1:0] // 或操作可以同时restart多条表项
                                               | st_rf_imme_wakeup[LSIQ_ENTRY-1:0]
                                               | ld_dc_imme_wakeup[LSIQ_ENTRY-1:0]
                                               | st_dc_imme_wakeup[LSIQ_ENTRY-1:0]

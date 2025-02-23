@@ -4222,6 +4222,13 @@ ct_lsu_top  x_ct_lsu_top (
   .idu_lsu_rf_pipe5_srcv0_vr1              (idu_lsu_rf_pipe5_srcv0_vr1             ),
   .idu_lsu_rf_pipe5_stdata1_vld            (idu_lsu_rf_pipe5_stdata1_vld           ),
   .idu_lsu_rf_pipe5_unalign                (idu_lsu_rf_pipe5_unalign               ),
+
+  .idu_mat_rf_lsu_gateclk_sel             (idu_mat_rf_lsu_gateclk_sel),
+  .idu_mat_rf_lsu_sel                     (idu_mat_rf_lsu_sel),
+  .idu_mat_rf_pipe8_lsu_src0              (idu_mat_rf_pipe8_lsu_src0),
+  .idu_mat_rf_pipe8_iid                   (idu_mat_rf_pipe8_iid),
+  .idu_mat_rf_pipe8_lsu_meta              (idu_mat_rf_pipe8_lsu_meta), // element width->size
+
   .idu_lsu_vmb_create0_dp_en               (idu_lsu_vmb_create0_dp_en              ),
   .idu_lsu_vmb_create0_dst_ready           (idu_lsu_vmb_create0_dst_ready          ),
   .idu_lsu_vmb_create0_en                  (idu_lsu_vmb_create0_en                 ),

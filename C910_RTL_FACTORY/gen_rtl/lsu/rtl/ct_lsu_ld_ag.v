@@ -63,6 +63,13 @@ module ct_lsu_ld_ag(
   idu_lsu_rf_pipe3_src1,
   idu_lsu_rf_pipe3_unalign_2nd,
   idu_lsu_rf_pipe3_vreg,
+// TODO: test
+  idu_mat_rf_lsu_ld_sel,
+  idu_mat_rf_lsu_ld_gateclk_sel,
+  idu_mat_rf_pipe8_lsu_src0,
+  idu_mat_rf_pipe8_iid,
+  idu_mat_rf_pipe8_lsu_elem_width,
+
   ld_ag_addr1_to4,
   ld_ag_ahead_predict,
   ld_ag_already_da,
@@ -118,6 +125,11 @@ module ct_lsu_ld_ag(
   ld_ag_utlb_miss,
   ld_ag_vpn,
   ld_ag_vreg,
+  ld_ag_pipe3,
+  ld_ag_pipe8,
+  ld_ag_no_fire_restart_entry,
+  idu_lsu_rf_pipe3_fire,
+  idu_lsu_rf_pipe8_fire,
   lsu_hpcp_ld_cross_4k_stall,
   lsu_hpcp_ld_other_stall,
   lsu_idu_ag_pipe3_load_inst_vld,
@@ -200,6 +212,16 @@ input   [63:0]  idu_lsu_rf_pipe3_src0;
 input   [63:0]  idu_lsu_rf_pipe3_src1;              
 input           idu_lsu_rf_pipe3_unalign_2nd;       
 input   [6 :0]  idu_lsu_rf_pipe3_vreg;              
+// TODO: test
+input           idu_mat_rf_lsu_ld_sel;
+input           idu_mat_rf_lsu_ld_gateclk_sel;
+input   [63:0]  idu_mat_rf_pipe8_lsu_src0;
+input   [6 :0]  idu_mat_rf_pipe8_iid;
+input   [1 :0]  idu_mat_rf_pipe8_lsu_elem_width;
+
+output          idu_lsu_rf_pipe3_fire;
+output          idu_lsu_rf_pipe8_fire;
+
 input           mmu_lsu_buf0;                       
 input           mmu_lsu_ca0;                        
 input   [27:0]  mmu_lsu_pa0;                        
@@ -280,6 +302,8 @@ output  [11:0]  ld_ag_stall_restart_entry;
 output          ld_ag_utlb_miss;                    
 output  [27:0]  ld_ag_vpn;                          
 output  [5 :0]  ld_ag_vreg;                         
+output          ld_ag_pipe3;
+output          ld_ag_pipe8;
 output          lsu_hpcp_ld_cross_4k_stall;         
 output          lsu_hpcp_ld_other_stall;            
 output          lsu_idu_ag_pipe3_load_inst_vld;     
@@ -300,6 +324,8 @@ output  [6 :0]  lsu_mmu_id0;
 output          lsu_mmu_st_inst0;                   
 output  [63:0]  lsu_mmu_va0;                        
 output          lsu_mmu_va0_vld;                    
+
+output  [11:0]  ld_ag_no_fire_restart_entry;
 
 // &Regs; @30
 reg     [3 :0]  bank_en_low_ori;                    
@@ -343,6 +369,8 @@ reg     [5 :0]  ld_ag_vreg;
 reg     [5 :0]  ld_ag_vreg_dup1;                    
 reg     [5 :0]  ld_ag_vreg_dup2;                    
 reg     [5 :0]  ld_ag_vreg_dup3;                    
+reg             ld_ag_pipe3;
+reg             ld_ag_pipe8;
 
 // &Wires; @31
 wire    [7 :0]  ag_dcache_arb_ld_data_gateclk_en;   
@@ -397,6 +425,13 @@ wire    [63:0]  idu_lsu_rf_pipe3_src0;
 wire    [63:0]  idu_lsu_rf_pipe3_src1;              
 wire            idu_lsu_rf_pipe3_unalign_2nd;       
 wire    [6 :0]  idu_lsu_rf_pipe3_vreg;              
+// TODO: test
+wire            idu_mat_rf_lsu_ld_sel;
+wire            idu_mat_rf_lsu_ld_gateclk_sel;
+wire    [63:0]  idu_mat_rf_pipe8_lsu_src0;
+wire    [6 :0]  idu_mat_rf_pipe8_iid;
+wire    [1 :0]  idu_mat_rf_pipe8_lsu_elem_width;
+
 wire            ld_ag_4k_sum_12;                    
 wire    [12:0]  ld_ag_4k_sum_ori;                   
 wire    [12:0]  ld_ag_4k_sum_plus;                  
@@ -545,10 +580,12 @@ parameter PC_LEN      = 15;
 assign ld_rf_inst_vld         = idu_lsu_rf_pipe3_gateclk_sel;
 assign ld_rf_inst_ldr         = idu_lsu_rf_pipe3_inst_ldr;
 assign ld_rf_off_0_extend     = idu_lsu_rf_pipe3_off_0_extend;
+
+assign ld_mat_rf_inst_vld     = idu_mat_rf_lsu_ld_gateclk_sel;
 //==========================================================
 //                 Instance of Gated Cell  
 //==========================================================
-assign ld_ag_clk_en = idu_lsu_rf_pipe3_gateclk_sel || ld_ag_inst_stall_gateclk_en;
+assign ld_ag_clk_en = idu_lsu_rf_pipe3_gateclk_sel || idu_mat_rf_lsu_ld_gateclk_sel || ld_ag_inst_stall_gateclk_en;
 // &Instance("gated_clk_cell", "x_lsu_ld_ag_gated_clk"); @52
 gated_clk_cell  x_lsu_ld_ag_gated_clk (
   .clk_in             (forever_cpuclk    ),
@@ -585,11 +622,24 @@ begin
     ld_ag_inst_vld  <=  1'b0;
   else if(rtu_yy_xx_flush)
     ld_ag_inst_vld  <=  1'b0;
-  else if(ld_ag_stall_vld ||  idu_lsu_rf_pipe3_sel)
+  else if(ld_ag_stall_vld ||  idu_lsu_rf_pipe3_sel || idu_mat_rf_lsu_ld_sel)
     ld_ag_inst_vld  <=  1'b1;
   else
     ld_ag_inst_vld  <=  1'b0;
 end
+
+wire  rf_pipe3_iid_older_than_pipe8;
+wire  idu_lsu_rf_pipe3_fire;
+wire  idu_lsu_rf_pipe8_fire;
+
+ct_rtu_compare_iid  x_lsu_rf_compare_pipe3_pipe8_iid (
+  .x_iid0                    (idu_lsu_rf_pipe3_iid[6:0]),
+  .x_iid1                    (idu_mat_rf_pipe8_iid[6:0]),
+  .x_iid0_older              (rf_pipe3_iid_older_than_pipe8)
+);
+// pipe3和pipe8_lsu同时请求时使用iid年龄信息来仲裁
+assign idu_lsu_rf_pipe3_fire = ld_rf_inst_vld && (!ld_mat_rf_inst_vld || rf_pipe3_iid_older_than_pipe8);
+assign idu_lsu_rf_pipe8_fire = ld_mat_rf_inst_vld && (!ld_rf_inst_vld || !rf_pipe3_iid_older_than_pipe8);
 
 //------------------data part-------------------------------
 //+-----------+-----------+------+------------+----------------+
@@ -657,8 +707,10 @@ begin
     ld_ag_no_spec               <=  1'b0;
     ld_ag_no_spec_exist         <=  1'b0;
   end
-  else if(!ld_ag_stall_vld  &&  ld_rf_inst_vld)
+  else if(!ld_ag_stall_vld  &&  idu_lsu_rf_pipe3_fire)
   begin
+    ld_ag_pipe3                 <=  1'b1;
+    ld_ag_pipe8                 <=  1'b0;
     ld_ag_split                 <=  idu_lsu_rf_pipe3_split;
     ld_ag_inst_type[1:0]        <=  idu_lsu_rf_pipe3_inst_type[1:0];
     ld_ag_inst_size[1:0]        <=  idu_lsu_rf_pipe3_inst_size[1:0];
@@ -689,6 +741,39 @@ begin
     ld_ag_no_spec               <=  idu_lsu_rf_pipe3_no_spec;
     ld_ag_no_spec_exist         <=  idu_lsu_rf_pipe3_no_spec_exist;
   end
+  else if(!ld_ag_stall_vld  &&  idu_lsu_rf_pipe8_fire)
+  begin
+    ld_ag_pipe3                 <=  1'b0;
+    ld_ag_pipe8                 <=  1'b1;
+    ld_ag_split                 <=  1'b0;
+    ld_ag_inst_type[1:0]        <=  2'b00; // load
+    ld_ag_inst_size[1:0]        <=  idu_mat_rf_pipe8_lsu_elem_width[1:0];
+    ld_ag_secd                  <=  1'b0;
+    ld_ag_already_da            <=  1'b0;
+    ld_ag_lsiq_spec_fail        <=  1'b0;
+    ld_ag_lsiq_bkpta_data       <=  1'b0;
+    ld_ag_lsiq_bkptb_data       <=  1'b0;
+    ld_ag_sign_extend           <=  1'b0;
+    ld_ag_atomic                <=  1'b0;
+    ld_ag_iid[6:0]              <=  idu_mat_rf_pipe8_iid[6:0];
+    ld_ag_lsid[LSIQ_ENTRY-1:0]  <=  {LSIQ_ENTRY{1'b0}}; // TODO
+    ld_ag_old                   <=  1'b0;
+    ld_ag_preg[6:0]             <=  7'b0; // 配合ld_dc_load_inst_vld_dup...用于操作数唤醒, 设置为0不用管
+    ld_ag_preg_dup1[6:0]        <=  7'b0;
+    ld_ag_preg_dup2[6:0]        <=  7'b0;
+    ld_ag_preg_dup3[6:0]        <=  7'b0;
+    ld_ag_preg_dup4[6:0]        <=  7'b0;
+    ld_ag_ldfifo_pc[PC_LEN-1:0] <=  {PC_LEN{1'b0}};
+    ld_ag_vreg[5:0]             <=  6'b0;
+    ld_ag_vreg_dup1[5:0]        <=  6'b0;
+    ld_ag_vreg_dup2[5:0]        <=  6'b0;
+    ld_ag_vreg_dup3[5:0]        <=  6'b0;
+    ld_ag_inst_ldr              <=  1'b0;
+    ld_ag_inst_fls              <=  1'b0;
+    ld_ag_lsfifo                <=  1'b0;
+    ld_ag_no_spec               <=  1'b0;
+    ld_ag_no_spec_exist         <=  1'b0;
+  end
 end
 
 //+------------------+
@@ -714,8 +799,10 @@ always @(posedge ld_ag_clk or negedge cpurst_b)
 begin
   if (!cpurst_b)
     ld_ag_offset_shift[3:0] <=  4'b1;
-  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_sel)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_sel && idu_lsu_rf_pipe3_fire)
     ld_ag_offset_shift[3:0] <=  idu_lsu_rf_pipe3_shift[3:0];
+  else if (!ld_ag_stall_vld &&  idu_mat_rf_lsu_ld_sel && idu_lsu_rf_pipe8_fire)
+    ld_ag_offset_shift[3:0] <=  4'b0; // 屏蔽地址offset, 这样可以暂时忽略ld_ag_offset
   else if(ld_ag_stall_vld && ld_ag_cross_page_ldr_imme_stall_req)
     ld_ag_offset_shift[3:0] <=  4'b1;
 end
@@ -729,12 +816,14 @@ always @(posedge ld_ag_clk)
 begin
   if(ld_ag_cross_page_ldr_imme_stall_arb)
     ld_ag_offset[63:32]  <=  32'h0;
-  else if (!ld_ag_stall_vld &&  ld_rf_inst_vld  &&  !ld_rf_inst_ldr)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire  &&  !ld_rf_inst_ldr)
     ld_ag_offset[63:32]  <=  {32{idu_lsu_rf_pipe3_offset[11]}};
-  else if (!ld_ag_stall_vld &&  ld_rf_inst_vld  &&  ld_rf_inst_ldr  &&  ld_rf_off_0_extend)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire  &&  ld_rf_inst_ldr  &&  ld_rf_off_0_extend)
     ld_ag_offset[63:32]  <=  32'h0;
-  else if (!ld_ag_stall_vld &&  ld_rf_inst_vld)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire)
     ld_ag_offset[63:32]  <=  idu_lsu_rf_pipe3_src1[63:32];
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe8_fire)
+    ld_ag_offset[63:32]  <=  32'h0;
 end
 
 
@@ -744,10 +833,12 @@ begin
     ld_ag_offset[31:0]  <=  32'h10;
   else if(ld_ag_cross_page_ldr_imme_stall_arb)
     ld_ag_offset[31:0]  <=  32'h0;
-  else if (!ld_ag_stall_vld &&  ld_rf_inst_vld  &&  !ld_rf_inst_ldr)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire  &&  !ld_rf_inst_ldr)
     ld_ag_offset[31:0]  <=  {{20{idu_lsu_rf_pipe3_offset[11]}},idu_lsu_rf_pipe3_offset[11:0]};
-  else if (!ld_ag_stall_vld &&  ld_rf_inst_vld)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire)
     ld_ag_offset[31:0]  <=  idu_lsu_rf_pipe3_src1[31:0];
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe8_fire)
+    ld_ag_offset[31:0]  <=  32'h0;
 end
 
 //+-------------+
@@ -760,8 +851,10 @@ begin
     ld_ag_offset_plus[12:0]  <=  13'h0;
   else if(ld_ag_cross_page_ldr_imme_stall_arb)
     ld_ag_offset_plus[12:0]  <=  13'h0;
-  else if (!ld_ag_stall_vld &&  ld_rf_inst_vld)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire)
     ld_ag_offset_plus[12:0]  <=  idu_lsu_rf_pipe3_offset_plus[12:0];
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe8_fire)
+    ld_ag_offset_plus[12:0]  <=  13'h0;
 end
 
 //+------+
@@ -772,8 +865,10 @@ always @(posedge ld_ag_clk)
 begin
   if(ld_ag_cross_page_ldr_imme_stall_arb)
     ld_ag_base[63:0]  <=  ld_ag_va[63:0];
-  else if (!ld_ag_stall_vld &&  ld_rf_inst_vld)
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire)
     ld_ag_base[63:0]  <=  idu_lsu_rf_pipe3_src0[63:0];
+  else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe8_fire)
+    ld_ag_base[63:0]  <=  idu_mat_rf_pipe8_lsu_src0[63:0];
 end
 
 //==========================================================
@@ -1044,7 +1139,7 @@ assign lsu_mmu_id0[6:0]             = ld_ag_iid[6:0];
 assign lsu_mmu_st_inst0             = ld_ag_ldamo_inst;
 
 //-----------mmu output-------------------------------------
-assign ld_ag_pn[`PA_WIDTH-13:0]     = mmu_lsu_pa0[`PA_WIDTH-13:0];
+assign ld_ag_pn[`PA_WIDTH-13:0]     = mmu_lsu_pa0[`PA_WIDTH-13:0]; // 如果hit同一个周期内直接得到MMU的结果
 // &Force("output", "ld_ag_page_so"); @971
 assign ld_ag_page_so        = mmu_lsu_so0 && mmu_lsu_pa0_vld;
 // &Force("output", "ld_ag_page_ca"); @973
@@ -1311,7 +1406,9 @@ assign ld_ag_stall_ori            = (ld_ag_cross_page_ldr_imme_stall_req
                                         ||  ld_ag_dcache_stall_req
                                         ||  ld_ag_mmu_stall_req)
                                     &&  !ld_ag_atomic_no_cmit_restart_req;
-
+// ld_ag_stall_ori表示跨页ldr指令/dcache忙碌(被其他dcache请求占用仲裁)/mmu stall导致的阻塞, 
+//  但是阻塞前需要进行新旧指令的检查(ld_ag_stall_mask), 
+//  mask为高则会导致放弃该AG阶段的指令: ld_ag_lsid->ld_ag_stall_restart_entry->lsu_ctrl
 assign ld_ag_stall_vld            = ld_ag_stall_ori
                                     && !ld_ag_stall_mask;
 
@@ -1324,16 +1421,29 @@ ct_rtu_compare_iid  x_lsu_rf_compare_ld_ag_iid (
   .x_iid1                    (ld_ag_iid[6:0]           )
 );
 
+wire mat_rf_iid_older_than_ld_ag;
+ct_rtu_compare_iid  x_lsu_mat_rf_compare_ld_ag_iid (
+  .x_iid0                    (idu_mat_rf_pipe8_iid[6:0]),
+  .x_iid0_older              (mat_rf_iid_older_than_ld_ag),
+  .x_iid1                    (ld_ag_iid[6:0]           )
+);
+
 // &Connect( .x_iid0         (idu_lsu_rf_pipe3_iid[6:0]), @1235
 //           .x_iid1         (ld_ag_iid[6:0]           ), @1236
 //           .x_iid0_older   (rf_iid_older_than_ld_ag )); @1237
 
-assign ld_ag_stall_mask = idu_lsu_rf_pipe3_sel
-                          && rf_iid_older_than_ld_ag;
+// stall_mask来源增加 matrix load, 不仅仅是只有pipe3, 当pipe8 矩阵访存(ld)指令更老时也需要清除stall, 
+//  避免因类似原子指令等待流水线清空而更老指令还未执行造成的死锁
+assign ld_ag_stall_mask = (idu_lsu_rf_pipe3_sel && rf_iid_older_than_ld_ag) || 
+                          (idu_mat_rf_lsu_ld_sel && mat_rf_iid_older_than_ld_ag);
 
 assign ld_ag_stall_restart_entry[LSIQ_ENTRY-1:0] = ld_ag_stall_mask
-                                                   ? ld_ag_lsid[LSIQ_ENTRY-1:0]
+                                                   ? ld_ag_lsid[LSIQ_ENTRY-1:0] // 会在lsu ctrl筛选ag_lsid是否真正来自lsiq
                                                    : idu_lsu_rf_pipe3_lch_entry[LSIQ_ENTRY-1:0];
+
+// 因为和矩阵访存冲突而no fire导致重发, 并且可能和ag_stall同时发生因此需要新增一个信号
+wire [11:0] ld_ag_no_fire_restart_entry;
+assign ld_ag_no_fire_restart_entry[LSIQ_ENTRY-1:0] = idu_lsu_rf_pipe3_lch_entry[LSIQ_ENTRY-1:0];
 
 //==========================================================
 //        Generage to DC stage signal
@@ -1410,7 +1520,7 @@ assign ld_ag_lm_init_vld  = ld_ag_inst_vld
 //        Generate restart/lsiq signal
 //==========================================================
 //-----------lsiq signal----------------
-assign ld_ag_mask_lsid[LSIQ_ENTRY-1:0]    = {LSIQ_ENTRY{ld_ag_inst_vld}}
+assign ld_ag_mask_lsid[LSIQ_ENTRY-1:0]    = {LSIQ_ENTRY{ld_ag_inst_vld && ld_ag_pipe3}}
                                             &  ld_ag_lsid[LSIQ_ENTRY-1:0];
 
 assign lsu_idu_ld_ag_wait_old_gateclk_en = ld_ag_atomic_no_cmit_restart_arb;

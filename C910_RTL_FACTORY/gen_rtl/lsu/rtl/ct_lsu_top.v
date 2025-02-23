@@ -155,6 +155,13 @@ module ct_lsu_top(
   idu_lsu_rf_pipe5_srcv0_vr1,
   idu_lsu_rf_pipe5_stdata1_vld,
   idu_lsu_rf_pipe5_unalign,
+
+  idu_mat_rf_lsu_sel,
+  idu_mat_rf_lsu_gateclk_sel,
+  idu_mat_rf_pipe8_lsu_src0,
+  idu_mat_rf_pipe8_iid,
+  idu_mat_rf_pipe8_lsu_meta,
+
   idu_lsu_vmb_create0_dp_en,
   idu_lsu_vmb_create0_dst_ready,
   idu_lsu_vmb_create0_en,
@@ -652,6 +659,13 @@ input   [63 :0]  idu_lsu_rf_pipe5_srcv0_vr0;
 input   [63 :0]  idu_lsu_rf_pipe5_srcv0_vr1;             
 input            idu_lsu_rf_pipe5_stdata1_vld;           
 input            idu_lsu_rf_pipe5_unalign;               
+
+input           idu_mat_rf_lsu_sel;
+input           idu_mat_rf_lsu_gateclk_sel;
+input   [63:0]  idu_mat_rf_pipe8_lsu_src0;
+input   [6 :0]  idu_mat_rf_pipe8_iid;
+input   [15:0]  idu_mat_rf_pipe8_lsu_meta;
+
 // idu_lsu_vmb: 向量有关, 已阉割
 input            idu_lsu_vmb_create0_dp_en;              
 input            idu_lsu_vmb_create0_dst_ready;          
@@ -2792,6 +2806,18 @@ assign lsu_idu_vmb_full = 1'b0;
 assign lsu_idu_vmb_full_updt = 1'b0;
 assign lsu_idu_vmb_full_updt_clk_en = 1'b0;
 
+wire            idu_mat_rf_lsu_sel;
+wire            idu_mat_rf_lsu_gateclk_sel;
+wire    [63:0]  idu_mat_rf_pipe8_lsu_src0;
+wire    [6 :0]  idu_mat_rf_pipe8_iid;
+wire    [15:0]  idu_mat_rf_pipe8_lsu_meta;
+
+wire            ld_ag_pipe3;
+wire            ld_ag_pipe8;
+wire  idu_lsu_rf_pipe3_fire;
+wire  idu_lsu_rf_pipe8_fire;
+wire  [11:0]  ld_ag_no_fire_restart_entry;
+
 //==========================================================
 //                    AG/EX1 Stage
 //==========================================================
@@ -2900,6 +2926,19 @@ ct_lsu_ld_ag  x_ct_lsu_ld_ag (
   .ld_ag_utlb_miss                   (ld_ag_utlb_miss                  ),
   .ld_ag_vpn                         (ld_ag_vpn                        ),
   .ld_ag_vreg                        (ld_ag_vreg                       ),
+  
+  .idu_mat_rf_lsu_ld_sel            (idu_mat_rf_lsu_sel && idu_mat_rf_pipe8_lsu_meta[14]),
+  .idu_mat_rf_lsu_ld_gateclk_sel    (idu_mat_rf_lsu_gateclk_sel && idu_mat_rf_pipe8_lsu_meta[14]),
+  .idu_mat_rf_pipe8_lsu_src0        (idu_mat_rf_pipe8_lsu_src0),
+  .idu_mat_rf_pipe8_iid             (idu_mat_rf_pipe8_iid),
+  .idu_mat_rf_pipe8_lsu_elem_width  (idu_mat_rf_pipe8_lsu_meta[1:0]),
+
+  .ld_ag_pipe3                      (ld_ag_pipe3),
+  .ld_ag_pipe8                      (ld_ag_pipe8),
+  .idu_lsu_rf_pipe3_fire            (idu_lsu_rf_pipe3_fire),
+  .idu_lsu_rf_pipe8_fire            (idu_lsu_rf_pipe8_fire),
+  .ld_ag_no_fire_restart_entry      (ld_ag_no_fire_restart_entry),
+
   .lsu_hpcp_ld_cross_4k_stall        (lsu_hpcp_ld_cross_4k_stall       ),
   .lsu_hpcp_ld_other_stall           (lsu_hpcp_ld_other_stall          ),
   .lsu_idu_ag_pipe3_load_inst_vld    (lsu_idu_ag_pipe3_load_inst_vld   ),
@@ -5852,6 +5891,13 @@ ct_lsu_ctrl  x_ct_lsu_ctrl (
   .ld_ag_inst_vld                    (ld_ag_inst_vld                   ),
   .ld_ag_stall_ori                   (ld_ag_stall_ori                  ),
   .ld_ag_stall_restart_entry         (ld_ag_stall_restart_entry        ),
+  
+  .ld_ag_pipe3                      (ld_ag_pipe3),
+  .idu_mat_rf_lsu_sel               (idu_mat_rf_lsu_sel),
+  .idu_mat_rf_lsu_gateclk_sel       (idu_mat_rf_lsu_gateclk_sel),
+  .idu_lsu_rf_pipe3_fire            (idu_lsu_rf_pipe3_fire),
+  .ld_ag_no_fire_restart_entry      (ld_ag_no_fire_restart_entry),
+
   .ld_da_borrow_vld                  (ld_da_borrow_vld                 ),
   .ld_da_ecc_wakeup                  (ld_da_ecc_wakeup                 ),
   .ld_da_idu_already_da              (ld_da_idu_already_da             ),
