@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 // &ModuleBeg; @27
-module ct_lsu_ld_dc(
+module ct_lsu_ld_dc#(parameter MATRIX_LSIQ_ENTRY = 8)(
   cb_ld_dc_addr_hit,
   cp0_lsu_da_fwd_dis,
   cp0_lsu_dcache_en,
@@ -70,6 +70,7 @@ module ct_lsu_ld_dc(
   ld_ag_inst_vld,
   ld_ag_ldfifo_pc,
   ld_ag_lsid,
+  ld_ag_mat_lsid,
   ld_ag_lsiq_bkpta_data,
   ld_ag_lsiq_bkptb_data,
   ld_ag_lsiq_spec_fail,
@@ -145,9 +146,12 @@ module ct_lsu_ld_dc(
   ld_dc_hit_high_region,
   ld_dc_hit_low_region,
   ld_dc_idu_lq_full,
+  ld_dc_mat_ldst_lq_full,
   ld_dc_idu_tlb_busy,
+  ld_dc_mat_ldst_tlb_busy,
   ld_dc_iid,
   ld_dc_imme_wakeup,
+  ld_dc_mat_ldst_imme_wakeup,
   ld_dc_inst_chk_vld,
   ld_dc_inst_size,
   ld_dc_inst_type,
@@ -162,6 +166,7 @@ module ct_lsu_ld_dc(
   ld_dc_lq_create_vld,
   ld_dc_lq_full_gateclk_en,
   ld_dc_lsid,
+  ld_dc_mat_lsid,
   ld_dc_mmu_req,
   ld_dc_mt_value,
   ld_dc_no_spec,
@@ -291,6 +296,7 @@ input           ld_ag_inst_vfls;
 input           ld_ag_inst_vld;                         
 input   [14:0]  ld_ag_ldfifo_pc;                        
 input   [11:0]  ld_ag_lsid;                             
+input  [MATRIX_LSIQ_ENTRY-1:0]  ld_ag_mat_lsid;
 input           ld_ag_lsiq_bkpta_data;                  
 input           ld_ag_lsiq_bkptb_data;                  
 input           ld_ag_lsiq_spec_fail;                   
@@ -395,9 +401,12 @@ output  [3 :0]  ld_dc_get_dcache_data;
 output          ld_dc_hit_high_region;                  
 output          ld_dc_hit_low_region;                   
 output  [11:0]  ld_dc_idu_lq_full;                      
+output [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_lq_full;
 output  [11:0]  ld_dc_idu_tlb_busy;                     
+output [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_tlb_busy;
 output  [6 :0]  ld_dc_iid;                              
 output  [11:0]  ld_dc_imme_wakeup;                      
+output [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_imme_wakeup;
 output          ld_dc_inst_chk_vld;                     
 output  [2 :0]  ld_dc_inst_size;                        
 output  [1 :0]  ld_dc_inst_type;                        
@@ -412,6 +421,7 @@ output          ld_dc_lq_create_gateclk_en;
 output          ld_dc_lq_create_vld;                    
 output          ld_dc_lq_full_gateclk_en;               
 output  [11:0]  ld_dc_lsid;                             
+output  [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_lsid;
 output          ld_dc_mmu_req;                          
 output  [39:0]  ld_dc_mt_value;                         
 output          ld_dc_no_spec;                          
@@ -498,6 +508,7 @@ reg             ld_dc_load_inst_vld_dup2;
 reg             ld_dc_load_inst_vld_dup3;               
 reg             ld_dc_load_inst_vld_dup4;               
 reg     [11:0]  ld_dc_lsid;                             
+reg     [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_lsid;
 reg             ld_dc_lsiq_bkpta_data;                  
 reg             ld_dc_lsiq_bkptb_data;                  
 reg             ld_dc_lsiq_spec_fail;                   
@@ -595,6 +606,7 @@ wire            ld_ag_inst_vfls;
 wire            ld_ag_inst_vld;                         
 wire    [14:0]  ld_ag_ldfifo_pc;                        
 wire    [11:0]  ld_ag_lsid;                             
+wire   [MATRIX_LSIQ_ENTRY-1:0]  ld_ag_mat_lsid;
 wire            ld_ag_lsiq_bkpta_data;                  
 wire            ld_ag_lsiq_bkptb_data;                  
 wire            ld_ag_lsiq_spec_fail;                   
@@ -688,9 +700,12 @@ wire            ld_dc_hit_low_region;
 wire            ld_dc_hit_way0;                         
 wire            ld_dc_hit_way1;                         
 wire    [11:0]  ld_dc_idu_lq_full;                      
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_lq_full;
 wire    [11:0]  ld_dc_idu_tlb_busy;                     
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_tlb_busy;
 wire            ld_dc_imme_restart_vld;                 
 wire    [11:0]  ld_dc_imme_wakeup;                      
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_imme_wakeup;
 wire            ld_dc_inst_chk_vld;                     
 wire            ld_dc_inst_clk;                         
 wire            ld_dc_inst_clk_en;                      
@@ -709,6 +724,7 @@ wire            ld_dc_lq_full_gateclk_en;
 wire            ld_dc_lq_full_req;                      
 wire            ld_dc_lq_full_vld;                      
 wire    [11:0]  ld_dc_mask_lsid;                        
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mask_mat_lsid;
 wire            ld_dc_pf_inst_short;                    
 wire            ld_dc_pfu_info_set_vld;                 
 wire    [39:0]  ld_dc_pfu_va;                           
@@ -1091,6 +1107,7 @@ begin
     ld_dc_atomic                      <=  1'b0;
     ld_dc_iid[6:0]                    <=  7'b0;
     ld_dc_lsid[LSIQ_ENTRY-1:0]        <=  {LSIQ_ENTRY{1'b0}};
+    ld_dc_mat_lsid[MATRIX_LSIQ_ENTRY-1:0]        <=  {MATRIX_LSIQ_ENTRY{1'b0}};
     ld_dc_old                         <=  1'b0;
     ld_dc_bytes_vld[15:0]             <=  16'b0;
     ld_dc_bytes_vld1[15:0]            <=  16'b0;
@@ -1139,6 +1156,7 @@ begin
     ld_dc_atomic                      <=  ld_ag_atomic;
     ld_dc_iid[6:0]                    <=  ld_ag_iid[6:0];
     ld_dc_lsid[LSIQ_ENTRY-1:0]        <=  ld_ag_lsid[LSIQ_ENTRY-1:0];
+    ld_dc_mat_lsid[MATRIX_LSIQ_ENTRY-1:0]        <=  ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
     ld_dc_old                         <=  ld_ag_old;
     ld_dc_bytes_vld[15:0]             <=  ld_ag_dc_bytes_vld[15:0];
     ld_dc_bytes_vld1[15:0]            <=  ld_ag_dc_bytes_vld1[15:0];
@@ -1289,6 +1307,7 @@ assign ld_dc_ld_inst    = !ld_dc_atomic
 
 //for timing, create lq do not see access deny
 assign ld_dc_lq_create_vld          = ld_dc_lq_create_dp_vld
+                                      // 源自和ST DC的依赖, 引起RAW冒险, 因此不能写入LQ
                                       &&  !ld_dc_depd_imme_restart_req
                                       &&  !sq_ld_dc_addr1_dep_discard;
 
@@ -1302,10 +1321,20 @@ assign ld_dc_lq_create_dp_vld       = ld_dc_inst_vld
                                       &&  !ld_dc_vector_nop
                                       &&  !ld_dc_old
                                       &&  !ld_dc_page_so
+                  // 需注意lq create排除了所有restart的情况:
+                  //  1. lq full: 本身在已经full的LQ就不会创建成功, 因此此处无需判断
+                  //  2. LD DC和ST DC重叠, RAW风险, 在!ld_dc_depd_imme_restart_req->ld_dc_lq_create_vld排除
+                  //  3. tlb_busy: 本身使能条件之一就是下面的 ld_dc_utlb_miss
                                       &&  !ld_dc_utlb_miss
+                  // lq判断当前DC阶段指令iid和secd(跨界访问)信息是否匹配, 
+                  //  如果匹配则说明之前已经创建过, 无需再创建, 取消create的使能
+                  //  说明: LD DC阶段指令在有效且排除restart情况后会立即写入LQ, 
+                  //  但是DC阶段的指令可能保持同一条有效很长一段时间, 
+                  //  为了降低功耗采用了这种检测hit(表示创建成功)后拉低create vld信号的方法
                                       &&  !lq_ld_dc_inst_hit
                                       &&  !ld_dc_expt_vld_except_access_err;
-
+// 因为跨界加速的存在, 一条跨界load可以通过同时访问cache和cache buffer一次获得跨界的结果, 
+/// 因此在DC阶段分成addr0和addr1两路访问, 通过LQ的两个端口进行写入
 assign ld_dc_lq_create1_dp_vld      = ld_dc_lq_create_dp_vld 
                                       && ld_dc_acclr_en;
  
@@ -1384,7 +1413,10 @@ assign ld_dc_raw_do_hit     = |(ld_dc_bytes_vld[15:0]  & st_dc_bytes_vld[15:0]);
 
 //------------------situation 2-----------------------------
 assign ld_dc_depd_st_dc2    = ld_dc_inst_chk_vld
-                              &&  ld_dc_raw_new
+                              &&  ld_dc_raw_new // 来自ld_ag_raw_new, 
+                                                //  若==1表示ST AG阶段的指令iid older than LD AG阶段指令iid
+                                                //  传到DC阶段比较了地址重叠ld_dc_raw_addr_tto4_hit&&ld_dc_raw_do_hit
+                                                //  因此为了保证RAW顺序性需要放弃LD DC指令->ld_dc_depd_st_dc->ld_dc_depd_imme_restart_req
                               &&  (st_dc_chk_st_inst_vld
                                   ||  st_dc_chk_statomic_inst_vld)
                               &&  ld_dc_raw_addr_tto4_hit
@@ -1443,7 +1475,7 @@ end
 //for timing, use create_dp signal to replay
 assign ld_dc_lq_full_req      = ld_dc_lq_create_dp_vld && lq_ld_dc_full
                                 || ld_dc_lq_create1_dp_vld && lq_ld_dc_less2;
-
+// 
 assign ld_dc_depd_imme_restart_req  = ld_dc_depd_st_dc;
 
 assign ld_dc_utlb_miss_vld    = ld_dc_inst_vld
@@ -1804,12 +1836,25 @@ assign ld_dc_ahead_vreg_wb_vld = 1'b0;
 //==========================================================
 assign ld_dc_mask_lsid[LSIQ_ENTRY-1:0]    = {LSIQ_ENTRY{ld_dc_inst_vld}}
                                             & ld_dc_lsid[LSIQ_ENTRY-1:0];
+// 用于设置LSIQ表项内的lq_full标志位, 暂时阻止表项解冻(frz_clr)立即重发, 在收到LQ的非满信号后才能解冻并参与issue仲裁
 assign ld_dc_idu_lq_full[LSIQ_ENTRY-1:0]  = {LSIQ_ENTRY{ld_dc_lq_full_vld}}
                                             & ld_dc_mask_lsid[LSIQ_ENTRY-1:0];
+// 用于立即唤醒: 可以直接使能DC阶段指令对应的LSIQ表项的frz_clr, 解冻并立即重新参与issue仲裁执行重发
 assign ld_dc_imme_wakeup[LSIQ_ENTRY-1:0]  = {LSIQ_ENTRY{ld_dc_imme_restart_vld}}
                                             & ld_dc_mask_lsid[LSIQ_ENTRY-1:0];
+// 用于设置LSIQ表项内的tlb_busy标志位, 暂时阻止表项解冻(frz_clr)立即重发, 在收到tlb非busy后才能解冻并参与issue仲裁
 assign ld_dc_idu_tlb_busy[LSIQ_ENTRY-1:0] = {LSIQ_ENTRY{ld_dc_tlb_busy_restart_vld}}
                                             & ld_dc_mask_lsid[LSIQ_ENTRY-1:0];
+
+// 参考上述注释
+assign ld_dc_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0]    = {MATRIX_LSIQ_ENTRY{ld_dc_inst_vld}}
+                                                       & ld_dc_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+assign ld_dc_mat_ldst_lq_full[MATRIX_LSIQ_ENTRY-1:0]  = {MATRIX_LSIQ_ENTRY{ld_dc_lq_full_vld}}
+                                                         & ld_dc_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+assign ld_dc_mat_ldst_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]  = {MATRIX_LSIQ_ENTRY{ld_dc_imme_restart_vld}}
+                                                         & ld_dc_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+assign ld_dc_mat_ldst_tlb_busy[MATRIX_LSIQ_ENTRY-1:0] = {MATRIX_LSIQ_ENTRY{ld_dc_tlb_busy_restart_vld}}
+                                                         & ld_dc_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
                                         
 //==========================================================
 //                Generage signal to idu

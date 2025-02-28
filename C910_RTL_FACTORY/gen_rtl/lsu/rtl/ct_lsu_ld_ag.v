@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 // &ModuleBeg; @28
-module ct_lsu_ld_ag(
+module ct_lsu_ld_ag#(parameter MATRIX_LSIQ_ENTRY = 8)(
   ag_dcache_arb_ld_data_gateclk_en,
   ag_dcache_arb_ld_data_high_idx,
   ag_dcache_arb_ld_data_low_idx,
@@ -102,6 +102,7 @@ module ct_lsu_ld_ag(
   ld_ag_lm_init_vld,
   ld_ag_lr_inst,
   ld_ag_lsid,
+  ld_ag_mat_lsid,
   ld_ag_lsiq_bkpta_data,
   ld_ag_lsiq_bkptb_data,
   ld_ag_lsiq_spec_fail,
@@ -122,6 +123,7 @@ module ct_lsu_ld_ag(
   ld_ag_split,
   ld_ag_stall_ori,
   ld_ag_stall_restart_entry,
+  ld_ag_stall_restart_mat_entry,
   ld_ag_utlb_miss,
   ld_ag_vpn,
   ld_ag_vreg,
@@ -279,6 +281,7 @@ output  [14:0]  ld_ag_ldfifo_pc;
 output          ld_ag_lm_init_vld;                  
 output          ld_ag_lr_inst;                      
 output  [11:0]  ld_ag_lsid;                         
+output  [MATRIX_LSIQ_ENTRY-1:0]  ld_ag_mat_lsid;
 output          ld_ag_lsiq_bkpta_data;              
 output          ld_ag_lsiq_bkptb_data;              
 output          ld_ag_lsiq_spec_fail;               
@@ -299,6 +302,7 @@ output          ld_ag_sign_extend;
 output          ld_ag_split;                        
 output          ld_ag_stall_ori;                    
 output  [11:0]  ld_ag_stall_restart_entry;          
+output  [MATRIX_LSIQ_ENTRY-1:0]  ld_ag_stall_restart_mat_entry;
 output          ld_ag_utlb_miss;                    
 output  [27:0]  ld_ag_vpn;                          
 output  [5 :0]  ld_ag_vreg;                         
@@ -348,6 +352,7 @@ reg     [15:0]  ld_ag_le_bytes_vld_high_bits_full;
 reg     [15:0]  ld_ag_le_bytes_vld_low_bits_full;   
 reg             ld_ag_lsfifo;                       
 reg     [11:0]  ld_ag_lsid;                         
+reg     [MATRIX_LSIQ_ENTRY-1:0]  ld_ag_mat_lsid;
 reg             ld_ag_lsiq_bkpta_data;              
 reg             ld_ag_lsiq_bkptb_data;              
 reg             ld_ag_lsiq_spec_fail;               
@@ -571,6 +576,7 @@ parameter BYTE        = 2'b00,
           DWORD       = 2'b11;
 
 parameter LSIQ_ENTRY  = 12;
+// parameter MATRIX_LSIQ_ENTRY = 8;
 parameter VMB_ENTRY   = 8;
 parameter PC_LEN      = 15;
 
@@ -690,6 +696,7 @@ begin
     ld_ag_atomic                <=  1'b0;
     ld_ag_iid[6:0]              <=  7'b0;
     ld_ag_lsid[LSIQ_ENTRY-1:0]  <=  {LSIQ_ENTRY{1'b0}};
+    ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] <= {MATRIX_LSIQ_ENTRY{1'b0}};
     ld_ag_old                   <=  1'b0;
     ld_ag_preg[6:0]             <=  7'b0;
     ld_ag_preg_dup1[6:0]        <=  7'b0;
@@ -724,6 +731,7 @@ begin
     ld_ag_atomic                <=  idu_lsu_rf_pipe3_atomic;
     ld_ag_iid[6:0]              <=  idu_lsu_rf_pipe3_iid[6:0];
     ld_ag_lsid[LSIQ_ENTRY-1:0]  <=  idu_lsu_rf_pipe3_lch_entry[LSIQ_ENTRY-1:0];
+    ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] <= {MATRIX_LSIQ_ENTRY{1'b0}};
     ld_ag_old                   <=  idu_lsu_rf_pipe3_oldest;
     ld_ag_preg[6:0]             <=  idu_lsu_rf_pipe3_preg[6:0];
     ld_ag_preg_dup1[6:0]        <=  idu_lsu_rf_pipe3_preg[6:0];
@@ -756,7 +764,8 @@ begin
     ld_ag_sign_extend           <=  1'b0;
     ld_ag_atomic                <=  1'b0;
     ld_ag_iid[6:0]              <=  idu_mat_rf_pipe8_iid[6:0];
-    ld_ag_lsid[LSIQ_ENTRY-1:0]  <=  {LSIQ_ENTRY{1'b0}}; // TODO
+    ld_ag_lsid[LSIQ_ENTRY-1:0]  <=  {LSIQ_ENTRY{1'b0}};
+    ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] <= {MATRIX_LSIQ_ENTRY{1'b1}}; // TODO: all 1 for test
     ld_ag_old                   <=  1'b0;
     ld_ag_preg[6:0]             <=  7'b0; // 配合ld_dc_load_inst_vld_dup...用于操作数唤醒, 设置为0不用管
     ld_ag_preg_dup1[6:0]        <=  7'b0;
@@ -1162,8 +1171,8 @@ assign ld_ag_pa[`PA_WIDTH-1:0]     = {ld_ag_pn[`PA_WIDTH-13:0],ld_ag_va[11:0]};
 //grs inst use va, rather than pa
 assign ld_ag_addr0[`PA_WIDTH-1:0]  = ld_ag_pa[`PA_WIDTH-1:0];
 
-// used for boundary inst acceleration
 assign ld_ag_addr1_to4[`PA_WIDTH-5:0] = ld_ag_va_ori[`PA_WIDTH-1:4];
+// used for boundary inst acceleration 跨界访问, 利用cache buffer缓存跨界访问第一次访问的数据, 加速后续的跨界
 assign ld_ag_acclr_en         = ld_ag_boundary
                                 &&  !ld_ag_4k_sum_ori[12]
                                 &&  !cp0_lsu_cb_aclr_dis
@@ -1406,7 +1415,12 @@ assign ld_ag_stall_ori            = (ld_ag_cross_page_ldr_imme_stall_req
                                         ||  ld_ag_dcache_stall_req
                                         ||  ld_ag_mmu_stall_req)
                                     &&  !ld_ag_atomic_no_cmit_restart_req;
-// ld_ag_stall_ori表示跨页ldr指令/dcache忙碌(被其他dcache请求占用仲裁)/mmu stall导致的阻塞, 
+// ld_ag_stall_ori表示跨页ldr指令/dcache忙碌(被其他dcache请求占用仲裁)/mmu stall, 触发RF->AG阻塞
+//  使AG阶段指令保持, 直到stall取消. 但是如果RF阶段有更旧的指令(ld_ag_stall_mask), 将取消RF->AG的阻塞, 
+//  相当于AG阶段引起阻塞的指令被清除, 下个周期pipe进来新指令.因此在ld_ag_stall_mask时重发的是AG阶段的lsid, 
+//  否则为了保持AG指令, 重发的是RF阶段的指令, 即没有成功pipe
+//  并且注意 ld_ag_atomic_no_cmit_restart_req 不会导致stall_ori置1, 
+//  因为atomic no cmit stal正是需要其他访存指令提交才能使atomic成为oldest从而解除stall
 //  但是阻塞前需要进行新旧指令的检查(ld_ag_stall_mask), 
 //  mask为高则会导致放弃该AG阶段的指令: ld_ag_lsid->ld_ag_stall_restart_entry->lsu_ctrl
 assign ld_ag_stall_vld            = ld_ag_stall_ori
@@ -1438,8 +1452,13 @@ assign ld_ag_stall_mask = (idu_lsu_rf_pipe3_sel && rf_iid_older_than_ld_ag) ||
                           (idu_mat_rf_lsu_ld_sel && mat_rf_iid_older_than_ld_ag);
 
 assign ld_ag_stall_restart_entry[LSIQ_ENTRY-1:0] = ld_ag_stall_mask
-                                                   ? ld_ag_lsid[LSIQ_ENTRY-1:0] // 会在lsu ctrl筛选ag_lsid是否真正来自lsiq
+                                                   ? ld_ag_lsid[LSIQ_ENTRY-1:0] // 无需筛选, 因为不是pipe3->AG的会为0, 不会唤醒任何表项
                                                    : idu_lsu_rf_pipe3_lch_entry[LSIQ_ENTRY-1:0];
+
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_stall_restart_mat_entry; // 重发引起stall且有更旧访存指令出现时的矩阵访存uop, 该阶段的信息被清除以容纳新指令
+assign ld_ag_stall_restart_mat_entry[MATRIX_LSIQ_ENTRY-1:0] = ld_ag_stall_mask
+                                                              ? ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] // 无需筛选, 因为不是pipe8->AG的会为0, 不会唤醒任何表项
+                                                              : {MATRIX_LSIQ_ENTRY{1'b1}}; // TODO: all 1 for test
 
 // 因为和矩阵访存冲突而no fire导致重发, 并且可能和ag_stall同时发生因此需要新增一个信号
 wire [11:0] ld_ag_no_fire_restart_entry;
@@ -1522,7 +1541,9 @@ assign ld_ag_lm_init_vld  = ld_ag_inst_vld
 //-----------lsiq signal----------------
 assign ld_ag_mask_lsid[LSIQ_ENTRY-1:0]    = {LSIQ_ENTRY{ld_ag_inst_vld && ld_ag_pipe3}}
                                             &  ld_ag_lsid[LSIQ_ENTRY-1:0];
-
+// 普通访存: 原子指令访存需要等待前面流水线清空, 到达ROB顶部, 才能执行, 因此需要wait_old(等待成为oldest)
+//  因此ld_ag_atomic_no_cmit_restart_arb会在atomic指令未被提交时使能, 重发对应的LSIQ表项, 
+//  最后LSIQ表项通过维护的age vec判断是否能重发
 assign lsu_idu_ld_ag_wait_old_gateclk_en = ld_ag_atomic_no_cmit_restart_arb;
 assign lsu_idu_ld_ag_wait_old[LSIQ_ENTRY-1:0]  = ld_ag_mask_lsid[LSIQ_ENTRY-1:0]
                                                  & {LSIQ_ENTRY{ld_ag_atomic_no_cmit_restart_arb}};
@@ -1558,7 +1579,9 @@ assign lsu_hpcp_ld_cross_4k_stall  = ld_ag_inst_vld
                                      &&  ld_ag_already_cross_page_ldr_imme
                                      &&  !ld_ag_stall_vld
                                      &&  !ld_ag_utlb_miss
-                                     &&  !ld_ag_already_da;
+                                     &&  !ld_ag_already_da; // 意思是已经到达DA阶段的指令, 会在LSIQ表项内标记, 
+                                                            // 但是因为某种原因(stall)重发了, 所以会在重发后AG阶段收到这个标记, 
+                                                            // 应该是为了避免重发后某些stall的重复触发
 assign lsu_hpcp_ld_other_stall     = ld_ag_inst_vld
                                      &&  !ld_ag_cross_4k
                                      &&  ld_ag_stall_vld

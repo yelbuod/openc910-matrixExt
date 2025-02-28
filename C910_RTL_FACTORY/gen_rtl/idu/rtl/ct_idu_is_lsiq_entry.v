@@ -678,6 +678,7 @@ end
 //==========================================================
 //                       Age Vector
 //==========================================================
+// TODO: 需要考虑matrix ls queue对age vec的影响
 //agevec of same type (store and bar share same type),
 //used for issue
 always @(posedge entry_clk or negedge cpurst_b)
@@ -1012,6 +1013,9 @@ begin
     tlb_busy            <=  tlb_busy;
 end
 
+// 假设表项在发射后(frz=1)遇到了SQ full(SQ满, 无空闲表项), sq_full=1, sq_full_wakeup=0
+// 那么肯定会在ST DC阶段被清除, 无法继续传递, 并且阻止进入SQ. 只有在sq_full=1且sq_full_wakeup=1, 
+// 即被唤醒的那一个周期, 才会拉高frz_clr, 解冻表项, 重新参与issue仲裁. 其他的类似.
 assign lsu_frz_clr  =  ( bar_check  || no_spec_check || lq_full
                       || sq_full    || rb_full       || wait_old
                       || wait_fence || tlb_busy)

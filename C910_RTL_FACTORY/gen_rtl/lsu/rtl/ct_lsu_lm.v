@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+// local monitor : 用于标记DCache局部缓存的状态(是否独占), 以支持lr指示独占操作和sc判断独占是否成功
 // &ModuleBeg; @24
 module ct_lsu_lm(
   biu_lsu_r_id,

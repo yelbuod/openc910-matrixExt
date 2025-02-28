@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 // &ModuleBeg; @26
-module ct_lsu_ctrl(
+module ct_lsu_ctrl#(parameter MATRIX_LSIQ_ENTRY = 8)(
   cp0_lsu_dcache_pref_dist,
   cp0_lsu_icg_en,
   cp0_lsu_l2_pref_dist,
@@ -33,14 +33,15 @@ module ct_lsu_ctrl(
   idu_lsu_rf_pipe4_sel,
   idu_lsu_rf_pipe5_gateclk_sel,
   
-  idu_mat_rf_lsu_gateclk_sel,
-  idu_mat_rf_lsu_sel,
+  idu_mat_rf_lsu_ld_gateclk_sel,
+  idu_mat_rf_lsu_ld_sel,
 
   idu_lsu_vmb_create0_gateclk_en,
   idu_lsu_vmb_create1_gateclk_en,
   ld_ag_inst_vld,
   ld_ag_stall_ori,
   ld_ag_stall_restart_entry,
+  ld_ag_stall_restart_mat_entry,
 
   ld_ag_pipe3,
   ld_ag_no_fire_restart_entry,
@@ -58,20 +59,34 @@ module ct_lsu_ctrl(
   ld_da_idu_secd,
   ld_da_idu_spec_fail,
   ld_da_idu_wait_fence,
+
+  ld_da_mat_ldst_already_da,
+  ld_da_mat_ldst_rb_full,
+  ld_da_mat_ldst_wait_fence,
+  ld_da_mat_ldst_pop_vld,
+  ld_da_mat_ldst_pop_entry,
+  ld_da_mat_ldst_spec_fail,
+  ld_da_mat_ldst_boundary_gateclk_en,
+  ld_da_mat_ldst_secd,
+
   ld_da_inst_vld,
   ld_da_rb_full_gateclk_en,
   ld_da_special_gateclk_en,
   ld_da_wait_fence_gateclk_en,
   ld_dc_borrow_vld,
   ld_dc_idu_lq_full,
+  ld_dc_mat_ldst_lq_full,
   ld_dc_idu_tlb_busy,
+  ld_dc_mat_ldst_tlb_busy,
   ld_dc_imme_wakeup,
+  ld_dc_mat_ldst_imme_wakeup,
   ld_dc_inst_vld,
   ld_dc_lq_full_gateclk_en,
   ld_dc_tlb_busy_gateclk_en,
   ld_wb_data_vld,
   ld_wb_inst_vld,
   lfb_depd_wakeup,
+  lfb_depd_mat_wakeup,
   lfb_empty,
   lfb_pop_depd_ff,
   lm_lfb_depd_wakeup,
@@ -153,6 +168,7 @@ module ct_lsu_ctrl(
   lsu_idu_ld_da_wait_old,
   lsu_idu_ld_da_wait_old_gateclk_en,
   lsu_idu_lq_full,
+  lsu_mat_ldst_lq_full,
   lsu_idu_lq_full_gateclk_en,
   lsu_idu_lsiq_pop0_vld,
   lsu_idu_lsiq_pop1_vld,
@@ -162,19 +178,36 @@ module ct_lsu_ctrl(
   lsu_idu_rb_full_gateclk_en,
   lsu_idu_secd,
   lsu_idu_spec_fail,
+  lsu_mat_ldst_wait_fence,
+  lsu_mat_ldst_rb_full,
+  lsu_mat_ldst_already_da,
+  lsu_mat_ldst_unalign_gateclk_en,
+  lsu_mat_ldst_secd,
+  lsu_mat_ldst_spec_fail,
+  lsu_mat_ldst_lsiq_pop_vld,
+  lsu_mat_ldst_lsiq_pop0_vld,
+  lsu_mat_ldst_lsiq_pop_entry,
+  lsu_mat_ldst_lq_full_gateclk_en,
+  lsu_mat_ldst_sq_full_gateclk_en,
+  lsu_mat_ldst_tlb_busy_gateclk_en,
+  lsu_mat_ldst_rb_full_gateclk_en,
+  lsu_mat_ldst_wait_fence_gateclk_en,
   lsu_idu_sq_full,
   lsu_idu_sq_full_gateclk_en,
   lsu_idu_st_ag_wait_old,
   lsu_idu_st_ag_wait_old_gateclk_en,
   lsu_idu_tlb_busy,
+  lsu_mat_ldst_tlb_busy,
   lsu_idu_tlb_busy_gateclk_en,
   lsu_idu_tlb_wakeup,
+  lsu_mat_ldst_tlb_wakeup,
   lsu_idu_unalign_gateclk_en,
   lsu_idu_wait_fence,
   lsu_idu_wait_fence_gateclk_en,
   lsu_idu_wait_old,
   lsu_idu_wait_old_gateclk_en,
   lsu_idu_wakeup,
+  lsu_mat_ldst_wakeup,
   lsu_pfu_l1_dist_sel,
   lsu_pfu_l2_dist_sel,
   lsu_special_clk,
@@ -245,15 +278,15 @@ input            idu_lsu_rf_pipe4_gateclk_sel;
 input            idu_lsu_rf_pipe4_sel;             
 input            idu_lsu_rf_pipe5_gateclk_sel;     
 
-input            idu_mat_rf_lsu_gateclk_sel;
-input            idu_mat_rf_lsu_sel;
+input            idu_mat_rf_lsu_ld_gateclk_sel;
+input            idu_mat_rf_lsu_ld_sel;
 
 input            idu_lsu_vmb_create0_gateclk_en;   
 input            idu_lsu_vmb_create1_gateclk_en;   
 input            ld_ag_inst_vld;                   
 input            ld_ag_stall_ori;                  
 input   [11 :0]  ld_ag_stall_restart_entry;        
-
+input [MATRIX_LSIQ_ENTRY-1:0] ld_ag_stall_restart_mat_entry;
 input            ld_ag_pipe3;
 input   [11 :0]  ld_ag_no_fire_restart_entry;        
 input            idu_lsu_rf_pipe3_fire;
@@ -270,20 +303,32 @@ input   [11 :0]  ld_da_idu_rb_full;
 input   [11 :0]  ld_da_idu_secd;                   
 input   [11 :0]  ld_da_idu_spec_fail;              
 input   [11 :0]  ld_da_idu_wait_fence;             
+input [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_already_da;
+input [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_rb_full;
+input [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_wait_fence;
+input                         ld_da_mat_ldst_pop_vld;
+input [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_pop_entry;
+input [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_spec_fail;
+input [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_boundary_gateclk_en;
+input [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_secd;
 input            ld_da_inst_vld;                   
 input            ld_da_rb_full_gateclk_en;         
 input            ld_da_special_gateclk_en;         
 input            ld_da_wait_fence_gateclk_en;      
 input            ld_dc_borrow_vld;                 
 input   [11 :0]  ld_dc_idu_lq_full;                
+input [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_lq_full;
 input   [11 :0]  ld_dc_idu_tlb_busy;               
+input [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_tlb_busy;
 input   [11 :0]  ld_dc_imme_wakeup;                
+input [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_imme_wakeup;
 input            ld_dc_inst_vld;                   
 input            ld_dc_lq_full_gateclk_en;         
 input            ld_dc_tlb_busy_gateclk_en;        
 input            ld_wb_data_vld;                   
 input            ld_wb_inst_vld;                   
 input   [11 :0]  lfb_depd_wakeup;                  
+input [MATRIX_LSIQ_ENTRY-1:0] lfb_depd_mat_wakeup;
 input            lfb_empty;                        
 input            lfb_pop_depd_ff;                  
 input            lm_lfb_depd_wakeup;               
@@ -416,6 +461,7 @@ output  [11 :0]  lsu_idu_already_da;
 output  [11 :0]  lsu_idu_bkpta_data;               
 output  [11 :0]  lsu_idu_bkptb_data;               
 output  [11 :0]  lsu_idu_lq_full;                  
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_lq_full;
 output           lsu_idu_lq_full_gateclk_en;       
 output           lsu_idu_lsiq_pop0_vld;            
 output           lsu_idu_lsiq_pop1_vld;            
@@ -425,17 +471,34 @@ output  [11 :0]  lsu_idu_rb_full;
 output           lsu_idu_rb_full_gateclk_en;       
 output  [11 :0]  lsu_idu_secd;                     
 output  [11 :0]  lsu_idu_spec_fail;                
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_wait_fence;
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_rb_full;
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_already_da;
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_unalign_gateclk_en;
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_secd;
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_spec_fail;
+output                         lsu_mat_ldst_lsiq_pop_vld;
+output                         lsu_mat_ldst_lsiq_pop0_vld;
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_lsiq_pop_entry;
+output                         lsu_mat_ldst_lq_full_gateclk_en;
+output                         lsu_mat_ldst_sq_full_gateclk_en;
+output                         lsu_mat_ldst_tlb_busy_gateclk_en;
+output                         lsu_mat_ldst_rb_full_gateclk_en;
+output                         lsu_mat_ldst_wait_fence_gateclk_en;
 output  [11 :0]  lsu_idu_sq_full;                  
 output           lsu_idu_sq_full_gateclk_en;       
 output  [11 :0]  lsu_idu_tlb_busy;                 
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_busy;
 output           lsu_idu_tlb_busy_gateclk_en;      
 output  [11 :0]  lsu_idu_tlb_wakeup;               
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_wakeup;
 output  [11 :0]  lsu_idu_unalign_gateclk_en;       
 output  [11 :0]  lsu_idu_wait_fence;               
 output           lsu_idu_wait_fence_gateclk_en;    
 output  [11 :0]  lsu_idu_wait_old;                 
 output           lsu_idu_wait_old_gateclk_en;      
 output  [11 :0]  lsu_idu_wakeup;                   
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_wakeup;
 output  [3  :0]  lsu_pfu_l1_dist_sel;              
 output  [3  :0]  lsu_pfu_l2_dist_sel;              
 output           lsu_special_clk;                  
@@ -483,14 +546,15 @@ wire             idu_lsu_rf_pipe4_gateclk_sel;
 wire             idu_lsu_rf_pipe4_sel;             
 wire             idu_lsu_rf_pipe5_gateclk_sel;     
 // TODO: 
-wire             idu_mat_rf_lsu_gateclk_sel;
-wire             idu_mat_rf_lsu_sel;
+wire             idu_mat_rf_lsu_ld_gateclk_sel;
+wire             idu_mat_rf_lsu_ld_sel;
 
 wire             idu_lsu_vmb_create0_gateclk_en;   
 wire             idu_lsu_vmb_create1_gateclk_en;   
 wire             ld_ag_inst_vld;                   
 wire             ld_ag_stall_ori;                  
 wire    [11 :0]  ld_ag_stall_restart_entry;        
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_stall_restart_mat_entry;
 
 wire             ld_ag_pipe3;
 wire    [11 :0]  ld_ag_no_fire_restart_entry;        
@@ -508,14 +572,29 @@ wire    [11 :0]  ld_da_idu_rb_full;
 wire    [11 :0]  ld_da_idu_secd;                   
 wire    [11 :0]  ld_da_idu_spec_fail;              
 wire    [11 :0]  ld_da_idu_wait_fence;             
+
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_already_da;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_rb_full;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_wait_fence;
+wire                         ld_da_mat_ldst_pop_vld;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_pop_entry;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_spec_fail;
+// wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_bkpta_data;
+// wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_bkptb_data;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_boundary_gateclk_en;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_secd;
+
 wire             ld_da_inst_vld;                   
 wire             ld_da_rb_full_gateclk_en;         
 wire             ld_da_special_gateclk_en;         
 wire             ld_da_wait_fence_gateclk_en;      
 wire             ld_dc_borrow_vld;                 
 wire    [11 :0]  ld_dc_idu_lq_full;                
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_lq_full;
 wire    [11 :0]  ld_dc_idu_tlb_busy;               
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_tlb_busy;
 wire    [11 :0]  ld_dc_imme_wakeup;                
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_imme_wakeup;
 wire             ld_dc_inst_vld;                   
 wire             ld_dc_lq_full_gateclk_en;         
 wire             ld_dc_tlb_busy_gateclk_en;        
@@ -528,6 +607,7 @@ wire             ld_rf_restart_vld;
 wire             ld_wb_data_vld;                   
 wire             ld_wb_inst_vld;                   
 wire    [11 :0]  lfb_depd_wakeup;                  
+wire [MATRIX_LSIQ_ENTRY-1:0] lfb_depd_mat_wakeup;
 wire             lfb_empty;                        
 wire             lfb_pop_depd_ff;                  
 wire             lm_lfb_depd_wakeup;               
@@ -600,6 +680,7 @@ wire             lsu_idu_ld_ag_wait_old_gateclk_en;
 wire    [11 :0]  lsu_idu_ld_da_wait_old;           
 wire             lsu_idu_ld_da_wait_old_gateclk_en; 
 wire    [11 :0]  lsu_idu_lq_full;                  
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_lq_full;
 wire             lsu_idu_lq_full_gateclk_en;       
 wire             lsu_idu_lsiq_pop0_vld;            
 wire             lsu_idu_lsiq_pop1_vld;            
@@ -609,19 +690,38 @@ wire    [11 :0]  lsu_idu_rb_full;
 wire             lsu_idu_rb_full_gateclk_en;       
 wire    [11 :0]  lsu_idu_secd;                     
 wire    [11 :0]  lsu_idu_spec_fail;                
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_wait_fence;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_rb_full;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_already_da;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_unalign_gateclk_en;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_secd;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_spec_fail;
+wire                         lsu_mat_ldst_lsiq_pop_vld;
+wire                         lsu_mat_ldst_lsiq_pop0_vld;
+// wire                         lsu_mat_ldst_lsiq_pop1_vld;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_lsiq_pop_entry;
+wire                         lsu_mat_ldst_lq_full_gateclk_en;
+wire                         lsu_mat_ldst_sq_full_gateclk_en;
+wire                         lsu_mat_ldst_tlb_busy_gateclk_en;
+wire                         lsu_mat_ldst_rb_full_gateclk_en;
+wire                         lsu_mat_ldst_wait_fence_gateclk_en;
+
 wire    [11 :0]  lsu_idu_sq_full;                  
 wire             lsu_idu_sq_full_gateclk_en;       
 wire    [11 :0]  lsu_idu_st_ag_wait_old;           
 wire             lsu_idu_st_ag_wait_old_gateclk_en; 
 wire    [11 :0]  lsu_idu_tlb_busy;                 
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_busy;
 wire             lsu_idu_tlb_busy_gateclk_en;      
-wire    [11 :0]  lsu_idu_tlb_wakeup;               
+wire    [11 :0]  lsu_idu_tlb_wakeup;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_wakeup;               
 wire    [11 :0]  lsu_idu_unalign_gateclk_en;       
 wire    [11 :0]  lsu_idu_wait_fence;               
 wire             lsu_idu_wait_fence_gateclk_en;    
 wire    [11 :0]  lsu_idu_wait_old;                 
 wire             lsu_idu_wait_old_gateclk_en;      
 wire    [11 :0]  lsu_idu_wakeup;                   
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_wakeup;
 wire             lsu_pref_dist_up;                 
 wire             lsu_special_clk;                  
 wire             lsu_special_clk_en;               
@@ -720,7 +820,7 @@ gated_clk_cell  x_lsu_special_clk (
 //==========================================================
 //ctrl_ld_clk is used for ld pipe
 assign ctrl_ld_clk_en = idu_lsu_rf_pipe3_gateclk_sel
-                        ||  idu_mat_rf_lsu_gateclk_sel
+                        ||  idu_mat_rf_lsu_ld_gateclk_sel
                         ||  ld_ag_inst_vld
                         ||  ld_dc_inst_vld
                         ||  ld_da_inst_vld
@@ -930,11 +1030,14 @@ end
 //==========================================================
 //------------------rf stage--------------------------------
 // ld_ag_stall_mask为高会导致AG放弃当前阶段的指令: ld_ag_lsid,
-//  但首先是因为stall导致的阻塞, 且pipe3有更旧的指令, 才会需要新旧指令对比判断是否需要放弃, 
-//  因此restart_vld的前提是ld_ag_stall_ori和idu_lsu_rf_pipe3_sel, 并且ld_rf_restart_vld->ld_rf_imme_wakeup
-//  并且是针对LSIQ重发的因此需要在引入矩阵访存时判断AG阶段是否是LSIQ发出的访存(ld_ag_pipe3)
-assign ld_rf_restart_vld                  = idu_lsu_rf_pipe3_sel
-                                            &&  ld_ag_stall_ori && ld_ag_pipe3;
+//  但首先是因为stall导致的阻塞(ld_ag_stall_ori), 且pipe3或者矩阵访存(mat_rf_lsu)有更旧的指令, 
+//  才会需要新旧指令对比判断是否需要放弃, 因此restart_vld的条件如下:
+assign ld_rf_restart_vld                  = (idu_lsu_rf_pipe3_sel || idu_mat_rf_lsu_ld_sel)
+                                            &&  ld_ag_stall_ori; // && ld_ag_pipe3: 无需筛选, 因为不是对应pipe->AG的会为0, 不会唤醒任何表项
+// 而ld_ag_stall_restart_entry有两种情况: (1)是pipe3或者矩阵访存(mat_rf_lsu)有更旧的指令, 
+//  如果AG阶段来自pipe3, 那么ld_ag_stall_restart_entry会被设置成对应的ag_lsid, 如果来自mat, 则对应的是0
+// (2)如果没有更旧的指令, AG阶段被占用, 触发RF->AG的stall, 那么
+//  ld_ag_stall_restart_entry会被设置成当前RF阶段发过来的表项索引, 表示issue失败
 assign ld_rf_imme_wakeup[LSIQ_ENTRY-1:0]  = ld_ag_stall_restart_entry[LSIQ_ENTRY-1:0]
                                             & {LSIQ_ENTRY{ld_rf_restart_vld}};
 // 因矩阵访存冲突导致no fire->immediately wakeup restart(对 LSIQ 的快速唤醒重发)
@@ -943,6 +1046,11 @@ assign ld_rf_no_fire_restart_vld          = idu_lsu_rf_pipe3_sel // 真正的pip
 assign ld_rf_no_fire_imme_wakeup[LSIQ_ENTRY-1:0]  = ld_ag_no_fire_restart_entry[LSIQ_ENTRY-1:0]
                                             & {LSIQ_ENTRY{ld_rf_no_fire_restart_vld}};
 
+// 参考ld_rf_restart_vld
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_rf_mat_imme_wakeup;
+assign ld_rf_mat_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]  = ld_ag_stall_restart_mat_entry[MATRIX_LSIQ_ENTRY-1:0]
+                                                       & {MATRIX_LSIQ_ENTRY{ld_rf_restart_vld}};
+
 assign st_rf_restart_vld                  = idu_lsu_rf_pipe4_sel
                                             &&  st_ag_stall_ori;
 assign st_rf_imme_wakeup[LSIQ_ENTRY-1:0]  = st_ag_stall_restart_entry[LSIQ_ENTRY-1:0]
@@ -950,9 +1058,15 @@ assign st_rf_imme_wakeup[LSIQ_ENTRY-1:0]  = st_ag_stall_restart_entry[LSIQ_ENTRY
 //------------------ag stage--------------------------------
 assign lsu_idu_tlb_busy[LSIQ_ENTRY-1:0]   = ld_dc_idu_tlb_busy[LSIQ_ENTRY-1:0]
                                             | st_dc_idu_tlb_busy[LSIQ_ENTRY-1:0];
+// 矩阵
+assign lsu_mat_ldst_tlb_busy[MATRIX_LSIQ_ENTRY-1:0] = ld_dc_mat_ldst_tlb_busy[MATRIX_LSIQ_ENTRY-1:0]
+                                            ; //| st_dc_idu_tlb_busy[LSIQ_ENTRY-1:0]
 //------------------dc stage--------------------------------
 assign lsu_idu_lq_full[LSIQ_ENTRY-1:0]    = ld_dc_idu_lq_full[LSIQ_ENTRY-1:0];
 assign lsu_idu_sq_full[LSIQ_ENTRY-1:0]    = st_dc_idu_sq_full[LSIQ_ENTRY-1:0];
+// 矩阵
+assign lsu_mat_ldst_lq_full[MATRIX_LSIQ_ENTRY-1:0]    = ld_dc_mat_ldst_lq_full[MATRIX_LSIQ_ENTRY-1:0];
+// assign lsu_mat_ldst_sq_full[LSIQ_ENTRY-1:0]    = st_dc_mat_ldst_lq_full[LSIQ_ENTRY-1:0];
 //------------------da stage--------------------------------
 assign lsu_idu_wait_fence[LSIQ_ENTRY-1:0] = ld_da_idu_wait_fence[LSIQ_ENTRY-1:0]
                                             | st_da_idu_wait_fence[LSIQ_ENTRY-1:0];
@@ -997,6 +1111,51 @@ assign lsu_idu_rb_full_gateclk_en   = ld_da_rb_full_gateclk_en
 assign lsu_idu_wait_fence_gateclk_en= ld_da_wait_fence_gateclk_en
                                       ||  st_da_wait_fence_gateclk_en;
 
+//------------------matrix ldst da stage--------------------------------
+//------------------matrix ldst da stage--------------------------------
+assign lsu_mat_ldst_wait_fence[MATRIX_LSIQ_ENTRY-1:0] = ld_da_mat_ldst_wait_fence[MATRIX_LSIQ_ENTRY-1:0]
+                                            ;// | st_da_mat_ldst_wait_fence[MATRIX_LSIQ_ENTRY-1:0];
+assign lsu_mat_ldst_rb_full[MATRIX_LSIQ_ENTRY-1:0]    = ld_da_mat_ldst_rb_full[MATRIX_LSIQ_ENTRY-1:0]
+                                            ;// | st_da_mat_ldst_rb_full[MATRIX_LSIQ_ENTRY-1:0];
+assign lsu_mat_ldst_already_da[MATRIX_LSIQ_ENTRY-1:0] = ld_da_mat_ldst_already_da[MATRIX_LSIQ_ENTRY-1:0]
+                                            ;// | st_da_mat_ldst_already_da[MATRIX_LSIQ_ENTRY-1:0];
+
+//---------------boundary signal----------------------------
+assign lsu_mat_ldst_unalign_gateclk_en[MATRIX_LSIQ_ENTRY-1:0] = 
+                ld_da_mat_ldst_boundary_gateclk_en[MATRIX_LSIQ_ENTRY-1:0]
+                ; // | st_da_mat_ldst_boundary_gateclk_en[MATRIX_LSIQ_ENTRY-1:0];
+
+assign lsu_mat_ldst_secd[MATRIX_LSIQ_ENTRY-1:0]       = ld_da_mat_ldst_secd[MATRIX_LSIQ_ENTRY-1:0]
+                                            ;// | st_da_mat_ldst_secd[MATRIX_LSIQ_ENTRY-1:0];
+assign lsu_mat_ldst_spec_fail[MATRIX_LSIQ_ENTRY-1:0]  = ld_da_mat_ldst_spec_fail[MATRIX_LSIQ_ENTRY-1:0]
+                                            ;// | st_da_mat_ldst_spec_fail[MATRIX_LSIQ_ENTRY-1:0];
+// assign lsu_mat_ldst_bkpta_data[MATRIX_LSIQ_ENTRY-1:0] = ld_da_mat_ldst_bkpta_data[MATRIX_LSIQ_ENTRY-1:0]
+//                                             | st_da_mat_ldst_bkpta_data[MATRIX_LSIQ_ENTRY-1:0];
+// assign lsu_mat_ldst_bkptb_data[MATRIX_LSIQ_ENTRY-1:0] = ld_da_mat_ldst_bkptb_data[MATRIX_LSIQ_ENTRY-1:0]
+//                                             | st_da_mat_ldst_bkptb_data[MATRIX_LSIQ_ENTRY-1:0];
+
+//------------------pop signals-----------------------------
+assign lsu_mat_ldst_lsiq_pop_vld          = ld_da_mat_ldst_pop_vld
+                                            ;// ||  st_da_mat_ldst_pop_vld;
+assign lsu_mat_ldst_lsiq_pop_entry[MATRIX_LSIQ_ENTRY-1:0] = ld_da_mat_ldst_pop_entry[MATRIX_LSIQ_ENTRY-1:0]
+                                                ; // | st_da_mat_ldst_pop_entry[MATRIX_LSIQ_ENTRY-1:0];
+
+//--------------pop num-----------------
+assign lsu_mat_ldst_lsiq_pop0_vld = ld_da_mat_ldst_pop_vld;
+// assign lsu_mat_ldst_lsiq_pop1_vld = st_da_mat_ldst_pop_vld;
+
+//--------------gateclk-----------------
+assign lsu_mat_ldst_lq_full_gateclk_en   = ld_dc_lq_full_gateclk_en;
+assign lsu_mat_ldst_sq_full_gateclk_en   = st_dc_sq_full_gateclk_en;
+assign lsu_mat_ldst_tlb_busy_gateclk_en  = ld_dc_tlb_busy_gateclk_en
+                                      ||  st_dc_tlb_busy_gateclk_en;
+assign lsu_mat_ldst_rb_full_gateclk_en   = ld_da_rb_full_gateclk_en
+                                      ||  st_da_rb_full_gateclk_en;
+assign lsu_mat_ldst_wait_fence_gateclk_en= ld_da_wait_fence_gateclk_en
+                                      ||  st_da_wait_fence_gateclk_en;
+//------------------matrix ldst da stage--------------------------------
+//------------------matrix ldst da stage--------------------------------
+
 //==========================================================
 //        Imme & Buffer maintain restart
 //==========================================================
@@ -1024,6 +1183,28 @@ assign lsu_idu_wait_old[LSIQ_ENTRY-1:0] = lsu_idu_ld_ag_wait_old[LSIQ_ENTRY-1:0]
 assign lsu_idu_wait_old_gateclk_en = lsu_idu_ld_ag_wait_old_gateclk_en
                                      | lsu_idu_st_ag_wait_old_gateclk_en
                                      | lsu_idu_ld_da_wait_old_gateclk_en;
+
+//==========================================================
+//       Matrix Imme & Buffer maintain restart
+//==========================================================
+assign lsu_mat_ldst_wakeup[MATRIX_LSIQ_ENTRY-1:0]       = ld_rf_mat_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              | ld_dc_mat_ldst_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              // | st_dc_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              | ld_da_mat_ldst_secd[MATRIX_LSIQ_ENTRY-1:0]
+                                              // | ld_da_ecc_wakeup[MATRIX_LSIQ_ENTRY-1:0] // 0, 阉割, 不用管
+                                              // | st_da_idu_secd[MATRIX_LSIQ_ENTRY-1:0]
+                                              // | st_da_ecc_wakeup[MATRIX_LSIQ_ENTRY-1:0] // 0, 阉割, 不用管
+                                              // | sq_global_depd_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              // | sq_data_depd_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              // | wmb_depd_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              | lfb_depd_mat_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              ;
+// 在mmu内设置为全1, 因此直接复用给mat, 但注意MATRIX_LSIQ_ENTRY需要小于LSIQ_ENTRY
+assign lsu_mat_ldst_tlb_wakeup[MATRIX_LSIQ_ENTRY-1:0] = mmu_lsu_tlb_wakeup[MATRIX_LSIQ_ENTRY-1:0];
+
+// 矩阵无需wait old, 因为在MIQ发射时强制要求oldest才能发射
+// assign lsu_idu_wait_old[LSIQ_ENTRY-1:0] = lsu_idu_ld_ag_wait_old[LSIQ_ENTRY-1:0]
+
 //==========================================================
 //                Generate no_op signal
 //==========================================================

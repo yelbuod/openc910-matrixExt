@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 // &ModuleBeg; @28
-module ct_lsu_ld_da(
+module ct_lsu_ld_da#(parameter MATRIX_LSIQ_ENTRY = 8)(
   cb_ld_da_data,
   cb_ld_da_data_vld,
   cp0_lsu_dcache_en,
@@ -61,6 +61,16 @@ module ct_lsu_ld_da(
   ld_da_idu_secd,
   ld_da_idu_spec_fail,
   ld_da_idu_wait_fence,
+
+  ld_da_mat_ldst_already_da,
+  ld_da_mat_ldst_rb_full,
+  ld_da_mat_ldst_wait_fence,
+  ld_da_mat_ldst_pop_vld,
+  ld_da_mat_ldst_pop_entry,
+  ld_da_mat_ldst_spec_fail,
+  ld_da_mat_ldst_boundary_gateclk_en,
+  ld_da_mat_ldst_secd,
+  
   ld_da_idx,
   ld_da_iid,
   ld_da_inst_size,
@@ -75,6 +85,7 @@ module ct_lsu_ld_da(
   ld_da_lm_no_req,
   ld_da_lm_vector_nop,
   ld_da_lsid,
+  ld_da_mat_lsid,
   ld_da_mcic_borrow_mmu,
   ld_da_mcic_borrow_mmu_req,
   ld_da_mcic_bypass_data,
@@ -196,6 +207,7 @@ module ct_lsu_ld_da(
   ld_dc_inst_vld,
   ld_dc_ldfifo_pc,
   ld_dc_lsid,
+  ld_dc_mat_lsid,
   ld_dc_mmu_req,
   ld_dc_mt_value,
   ld_dc_no_spec,
@@ -336,6 +348,7 @@ input            ld_dc_inst_vfls;
 input            ld_dc_inst_vld;                      
 input   [14 :0]  ld_dc_ldfifo_pc;                     
 input   [11 :0]  ld_dc_lsid;                          
+input  [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_lsid;
 input            ld_dc_mmu_req;                       
 input   [39 :0]  ld_dc_mt_value;                      
 input            ld_dc_no_spec;                       
@@ -414,6 +427,14 @@ output  [11 :0]  ld_da_idu_rb_full;
 output  [11 :0]  ld_da_idu_secd;                      
 output  [11 :0]  ld_da_idu_spec_fail;                 
 output  [11 :0]  ld_da_idu_wait_fence;                
+output [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_already_da;
+output [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_rb_full;
+output [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_wait_fence;
+output                         ld_da_mat_ldst_pop_vld;
+output [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_pop_entry;
+output [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_spec_fail;
+output [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_boundary_gateclk_en;
+output [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_secd;
 output  [7  :0]  ld_da_idx;                           
 output  [6  :0]  ld_da_iid;                           
 output  [2  :0]  ld_da_inst_size;                     
@@ -422,12 +443,13 @@ output           ld_da_inst_vld;
 output  [14 :0]  ld_da_ldfifo_pc;                     
 output           ld_da_lfb_discard_grnt;              
 output           ld_da_lfb_set_wakeup_queue;          
-output  [12 :0]  ld_da_lfb_wakeup_queue_next;         
+output  [12+MATRIX_LSIQ_ENTRY:0]  ld_da_lfb_wakeup_queue_next;         
 output           ld_da_lm_discard_grnt;               
 output           ld_da_lm_ecc_err;                    
 output           ld_da_lm_no_req;                     
 output           ld_da_lm_vector_nop;                 
 output  [11 :0]  ld_da_lsid;                          
+output  [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_lsid;
 output           ld_da_mcic_borrow_mmu;               
 output           ld_da_mcic_borrow_mmu_req;           
 output  [63 :0]  ld_da_mcic_bypass_data;              
@@ -586,6 +608,7 @@ reg              ld_da_inst_vfls;
 reg              ld_da_inst_vld;                      
 reg     [14 :0]  ld_da_ldfifo_pc;                     
 reg     [11 :0]  ld_da_lsid;                          
+reg  [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_lsid;
 reg              ld_da_mmu_req;                       
 reg     [39 :0]  ld_da_mt_value;                      
 reg              ld_da_no_spec;                       
@@ -740,6 +763,20 @@ wire    [11 :0]  ld_da_idu_secd;
 wire             ld_da_idu_secd_vld;                  
 wire    [11 :0]  ld_da_idu_spec_fail;                 
 wire    [11 :0]  ld_da_idu_wait_fence;                
+
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_already_da;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_rb_full;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_wait_fence;
+wire                         ld_da_mat_ldst_pop_vld;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_pop_entry;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_spec_fail;
+// wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_bkpta_data;
+// wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_bkptb_data;
+wire                         ld_da_mat_ldst_boundary_gateclk_vld; // no output
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_boundary_gateclk_en;
+wire                         ld_da_mat_ldst_secd_vld; // no output
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_secd;
+
 wire    [7  :0]  ld_da_idx;                           
 wire             ld_da_inst_clk;                      
 wire             ld_da_inst_clk_en;                   
@@ -749,7 +786,7 @@ wire             ld_da_ld_inst;
 wire             ld_da_ldamo_inst;                    
 wire             ld_da_lfb_discard_grnt;              
 wire             ld_da_lfb_set_wakeup_queue;          
-wire    [12 :0]  ld_da_lfb_wakeup_queue_next;         
+wire    [12+MATRIX_LSIQ_ENTRY:0]  ld_da_lfb_wakeup_queue_next;         
 wire             ld_da_lm_discard_grnt;               
 wire             ld_da_lm_ecc_err;                    
 wire             ld_da_lm_no_req;                     
@@ -757,6 +794,7 @@ wire             ld_da_lm_vector_nop;
 wire    [127:0]  ld_da_low_region_data128_am;         
 wire             ld_da_lr_inst;                       
 wire    [11 :0]  ld_da_mask_lsid;                     
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mask_mat_lsid;
 wire             ld_da_mcic_borrow_mmu;               
 wire             ld_da_mcic_borrow_mmu_req;           
 wire    [63 :0]  ld_da_mcic_bypass_data;              
@@ -883,6 +921,7 @@ wire             ld_dc_inst_vfls;
 wire             ld_dc_inst_vld;                      
 wire    [14 :0]  ld_dc_ldfifo_pc;                     
 wire    [11 :0]  ld_dc_lsid;                          
+wire  [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_lsid;
 wire             ld_dc_mmu_req;                       
 wire    [39 :0]  ld_dc_mt_value;                      
 wire             ld_dc_no_spec;                       
@@ -1357,6 +1396,7 @@ begin
     ld_da_atomic                    <=  1'b0;
     ld_da_iid[6:0]                  <=  7'b0;
     ld_da_lsid[LSIQ_ENTRY-1:0]      <=  {LSIQ_ENTRY{1'b0}};
+    ld_da_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] <= {MATRIX_LSIQ_ENTRY{1'b0}};
     ld_da_boundary                  <=  1'b0;
     ld_da_preg[6:0]                 <=  7'b0;
     ld_da_already_da                <=  1'b0;
@@ -1411,6 +1451,7 @@ begin
     ld_da_atomic                    <=  ld_dc_atomic;
     ld_da_iid[6:0]                  <=  ld_dc_iid[6:0];
     ld_da_lsid[LSIQ_ENTRY-1:0]      <=  ld_dc_lsid[LSIQ_ENTRY-1:0];
+    ld_da_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] <= ld_dc_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
     ld_da_boundary                  <=  ld_dc_boundary;
     ld_da_preg[6:0]                 <=  ld_dc_preg[6:0];
     ld_da_already_da                <=  ld_dc_already_da;
@@ -2090,7 +2131,8 @@ assign ld_da_lm_discard_grnt      = ld_da_discard_from_lm_req;
 // &Force("output","ld_da_lfb_set_wakeup_queue"); @1433
 assign ld_da_lfb_set_wakeup_queue = ld_da_hit_idx_discard_vld;
 
-assign ld_da_lfb_wakeup_queue_next[LSIQ_ENTRY:0]  = {ld_da_mcic_borrow_mmu,
+assign ld_da_lfb_wakeup_queue_next[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0]  = {ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0],
+                                                    ld_da_mcic_borrow_mmu,
                                                     ld_da_mask_lsid[LSIQ_ENTRY-1:0]};
 
 //------------------create read buffer info-----------------
@@ -2521,6 +2563,9 @@ assign ld_da_lm_vector_nop  = ld_da_inst_vld
 assign ld_da_mask_lsid[LSIQ_ENTRY-1:0]      = {LSIQ_ENTRY{ld_da_inst_vld}}
                                               & ld_da_lsid[LSIQ_ENTRY-1:0];
 
+assign ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] = {MATRIX_LSIQ_ENTRY{ld_da_inst_vld}}
+                                                    & ld_da_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+
 assign ld_da_merge_mask                     = ld_da_merge_from_cb
                                               && ld_da_dcache_hit
                                               && !ld_da_fwd_vld;
@@ -2530,18 +2575,23 @@ assign ld_da_boundary_after_mask            = ld_da_inst_vld
                                               &&  ld_da_boundary
                                               &&  !ld_da_merge_mask
                                               &&  !ld_da_expt_vld;
-
+// 跨界访问: 需要两次访问, 第一次会在AG阶段判断并设置boundary信号-->ld_da_boundary, secd信号=0
+//  因此跨界访问的第一次访问到DA阶段会拉高ld_da_boundary_first->ld_da_idu_secd_vld
+//  ->ld_da_idu_secd[LSIQ_ENTRY-1:0]会传递到lsu_ctrl直接影响立即唤醒信号lsu_idu_wakeup唤醒对应表项
+//  同时通过lsu_idu_secd->LSIQ设置对应表项的unalign_2nd位, 也就是LSU流水线上的secd位信号, 这样可以
+//  通过唤醒快速发射带有secd位标识的跨界访问的第二次访问, 第二次访问secd=1, 将不会使能ld_da_boundary_first信号
 assign ld_da_boundary_first                 = ld_da_boundary_after_mask
                                               &&  !ld_da_secd;
 
 assign ld_da_ecc_spec_fail = 1'b0;
 
 //-----------lsiq signal----------------
+// 标志已经进入DA, 避免在遇到某种stall重发后重复触发stall
 assign ld_da_idu_already_da[LSIQ_ENTRY-1:0] = ld_da_mask_lsid[LSIQ_ENTRY-1:0];
-
+// cache miss -> 需访问read buffer(rb), 如果rb满 -> 冻结DA对应表项的frz直到rb not full唤醒解冻frz重新仲裁发射
 assign ld_da_idu_rb_full[LSIQ_ENTRY-1:0]    = {LSIQ_ENTRY{ld_da_rb_full_vld}}
                                               & ld_da_mask_lsid[LSIQ_ENTRY-1:0];
-
+// 遇到fence, 需要冻结DA对应表项直到lsu_idu_no_fence信号唤醒解冻表项frz
 assign ld_da_idu_wait_fence[LSIQ_ENTRY-1:0] = {LSIQ_ENTRY{ld_da_wait_fence_vld}}
                                               & ld_da_mask_lsid[LSIQ_ENTRY-1:0];
 
@@ -2580,6 +2630,55 @@ assign ld_da_idu_secd_vld                   = ld_da_boundary_first
 
 assign ld_da_idu_secd[LSIQ_ENTRY-1:0]       = {LSIQ_ENTRY{ld_da_idu_secd_vld}}
                                               & ld_da_mask_lsid[LSIQ_ENTRY-1:0];
+
+
+//==========================================================
+//        Generate Signal to Matrix LSU
+//==========================================================
+// 标志已经进入DA, 避免在遇到某种stall重发后重复触发stall
+assign ld_da_mat_ldst_already_da[MATRIX_LSIQ_ENTRY-1:0] = ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+// cache miss -> 需访问read buffer(rb), 如果rb满 -> 冻结DA对应表项的frz直到rb not full唤醒解冻frz重新仲裁发射
+assign ld_da_mat_ldst_rb_full[MATRIX_LSIQ_ENTRY-1:0]    = {MATRIX_LSIQ_ENTRY{ld_da_rb_full_vld}}
+                                                          & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+// 遇到fence, 需要冻结DA对应表项直到lsu_idu_no_fence信号唤醒解冻表项frz
+assign ld_da_mat_ldst_wait_fence[MATRIX_LSIQ_ENTRY-1:0] = {MATRIX_LSIQ_ENTRY{ld_da_wait_fence_vld}}
+                                              & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+
+// &Force("output","ld_da_mat_ldst_pop_vld"); @2326
+assign ld_da_mat_ldst_pop_vld                    = ld_da_inst_vld
+                                              &&  !ld_da_boundary_first
+                                              &&  !ld_da_ecc_stall
+                                              &&  !ld_da_sq_fwd_ecc_discard
+                                              &&  !ld_da_restart_vld;
+assign ld_da_mat_ldst_pop_entry[MATRIX_LSIQ_ENTRY-1:0]  = {MATRIX_LSIQ_ENTRY{ld_da_mat_ldst_pop_vld}}
+                                              & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+
+assign ld_da_mat_ldst_spec_fail[MATRIX_LSIQ_ENTRY-1:0]  = {MATRIX_LSIQ_ENTRY{ld_da_spec_fail
+                                                          &&  ld_da_boundary_first
+                                                          || ld_da_ecc_spec_fail}}
+                                              & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+// assign ld_da_mat_ldst_bkpta_data[MATRIX_LSIQ_ENTRY-1:0] = {MATRIX_LSIQ_ENTRY{ld_da_bkpta_data
+//                                                           &&  ld_da_boundary_first}}
+//                                               & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+// assign ld_da_mat_ldst_bkptb_data[MATRIX_LSIQ_ENTRY-1:0] = {MATRIX_LSIQ_ENTRY{ld_da_bkptb_data
+//                                                           &&  ld_da_boundary_first}}
+//                                               & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+            
+//---------boundary gateclk-------------
+assign ld_da_mat_ldst_boundary_gateclk_vld  = ld_da_inst_vld
+                                              &&  ld_da_boundary_first;
+
+assign ld_da_mat_ldst_boundary_gateclk_en[MATRIX_LSIQ_ENTRY-1:0]  = 
+                                                        {MATRIX_LSIQ_ENTRY{ld_da_mat_ldst_boundary_gateclk_vld}}
+                                                        & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
+//-----------imme wakeup----------------
+assign ld_da_mat_ldst_secd_vld   = ld_da_boundary_first
+                                   &&  !ld_da_ecc_stall
+                                   &&  !ld_da_sq_fwd_ecc_discard
+                                   &&  !ld_da_restart_vld;
+
+assign ld_da_mat_ldst_secd[MATRIX_LSIQ_ENTRY-1:0] = {MATRIX_LSIQ_ENTRY{ld_da_mat_ldst_secd_vld}}
+                                                    & ld_da_mask_mat_lsid[MATRIX_LSIQ_ENTRY-1:0];
 
 //==========================================================
 //        Generate interface to rtu

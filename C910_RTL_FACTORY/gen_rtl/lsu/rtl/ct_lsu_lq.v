@@ -966,6 +966,7 @@ assign lq_entry_create1_gateclk_en[LQ_ENTRY-1:0]   = {LQ_ENTRY{ld_dc_lq_create1_
 // &Force("output", "lq_ld_dc_full"); @181
 // &Force("output", "lq_ld_dc_less2"); @182
 assign lq_ld_dc_full        = lq_full;
+// less2: load queue少于两个空闲表项, 可能剩一个或者满, create_ptr(创建表项指针)和有效表项"或"的结果为全1
 assign lq_ld_dc_less2       = &(lq_create_ptr0[LQ_ENTRY-1:0] | lq_entry_vld[LQ_ENTRY-1:0]);
 assign lq_ld_dc_inst_hit    = |lq_entry_inst_hit[LQ_ENTRY-1:0];
 assign lq_ld_dc_spec_fail   = |lq_entry_rar_spec_fail[LQ_ENTRY-1:0];

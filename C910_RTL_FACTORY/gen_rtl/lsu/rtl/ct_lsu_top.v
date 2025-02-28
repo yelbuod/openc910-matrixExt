@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 // &ModuleBeg; @24
-module ct_lsu_top(
+module ct_lsu_top#(parameter MATRIX_LSIQ_ENTRY = 8)(
   biu_lsu_ac_addr,
   biu_lsu_ac_prot,
   biu_lsu_ac_req,
@@ -1391,7 +1391,7 @@ wire             ld_da_inst_vld;
 wire    [14 :0]  ld_da_ldfifo_pc;                        
 wire             ld_da_lfb_discard_grnt;                 
 wire             ld_da_lfb_set_wakeup_queue;             
-wire    [12 :0]  ld_da_lfb_wakeup_queue_next;            
+wire    [12+MATRIX_LSIQ_ENTRY:0]  ld_da_lfb_wakeup_queue_next;            
 wire             ld_da_lm_discard_grnt;                  
 wire             ld_da_lm_ecc_err;                       
 wire             ld_da_lm_no_req;                        
@@ -2818,6 +2818,51 @@ wire  idu_lsu_rf_pipe3_fire;
 wire  idu_lsu_rf_pipe8_fire;
 wire  [11:0]  ld_ag_no_fire_restart_entry;
 
+wire idu_mat_rf_lsu_ld_sel            ;
+wire idu_mat_rf_lsu_ld_gateclk_sel    ;
+
+assign idu_mat_rf_lsu_ld_sel            = idu_mat_rf_lsu_sel && idu_mat_rf_pipe8_lsu_meta[14];
+assign idu_mat_rf_lsu_ld_gateclk_sel    = idu_mat_rf_lsu_gateclk_sel && idu_mat_rf_pipe8_lsu_meta[14];
+
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_mat_lsid;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_lsid;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_lsid;
+
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_stall_restart_mat_entry;
+
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_already_da;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_rb_full;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_wait_fence;
+wire                         ld_da_mat_ldst_pop_vld;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_pop_entry;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_spec_fail;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_boundary_gateclk_en;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_da_mat_ldst_secd;
+
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_lq_full;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_tlb_busy;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_ldst_imme_wakeup;
+
+wire [MATRIX_LSIQ_ENTRY-1:0] lfb_depd_mat_wakeup;
+// output to Matrix ldst
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_wait_fence;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_rb_full;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_already_da;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_unalign_gateclk_en;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_secd;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_spec_fail;
+wire                         lsu_mat_ldst_lsiq_pop_vld;
+wire                         lsu_mat_ldst_lsiq_pop0_vld;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_lsiq_pop_entry;
+wire                         lsu_mat_ldst_lq_full_gateclk_en;
+wire                         lsu_mat_ldst_sq_full_gateclk_en;
+wire                         lsu_mat_ldst_tlb_busy_gateclk_en;
+wire                         lsu_mat_ldst_rb_full_gateclk_en;
+wire                         lsu_mat_ldst_wait_fence_gateclk_en;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_busy;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_wakeup;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_wakeup;
+
 //==========================================================
 //                    AG/EX1 Stage
 //==========================================================
@@ -2927,17 +2972,21 @@ ct_lsu_ld_ag  x_ct_lsu_ld_ag (
   .ld_ag_vpn                         (ld_ag_vpn                        ),
   .ld_ag_vreg                        (ld_ag_vreg                       ),
   
-  .idu_mat_rf_lsu_ld_sel            (idu_mat_rf_lsu_sel && idu_mat_rf_pipe8_lsu_meta[14]),
-  .idu_mat_rf_lsu_ld_gateclk_sel    (idu_mat_rf_lsu_gateclk_sel && idu_mat_rf_pipe8_lsu_meta[14]),
+  .idu_mat_rf_lsu_ld_sel            (idu_mat_rf_lsu_ld_sel            ),
+  .idu_mat_rf_lsu_ld_gateclk_sel    (idu_mat_rf_lsu_ld_gateclk_sel    ),
   .idu_mat_rf_pipe8_lsu_src0        (idu_mat_rf_pipe8_lsu_src0),
   .idu_mat_rf_pipe8_iid             (idu_mat_rf_pipe8_iid),
   .idu_mat_rf_pipe8_lsu_elem_width  (idu_mat_rf_pipe8_lsu_meta[1:0]),
 
-  .ld_ag_pipe3                      (ld_ag_pipe3),
-  .ld_ag_pipe8                      (ld_ag_pipe8),
+  // output to DC stage
+  .ld_ag_mat_lsid                   (ld_ag_mat_lsid),
+  // output to lsu ctrl
+  .ld_ag_pipe3                      (ld_ag_pipe3), // 用不到, 考虑删除
+  .ld_ag_pipe8                      (ld_ag_pipe8), // 用不到, 考虑删除
   .idu_lsu_rf_pipe3_fire            (idu_lsu_rf_pipe3_fire),
   .idu_lsu_rf_pipe8_fire            (idu_lsu_rf_pipe8_fire),
   .ld_ag_no_fire_restart_entry      (ld_ag_no_fire_restart_entry),
+  .ld_ag_stall_restart_mat_entry    (ld_ag_stall_restart_mat_entry),
 
   .lsu_hpcp_ld_cross_4k_stall        (lsu_hpcp_ld_cross_4k_stall       ),
   .lsu_hpcp_ld_other_stall           (lsu_hpcp_ld_other_stall          ),
@@ -3620,6 +3669,16 @@ ct_lsu_ld_dc  x_ct_lsu_ld_dc (
   .ld_dc_vreg                              (ld_dc_vreg                             ),
   .ld_dc_vreg_sign_sel                     (ld_dc_vreg_sign_sel                    ),
   .ld_dc_wait_fence                        (ld_dc_wait_fence                       ),
+
+  // from AG stage
+  .ld_ag_mat_lsid                         (ld_ag_mat_lsid),
+  // output to DA stage
+  .ld_dc_mat_lsid                         (ld_dc_mat_lsid),
+  // output to lsu ctrl
+  .ld_dc_mat_ldst_lq_full                 (ld_dc_mat_ldst_lq_full),
+  .ld_dc_mat_ldst_tlb_busy                (ld_dc_mat_ldst_tlb_busy),
+  .ld_dc_mat_ldst_imme_wakeup             (ld_dc_mat_ldst_imme_wakeup),
+
   .lq_ld_dc_full                           (lq_ld_dc_full                          ),
   .lq_ld_dc_inst_hit                       (lq_ld_dc_inst_hit                      ),
   .lq_ld_dc_less2                          (lq_ld_dc_less2                         ),
@@ -4253,6 +4312,21 @@ ct_lsu_ld_da  x_ct_lsu_ld_da (
   .ld_dc_vreg                           (ld_dc_vreg                          ),
   .ld_dc_vreg_sign_sel                  (ld_dc_vreg_sign_sel                 ),
   .ld_dc_wait_fence                     (ld_dc_wait_fence                    ),
+
+  // input from DC stage
+  .ld_dc_mat_lsid                      (ld_dc_mat_lsid),
+  // output to next stage
+  .ld_da_mat_lsid                      (ld_da_mat_lsid),
+  // output to lsu_ctrl
+  .ld_da_mat_ldst_rb_full              (ld_da_mat_ldst_rb_full),
+  .ld_da_mat_ldst_pop_entry            (ld_da_mat_ldst_pop_entry),
+  .ld_da_mat_ldst_spec_fail            (ld_da_mat_ldst_spec_fail),
+  .ld_da_mat_ldst_already_da           (ld_da_mat_ldst_already_da),
+  .ld_da_mat_ldst_wait_fence           (ld_da_mat_ldst_wait_fence),
+  .ld_da_mat_ldst_boundary_gateclk_en  (ld_da_mat_ldst_boundary_gateclk_en),
+  .ld_da_mat_ldst_secd                 (ld_da_mat_ldst_secd),
+  .ld_da_mat_ldst_pop_vld              (ld_da_mat_ldst_pop_vld),
+
   .ld_hit_prefetch                      (ld_hit_prefetch                     ),
   .lfb_ld_da_hit_idx                    (lfb_ld_da_hit_idx                   ),
   .lm_ld_da_hit_idx                     (lm_ld_da_hit_idx                    ),
@@ -5213,6 +5287,10 @@ ct_lsu_lfb  x_ct_lsu_lfb (
   .lfb_dcache_arb_st_tag_req          (lfb_dcache_arb_st_tag_req         ),
   .lfb_dcache_arb_st_tag_wen          (lfb_dcache_arb_st_tag_wen         ),
   .lfb_depd_wakeup                    (lfb_depd_wakeup                   ),
+
+  // output to lsu ctrl
+  .lfb_depd_mat_wakeup               (lfb_depd_mat_wakeup),
+
   .lfb_empty                          (lfb_empty                         ),
   .lfb_ld_da_hit_idx                  (lfb_ld_da_hit_idx                 ),
   .lfb_mcic_wakeup                    (lfb_mcic_wakeup                   ),
@@ -5892,11 +5970,44 @@ ct_lsu_ctrl  x_ct_lsu_ctrl (
   .ld_ag_stall_ori                   (ld_ag_stall_ori                  ),
   .ld_ag_stall_restart_entry         (ld_ag_stall_restart_entry        ),
   
-  .ld_ag_pipe3                      (ld_ag_pipe3),
-  .idu_mat_rf_lsu_sel               (idu_mat_rf_lsu_sel),
-  .idu_mat_rf_lsu_gateclk_sel       (idu_mat_rf_lsu_gateclk_sel),
+  .ld_ag_pipe3                      (ld_ag_pipe3), // 用不到, 考虑删除
+  .idu_mat_rf_lsu_ld_sel            (idu_mat_rf_lsu_ld_sel),
+  .idu_mat_rf_lsu_ld_gateclk_sel    (idu_mat_rf_lsu_ld_gateclk_sel),
   .idu_lsu_rf_pipe3_fire            (idu_lsu_rf_pipe3_fire),
   .ld_ag_no_fire_restart_entry      (ld_ag_no_fire_restart_entry),
+
+  .ld_ag_stall_restart_mat_entry     (ld_ag_stall_restart_mat_entry),
+  .ld_da_mat_ldst_already_da         (ld_da_mat_ldst_already_da),
+  .ld_da_mat_ldst_rb_full            (ld_da_mat_ldst_rb_full),
+  .ld_da_mat_ldst_wait_fence         (ld_da_mat_ldst_wait_fence),
+  .ld_da_mat_ldst_pop_vld            (ld_da_mat_ldst_pop_vld),
+  .ld_da_mat_ldst_pop_entry          (ld_da_mat_ldst_pop_entry),
+  .ld_da_mat_ldst_spec_fail          (ld_da_mat_ldst_spec_fail),
+  .ld_da_mat_ldst_boundary_gateclk_en(ld_da_mat_ldst_boundary_gateclk_en),
+  .ld_da_mat_ldst_secd               (ld_da_mat_ldst_secd),
+  .ld_dc_mat_ldst_lq_full            (ld_dc_mat_ldst_lq_full),
+  .ld_dc_mat_ldst_tlb_busy           (ld_dc_mat_ldst_tlb_busy),
+  .ld_dc_mat_ldst_imme_wakeup        (ld_dc_mat_ldst_imme_wakeup),
+  .lfb_depd_mat_wakeup               (lfb_depd_mat_wakeup),
+
+  .lsu_mat_ldst_lq_full              (lsu_mat_ldst_lq_full),
+  .lsu_mat_ldst_wait_fence           (lsu_mat_ldst_wait_fence),
+  .lsu_mat_ldst_rb_full              (lsu_mat_ldst_rb_full),
+  .lsu_mat_ldst_already_da           (lsu_mat_ldst_already_da),
+  .lsu_mat_ldst_unalign_gateclk_en   (lsu_mat_ldst_unalign_gateclk_en),
+  .lsu_mat_ldst_secd                 (lsu_mat_ldst_secd),
+  .lsu_mat_ldst_spec_fail            (lsu_mat_ldst_spec_fail),
+  .lsu_mat_ldst_lsiq_pop_vld         (lsu_mat_ldst_lsiq_pop_vld),
+  .lsu_mat_ldst_lsiq_pop0_vld        (lsu_mat_ldst_lsiq_pop0_vld),
+  .lsu_mat_ldst_lsiq_pop_entry       (lsu_mat_ldst_lsiq_pop_entry),
+  .lsu_mat_ldst_lq_full_gateclk_en   (lsu_mat_ldst_lq_full_gateclk_en),
+  .lsu_mat_ldst_sq_full_gateclk_en   (lsu_mat_ldst_sq_full_gateclk_en),
+  .lsu_mat_ldst_tlb_busy_gateclk_en  (lsu_mat_ldst_tlb_busy_gateclk_en),
+  .lsu_mat_ldst_rb_full_gateclk_en   (lsu_mat_ldst_rb_full_gateclk_en),
+  .lsu_mat_ldst_wait_fence_gateclk_en(lsu_mat_ldst_wait_fence_gateclk_en),
+  .lsu_mat_ldst_tlb_busy             (lsu_mat_ldst_tlb_busy),
+  .lsu_mat_ldst_tlb_wakeup           (lsu_mat_ldst_tlb_wakeup),
+  .lsu_mat_ldst_wakeup               (lsu_mat_ldst_wakeup),
 
   .ld_da_borrow_vld                  (ld_da_borrow_vld                 ),
   .ld_da_ecc_wakeup                  (ld_da_ecc_wakeup                 ),

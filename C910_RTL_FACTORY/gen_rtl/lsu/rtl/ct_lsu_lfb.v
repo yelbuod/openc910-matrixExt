@@ -14,7 +14,7 @@ limitations under the License.
 */
 
 // &ModuleBeg; @29
-module ct_lsu_lfb(
+module ct_lsu_lfb#(parameter MATRIX_LSIQ_ENTRY=8)(
   biu_lsu_r_data,
   biu_lsu_r_id,
   biu_lsu_r_last,
@@ -57,6 +57,7 @@ module ct_lsu_lfb(
   lfb_dcache_arb_st_tag_req,
   lfb_dcache_arb_st_tag_wen,
   lfb_depd_wakeup,
+  lfb_depd_mat_wakeup,
   lfb_empty,
   lfb_ld_da_hit_idx,
   lfb_mcic_wakeup,
@@ -145,7 +146,7 @@ input            dcache_arb_lfb_ld_grnt;
 input   [7  :0]  ld_da_idx;                           
 input            ld_da_lfb_discard_grnt;              
 input            ld_da_lfb_set_wakeup_queue;          
-input   [12 :0]  ld_da_lfb_wakeup_queue_next;         
+input   [12+MATRIX_LSIQ_ENTRY:0]  ld_da_lfb_wakeup_queue_next;         
 input            lm_already_snoop;                    
 input            lm_lfb_depd_wakeup;                  
 input            lm_state_is_amo_lock;                
@@ -209,6 +210,7 @@ output  [8  :0]  lfb_dcache_arb_st_tag_idx;
 output           lfb_dcache_arb_st_tag_req;           
 output  [1  :0]  lfb_dcache_arb_st_tag_wen;           
 output  [11 :0]  lfb_depd_wakeup;                     
+output [MATRIX_LSIQ_ENTRY-1:0] lfb_depd_mat_wakeup;
 output           lfb_empty;                           
 output           lfb_ld_da_hit_idx;                   
 output           lfb_mcic_wakeup;                     
@@ -262,7 +264,7 @@ reg     [7  :0]  lfb_vb_addr_ptr;
 reg     [33 :0]  lfb_vb_addr_tto6;                    
 reg     [7  :0]  lfb_vb_pe_req_ptr;                   
 reg              lfb_vb_req_unmask;                   
-reg     [12 :0]  lfb_wakeup_queue;                    
+reg     [12+MATRIX_LSIQ_ENTRY:0]  lfb_wakeup_queue;                    
 
 // &Wires; @32
 wire    [127:0]  biu_lsu_r_data;                      
@@ -280,7 +282,7 @@ wire             dcache_arb_lfb_ld_grnt;
 wire    [7  :0]  ld_da_idx;                           
 wire             ld_da_lfb_discard_grnt;              
 wire             ld_da_lfb_set_wakeup_queue;          
-wire    [12 :0]  ld_da_lfb_wakeup_queue_next;         
+wire    [12+MATRIX_LSIQ_ENTRY:0]  ld_da_lfb_wakeup_queue_next;         
 wire             ld_hit_prefetch;                     
 wire    [7  :0]  ld_hit_prefetch_first;               
 wire             lfb_addr_all_resp;                   
@@ -397,6 +399,7 @@ wire    [8  :0]  lfb_dcache_arb_st_tag_idx;
 wire             lfb_dcache_arb_st_tag_req;           
 wire    [1  :0]  lfb_dcache_arb_st_tag_wen;           
 wire    [11 :0]  lfb_depd_wakeup;                     
+wire [MATRIX_LSIQ_ENTRY-1:0] lfb_depd_mat_wakeup;
 wire             lfb_empty;                           
 wire             lfb_ld_da_hit_idx;                   
 wire    [7  :0]  lfb_lf_sm_addr_pop_req;              
@@ -458,10 +461,10 @@ wire             lfb_vb_pe_req_permit;
 wire             lfb_vb_req_entry_vld;                
 wire             lfb_vb_req_hit_idx;                  
 wire             lfb_vb_req_ldamo;                    
-wire    [12 :0]  lfb_wakeup_queue_after_pop;          
+wire    [12+MATRIX_LSIQ_ENTRY:0]  lfb_wakeup_queue_after_pop;          
 wire             lfb_wakeup_queue_clk;                
 wire             lfb_wakeup_queue_clk_en;             
-wire    [12 :0]  lfb_wakeup_queue_next;               
+wire    [12+MATRIX_LSIQ_ENTRY:0]  lfb_wakeup_queue_next;               
 wire             lfb_wmb_read_req_hit_idx;            
 wire             lfb_wmb_write_req_hit_idx;           
 wire             lm_already_snoop;                    
@@ -1759,11 +1762,11 @@ assign lfb_data_addr_pop_req[LFB_ADDR_ENTRY-1:0]  = lfb_data_entry_addr_pop_req_
 always @(posedge lfb_wakeup_queue_clk or negedge cpurst_b)
 begin
   if (!cpurst_b)
-    lfb_wakeup_queue[LSIQ_ENTRY:0]  <=  {LSIQ_ENTRY+1{1'b0}};
+    lfb_wakeup_queue[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0]  <=  {LSIQ_ENTRY+1+MATRIX_LSIQ_ENTRY{1'b0}};
   else if(rtu_yy_xx_flush)
-    lfb_wakeup_queue[LSIQ_ENTRY:0]  <=  {LSIQ_ENTRY+1{1'b0}};
+    lfb_wakeup_queue[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0]  <=  {LSIQ_ENTRY+1+MATRIX_LSIQ_ENTRY{1'b0}};
   else if(ld_da_lfb_set_wakeup_queue ||  lfb_pop_depd_ff)
-    lfb_wakeup_queue[LSIQ_ENTRY:0]  <=  lfb_wakeup_queue_next[LSIQ_ENTRY:0];
+    lfb_wakeup_queue[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0]  <=  lfb_wakeup_queue_next[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0];
 end
 
 //+-------------+
@@ -1792,13 +1795,13 @@ assign lfb_addr_pop_discard_vld = |(lfb_addr_entry_pop_vld[LFB_ADDR_ENTRY-1:0]
                                     & lfb_addr_entry_discard_vld[LFB_ADDR_ENTRY-1:0]);
 
 //------------------update wakeup queue---------------------
-assign lfb_wakeup_queue_after_pop[LSIQ_ENTRY:0] = lfb_pop_depd_ff
-                                                  ? {LSIQ_ENTRY+1{1'b0}}
-                                                  : lfb_wakeup_queue[LSIQ_ENTRY:0];
+assign lfb_wakeup_queue_after_pop[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0] = lfb_pop_depd_ff
+                                                  ? {LSIQ_ENTRY+1+MATRIX_LSIQ_ENTRY{1'b0}}
+                                                  : lfb_wakeup_queue[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0];
 
-assign lfb_wakeup_queue_next[LSIQ_ENTRY:0]  = lfb_wakeup_queue_after_pop[LSIQ_ENTRY:0]
-                                              | {LSIQ_ENTRY+1{ld_da_lfb_set_wakeup_queue}}
-                                                & ld_da_lfb_wakeup_queue_next[LSIQ_ENTRY:0];
+assign lfb_wakeup_queue_next[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0]  = lfb_wakeup_queue_after_pop[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0]
+                                                                | {LSIQ_ENTRY+1+MATRIX_LSIQ_ENTRY{ld_da_lfb_set_wakeup_queue}}
+                                                                  & ld_da_lfb_wakeup_queue_next[LSIQ_ENTRY+MATRIX_LSIQ_ENTRY:0];
 
 //------------------------wakeup----------------------------
 assign lfb_depd_wakeup[LSIQ_ENTRY-1:0]  = lfb_pop_depd_ff
@@ -1808,6 +1811,10 @@ assign lfb_depd_wakeup[LSIQ_ENTRY-1:0]  = lfb_pop_depd_ff
 assign lfb_mcic_wakeup                  = (lfb_pop_depd_ff  ||  rtu_yy_xx_flush)
                                           ? lfb_wakeup_queue[LSIQ_ENTRY]
                                           : 1'b0;
+
+assign lfb_depd_mat_wakeup[MATRIX_LSIQ_ENTRY-1:0]  = lfb_pop_depd_ff
+                                                     ? lfb_wakeup_queue[MATRIX_LSIQ_ENTRY+LSIQ_ENTRY:LSIQ_ENTRY+1]
+                                                     : {MATRIX_LSIQ_ENTRY{1'b0}};
 //==========================================================
 //                for avoid deadlock with no rready
 //==========================================================
