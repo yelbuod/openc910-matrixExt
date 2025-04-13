@@ -94,7 +94,7 @@ extern "C" void illegal(
   uint32_t opcode
 ) {
   sim_state.state = SIM_ABORT;
-  sim_state.halt_pc = 0;
+  sim_state.halt_pc = get_hart_pc();
   sim_state.halt_ret = -1;
 
   printf("invalid opcode:"

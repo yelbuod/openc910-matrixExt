@@ -57,6 +57,10 @@ void sync_hart_pc(uint64_t pc) {
   hart_pc = pc;
 }
 
+uint64_t get_hart_pc() {
+  return hart_pc;
+}
+
 uint64_t read_hart_reg(int index, bool fp) {
 	Assert((index >= 0 && index < 32), "Illegal gpr or fpr index, RISCV-64 support 0~31 gpr and fpr");
 	int phy_regIdx;

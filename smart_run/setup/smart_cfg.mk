@@ -30,6 +30,7 @@ CASE_LIST := \
       plic_int \
       sleep \
 	  intrinsic_matmul \
+	  resnet50 \
 
 
 ISA_AMO_build:
@@ -105,6 +106,15 @@ intrinsic_matmul_build:
 	@cp ./tests/lib/newlib_wrap/* ./work
 	@cp -r ./tests/install_nn2 ./work
 	@cd ./work && make -s clean && make -s all CPU_ARCH_FLAG_0=c910  ENDIAN_MODE=little-endian CASENAME=intrinsic_matmul FILE=intrinsic_matmul >& intrinsic_matmul_build.case.log 
+
+resnet50_build:
+	@cp ./tests/cases/resnet50/* ./work
+	@find ./tests/lib/ -maxdepth 1 -type f -exec cp {} ./work/ \; 
+	@cp ./tests/lib/clib/* ./work
+	@cp ./tests/lib/newlib_wrap/* ./work
+	@cp -r ./tests/install_nn2 ./work
+	@cp -r ./tests/shl ./work
+	@cd ./work && make -s clean && make -s all CPU_ARCH_FLAG_0=c910  ENDIAN_MODE=little-endian CASENAME=resnet50 FILE=resnet50 >& resnet50_build.case.log 
 
 MMU_build:
 	@cp ./tests/cases/MMU/* ./work
