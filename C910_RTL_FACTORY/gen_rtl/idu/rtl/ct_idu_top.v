@@ -818,7 +818,11 @@ module ct_idu_top(
   vfpu_idu_pipe6_vmla_srcv2_no_fwd,
   vfpu_idu_pipe7_vmla_srcv2_no_fwd,
   vfpu_idu_vdiv_busy,
-  vfpu_idu_vdiv_wb_stall
+  vfpu_idu_vdiv_wb_stall,
+  ex_line_wakeup,
+  ex_line_wakeup_entry_idx,
+  ex_mat_finish,
+  ex_mat_finish_entry_idx
 );
 
 // &Ports; @25
@@ -1263,6 +1267,10 @@ input            vfpu_idu_pipe6_vmla_srcv2_no_fwd;
 input            vfpu_idu_pipe7_vmla_srcv2_no_fwd;       
 input            vfpu_idu_vdiv_busy;                     
 input            vfpu_idu_vdiv_wb_stall;                 
+input            ex_line_wakeup;
+input    [3:0]   ex_line_wakeup_entry_idx;
+input            ex_mat_finish;
+input    [3:0]   ex_mat_finish_entry_idx;
 output  [6  :0]  idu_cp0_fesr_acc_updt_val;              
 output           idu_cp0_fesr_acc_updt_vld;              
 output  [4  :0]  idu_cp0_rf_func;                        
@@ -5444,6 +5452,11 @@ wire [6:0] vfpu_idu_ex1_pipe6_preg_dup5         ;
 wire       vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5;
 wire [6:0] vfpu_idu_ex1_pipe7_preg_dup5         ;
 
+wire            ex_line_wakeup;
+wire    [3:0]   ex_line_wakeup_entry_idx;
+wire            ex_mat_finish;
+wire    [3:0]   ex_mat_finish_entry_idx;
+
 // TODO:
 // 与MIQ互联用于旁路的dup5信号暂时共用互联BIQ的dup4, 以实现功能
 // 关于来自IU/LSU/VFPU的旁路信息均是由同一source duplicate多个寄存器后旁路的, 因此目前的做法可实现同样的功能
@@ -5541,7 +5554,12 @@ assign vfpu_idu_ex1_pipe7_preg_dup5[6:0]       = vfpu_idu_ex1_pipe7_preg_dup4[6:
     .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dup5  ),
     .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dup5           ),
     .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dup5  ),
-    .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dup5           )
+    .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dup5           ),
+    /* from ex */
+    .ex_mat_finish                          (ex_mat_finish                          ),
+    .ex_line_wakeup                         (ex_line_wakeup                         ),
+    .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+    .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               )
   );
 
 

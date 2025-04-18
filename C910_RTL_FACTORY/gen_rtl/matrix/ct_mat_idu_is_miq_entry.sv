@@ -51,6 +51,8 @@ module ct_idu_is_miq_entry(
   x_alu1_reg_fwd_vld,
   x_create_agevec,
   x_create_data,
+  x_create_mat_src_meta,
+  x_create_dstm_depd_vec,
   x_create_dp_en,
   x_create_en,
   x_create_frz,
@@ -59,13 +61,24 @@ module ct_idu_is_miq_entry(
   x_issue_en,
   x_pop_cur_entry,
   x_pop_other_entry,
+  ex_line_wakeup,
+  ex_line_wakeup_entry_idx,
+  ex_mat_finish,
+  ex_mat_finish_entry_idx,
+  ex_pop_cur_entry,
+  ex_pop_other_entry,
+  id_dstm_idx_create0,
+  id_dstm_idx_create1,
+  id_dstm_idx_create0_match,
+  id_dstm_idx_create1_match,
   x_rdy,
   x_read_data,
   x_vld,
   x_vld_with_frz
 );
 
-// &Ports; @28
+parameter MAT_SRC_META_WIDTH = 28;
+
 input           cp0_idu_icg_en;                         
 input           cp0_yy_clk_en;                          
 input           cpurst_b;                               
@@ -101,7 +114,9 @@ input   [6 :0]  vfpu_idu_ex1_pipe7_preg_dupx;
 input   [1 :0]  x_alu0_reg_fwd_vld;                     
 input   [1 :0]  x_alu1_reg_fwd_vld;                     
 input   [10:0]  x_create_agevec;                        
-input   [109:0] x_create_data;                          
+input   [72:0]  x_create_data;                          
+input [MAT_SRC_META_WIDTH-1:0] x_create_mat_src_meta;
+input   [11:0]  x_create_dstm_depd_vec;
 input           x_create_dp_en;                         
 input           x_create_en;                            
 input           x_create_frz;                           
@@ -110,9 +125,19 @@ input           x_frz_clr;
 input           x_issue_en;                             
 input           x_pop_cur_entry;                        
 input   [10:0]  x_pop_other_entry;                      
+input           ex_line_wakeup;
+input [3:0]     ex_line_wakeup_entry_idx;
+input           ex_mat_finish;
+input [3:0]     ex_mat_finish_entry_idx;
+input ex_pop_cur_entry;
+input [10:0] ex_pop_other_entry;
+input [2:0] id_dstm_idx_create0;
+input [2:0] id_dstm_idx_create1;
+output id_dstm_idx_create0_match;
+output id_dstm_idx_create1_match;
 output  [10:0]  x_agevec;                               
 output          x_rdy;                                  
-output  [109:0] x_read_data;                            
+output  [72:0] x_read_data;                            
 output          x_vld;                                  
 output          x_vld_with_frz;                         
 
@@ -127,9 +152,27 @@ reg             vld;
 reg     [6 :0]  iid;                                    
 reg     [31:0]  opcode;                                 
 reg     [3 :0]  mat_type;
-reg     [36:0]  mat_data;
 reg             src0_vld;                               
 reg             src1_vld;                               
+
+logic [12:0] src_info;
+logic [4:0] src0_depd_info;
+logic [4:0] src1_depd_info;
+logic [4:0] src2_depd_info;
+
+logic       dstm_vld     ;
+logic [2:0] dstm_idx     ;
+logic       srcm0_vld    ;
+logic [2:0] srcm0_idx    ;
+logic       srcm1_vld    ;
+logic [2:0] srcm1_idx    ;
+logic       srcm2_vld    ;
+logic       src0_depd_vld;
+logic [3:0] src0_depd_idx;
+logic       src1_depd_vld;
+logic [3:0] src1_depd_idx;
+logic       src2_depd_vld;
+logic [3:0] src2_depd_idx;
 
 // &Wires; @30
 wire            cp0_idu_icg_en;                         
@@ -185,7 +228,9 @@ wire    [10:0]  x_agevec;
 wire    [1 :0]  x_alu0_reg_fwd_vld;                     
 wire    [1 :0]  x_alu1_reg_fwd_vld;                     
 wire    [10:0]  x_create_agevec;                        
-wire    [109:0] x_create_data;                          
+wire    [72:0]  x_create_data;                          
+wire [MAT_SRC_META_WIDTH-1:0] x_create_mat_src_meta;
+wire   [11:0]  x_create_dstm_depd_vec;
 wire            x_create_dp_en;                         
 wire            x_create_en;                            
 wire            x_create_frz;                           
@@ -194,23 +239,35 @@ wire            x_frz_clr;
 wire            x_issue_en;                             
 wire            x_pop_cur_entry;                        
 wire    [10:0]  x_pop_other_entry;                      
+wire            ex_line_wakeup;
+wire    [3:0]   ex_line_wakeup_entry_idx;
+wire            ex_mat_finish;
+wire    [3:0]   ex_mat_finish_entry_idx;
+wire  ex_pop_cur_entry;
+wire [10:0] ex_pop_other_entry;
+wire [2:0] id_dstm_idx_create0;
+wire [2:0] id_dstm_idx_create1;
+wire id_dstm_idx_create0_match;
+wire id_dstm_idx_create1_match;
 wire            x_rdy;                                  
-wire    [109:0] x_read_data;                            
+wire    [72:0] x_read_data;                            
 wire            x_vld;                                  
 wire            x_vld_with_frz;                         
 
 
-
+assign src_info[12:0] = x_create_mat_src_meta[27:15];
+assign src0_depd_info[4:0] = x_create_mat_src_meta[14:10];
+assign src1_depd_info[4:0] = x_create_mat_src_meta[9:5];
+assign src2_depd_info[4:0] = x_create_mat_src_meta[4:0];
 //==========================================================
 //                       Parameters
 //==========================================================
 //----------------------------------------------------------
 //                    MIQ Parameters
 //----------------------------------------------------------
-parameter MIQ_WIDTH             = 110;
+parameter MIQ_WIDTH             = 73;
 
-parameter MIQ_MAT_TYPE          = 109;
-parameter MIQ_MAT_DATA          = 105;
+parameter MIQ_MAT_TYPE          = 72;
 parameter MIQ_SRC1_LSU_MATCH    = 68 ;
 parameter MIQ_SRC1_DATA         = 67 ;
 parameter MIQ_SRC1_PREG         = 67 ;
@@ -228,6 +285,7 @@ parameter MIQ_SRC0_VLD          = 39 ;
 parameter MIQ_IID               = 38 ;
 parameter MIQ_OPCODE            = 31 ;
 
+parameter MAT_CAL         = 4'b0001;
 //==========================================================
 //                 Instance of Gated Cell  
 //==========================================================
@@ -293,6 +351,8 @@ begin
     vld <= 1'b1;
   else if(ctrl_miq_rf_pop_vld && x_pop_cur_entry) // 发射成功会拉低vld, 不参与issue仲裁
     vld <= 1'b0;
+  else if(ex_mat_finish && ex_pop_cur_entry) // 从ex阶段pop
+    vld <= 1'b0; 
   else
     vld <= vld;
 end
@@ -328,10 +388,91 @@ begin
     agevec[10:0] <= x_create_agevec[10:0];
   else if(ctrl_miq_rf_pop_vld)
     agevec[10:0] <= agevec[10:0] & ~x_pop_other_entry[10:0]; // 其他表项issue成功后, 对应的older-bit被清零
+  else if(ex_mat_finish)
+    agevec[10:0] <= agevec[10:0] & ~ex_pop_other_entry[10:0]; 
   else
     agevec[10:0] <= agevec[10:0];
 end
 
+always @(posedge entry_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b) begin
+    src0_depd_vld      <= 1'b0;
+    src2_depd_vld      <= 1'b0;
+  end
+  else if(x_create_en) begin
+    src0_depd_vld      <= src0_depd_info[4];
+    src2_depd_vld      <= src2_depd_info[4];
+  end
+  else if(ex_line_wakeup) begin
+    src0_depd_vld      <= src0_depd_vld ? ~|(src0_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src0_depd_vld;
+    src2_depd_vld      <= src2_depd_vld ? ~|(src2_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src2_depd_vld;
+  end
+  else if(ex_mat_finish) begin
+    src0_depd_vld      <= src0_depd_vld ? ~|(src0_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src0_depd_vld;
+    src2_depd_vld      <= src2_depd_vld ? ~|(src2_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src2_depd_vld;
+  end
+  else begin
+    src0_depd_vld      <= src0_depd_vld;
+    src2_depd_vld      <= src2_depd_vld;
+  end
+end
+
+logic macc_type;
+assign macc_type = (mat_type == MAT_CAL) & srcm2_vld;
+
+always @(posedge entry_clk or negedge cpurst_b)
+  begin
+    if(!cpurst_b) begin
+      src1_depd_vld <= 1'b0;
+    end
+    else if(x_create_en) begin
+      src1_depd_vld <= src1_depd_info[4];
+    end
+    else if(ex_line_wakeup) begin
+      src1_depd_vld <= src1_depd_vld&(!macc_type) ? ~|(src1_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src1_depd_vld;
+    end
+    else if(ex_mat_finish) begin
+      src1_depd_vld <= src1_depd_vld ? ~|(src1_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src1_depd_vld;
+    end
+    else begin
+      src1_depd_vld <= src1_depd_vld;
+    end
+  end
+
+logic   [11:0]  dstm_depd_vec;
+logic [11:0] ex_line_wakeup_entry_oh;
+logic [11:0] ex_mat_finish_entry_oh;
+
+ct_mat_expand_12 i_ct_mat_expand_12_ex_line_wakeup (
+  .x_num(ex_line_wakeup_entry_idx), .x_num_expand(ex_line_wakeup_entry_oh)
+);
+ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_finish (
+  .x_num(ex_mat_finish_entry_idx), .x_num_expand(ex_mat_finish_entry_oh)
+);
+
+always @(posedge entry_clk or negedge cpurst_b)
+  begin
+    if(!cpurst_b) begin
+      dstm_depd_vec <= 12'b0;
+    end
+    else if(x_create_en) begin
+      dstm_depd_vec <= x_create_dstm_depd_vec[11:0];
+    end
+    else if(ex_line_wakeup) begin
+      dstm_depd_vec <= dstm_depd_vec & ~ex_line_wakeup_entry_oh; // 唤醒拉低
+    end
+    else if(ex_mat_finish) begin
+      dstm_depd_vec <= dstm_depd_vec & ~ex_mat_finish_entry_oh;
+    end
+    else begin
+      dstm_depd_vec <= dstm_depd_vec;
+    end
+  end
+
+logic matrix_src_dest_rdy;
+
+assign matrix_src_dest_rdy = ~|{src0_depd_vld, src1_depd_vld, src2_depd_vld, dstm_depd_vec} ;
 //==========================================================
 //                 Instruction Information
 //==========================================================
@@ -354,7 +495,16 @@ begin
     src1_vld           <= 1'b0;
     dst_vld            <= 1'b0;
     mat_type[3:0]      <= 4'b0;
-    mat_data[36:0]     <= 37'b0;
+    dstm_vld           <= 1'b0;
+    dstm_idx[2:0]      <= 3'b0;
+    srcm0_vld          <= 1'b0;
+    srcm0_idx[2:0]     <= 3'b0;
+    srcm1_vld          <= 1'b0;
+    srcm1_idx[2:0]     <= 3'b0;
+    srcm2_vld          <= 1'b0;
+    src0_depd_idx[3:0] <= 4'b0;
+    src1_depd_idx[3:0] <= 4'b0;
+    src2_depd_idx[3:0] <= 4'b0;
   end
   else if(x_create_dp_en) begin
     opcode[31:0]       <= x_create_data[MIQ_OPCODE:MIQ_OPCODE-31];
@@ -363,7 +513,16 @@ begin
     src1_vld           <= x_create_data[MIQ_SRC1_VLD];
     dst_vld            <= x_create_data[MIQ_DST_VLD];
     mat_type[3:0]      <= x_create_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-3];
-    mat_data[36:0]     <= x_create_data[MIQ_MAT_DATA:MIQ_MAT_DATA-36];
+    dstm_vld           <= src_info[12];
+    dstm_idx[2:0]      <= src_info[11:9];
+    srcm0_vld          <= src_info[8];
+    srcm0_idx[2:0]     <= src_info[7:5];
+    srcm1_vld          <= src_info[4];
+    srcm1_idx[2:0]     <= src_info[3:1];
+    srcm2_vld          <= src_info[0];
+    src0_depd_idx[3:0] <= src0_depd_info[3:0];
+    src1_depd_idx[3:0] <= src1_depd_info[3:0];
+    src2_depd_idx[3:0] <= src2_depd_info[3:0];
   end
   else begin
     opcode[31:0]       <= opcode[31:0];
@@ -372,9 +531,26 @@ begin
     src1_vld           <= src1_vld;
     dst_vld            <= dst_vld;
     mat_type[3:0]      <= mat_type[3:0];
-    mat_data[36:0]     <= mat_data[36:0];
+    dstm_vld           <= dstm_vld      ;
+    dstm_idx[2:0]      <= dstm_idx[2:0] ;
+    srcm0_vld          <= srcm0_vld     ;
+    srcm0_idx[2:0]     <= srcm0_idx[2:0];
+    srcm1_vld          <= srcm1_vld     ;
+    srcm1_idx[2:0]     <= srcm1_idx[2:0];
+    srcm2_vld          <= srcm2_vld     ;
+    src0_depd_idx[3:0] <= src0_depd_idx[3:0];
+    src1_depd_idx[3:0] <= src1_depd_idx[3:0];
+    src2_depd_idx[3:0] <= src2_depd_idx[3:0];
   end
 end
+
+assign id_dstm_idx_create0_match = (srcm0_vld & (~|(id_dstm_idx_create0 ^ srcm0_idx))) |
+                                   (srcm1_vld & (~|(id_dstm_idx_create0 ^ srcm1_idx))) |
+                                   (srcm2_vld & (~|(id_dstm_idx_create0 ^ dstm_idx)));
+
+assign id_dstm_idx_create1_match = (srcm0_vld & (~|(id_dstm_idx_create1 ^ srcm0_idx))) |
+                                   (srcm1_vld & (~|(id_dstm_idx_create1 ^ srcm1_idx))) |
+                                   (srcm2_vld & (~|(id_dstm_idx_create1 ^ dstm_idx)));
 
 //rename for read output
 assign x_read_data[MIQ_OPCODE:MIQ_OPCODE-31]     = opcode[31:0];
@@ -384,7 +560,6 @@ assign x_read_data[MIQ_SRC1_VLD]                 = src1_vld;
 assign x_read_data[MIQ_DST_VLD]                  = dst_vld;
 assign x_read_data[MIQ_DST_PREG:MIQ_DST_PREG-6]  = dst_preg[6:0];
 assign x_read_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-3]  = mat_type[3:0];
-assign x_read_data[MIQ_MAT_DATA:MIQ_MAT_DATA-36] = mat_data[36:0];
 
 //==========================================================
 //              Source Dependency Information
@@ -524,7 +699,8 @@ assign x_read_data[MIQ_SRC1_LSU_MATCH]            = 1'b0;
 assign x_rdy = vld
                && !frz
                && src0_rdy_for_issue
-               && src1_rdy_for_issue;
+               && src1_rdy_for_issue
+               && matrix_src_dest_rdy;
 
 // &ModuleEnd; @262
 endmodule

@@ -1429,7 +1429,7 @@ assign ctrl_aiq1_rf_pop_vld             = ctrl_rf_pipe1_pipedown_vld;
 assign ctrl_biq_rf_pop_vld              = ctrl_rf_pipe2_pipedown_vld;
 assign ctrl_viq0_rf_pop_vld             = ctrl_rf_pipe6_pipedown_vld;
 assign ctrl_viq1_rf_pop_vld             = ctrl_rf_pipe7_pipedown_vld;
-assign ctrl_miq_rf_pop_vld              = ctrl_rf_pipe8_pipedown_vld;
+assign ctrl_miq_rf_pop_vld              = idu_mat_rf_cfg_sel; // 只有cfg可以在rf时退休
 //pop singals for IR dlb, optimized for timing
 assign ctrl_aiq0_rf_pop_dlb_vld         = ctrl_rf_pipe0_inst_vld;
 assign ctrl_aiq1_rf_pop_dlb_vld         = ctrl_rf_pipe1_inst_vld;
@@ -1522,6 +1522,7 @@ assign idu_iu_rf_bju_gateclk_sel    = ctrl_rf_pipe2_inst_vld;
 //----------------------------------------------------------
 //     Pipe8 Function Unit(Matrix ALU/LSU/CFG) Selection
 //----------------------------------------------------------
+// RF failed时会阻塞RF->MAT subsystem
 assign ctrl_rf_pipe8_fu_sel[2:0] = 
           {3{ctrl_rf_pipe8_pipedown_vld}} & dp_ctrl_rf_pipe8_fu_sel[2:0];
 assign ctrl_rf_pipe8_fu_gateclk_sel[2:0] =

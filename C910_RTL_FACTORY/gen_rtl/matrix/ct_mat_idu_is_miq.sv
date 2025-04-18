@@ -59,7 +59,11 @@ module ct_idu_is_miq(
   vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx,
   vfpu_idu_ex1_pipe6_preg_dupx,
   vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx,
-  vfpu_idu_ex1_pipe7_preg_dupx
+  vfpu_idu_ex1_pipe7_preg_dupx,
+  ex_line_wakeup,
+  ex_line_wakeup_entry_idx,
+  ex_mat_finish,
+  ex_mat_finish_entry_idx
 );
 
 // &Ports; @28
@@ -112,6 +116,11 @@ input            vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx;
 input   [6  :0]  vfpu_idu_ex1_pipe6_preg_dupx;           
 input            vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx;  
 input   [6  :0]  vfpu_idu_ex1_pipe7_preg_dupx;           
+input            ex_line_wakeup;
+input    [3:0]   ex_line_wakeup_entry_idx;
+input            ex_mat_finish;
+input    [3:0]   ex_mat_finish_entry_idx;
+
 output  [11 :0]  miq_aiq_create0_entry;                  
 output  [11 :0]  miq_aiq_create1_entry;                  
 output           miq_ctrl_1_left_updt;                   
@@ -125,42 +134,69 @@ output  [3  :0]  miq_top_miq_entry_cnt;
 output           miq_xx_gateclk_issue_en;                
 output           miq_xx_issue_en;                        
 
-reg [ 10:0] miq_entry0_create_agevec ;
-reg [ 72:0] miq_entry0_create_data   ;
-reg         miq_entry0_create_frz    ;
-reg [ 10:0] miq_entry10_create_agevec;
-reg [ 72:0] miq_entry10_create_data  ;
-reg         miq_entry10_create_frz   ;
-reg [ 10:0] miq_entry11_create_agevec;
-reg [ 72:0] miq_entry11_create_data  ;
-reg         miq_entry11_create_frz   ;
-reg [ 10:0] miq_entry1_create_agevec ;
-reg [ 72:0] miq_entry1_create_data   ;
-reg         miq_entry1_create_frz    ;
-reg [ 10:0] miq_entry2_create_agevec ;
-reg [ 72:0] miq_entry2_create_data   ;
-reg         miq_entry2_create_frz    ;
-reg [ 10:0] miq_entry3_create_agevec ;
-reg [ 72:0] miq_entry3_create_data   ;
-reg         miq_entry3_create_frz    ;
-reg [ 10:0] miq_entry4_create_agevec ;
-reg [ 72:0] miq_entry4_create_data   ;
-reg         miq_entry4_create_frz    ;
-reg [ 10:0] miq_entry5_create_agevec ;
-reg [ 72:0] miq_entry5_create_data   ;
-reg         miq_entry5_create_frz    ;
-reg [ 10:0] miq_entry6_create_agevec ;
-reg [ 72:0] miq_entry6_create_data   ;
-reg         miq_entry6_create_frz    ;
-reg [ 10:0] miq_entry7_create_agevec ;
-reg [ 72:0] miq_entry7_create_data   ;
-reg         miq_entry7_create_frz    ;
-reg [ 10:0] miq_entry8_create_agevec ;
-reg [ 72:0] miq_entry8_create_data   ;
-reg         miq_entry8_create_frz    ;
-reg [ 10:0] miq_entry9_create_agevec ;
-reg [ 72:0] miq_entry9_create_data   ;
-reg         miq_entry9_create_frz    ;
+parameter MAT_SRC_META_WIDTH = 28;
+
+reg [                  10:0] miq_entry0_create_agevec        ;
+reg [                  72:0] miq_entry0_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry0_create_mat_src_meta  ;
+reg [                  11:0] miq_entry0_create_dstm_depd_vec ;
+reg                          miq_entry0_create_frz           ;
+reg [                  10:0] miq_entry10_create_agevec       ;
+reg [                  72:0] miq_entry10_create_data         ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry10_create_mat_src_meta ;
+reg [                  11:0] miq_entry10_create_dstm_depd_vec;
+reg                          miq_entry10_create_frz          ;
+reg [                  10:0] miq_entry11_create_agevec       ;
+reg [                  72:0] miq_entry11_create_data         ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry11_create_mat_src_meta ;
+reg [                  11:0] miq_entry11_create_dstm_depd_vec;
+reg                          miq_entry11_create_frz          ;
+reg [                  10:0] miq_entry1_create_agevec        ;
+reg [                  72:0] miq_entry1_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry1_create_mat_src_meta  ;
+reg [                  11:0] miq_entry1_create_dstm_depd_vec ;
+reg                          miq_entry1_create_frz           ;
+reg [                  10:0] miq_entry2_create_agevec        ;
+reg [                  72:0] miq_entry2_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry2_create_mat_src_meta  ;
+reg [                  11:0] miq_entry2_create_dstm_depd_vec ;
+reg                          miq_entry2_create_frz           ;
+reg [                  10:0] miq_entry3_create_agevec        ;
+reg [                  72:0] miq_entry3_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry3_create_mat_src_meta  ;
+reg [                  11:0] miq_entry3_create_dstm_depd_vec ;
+reg                          miq_entry3_create_frz           ;
+reg [                  10:0] miq_entry4_create_agevec        ;
+reg [                  72:0] miq_entry4_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry4_create_mat_src_meta  ;
+reg [                  11:0] miq_entry4_create_dstm_depd_vec ;
+reg                          miq_entry4_create_frz           ;
+reg [                  10:0] miq_entry5_create_agevec        ;
+reg [                  72:0] miq_entry5_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry5_create_mat_src_meta  ;
+reg [                  11:0] miq_entry5_create_dstm_depd_vec ;
+reg                          miq_entry5_create_frz           ;
+reg [                  10:0] miq_entry6_create_agevec        ;
+reg [                  72:0] miq_entry6_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry6_create_mat_src_meta  ;
+reg [                  11:0] miq_entry6_create_dstm_depd_vec ;
+reg                          miq_entry6_create_frz           ;
+reg [                  10:0] miq_entry7_create_agevec        ;
+reg [                  72:0] miq_entry7_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry7_create_mat_src_meta  ;
+reg [                  11:0] miq_entry7_create_dstm_depd_vec ;
+reg                          miq_entry7_create_frz           ;
+reg [                  10:0] miq_entry8_create_agevec        ;
+reg [                  72:0] miq_entry8_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry8_create_mat_src_meta  ;
+reg [                  11:0] miq_entry8_create_dstm_depd_vec ;
+reg                          miq_entry8_create_frz           ;
+reg [                  10:0] miq_entry9_create_agevec        ;
+reg [                  72:0] miq_entry9_create_data          ;
+reg [MAT_SRC_META_WIDTH-1:0] miq_entry9_create_mat_src_meta  ;
+reg [                  11:0] miq_entry9_create_dstm_depd_vec ;
+reg                          miq_entry9_create_frz           ;
+
 reg [  3:0] miq_entry_cnt            ;
 reg [ 11:0] miq_entry_create0_in     ;
 reg [ 11:0] miq_entry_create1_in     ;
@@ -425,9 +461,81 @@ wire    [6  :0]  vfpu_idu_ex1_pipe6_preg_dupx;
 wire             vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx;  
 wire    [6  :0]  vfpu_idu_ex1_pipe7_preg_dupx;           
 
+wire            ex_line_wakeup;
+wire    [3:0]   ex_line_wakeup_entry_idx;
+wire            ex_mat_finish;
+wire    [3:0]   ex_mat_finish_entry_idx;
 
-parameter MIQ_WIDTH             = 73;
+wire [11:0] ex_mat_finish_entry_oh;
 
+wire        miq_entry0_ex_pop_cur_entry;
+wire [10:0] miq_entry0_ex_pop_other_entry;
+wire        miq_entry1_ex_pop_cur_entry;
+wire [10:0] miq_entry1_ex_pop_other_entry;
+wire        miq_entry2_ex_pop_cur_entry;
+wire [10:0] miq_entry2_ex_pop_other_entry;
+wire        miq_entry3_ex_pop_cur_entry;
+wire [10:0] miq_entry3_ex_pop_other_entry;
+wire        miq_entry4_ex_pop_cur_entry;
+wire [10:0] miq_entry4_ex_pop_other_entry;
+wire        miq_entry5_ex_pop_cur_entry;
+wire [10:0] miq_entry5_ex_pop_other_entry;
+wire        miq_entry6_ex_pop_cur_entry;
+wire [10:0] miq_entry6_ex_pop_other_entry;
+wire        miq_entry7_ex_pop_cur_entry;
+wire [10:0] miq_entry7_ex_pop_other_entry;
+wire        miq_entry8_ex_pop_cur_entry;
+wire [10:0] miq_entry8_ex_pop_other_entry;
+wire        miq_entry9_ex_pop_cur_entry;
+wire [10:0] miq_entry9_ex_pop_other_entry;
+wire        miq_entry10_ex_pop_cur_entry;
+wire [10:0] miq_entry10_ex_pop_other_entry;
+wire        miq_entry11_ex_pop_cur_entry;
+wire [10:0] miq_entry11_ex_pop_other_entry;
+
+ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_finish (
+  .x_num(ex_mat_finish_entry_idx), .x_num_expand(ex_mat_finish_entry_oh)
+);
+
+assign {miq_entry0_ex_pop_other_entry[10:0],
+        miq_entry0_ex_pop_cur_entry}          = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry1_ex_pop_other_entry[10:1],  
+        miq_entry1_ex_pop_cur_entry,
+        miq_entry1_ex_pop_other_entry[0]}     = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry2_ex_pop_other_entry[10:2],  
+        miq_entry2_ex_pop_cur_entry,
+        miq_entry2_ex_pop_other_entry[1:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry3_ex_pop_other_entry[10:3],  
+        miq_entry3_ex_pop_cur_entry,
+        miq_entry3_ex_pop_other_entry[2:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry4_ex_pop_other_entry[10:4],  
+        miq_entry4_ex_pop_cur_entry,
+        miq_entry4_ex_pop_other_entry[3:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry5_ex_pop_other_entry[10:5],  
+        miq_entry5_ex_pop_cur_entry,
+        miq_entry5_ex_pop_other_entry[4:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry6_ex_pop_other_entry[10:6],  
+        miq_entry6_ex_pop_cur_entry,
+        miq_entry6_ex_pop_other_entry[5:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry7_ex_pop_other_entry[10:7],  
+        miq_entry7_ex_pop_cur_entry,
+        miq_entry7_ex_pop_other_entry[6:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry8_ex_pop_other_entry[10:8],  
+        miq_entry8_ex_pop_cur_entry,
+        miq_entry8_ex_pop_other_entry[7:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry9_ex_pop_other_entry[10:9],  
+        miq_entry9_ex_pop_cur_entry,
+        miq_entry9_ex_pop_other_entry[8:0]}   = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry10_ex_pop_other_entry[10],
+        miq_entry10_ex_pop_cur_entry,
+        miq_entry10_ex_pop_other_entry[9:0]}  = ex_mat_finish_entry_oh[11:0];
+assign {miq_entry11_ex_pop_cur_entry,
+        miq_entry11_ex_pop_other_entry[10:0]} = ex_mat_finish_entry_oh[11:0];
+
+
+parameter MIQ_WIDTH    = 73;
+parameter MIQ_MAT_TYPE = 72;
+parameter MIQ_OPCODE   = 31;
 //==========================================================
 //            Branch Issue Queue Create Control
 //==========================================================
@@ -461,10 +569,10 @@ assign miq_entry_cnt_create[3:0]   = {3'b0,ctrl_miq_create0_en}
                                      + {3'b0,ctrl_miq_create1_en};
 //update valid and value
 assign miq_entry_cnt_updt_vld      = ctrl_miq_create0_en
-                                     || ctrl_miq_rf_pop_vld;
+                                     || ctrl_miq_rf_pop_vld || ex_mat_finish;
 assign miq_entry_cnt_updt_val[3:0] = miq_entry_cnt[3:0]
                                      + miq_entry_cnt_create[3:0]
-                                     - {3'b0,ctrl_miq_rf_pop_vld};
+                                     - {3'b0,ctrl_miq_rf_pop_vld} - {3'b0, ex_mat_finish};
 //implement entry counter
 always @(posedge cnt_clk or negedge cpurst_b)
 begin
@@ -489,8 +597,8 @@ assign miq_entry_cnt_create_2 =  ctrl_miq_create1_en;
 assign miq_entry_cnt_create_1 =  ctrl_miq_create0_en && !ctrl_miq_create1_en;
 assign miq_entry_cnt_create_0 = !ctrl_miq_create0_en;
 
-assign miq_entry_cnt_pop_1    =  ctrl_miq_rf_pop_vld;
-assign miq_entry_cnt_pop_0    = !ctrl_miq_rf_pop_vld;
+assign miq_entry_cnt_pop_1    =  ctrl_miq_rf_pop_vld | ex_mat_finish;
+assign miq_entry_cnt_pop_0    = !ctrl_miq_rf_pop_vld & !ex_mat_finish;
 
 assign miq_ctrl_full_updt     = (miq_entry_cnt[3:0] == 4'd10)
                                 && miq_entry_cnt_create_2
@@ -727,11 +835,15 @@ assign miq_entry11_create_gateclk_en = miq_entry_create_gateclk_en[11];
 //miq create entry should consider pop signal and create0
 assign miq_entry_create0_agevec[11:0] = miq_entry_vld[11:0]
                                         & ~({12{ctrl_miq_rf_pop_vld}}
-                                           & dp_miq_rf_lch_entry[11:0]);
+                                           & dp_miq_rf_lch_entry[11:0])
+                                        & ~({12{ex_mat_finish}}
+                                           & ex_mat_finish_entry_oh[11:0]);
 
 assign miq_entry_create1_agevec[11:0] = miq_entry_vld[11:0]
                                         & ~({12{ctrl_miq_rf_pop_vld}}
                                            & dp_miq_rf_lch_entry[11:0])
+                                        & ~({12{ex_mat_finish}}
+                                           & ex_mat_finish_entry_oh[11:0])
                                         | miq_entry_create0_in[11:0];
 
 //create 0/1 select:
@@ -744,40 +856,212 @@ assign miq_entry_create_sel[11:6] = {6{ctrl_miq_create1_dp_en}} // 目的是平�
 assign miq_entry_create_sel[5:0]  = ~({6{ctrl_miq_create0_dp_en}}
                                       & miq_entry_create0_in[5:0]);
 
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// matrix register index pipe in
+// 创建“寄存器最新写入表项映射条目” 
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+logic [31:0] is_mat_decd_opcode_create0;
+logic [3:0] is_mat_decd_type_create0;
+logic [12:0] is_mat_src_info_create0;
+logic [31:0] is_mat_decd_opcode_create1;
+logic [3:0] is_mat_decd_type_create1;
+logic [12:0] is_mat_src_info_create1;
+
+logic       id_dstm_vld_create0 ;
+logic [2:0] id_dstm_idx_create0 ;
+logic       id_srcm0_vld_create0;
+logic [2:0] id_srcm0_idx_create0;
+logic       id_srcm1_vld_create0;
+logic [2:0] id_srcm1_idx_create0;
+logic       id_srcm2_vld_create0;
+
+logic [11:0] id_dstm_idx_create0_match;
+logic [11:0] id_dstm_idx_create1_match;
+
+logic       id_dstm_vld_create1 ;
+logic [2:0] id_dstm_idx_create1 ;
+logic       id_srcm0_vld_create1;
+logic [2:0] id_srcm0_idx_create1;
+logic       id_srcm1_vld_create1;
+logic [2:0] id_srcm1_idx_create1;
+logic       id_srcm2_vld_create1;
+
+assign is_mat_decd_opcode_create0 = dp_miq_create0_data[MIQ_OPCODE:MIQ_OPCODE-31];
+assign is_mat_decd_opcode_create1 = dp_miq_create1_data[MIQ_OPCODE:MIQ_OPCODE-31];
+assign is_mat_decd_type_create0 = dp_miq_create0_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-31];
+assign is_mat_decd_type_create1 = dp_miq_create1_data[MIQ_MAT_TYPE:MIQ_MAT_TYPE-31];
+
+ct_idu_is_mat_src_decd i_ct_idu_is_mat_src_decd_0 (
+  .is_mat_decd_opcode(is_mat_decd_opcode_create0),
+  .is_mat_decd_type  (is_mat_decd_type_create0  ),
+  .is_mat_src_info   (is_mat_src_info_create0   )
+);
+
+ct_idu_is_mat_src_decd i_ct_idu_is_mat_src_decd_1 (
+  .is_mat_decd_opcode(is_mat_decd_opcode_create1),
+  .is_mat_decd_type  (is_mat_decd_type_create1  ),
+  .is_mat_src_info   (is_mat_src_info_create1   )
+);
+
+logic [7:0] id_dstm_idx_onehot_create0 ;
+logic [7:0] id_srcm0_idx_onehot_create0;
+logic [7:0] id_srcm1_idx_onehot_create0;
+
+logic [7:0] id_dstm_idx_onehot_create1 ;
+logic [7:0] id_srcm0_idx_onehot_create1;
+logic [7:0] id_srcm1_idx_onehot_create1;
+
+assign id_dstm_vld_create0      = is_mat_src_info_create0[12];
+assign id_dstm_idx_create0[2:0] = is_mat_src_info_create0[11:9];
+assign id_srcm0_vld_create0      = is_mat_src_info_create0[8];
+assign id_srcm0_idx_create0[2:0] = is_mat_src_info_create0[7:5];
+assign id_srcm1_vld_create0      = is_mat_src_info_create0[4];
+assign id_srcm1_idx_create0[2:0] = is_mat_src_info_create0[3:1];
+assign id_srcm2_vld_create0      = is_mat_src_info_create0[0];
+
+assign id_dstm_vld_create1       = is_mat_src_info_create1[12];
+assign id_dstm_idx_create1[2:0]  = is_mat_src_info_create1[11:9];
+assign id_srcm0_vld_create1      = is_mat_src_info_create1[8];
+assign id_srcm0_idx_create1[2:0] = is_mat_src_info_create1[7:5];
+assign id_srcm1_vld_create1      = is_mat_src_info_create1[4];
+assign id_srcm1_idx_create1[2:0] = is_mat_src_info_create1[3:1];
+assign id_srcm2_vld_create1      = is_mat_src_info_create1[0];
+
+
+ct_mat_src_expand_8 i_ct_mat_dst_expand_8_create0 (
+  .x_num(id_dstm_idx_create0), .x_num_expand(id_dstm_idx_onehot_create0)
+);
+
+ct_mat_src_expand_8 i_ct_mat_dst_expand_8_create1 (
+  .x_num(id_dstm_idx_create1), .x_num_expand(id_dstm_idx_onehot_create1)
+);
+
+ct_mat_src_expand_8 i_ct_mat_src0_expand_8_create0 (
+  .x_num(id_srcm0_idx_create0), .x_num_expand(id_srcm0_idx_onehot_create0)
+);
+
+ct_mat_src_expand_8 i_ct_mat_src1_expand_8_create0 (
+  .x_num(id_srcm1_idx_create0), .x_num_expand(id_srcm1_idx_onehot_create0)
+);
+
+ct_mat_src_expand_8 i_ct_mat_src0_expand_8_create1 (
+  .x_num(id_srcm0_idx_create1), .x_num_expand(id_srcm0_idx_onehot_create1)
+);
+
+ct_mat_src_expand_8 i_ct_mat_src1_expand_8_create1 (
+  .x_num(id_srcm1_idx_create1), .x_num_expand(id_srcm1_idx_onehot_create1)
+);
+
+logic [3:0] miq_entry_create0_in_idx;
+logic [3:0] miq_entry_create1_in_idx;
+logic [7:0] mreg_effected_mapping_wen_0;
+logic [7:0] mreg_effected_mapping_wen_1;
+logic [3:0] mreg_effected_mapping_widx_0;
+logic [3:0] mreg_effected_mapping_widx_1;
+
+logic [7:0] mreg_effected_mapping_src0_create0_ren;
+logic [7:0] mreg_effected_mapping_src1_create0_ren;
+logic [7:0] mreg_effected_mapping_src2_create0_ren;
+logic [4:0] mreg_effected_mapping_src0_create0_ridx_vld;
+logic [4:0] mreg_effected_mapping_src1_create0_ridx_vld;
+logic [4:0] mreg_effected_mapping_src2_create0_ridx_vld;
+
+logic [7:0] mreg_effected_mapping_src0_create1_ren;
+logic [7:0] mreg_effected_mapping_src1_create1_ren;
+logic [7:0] mreg_effected_mapping_src2_create1_ren;
+logic [4:0] mreg_effected_mapping_src0_create1_ridx_vld;
+logic [4:0] mreg_effected_mapping_src1_create1_ridx_vld;
+logic [4:0] mreg_effected_mapping_src2_create1_ridx_vld;
+
+
+ct_mat_src_oh_binary i_ct_mat_src_oh_binary_0 (
+  .x_num_oh(miq_entry_create0_in), .x_num_binary(miq_entry_create0_in_idx)
+);
+
+ct_mat_src_oh_binary i_ct_mat_src_oh_binary_1 (
+  .x_num_oh(miq_entry_create1_in), .x_num_binary(miq_entry_create1_in_idx)
+);
+
+assign mreg_effected_mapping_widx_0[3:0] = {4{ctrl_miq_create0_dp_en}} & miq_entry_create0_in_idx[3:0];
+assign mreg_effected_mapping_widx_1[3:0] = {4{ctrl_miq_create1_dp_en}} & miq_entry_create1_in_idx[3:0];
+
+assign mreg_effected_mapping_wen_0 = {8{id_dstm_vld_create0}} & id_dstm_idx_onehot_create0;
+assign mreg_effected_mapping_wen_1 = {8{id_dstm_vld_create1}} & id_dstm_idx_onehot_create1;
+
+assign mreg_effected_mapping_src0_create0_ren[7:0] = {8{id_srcm0_vld_create0}} & id_srcm0_idx_onehot_create0;
+assign mreg_effected_mapping_src1_create0_ren[7:0] = {8{id_srcm1_vld_create0}} & id_srcm1_idx_onehot_create0;
+assign mreg_effected_mapping_src2_create0_ren[7:0] = {8{id_srcm2_vld_create0}} & id_dstm_idx_onehot_create0;
+
+assign mreg_effected_mapping_src0_create1_ren[7:0] = {8{id_srcm0_vld_create1}} & id_srcm0_idx_onehot_create1;
+assign mreg_effected_mapping_src1_create1_ren[7:0] = {8{id_srcm1_vld_create1}} & id_srcm1_idx_onehot_create1;
+assign mreg_effected_mapping_src2_create1_ren[7:0] = {8{id_srcm2_vld_create1}} & id_dstm_idx_onehot_create1;
+
+mreg_effected_mapping i_mreg_effected_mapping (
+  .forever_cpuclk                             (forever_cpuclk                             ),
+  .cpurst_b                                   (cpurst_b                                   ),
+  .mreg_effected_mapping_wen_0                (mreg_effected_mapping_wen_0                ),
+  .mreg_effected_mapping_wen_1                (mreg_effected_mapping_wen_1                ),
+  .mreg_effected_mapping_widx_0               (mreg_effected_mapping_widx_0               ),
+  .mreg_effected_mapping_widx_1               (mreg_effected_mapping_widx_1               ),
+  .mreg_effected_mapping_src0_create0_ren     (mreg_effected_mapping_src0_create0_ren     ),
+  .mreg_effected_mapping_src1_create0_ren     (mreg_effected_mapping_src1_create0_ren     ),
+  .mreg_effected_mapping_src2_create0_ren     (mreg_effected_mapping_src2_create0_ren     ),
+  .mreg_effected_mapping_src0_create1_ren     (mreg_effected_mapping_src0_create1_ren     ),
+  .mreg_effected_mapping_src1_create1_ren     (mreg_effected_mapping_src1_create1_ren     ),
+  .mreg_effected_mapping_src2_create1_ren     (mreg_effected_mapping_src2_create1_ren     ),
+  .mreg_effected_mapping_src0_create0_ridx_vld(mreg_effected_mapping_src0_create0_ridx_vld),
+  .mreg_effected_mapping_src1_create0_ridx_vld(mreg_effected_mapping_src1_create0_ridx_vld),
+  .mreg_effected_mapping_src2_create0_ridx_vld(mreg_effected_mapping_src2_create0_ridx_vld),
+  .mreg_effected_mapping_src0_create1_ridx_vld(mreg_effected_mapping_src0_create1_ridx_vld),
+  .mreg_effected_mapping_src1_create1_ridx_vld(mreg_effected_mapping_src1_create1_ridx_vld),
+  .mreg_effected_mapping_src2_create1_ridx_vld(mreg_effected_mapping_src2_create1_ridx_vld)
+);
+
+
+logic [MAT_SRC_META_WIDTH-1:0] dp_miq_create0_mat_src_meta;
+logic [MAT_SRC_META_WIDTH-1:0] dp_miq_create1_mat_src_meta;
+
+assign dp_miq_create0_mat_src_meta = {is_mat_src_info_create0 , 
+                                      mreg_effected_mapping_src0_create0_ridx_vld, 
+                                      mreg_effected_mapping_src1_create0_ridx_vld, 
+                                      mreg_effected_mapping_src2_create0_ridx_vld};
+assign dp_miq_create1_mat_src_meta = {is_mat_src_info_create1 , 
+                                      mreg_effected_mapping_src0_create1_ridx_vld, 
+                                      mreg_effected_mapping_src1_create1_ridx_vld, 
+                                      mreg_effected_mapping_src2_create1_ridx_vld};
+
 //----------------entry0 flop create signals----------------
 // &CombBeg; @313
-always @( miq_entry_create_sel[0]
-       or miq_bypass_dp_en
-       or miq_entry_create1_agevec[11:1]
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[11:1])
+always @(*)
 begin
   if(!miq_entry_create_sel[0]) begin
     miq_entry0_create_frz          = miq_bypass_dp_en;
     miq_entry0_create_agevec[10:0] = miq_entry_create0_agevec[11:1];
     miq_entry0_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry0_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry0_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];
   end
   else begin
     miq_entry0_create_frz          = 1'b0;
     miq_entry0_create_agevec[10:0] = miq_entry_create1_agevec[11:1];
     miq_entry0_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry0_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry0_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];
   end
 // &CombEnd; @326
 end
 
 //----------------entry1 flop create signals----------------
 // &CombBeg; @329
-always @( miq_bypass_dp_en
-       or dp_miq_create1_data[72:0]
-       or miq_entry_create1_agevec[0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[11:2]
-       or miq_entry_create1_agevec[11:2]
-       or miq_entry_create0_agevec[0]
-       or miq_entry_create_sel[1])
+always @(*)
 begin
   if(!miq_entry_create_sel[1]) begin
     miq_entry1_create_frz          = miq_bypass_dp_en;
@@ -785,6 +1069,11 @@ begin
                                        miq_entry_create0_agevec[0]};
     miq_entry1_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry1_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry1_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
+
   end
   else begin
     miq_entry1_create_frz          = 1'b0;
@@ -792,20 +1081,17 @@ begin
                                        miq_entry_create1_agevec[0]};
     miq_entry1_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry1_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry1_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @344
 end
 
 //----------------entry2 flop create signals----------------
 // &CombBeg; @347
-always @( miq_entry_create1_agevec[1:0]
-       or miq_bypass_dp_en
-       or miq_entry_create1_agevec[11:3]
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[11:3]
-       or miq_entry_create0_agevec[1:0]
-       or miq_entry_create_sel[2])
+always @(*)
 begin
   if(!miq_entry_create_sel[2]) begin
     miq_entry2_create_frz          = miq_bypass_dp_en;
@@ -813,6 +1099,11 @@ begin
                                        miq_entry_create0_agevec[1:0]};
     miq_entry2_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry2_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry2_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
+
   end
   else begin
     miq_entry2_create_frz          = 1'b0;
@@ -820,20 +1111,17 @@ begin
                                        miq_entry_create1_agevec[1:0]};
     miq_entry2_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry2_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry2_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @362
 end
 
 //----------------entry3 flop create signals----------------
 // &CombBeg; @365
-always @( miq_bypass_dp_en
-       or miq_entry_create0_agevec[11:4]
-       or miq_entry_create1_agevec[11:4]
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[2:0]
-       or miq_entry_create1_agevec[2:0]
-       or miq_entry_create_sel[3])
+always @(*)
 begin
   if(!miq_entry_create_sel[3]) begin
     miq_entry3_create_frz          = miq_bypass_dp_en;
@@ -841,6 +1129,10 @@ begin
                                        miq_entry_create0_agevec[2:0]};
     miq_entry3_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry3_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry3_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
   end
   else begin
     miq_entry3_create_frz          = 1'b0;
@@ -848,20 +1140,17 @@ begin
                                        miq_entry_create1_agevec[2:0]};
     miq_entry3_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry3_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry3_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @380
 end
 
 //----------------entry4 flop create signals----------------
 // &CombBeg; @383
-always @( miq_bypass_dp_en
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[11:5]
-       or miq_entry_create_sel[4]
-       or miq_entry_create1_agevec[11:5]
-       or miq_entry_create0_agevec[3:0]
-       or miq_entry_create1_agevec[3:0])
+always @(*)
 begin
   if(!miq_entry_create_sel[4]) begin
     miq_entry4_create_frz          = miq_bypass_dp_en;
@@ -869,6 +1158,10 @@ begin
                                        miq_entry_create0_agevec[3:0]};
     miq_entry4_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry4_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry4_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
   end
   else begin
     miq_entry4_create_frz          = 1'b0;
@@ -876,20 +1169,17 @@ begin
                                        miq_entry_create1_agevec[3:0]};
     miq_entry4_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry4_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry4_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @398
 end
 
 //----------------entry5 flop create signals----------------
 // &CombBeg; @401
-always @( miq_bypass_dp_en
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create1_agevec[4:0]
-       or miq_entry_create0_agevec[4:0]
-       or miq_entry_create_sel[5]
-       or miq_entry_create0_agevec[11:6]
-       or miq_entry_create1_agevec[11:6])
+always @(*)
 begin
   if(!miq_entry_create_sel[5]) begin
     miq_entry5_create_frz          = miq_bypass_dp_en;
@@ -897,6 +1187,10 @@ begin
                                        miq_entry_create0_agevec[4:0]};
     miq_entry5_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry5_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry5_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
   end
   else begin
     miq_entry5_create_frz          = 1'b0;
@@ -904,20 +1198,17 @@ begin
                                        miq_entry_create1_agevec[4:0]};
     miq_entry5_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry5_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry5_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @416
 end
 
 //----------------entry6 flop create signals----------------
 // &CombBeg; @419
-always @( miq_bypass_dp_en
-       or miq_entry_create0_agevec[5:0]
-       or miq_entry_create0_agevec[11:7]
-       or miq_entry_create_sel[6]
-       or miq_entry_create1_agevec[5:0]
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create1_agevec[11:7])
+always @(*)
 begin
   if(!miq_entry_create_sel[6]) begin
     miq_entry6_create_frz          = miq_bypass_dp_en;
@@ -925,6 +1216,10 @@ begin
                                        miq_entry_create0_agevec[5:0]};
     miq_entry6_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry6_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry6_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
   end
   else begin
     miq_entry6_create_frz          = 1'b0;
@@ -932,20 +1227,17 @@ begin
                                        miq_entry_create1_agevec[5:0]};
     miq_entry6_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry6_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry6_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @434
 end
 
 //----------------entry7 flop create signals----------------
 // &CombBeg; @437
-always @( miq_bypass_dp_en
-       or miq_entry_create_sel[7]
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[6:0]
-       or miq_entry_create0_agevec[11:8]
-       or miq_entry_create1_agevec[11:8]
-       or miq_entry_create1_agevec[6:0])
+always @(*)
 begin
   if(!miq_entry_create_sel[7]) begin
     miq_entry7_create_frz          = miq_bypass_dp_en;
@@ -953,6 +1245,10 @@ begin
                                        miq_entry_create0_agevec[6:0]};
     miq_entry7_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry7_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry7_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
   end
   else begin
     miq_entry7_create_frz          = 1'b0;
@@ -960,20 +1256,17 @@ begin
                                        miq_entry_create1_agevec[6:0]};
     miq_entry7_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry7_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry7_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @452
 end
 
 //----------------entry8 flop create signals----------------
 // &CombBeg; @455
-always @( miq_entry_create1_agevec[7:0]
-       or miq_bypass_dp_en
-       or miq_entry_create1_agevec[11:9]
-       or miq_entry_create0_agevec[11:9]
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create_sel[8]
-       or miq_entry_create0_agevec[7:0])
+always @(*)
 begin
   if(!miq_entry_create_sel[8]) begin
     miq_entry8_create_frz          = miq_bypass_dp_en;
@@ -981,6 +1274,10 @@ begin
                                        miq_entry_create0_agevec[7:0]};
     miq_entry8_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry8_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry8_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];   
   end
   else begin
     miq_entry8_create_frz          = 1'b0;
@@ -988,20 +1285,17 @@ begin
                                        miq_entry_create1_agevec[7:0]};
     miq_entry8_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry8_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry8_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @470
 end
 
 //----------------entry9 flop create signals----------------
 // &CombBeg; @473
-always @( miq_bypass_dp_en
-       or dp_miq_create1_data[72:0]
-       or miq_entry_create1_agevec[8:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[8:0]
-       or miq_entry_create1_agevec[11:10]
-       or miq_entry_create_sel[9]
-       or miq_entry_create0_agevec[11:10])
+always @(*)
 begin
   if(!miq_entry_create_sel[9]) begin
     miq_entry9_create_frz          = miq_bypass_dp_en;
@@ -1009,6 +1303,10 @@ begin
                                        miq_entry_create0_agevec[8:0]};
     miq_entry9_create_data[MIQ_WIDTH-1:0] =
        dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry9_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];
+    miq_entry9_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];         
   end
   else begin
     miq_entry9_create_frz          = 1'b0;
@@ -1016,20 +1314,17 @@ begin
                                        miq_entry_create1_agevec[8:0]};
     miq_entry9_create_data[MIQ_WIDTH-1:0] = 
        dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry9_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0]; 
+    miq_entry9_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @488
 end
 
 //---------------entry10 flop create signals----------------
 // &CombBeg; @491
-always @( miq_bypass_dp_en
-       or miq_entry_create1_agevec[11]
-       or dp_miq_create1_data[72:0]
-       or miq_entry_create1_agevec[9:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create0_agevec[9:0]
-       or miq_entry_create0_agevec[11]
-       or miq_entry_create_sel[10])
+always @(*)
 begin
   if(!miq_entry_create_sel[10]) begin
     miq_entry10_create_frz          = miq_bypass_dp_en;
@@ -1037,6 +1332,10 @@ begin
                                         miq_entry_create0_agevec[9:0]};
     miq_entry10_create_data[MIQ_WIDTH-1:0] =
         dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry10_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];      
+    miq_entry10_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];     
   end
   else begin
     miq_entry10_create_frz          = 1'b0;
@@ -1044,30 +1343,37 @@ begin
                                         miq_entry_create1_agevec[9:0]};
     miq_entry10_create_data[MIQ_WIDTH-1:0] = 
         dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry10_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0]; 
+    miq_entry10_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @506
 end
 
 //---------------entry11 flop create signals----------------
 // &CombBeg; @509
-always @( miq_bypass_dp_en
-       or dp_miq_create1_data[72:0]
-       or dp_miq_create0_data[72:0]
-       or miq_entry_create_sel[11]
-       or miq_entry_create0_agevec[10:0]
-       or miq_entry_create1_agevec[10:0])
+always @(*)
 begin
   if(!miq_entry_create_sel[11]) begin
     miq_entry11_create_frz          = miq_bypass_dp_en;
     miq_entry11_create_agevec[10:0] = miq_entry_create0_agevec[10:0];
     miq_entry11_create_data[MIQ_WIDTH-1:0] =
         dp_miq_create0_data[MIQ_WIDTH-1:0];
+    miq_entry11_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create0_mat_src_meta[MAT_SRC_META_WIDTH-1:0];      
+    miq_entry11_create_dstm_depd_vec[11:0] = 
+       {12{id_dstm_vld_create0}} & id_dstm_idx_create0_match[11:0];     
   end
   else begin
     miq_entry11_create_frz          = 1'b0;
     miq_entry11_create_agevec[10:0] = miq_entry_create1_agevec[10:0];
     miq_entry11_create_data[MIQ_WIDTH-1:0] = 
         dp_miq_create1_data[MIQ_WIDTH-1:0];
+    miq_entry11_create_mat_src_meta[MAT_SRC_META_WIDTH-1:0] = 
+       dp_miq_create1_mat_src_meta[MAT_SRC_META_WIDTH-1:0]; 
+    miq_entry11_create_dstm_depd_vec[11:0] = 
+      {12{id_dstm_vld_create1}} & id_dstm_idx_create1_match[11:0];   
   end
 // &CombEnd; @522
 end
@@ -1104,18 +1410,55 @@ assign miq_entry11_alu1_reg_fwd_vld[1:0] = ctrl_miq_rf_pipe1_alu_reg_fwd_vld[23:
 
 //-------------------issue enable signals-------------------
 // 表项 agevec 所有bit全为0则表示该表项oldest
-assign miq_entry_oldest[0]      = !(|miq_entry0_agevec[10:0]);
-assign miq_entry_oldest[1]      = !(|miq_entry1_agevec[10:0]);
-assign miq_entry_oldest[2]      = !(|miq_entry2_agevec[10:0]);
-assign miq_entry_oldest[3]      = !(|miq_entry3_agevec[10:0]);
-assign miq_entry_oldest[4]      = !(|miq_entry4_agevec[10:0]);
-assign miq_entry_oldest[5]      = !(|miq_entry5_agevec[10:0]);
-assign miq_entry_oldest[6]      = !(|miq_entry6_agevec[10:0]);
-assign miq_entry_oldest[7]      = !(|miq_entry7_agevec[10:0]);
-assign miq_entry_oldest[8]      = !(|miq_entry8_agevec[10:0]);
-assign miq_entry_oldest[9]      = !(|miq_entry9_agevec[10:0]);
-assign miq_entry_oldest[10]     = !(|miq_entry10_agevec[10:0]);
-assign miq_entry_oldest[11]     = !(|miq_entry11_agevec[10:0]);
+// assign miq_entry_oldest[0]      = !(|miq_entry0_agevec[10:0]);
+// assign miq_entry_oldest[1]      = !(|miq_entry1_agevec[10:0]);
+// assign miq_entry_oldest[2]      = !(|miq_entry2_agevec[10:0]);
+// assign miq_entry_oldest[3]      = !(|miq_entry3_agevec[10:0]);
+// assign miq_entry_oldest[4]      = !(|miq_entry4_agevec[10:0]);
+// assign miq_entry_oldest[5]      = !(|miq_entry5_agevec[10:0]);
+// assign miq_entry_oldest[6]      = !(|miq_entry6_agevec[10:0]);
+// assign miq_entry_oldest[7]      = !(|miq_entry7_agevec[10:0]);
+// assign miq_entry_oldest[8]      = !(|miq_entry8_agevec[10:0]);
+// assign miq_entry_oldest[9]      = !(|miq_entry9_agevec[10:0]);
+// assign miq_entry_oldest[10]     = !(|miq_entry10_agevec[10:0]);
+// assign miq_entry_oldest[11]     = !(|miq_entry11_agevec[10:0]);
+
+//first find older ready entry
+assign miq_older_entry_ready[0]  = |(miq_entry0_agevec[10:0]
+                                     & miq_entry_ready[11:1]);
+assign miq_older_entry_ready[1]  = |(miq_entry1_agevec[10:0]
+                                     & {miq_entry_ready[11:2],
+                                        miq_entry_ready[0]});
+assign miq_older_entry_ready[2]  = |(miq_entry2_agevec[10:0]
+                                     & {miq_entry_ready[11:3],
+                                        miq_entry_ready[1:0]});
+assign miq_older_entry_ready[3]  = |(miq_entry3_agevec[10:0]
+                                     & {miq_entry_ready[11:4],
+                                        miq_entry_ready[2:0]});
+assign miq_older_entry_ready[4]  = |(miq_entry4_agevec[10:0]
+                                     & {miq_entry_ready[11:5],
+                                        miq_entry_ready[3:0]});
+assign miq_older_entry_ready[5]  = |(miq_entry5_agevec[10:0]
+                                     & {miq_entry_ready[11:6],
+                                        miq_entry_ready[4:0]});
+assign miq_older_entry_ready[6]  = |(miq_entry6_agevec[10:0]
+                                     & {miq_entry_ready[11:7],
+                                        miq_entry_ready[5:0]});
+assign miq_older_entry_ready[7]  = |(miq_entry7_agevec[10:0]
+                                     & {miq_entry_ready[11:8],
+                                        miq_entry_ready[6:0]});
+assign miq_older_entry_ready[8]  = |(miq_entry8_agevec[10:0]
+                                     & {miq_entry_ready[11:9],
+                                        miq_entry_ready[7:0]});
+assign miq_older_entry_ready[9]  = |(miq_entry9_agevec[10:0]
+                                     & {miq_entry_ready[11:10],
+                                        miq_entry_ready[8:0]});
+assign miq_older_entry_ready[10] = |(miq_entry10_agevec[10:0]
+                                     & {miq_entry_ready[11],
+                                        miq_entry_ready[9:0]});
+assign miq_older_entry_ready[11] = |(miq_entry11_agevec[10:0]
+                                     & miq_entry_ready[10:0]);
+
 
 // iq_entryX_rdy信号由表项输出, 已经包含了!frz的判断, 排除已经发射到RF stage的指令参与仲裁
 assign miq_entry_ready[0]      = miq_entry0_rdy;
@@ -1131,11 +1474,55 @@ assign miq_entry_ready[9]      = miq_entry9_rdy;
 assign miq_entry_ready[10]     = miq_entry10_rdy;
 assign miq_entry_ready[11]     = miq_entry11_rdy;
 
-// oldest+ready, 仲裁最老且操作数ready的信号
-assign miq_entry_oldest_ready[11:0] = miq_entry_oldest[11:0] & miq_entry_ready[11:0];
+// 有更老的mcfg指令未发射会阻塞发射
+logic [11:0] miq_older_entry_mcfg;
+logic [11:0] miq_entry_mcfg;
+assign miq_older_entry_mcfg[0]  = |(miq_entry0_agevec[10:0]
+                                     & miq_entry_mcfg[11:1]);
+assign miq_older_entry_mcfg[1]  = |(miq_entry1_agevec[10:0]
+                                     & {miq_entry_mcfg[11:2],
+                                        miq_entry_mcfg[0]});
+assign miq_older_entry_mcfg[2]  = |(miq_entry2_agevec[10:0]
+                                     & {miq_entry_mcfg[11:3],
+                                        miq_entry_mcfg[1:0]});
+assign miq_older_entry_mcfg[3]  = |(miq_entry3_agevec[10:0]
+                                     & {miq_entry_mcfg[11:4],
+                                        miq_entry_mcfg[2:0]});
+assign miq_older_entry_mcfg[4]  = |(miq_entry4_agevec[10:0]
+                                     & {miq_entry_mcfg[11:5],
+                                        miq_entry_mcfg[3:0]});
+assign miq_older_entry_mcfg[5]  = |(miq_entry5_agevec[10:0]
+                                     & {miq_entry_mcfg[11:6],
+                                        miq_entry_mcfg[4:0]});
+assign miq_older_entry_mcfg[6]  = |(miq_entry6_agevec[10:0]
+                                     & {miq_entry_mcfg[11:7],
+                                        miq_entry_mcfg[5:0]});
+assign miq_older_entry_mcfg[7]  = |(miq_entry7_agevec[10:0]
+                                     & {miq_entry_mcfg[11:8],
+                                        miq_entry_mcfg[6:0]});
+assign miq_older_entry_mcfg[8]  = |(miq_entry8_agevec[10:0]
+                                     & {miq_entry_mcfg[11:9],
+                                        miq_entry_mcfg[7:0]});
+assign miq_older_entry_mcfg[9]  = |(miq_entry9_agevec[10:0]
+                                     & {miq_entry_mcfg[11:10],
+                                        miq_entry_mcfg[8:0]});
+assign miq_older_entry_mcfg[10] = |(miq_entry10_agevec[10:0]
+                                     & {miq_entry_mcfg[11],
+                                        miq_entry_mcfg[9:0]});
+assign miq_older_entry_mcfg[11] = |(miq_entry11_agevec[10:0]
+                                     & miq_entry_mcfg[10:0]);
+
+// // oldest+ready, 仲裁最老且操作数ready的信号
+// assign miq_entry_oldest_ready[11:0] = miq_entry_oldest[11:0] & miq_entry_ready[11:0];
+// assign miq_entry_issue_en[11:0]  = miq_entry_oldest_ready[11:0];
+// assign miq_xx_issue_en         = |{miq_bypass_en,
+//                                    miq_entry_oldest_ready[11:0]};
+
 //if there is any entry ready or bypass enable, issue enable
-assign miq_xx_issue_en         = |{miq_bypass_en,
-                                   miq_entry_oldest_ready[11:0]};
+assign miq_entry_issue_en[11:0]  = miq_entry_ready[11:0]
+                                   & ~miq_older_entry_ready[11:0] & ~miq_older_entry_mcfg[11:0];
+assign miq_xx_issue_en         = miq_entry_ready[11:0] & ~miq_older_entry_mcfg[11:0]; // 去掉bypass, older mcfg阻塞
+
 //gate clock issue enable with timing optimization
 assign miq_xx_gateclk_issue_en = miq_bypass_gateclk_en
                                  || miq_entry0_vld_with_frz
@@ -1153,7 +1540,6 @@ assign miq_xx_gateclk_issue_en = miq_bypass_gateclk_en
 
 //------------------entry issue enable signals--------------
 //not ready if older ready exists
-assign miq_entry_issue_en[11:0]  = miq_entry_oldest_ready[11:0];
 //rename for entries
 assign miq_entry0_issue_en      = miq_entry_issue_en[0];
 assign miq_entry1_issue_en      = miq_entry_issue_en[1];
@@ -1169,9 +1555,7 @@ assign miq_entry10_issue_en     = miq_entry_issue_en[10];
 assign miq_entry11_issue_en     = miq_entry_issue_en[11];
 
 //-----------------issue entry indiction--------------------
-assign miq_dp_issue_entry[11:0] = (miq_create_bypass_empty)
-                                  ? miq_entry_create0_in[11:0]
-                                  : miq_entry_issue_en[11:0];
+assign miq_dp_issue_entry[11:0] = miq_entry_issue_en[11:0];
 
 //-----------------issue data path selection----------------
 //issue data path will select oldest ready entry in issue queue
@@ -1224,10 +1608,7 @@ begin
 end
 
 //if no entry valid, select bypass path
-assign miq_dp_issue_read_data[MIQ_WIDTH-1:0] = 
-         (miq_create_bypass_empty)
-         ? dp_miq_bypass_data[MIQ_WIDTH-1:0]
-         : miq_entry_read_data[MIQ_WIDTH-1:0];
+assign miq_dp_issue_read_data[MIQ_WIDTH-1:0] = miq_entry_read_data[MIQ_WIDTH-1:0];
 
 //==========================================================
 //            Branch Issue Queue Launch Control
@@ -1296,664 +1677,809 @@ assign miq_entry10_frz_clr     = ctrl_miq_rf_lch_fail_vld
 assign miq_entry11_frz_clr     = ctrl_miq_rf_lch_fail_vld 
                                  && dp_miq_rf_lch_entry[11];
 
+
 //==========================================================
 //             Branch Issue Queue Entry Instance
 //==========================================================
 // &ConnRule(s/^x_/miq_entry0_/); @754
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry0"); @755
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry0 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry0_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry0_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry0_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry0_create_agevec               ),
-  .x_create_data                           (miq_entry0_create_data                 ),
-  .x_create_dp_en                          (miq_entry0_create_dp_en                ),
-  .x_create_en                             (miq_entry0_create_en                   ),
-  .x_create_frz                            (miq_entry0_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry0_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry0_frz_clr                     ),
-  .x_issue_en                              (miq_entry0_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry0_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry0_pop_other_entry             ),
-  .x_rdy                                   (miq_entry0_rdy                         ),
-  .x_read_data                             (miq_entry0_read_data                   ),
-  .x_vld                                   (miq_entry0_vld                         ),
-  .x_vld_with_frz                          (miq_entry0_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry0 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry0_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry0_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry0_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry0_create_agevec               ),
+  .x_create_data                          (miq_entry0_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry0_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry0_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry0_create_dp_en                ),
+  .x_create_en                            (miq_entry0_create_en                   ),
+  .x_create_frz                           (miq_entry0_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry0_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry0_frz_clr                     ),
+  .x_issue_en                             (miq_entry0_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry0_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry0_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry0_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry0_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[0]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[0]           ),
+  .x_rdy                                  (miq_entry0_rdy                         ),
+  .x_read_data                            (miq_entry0_read_data                   ),
+  .x_vld                                  (miq_entry0_vld                         ),
+  .x_vld_with_frz                         (miq_entry0_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry1_/); @757
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry1"); @758
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry1 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry1_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry1_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry1_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry1_create_agevec               ),
-  .x_create_data                           (miq_entry1_create_data                 ),
-  .x_create_dp_en                          (miq_entry1_create_dp_en                ),
-  .x_create_en                             (miq_entry1_create_en                   ),
-  .x_create_frz                            (miq_entry1_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry1_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry1_frz_clr                     ),
-  .x_issue_en                              (miq_entry1_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry1_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry1_pop_other_entry             ),
-  .x_rdy                                   (miq_entry1_rdy                         ),
-  .x_read_data                             (miq_entry1_read_data                   ),
-  .x_vld                                   (miq_entry1_vld                         ),
-  .x_vld_with_frz                          (miq_entry1_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry1 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry1_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry1_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry1_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry1_create_agevec               ),
+  .x_create_data                          (miq_entry1_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry1_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry1_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry1_create_dp_en                ),
+  .x_create_en                            (miq_entry1_create_en                   ),
+  .x_create_frz                           (miq_entry1_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry1_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry1_frz_clr                     ),
+  .x_issue_en                             (miq_entry1_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry1_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry1_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry1_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry1_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[1]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[1]           ),
+  .x_rdy                                  (miq_entry1_rdy                         ),
+  .x_read_data                            (miq_entry1_read_data                   ),
+  .x_vld                                  (miq_entry1_vld                         ),
+  .x_vld_with_frz                         (miq_entry1_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry2_/); @760
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry2"); @761
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry2 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry2_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry2_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry2_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry2_create_agevec               ),
-  .x_create_data                           (miq_entry2_create_data                 ),
-  .x_create_dp_en                          (miq_entry2_create_dp_en                ),
-  .x_create_en                             (miq_entry2_create_en                   ),
-  .x_create_frz                            (miq_entry2_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry2_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry2_frz_clr                     ),
-  .x_issue_en                              (miq_entry2_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry2_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry2_pop_other_entry             ),
-  .x_rdy                                   (miq_entry2_rdy                         ),
-  .x_read_data                             (miq_entry2_read_data                   ),
-  .x_vld                                   (miq_entry2_vld                         ),
-  .x_vld_with_frz                          (miq_entry2_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry2 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry2_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry2_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry2_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry2_create_agevec               ),
+  .x_create_data                          (miq_entry2_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry2_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry2_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry2_create_dp_en                ),
+  .x_create_en                            (miq_entry2_create_en                   ),
+  .x_create_frz                           (miq_entry2_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry2_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry2_frz_clr                     ),
+  .x_issue_en                             (miq_entry2_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry2_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry2_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry2_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry2_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[2]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[2]           ),
+  .x_rdy                                  (miq_entry2_rdy                         ),
+  .x_read_data                            (miq_entry2_read_data                   ),
+  .x_vld                                  (miq_entry2_vld                         ),
+  .x_vld_with_frz                         (miq_entry2_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry3_/); @763
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry3"); @764
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry3 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry3_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry3_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry3_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry3_create_agevec               ),
-  .x_create_data                           (miq_entry3_create_data                 ),
-  .x_create_dp_en                          (miq_entry3_create_dp_en                ),
-  .x_create_en                             (miq_entry3_create_en                   ),
-  .x_create_frz                            (miq_entry3_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry3_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry3_frz_clr                     ),
-  .x_issue_en                              (miq_entry3_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry3_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry3_pop_other_entry             ),
-  .x_rdy                                   (miq_entry3_rdy                         ),
-  .x_read_data                             (miq_entry3_read_data                   ),
-  .x_vld                                   (miq_entry3_vld                         ),
-  .x_vld_with_frz                          (miq_entry3_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry3 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry3_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry3_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry3_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry3_create_agevec               ),
+  .x_create_data                          (miq_entry3_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry3_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry3_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry3_create_dp_en                ),
+  .x_create_en                            (miq_entry3_create_en                   ),
+  .x_create_frz                           (miq_entry3_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry3_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry3_frz_clr                     ),
+  .x_issue_en                             (miq_entry3_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry3_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry3_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry3_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry3_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[3]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[3]           ),
+  .x_rdy                                  (miq_entry3_rdy                         ),
+  .x_read_data                            (miq_entry3_read_data                   ),
+  .x_vld                                  (miq_entry3_vld                         ),
+  .x_vld_with_frz                         (miq_entry3_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry4_/); @766
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry4"); @767
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry4 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry4_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry4_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry4_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry4_create_agevec               ),
-  .x_create_data                           (miq_entry4_create_data                 ),
-  .x_create_dp_en                          (miq_entry4_create_dp_en                ),
-  .x_create_en                             (miq_entry4_create_en                   ),
-  .x_create_frz                            (miq_entry4_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry4_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry4_frz_clr                     ),
-  .x_issue_en                              (miq_entry4_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry4_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry4_pop_other_entry             ),
-  .x_rdy                                   (miq_entry4_rdy                         ),
-  .x_read_data                             (miq_entry4_read_data                   ),
-  .x_vld                                   (miq_entry4_vld                         ),
-  .x_vld_with_frz                          (miq_entry4_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry4 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry4_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry4_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry4_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry4_create_agevec               ),
+  .x_create_data                          (miq_entry4_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry4_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry4_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry4_create_dp_en                ),
+  .x_create_en                            (miq_entry4_create_en                   ),
+  .x_create_frz                           (miq_entry4_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry4_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry4_frz_clr                     ),
+  .x_issue_en                             (miq_entry4_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry4_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry4_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry4_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry4_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[4]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[4]           ),
+  .x_rdy                                  (miq_entry4_rdy                         ),
+  .x_read_data                            (miq_entry4_read_data                   ),
+  .x_vld                                  (miq_entry4_vld                         ),
+  .x_vld_with_frz                         (miq_entry4_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry5_/); @769
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry5"); @770
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry5 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry5_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry5_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry5_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry5_create_agevec               ),
-  .x_create_data                           (miq_entry5_create_data                 ),
-  .x_create_dp_en                          (miq_entry5_create_dp_en                ),
-  .x_create_en                             (miq_entry5_create_en                   ),
-  .x_create_frz                            (miq_entry5_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry5_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry5_frz_clr                     ),
-  .x_issue_en                              (miq_entry5_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry5_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry5_pop_other_entry             ),
-  .x_rdy                                   (miq_entry5_rdy                         ),
-  .x_read_data                             (miq_entry5_read_data                   ),
-  .x_vld                                   (miq_entry5_vld                         ),
-  .x_vld_with_frz                          (miq_entry5_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry5 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry5_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry5_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry5_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry5_create_agevec               ),
+  .x_create_data                          (miq_entry5_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry5_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry5_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry5_create_dp_en                ),
+  .x_create_en                            (miq_entry5_create_en                   ),
+  .x_create_frz                           (miq_entry5_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry5_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry5_frz_clr                     ),
+  .x_issue_en                             (miq_entry5_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry5_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry5_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry5_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry5_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[5]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[5]           ),
+  .x_rdy                                  (miq_entry5_rdy                         ),
+  .x_read_data                            (miq_entry5_read_data                   ),
+  .x_vld                                  (miq_entry5_vld                         ),
+  .x_vld_with_frz                         (miq_entry5_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry6_/); @772
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry6"); @773
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry6 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry6_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry6_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry6_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry6_create_agevec               ),
-  .x_create_data                           (miq_entry6_create_data                 ),
-  .x_create_dp_en                          (miq_entry6_create_dp_en                ),
-  .x_create_en                             (miq_entry6_create_en                   ),
-  .x_create_frz                            (miq_entry6_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry6_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry6_frz_clr                     ),
-  .x_issue_en                              (miq_entry6_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry6_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry6_pop_other_entry             ),
-  .x_rdy                                   (miq_entry6_rdy                         ),
-  .x_read_data                             (miq_entry6_read_data                   ),
-  .x_vld                                   (miq_entry6_vld                         ),
-  .x_vld_with_frz                          (miq_entry6_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry6 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry6_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry6_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry6_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry6_create_agevec               ),
+  .x_create_data                          (miq_entry6_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry6_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry6_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry6_create_dp_en                ),
+  .x_create_en                            (miq_entry6_create_en                   ),
+  .x_create_frz                           (miq_entry6_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry6_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry6_frz_clr                     ),
+  .x_issue_en                             (miq_entry6_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry6_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry6_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry6_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry6_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[6]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[6]           ),
+  .x_rdy                                  (miq_entry6_rdy                         ),
+  .x_read_data                            (miq_entry6_read_data                   ),
+  .x_vld                                  (miq_entry6_vld                         ),
+  .x_vld_with_frz                         (miq_entry6_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry7_/); @775
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry7"); @776
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry7 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry7_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry7_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry7_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry7_create_agevec               ),
-  .x_create_data                           (miq_entry7_create_data                 ),
-  .x_create_dp_en                          (miq_entry7_create_dp_en                ),
-  .x_create_en                             (miq_entry7_create_en                   ),
-  .x_create_frz                            (miq_entry7_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry7_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry7_frz_clr                     ),
-  .x_issue_en                              (miq_entry7_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry7_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry7_pop_other_entry             ),
-  .x_rdy                                   (miq_entry7_rdy                         ),
-  .x_read_data                             (miq_entry7_read_data                   ),
-  .x_vld                                   (miq_entry7_vld                         ),
-  .x_vld_with_frz                          (miq_entry7_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry7 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry7_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry7_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry7_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry7_create_agevec               ),
+  .x_create_data                          (miq_entry7_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry7_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry7_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry7_create_dp_en                ),
+  .x_create_en                            (miq_entry7_create_en                   ),
+  .x_create_frz                           (miq_entry7_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry7_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry7_frz_clr                     ),
+  .x_issue_en                             (miq_entry7_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry7_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry7_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry7_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry7_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[7]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[7]           ),
+  .x_rdy                                  (miq_entry7_rdy                         ),
+  .x_read_data                            (miq_entry7_read_data                   ),
+  .x_vld                                  (miq_entry7_vld                         ),
+  .x_vld_with_frz                         (miq_entry7_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry8_/); @778
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry8"); @779
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry8 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry8_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry8_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry8_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry8_create_agevec               ),
-  .x_create_data                           (miq_entry8_create_data                 ),
-  .x_create_dp_en                          (miq_entry8_create_dp_en                ),
-  .x_create_en                             (miq_entry8_create_en                   ),
-  .x_create_frz                            (miq_entry8_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry8_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry8_frz_clr                     ),
-  .x_issue_en                              (miq_entry8_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry8_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry8_pop_other_entry             ),
-  .x_rdy                                   (miq_entry8_rdy                         ),
-  .x_read_data                             (miq_entry8_read_data                   ),
-  .x_vld                                   (miq_entry8_vld                         ),
-  .x_vld_with_frz                          (miq_entry8_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry8 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry8_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry8_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry8_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry8_create_agevec               ),
+  .x_create_data                          (miq_entry8_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry8_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry8_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry8_create_dp_en                ),
+  .x_create_en                            (miq_entry8_create_en                   ),
+  .x_create_frz                           (miq_entry8_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry8_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry8_frz_clr                     ),
+  .x_issue_en                             (miq_entry8_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry8_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry8_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry8_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry8_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[8]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[8]           ),
+  .x_rdy                                  (miq_entry8_rdy                         ),
+  .x_read_data                            (miq_entry8_read_data                   ),
+  .x_vld                                  (miq_entry8_vld                         ),
+  .x_vld_with_frz                         (miq_entry8_vld_with_frz                )
 );
 
 
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry9 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry9_agevec                      ),
-  .x_alu0_reg_fwd_vld                      (miq_entry9_alu0_reg_fwd_vld            ),
-  .x_alu1_reg_fwd_vld                      (miq_entry9_alu1_reg_fwd_vld            ),
-  .x_create_agevec                         (miq_entry9_create_agevec               ),
-  .x_create_data                           (miq_entry9_create_data                 ),
-  .x_create_dp_en                          (miq_entry9_create_dp_en                ),
-  .x_create_en                             (miq_entry9_create_en                   ),
-  .x_create_frz                            (miq_entry9_create_frz                  ),
-  .x_create_gateclk_en                     (miq_entry9_create_gateclk_en           ),
-  .x_frz_clr                               (miq_entry9_frz_clr                     ),
-  .x_issue_en                              (miq_entry9_issue_en                    ),
-  .x_pop_cur_entry                         (miq_entry9_pop_cur_entry               ),
-  .x_pop_other_entry                       (miq_entry9_pop_other_entry             ),
-  .x_rdy                                   (miq_entry9_rdy                         ),
-  .x_read_data                             (miq_entry9_read_data                   ),
-  .x_vld                                   (miq_entry9_vld                         ),
-  .x_vld_with_frz                          (miq_entry9_vld_with_frz                )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry9 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry9_agevec                      ),
+  .x_alu0_reg_fwd_vld                     (miq_entry9_alu0_reg_fwd_vld            ),
+  .x_alu1_reg_fwd_vld                     (miq_entry9_alu1_reg_fwd_vld            ),
+  .x_create_agevec                        (miq_entry9_create_agevec               ),
+  .x_create_data                          (miq_entry9_create_data                 ),
+  .x_create_mat_src_meta                  (miq_entry9_create_mat_src_meta         ),
+  .x_create_dstm_depd_vec                 (miq_entry9_create_dstm_depd_vec        ),
+  .x_create_dp_en                         (miq_entry9_create_dp_en                ),
+  .x_create_en                            (miq_entry9_create_en                   ),
+  .x_create_frz                           (miq_entry9_create_frz                  ),
+  .x_create_gateclk_en                    (miq_entry9_create_gateclk_en           ),
+  .x_frz_clr                              (miq_entry9_frz_clr                     ),
+  .x_issue_en                             (miq_entry9_issue_en                    ),
+  .x_pop_cur_entry                        (miq_entry9_pop_cur_entry               ),
+  .x_pop_other_entry                      (miq_entry9_pop_other_entry             ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry9_ex_pop_cur_entry            ),
+  .ex_pop_other_entry                     (miq_entry9_ex_pop_other_entry          ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[9]           ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[9]           ),
+  .x_rdy                                  (miq_entry9_rdy                         ),
+  .x_read_data                            (miq_entry9_read_data                   ),
+  .x_vld                                  (miq_entry9_vld                         ),
+  .x_vld_with_frz                         (miq_entry9_vld_with_frz                )
 );
 
 
 // &ConnRule(s/^x_/miq_entry10_/); @784
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry10"); @785
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry10 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry10_agevec                     ),
-  .x_alu0_reg_fwd_vld                      (miq_entry10_alu0_reg_fwd_vld           ),
-  .x_alu1_reg_fwd_vld                      (miq_entry10_alu1_reg_fwd_vld           ),
-  .x_create_agevec                         (miq_entry10_create_agevec              ),
-  .x_create_data                           (miq_entry10_create_data                ),
-  .x_create_dp_en                          (miq_entry10_create_dp_en               ),
-  .x_create_en                             (miq_entry10_create_en                  ),
-  .x_create_frz                            (miq_entry10_create_frz                 ),
-  .x_create_gateclk_en                     (miq_entry10_create_gateclk_en          ),
-  .x_frz_clr                               (miq_entry10_frz_clr                    ),
-  .x_issue_en                              (miq_entry10_issue_en                   ),
-  .x_pop_cur_entry                         (miq_entry10_pop_cur_entry              ),
-  .x_pop_other_entry                       (miq_entry10_pop_other_entry            ),
-  .x_rdy                                   (miq_entry10_rdy                        ),
-  .x_read_data                             (miq_entry10_read_data                  ),
-  .x_vld                                   (miq_entry10_vld                        ),
-  .x_vld_with_frz                          (miq_entry10_vld_with_frz               )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry10 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry10_agevec                     ),
+  .x_alu0_reg_fwd_vld                     (miq_entry10_alu0_reg_fwd_vld           ),
+  .x_alu1_reg_fwd_vld                     (miq_entry10_alu1_reg_fwd_vld           ),
+  .x_create_agevec                        (miq_entry10_create_agevec              ),
+  .x_create_data                          (miq_entry10_create_data                ),
+  .x_create_mat_src_meta                  (miq_entry10_create_mat_src_meta        ),
+  .x_create_dstm_depd_vec                 (miq_entry10_create_dstm_depd_vec       ),
+  .x_create_dp_en                         (miq_entry10_create_dp_en               ),
+  .x_create_en                            (miq_entry10_create_en                  ),
+  .x_create_frz                           (miq_entry10_create_frz                 ),
+  .x_create_gateclk_en                    (miq_entry10_create_gateclk_en          ),
+  .x_frz_clr                              (miq_entry10_frz_clr                    ),
+  .x_issue_en                             (miq_entry10_issue_en                   ),
+  .x_pop_cur_entry                        (miq_entry10_pop_cur_entry              ),
+  .x_pop_other_entry                      (miq_entry10_pop_other_entry            ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry10_ex_pop_cur_entry           ),
+  .ex_pop_other_entry                     (miq_entry10_ex_pop_other_entry         ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[10]          ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[10]          ),
+  .x_rdy                                  (miq_entry10_rdy                        ),
+  .x_read_data                            (miq_entry10_read_data                  ),
+  .x_vld                                  (miq_entry10_vld                        ),
+  .x_vld_with_frz                         (miq_entry10_vld_with_frz               )
 );
 
 
 // &ConnRule(s/^x_/miq_entry11_/); @787
 // &Instance("ct_idu_is_miq_entry", "x_ct_idu_is_miq_entry11"); @788
-ct_idu_is_miq_entry  x_ct_idu_is_miq_entry11 (
-  .cp0_idu_icg_en                          (cp0_idu_icg_en                         ),
-  .cp0_yy_clk_en                           (cp0_yy_clk_en                          ),
-  .cpurst_b                                (cpurst_b                               ),
-  .ctrl_miq_rf_pop_vld                     (ctrl_miq_rf_pop_vld                    ),
-  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx      (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
-  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx      (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
-  .dp_miq_rf_rdy_clr                       (dp_miq_rf_rdy_clr                      ),
-  .dp_xx_rf_pipe0_dst_preg_dupx            (dp_xx_rf_pipe0_dst_preg_dupx           ),
-  .dp_xx_rf_pipe1_dst_preg_dupx            (dp_xx_rf_pipe1_dst_preg_dupx           ),
-  .forever_cpuclk                          (forever_cpuclk                         ),
-  .iu_idu_div_inst_vld                     (iu_idu_div_inst_vld                    ),
-  .iu_idu_div_preg_dupx                    (iu_idu_div_preg_dupx                   ),
-  .iu_idu_ex2_pipe0_wb_preg_dupx           (iu_idu_ex2_pipe0_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe0_wb_preg_vld_dupx       (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
-  .iu_idu_ex2_pipe1_mult_inst_vld_dupx     (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
-  .iu_idu_ex2_pipe1_preg_dupx              (iu_idu_ex2_pipe1_preg_dupx             ),
-  .iu_idu_ex2_pipe1_wb_preg_dupx           (iu_idu_ex2_pipe1_wb_preg_dupx          ),
-  .iu_idu_ex2_pipe1_wb_preg_vld_dupx       (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
-  .lsu_idu_ag_pipe3_load_inst_vld          (lsu_idu_ag_pipe3_load_inst_vld         ),
-  .lsu_idu_ag_pipe3_preg_dupx              (lsu_idu_ag_pipe3_preg_dupx             ),
-  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx (lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
-  .lsu_idu_dc_pipe3_load_inst_vld_dupx     (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
-  .lsu_idu_dc_pipe3_preg_dupx              (lsu_idu_dc_pipe3_preg_dupx             ),
-  .lsu_idu_wb_pipe3_wb_preg_dupx           (lsu_idu_wb_pipe3_wb_preg_dupx          ),
-  .lsu_idu_wb_pipe3_wb_preg_vld_dupx       (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
-  .pad_yy_icg_scan_en                      (pad_yy_icg_scan_en                     ),
-  .rtu_idu_flush_fe                        (rtu_idu_flush_fe                       ),
-  .rtu_idu_flush_is                        (rtu_idu_flush_is                       ),
-  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe6_preg_dupx            (vfpu_idu_ex1_pipe6_preg_dupx           ),
-  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx   (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
-  .vfpu_idu_ex1_pipe7_preg_dupx            (vfpu_idu_ex1_pipe7_preg_dupx           ),
-  .x_agevec                                (miq_entry11_agevec                     ),
-  .x_alu0_reg_fwd_vld                      (miq_entry11_alu0_reg_fwd_vld           ),
-  .x_alu1_reg_fwd_vld                      (miq_entry11_alu1_reg_fwd_vld           ),
-  .x_create_agevec                         (miq_entry11_create_agevec              ),
-  .x_create_data                           (miq_entry11_create_data                ),
-  .x_create_dp_en                          (miq_entry11_create_dp_en               ),
-  .x_create_en                             (miq_entry11_create_en                  ),
-  .x_create_frz                            (miq_entry11_create_frz                 ),
-  .x_create_gateclk_en                     (miq_entry11_create_gateclk_en          ),
-  .x_frz_clr                               (miq_entry11_frz_clr                    ),
-  .x_issue_en                              (miq_entry11_issue_en                   ),
-  .x_pop_cur_entry                         (miq_entry11_pop_cur_entry              ),
-  .x_pop_other_entry                       (miq_entry11_pop_other_entry            ),
-  .x_rdy                                   (miq_entry11_rdy                        ),
-  .x_read_data                             (miq_entry11_read_data                  ),
-  .x_vld                                   (miq_entry11_vld                        ),
-  .x_vld_with_frz                          (miq_entry11_vld_with_frz               )
+ct_idu_is_miq_entry x_ct_idu_is_miq_entry11 (
+  .cp0_idu_icg_en                         (cp0_idu_icg_en                         ),
+  .cp0_yy_clk_en                          (cp0_yy_clk_en                          ),
+  .cpurst_b                               (cpurst_b                               ),
+  .ctrl_miq_rf_pop_vld                    (ctrl_miq_rf_pop_vld                    ),
+  .ctrl_xx_rf_pipe0_preg_lch_vld_dupx     (ctrl_xx_rf_pipe0_preg_lch_vld_dupx     ),
+  .ctrl_xx_rf_pipe1_preg_lch_vld_dupx     (ctrl_xx_rf_pipe1_preg_lch_vld_dupx     ),
+  .dp_miq_rf_rdy_clr                      (dp_miq_rf_rdy_clr                      ),
+  .dp_xx_rf_pipe0_dst_preg_dupx           (dp_xx_rf_pipe0_dst_preg_dupx           ),
+  .dp_xx_rf_pipe1_dst_preg_dupx           (dp_xx_rf_pipe1_dst_preg_dupx           ),
+  .forever_cpuclk                         (forever_cpuclk                         ),
+  .iu_idu_div_inst_vld                    (iu_idu_div_inst_vld                    ),
+  .iu_idu_div_preg_dupx                   (iu_idu_div_preg_dupx                   ),
+  .iu_idu_ex2_pipe0_wb_preg_dupx          (iu_idu_ex2_pipe0_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe0_wb_preg_vld_dupx      (iu_idu_ex2_pipe0_wb_preg_vld_dupx      ),
+  .iu_idu_ex2_pipe1_mult_inst_vld_dupx    (iu_idu_ex2_pipe1_mult_inst_vld_dupx    ),
+  .iu_idu_ex2_pipe1_preg_dupx             (iu_idu_ex2_pipe1_preg_dupx             ),
+  .iu_idu_ex2_pipe1_wb_preg_dupx          (iu_idu_ex2_pipe1_wb_preg_dupx          ),
+  .iu_idu_ex2_pipe1_wb_preg_vld_dupx      (iu_idu_ex2_pipe1_wb_preg_vld_dupx      ),
+  .lsu_idu_ag_pipe3_load_inst_vld         (lsu_idu_ag_pipe3_load_inst_vld         ),
+  .lsu_idu_ag_pipe3_preg_dupx             (lsu_idu_ag_pipe3_preg_dupx             ),
+  .lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx(lsu_idu_dc_pipe3_load_fwd_inst_vld_dupx),
+  .lsu_idu_dc_pipe3_load_inst_vld_dupx    (lsu_idu_dc_pipe3_load_inst_vld_dupx    ),
+  .lsu_idu_dc_pipe3_preg_dupx             (lsu_idu_dc_pipe3_preg_dupx             ),
+  .lsu_idu_wb_pipe3_wb_preg_dupx          (lsu_idu_wb_pipe3_wb_preg_dupx          ),
+  .lsu_idu_wb_pipe3_wb_preg_vld_dupx      (lsu_idu_wb_pipe3_wb_preg_vld_dupx      ),
+  .pad_yy_icg_scan_en                     (pad_yy_icg_scan_en                     ),
+  .rtu_idu_flush_fe                       (rtu_idu_flush_fe                       ),
+  .rtu_idu_flush_is                       (rtu_idu_flush_is                       ),
+  .vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe6_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe6_preg_dupx           (vfpu_idu_ex1_pipe6_preg_dupx           ),
+  .vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  (vfpu_idu_ex1_pipe7_mfvr_inst_vld_dupx  ),
+  .vfpu_idu_ex1_pipe7_preg_dupx           (vfpu_idu_ex1_pipe7_preg_dupx           ),
+  .x_agevec                               (miq_entry11_agevec                     ),
+  .x_alu0_reg_fwd_vld                     (miq_entry11_alu0_reg_fwd_vld           ),
+  .x_alu1_reg_fwd_vld                     (miq_entry11_alu1_reg_fwd_vld           ),
+  .x_create_agevec                        (miq_entry11_create_agevec              ),
+  .x_create_data                          (miq_entry11_create_data                ),
+  .x_create_mat_src_meta                  (miq_entry11_create_mat_src_meta        ),
+  .x_create_dstm_depd_vec                 (miq_entry11_create_dstm_depd_vec       ),
+  .x_create_dp_en                         (miq_entry11_create_dp_en               ),
+  .x_create_en                            (miq_entry11_create_en                  ),
+  .x_create_frz                           (miq_entry11_create_frz                 ),
+  .x_create_gateclk_en                    (miq_entry11_create_gateclk_en          ),
+  .x_frz_clr                              (miq_entry11_frz_clr                    ),
+  .x_issue_en                             (miq_entry11_issue_en                   ),
+  .x_pop_cur_entry                        (miq_entry11_pop_cur_entry              ),
+  .x_pop_other_entry                      (miq_entry11_pop_other_entry            ),
+  .ex_line_wakeup                         (ex_line_wakeup                         ),
+  .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+  .ex_mat_finish                          (ex_mat_finish                          ),
+  .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .ex_pop_cur_entry                       (miq_entry11_ex_pop_cur_entry           ),
+  .ex_pop_other_entry                     (miq_entry11_ex_pop_other_entry         ),
+  .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
+  .id_dstm_idx_create1                    (id_dstm_idx_create1                    ),
+  .id_dstm_idx_create0_match              (id_dstm_idx_create0_match[11]          ),
+  .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[11]          ),
+  .x_rdy                                  (miq_entry11_rdy                        ),
+  .x_read_data                            (miq_entry11_read_data                  ),
+  .x_vld                                  (miq_entry11_vld                        ),
+  .x_vld_with_frz                         (miq_entry11_vld_with_frz               )
 );
 
 

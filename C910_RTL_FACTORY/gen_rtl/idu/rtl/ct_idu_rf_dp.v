@@ -431,6 +431,7 @@ module ct_idu_rf_dp(
   idu_vfpu_rf_pipe7_srcv2_fr,
   idu_vfpu_rf_pipe7_vmla_type,
   idu_mat_rf_pipe8_iid,
+  idu_mat_rf_pipe8_iq_entry,
   idu_mat_rf_pipe8_alu_meta,
   idu_mat_rf_pipe8_alu_src0_vld,
   idu_mat_rf_pipe8_alu_src0,
@@ -1832,6 +1833,7 @@ wire             viq1_xx_gateclk_issue_en;
 wire             viq1_xx_issue_en;                      
 
 output [6 :0] idu_mat_rf_pipe8_iid;
+input  [11:0] idu_mat_rf_pipe8_iq_entry;
 output [30:0] idu_mat_rf_pipe8_alu_meta;
 output        idu_mat_rf_pipe8_alu_src0_vld;
 output [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -1845,6 +1847,7 @@ output [6 :0] idu_mat_rf_pipe8_cfg_dst_preg;
 output [63:0] idu_mat_rf_pipe8_cfg_src0;
   
 wire [6 :0] idu_mat_rf_pipe8_iid;
+wire [11:0] idu_mat_rf_pipe8_iq_entry;
 wire [30:0] idu_mat_rf_pipe8_alu_meta;
 wire        idu_mat_rf_pipe8_alu_src0_vld;
 wire [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -3122,6 +3125,7 @@ assign dp_miq_rf_rdy_clr[1]         = rf_pipe8_src1_no_rdy;
 //                Output to Matrix Execution Units
 //----------------------------------------------------------
 assign idu_mat_rf_pipe8_iid[6:0] = rf_pipe8_data[MIQ_IID:MIQ_IID-6];
+assign idu_mat_rf_pipe8_iq_entry[11:0] = rf_pipe8_iq_entry[11:0];
 
 assign idu_mat_rf_pipe8_alu_meta[30:0]    = pipe8_mat_alu_meta[30:0];
 assign idu_mat_rf_pipe8_alu_src0_vld      = rf_pipe8_data[MIQ_SRC0_VLD];

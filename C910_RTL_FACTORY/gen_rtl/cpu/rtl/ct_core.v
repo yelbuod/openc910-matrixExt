@@ -2705,6 +2705,10 @@ wire [95:0] mat_cfg_idu_ex1_pipe8_wb_preg_expand ;
 wire [63:0] mat_cfg_idu_ex1_pipe8_wb_preg_data   ;
 wire [63:0] mat_cfg_idu_ex1_pipe8_sync_xmsize_csr;
 
+wire            ex_line_wakeup;
+wire    [3:0]   ex_line_wakeup_entry_idx;
+wire            ex_mat_finish;
+wire    [3:0]   ex_mat_finish_entry_idx;
 //==========================================================
 //  Instance ct_idu_top sub module 
 //==========================================================
@@ -3511,7 +3515,11 @@ ct_idu_top  x_ct_idu_top (
   .vfpu_idu_pipe6_vmla_srcv2_no_fwd        (vfpu_idu_pipe6_vmla_srcv2_no_fwd       ),
   .vfpu_idu_pipe7_vmla_srcv2_no_fwd        (vfpu_idu_pipe7_vmla_srcv2_no_fwd       ),
   .vfpu_idu_vdiv_busy                      (vfpu_idu_vdiv_busy                     ),
-  .vfpu_idu_vdiv_wb_stall                  (vfpu_idu_vdiv_wb_stall                 )
+  .vfpu_idu_vdiv_wb_stall                  (vfpu_idu_vdiv_wb_stall                 ),
+  .ex_mat_finish                           (ex_mat_finish                          ),
+  .ex_line_wakeup                          (ex_line_wakeup                         ),
+  .ex_mat_finish_entry_idx                 (ex_mat_finish_entry_idx                ),
+  .ex_line_wakeup_entry_idx                (ex_line_wakeup_entry_idx               )
 );
 
 // &Connect(.cpurst_b   (idu_rst_b)); @52
@@ -3553,6 +3561,10 @@ ct_idu_top  x_ct_idu_top (
     .idu_mat_rf_pipe8_cfg_dst_vld         (idu_mat_rf_pipe8_cfg_dst_vld         ),
     .idu_mat_rf_pipe8_cfg_dst_preg        (idu_mat_rf_pipe8_cfg_dst_preg        ),
     .idu_mat_rf_pipe8_cfg_src0            (idu_mat_rf_pipe8_cfg_src0            ),
+    .mat_lsu_ex_mat_finish                (ex_mat_finish                        ),
+    .mat_lsu_ex_line_wakeup               (ex_line_wakeup                       ),
+    .mat_lsu_ex_mat_finish_entry_idx      (ex_mat_finish_entry_idx              ),
+    .mat_lsu_ex_line_wakeup_entry_idx     (ex_line_wakeup_entry_idx             ),
     .mat_cfg_idu_ex1_pipe8_wb_preg_vld    (mat_cfg_idu_ex1_pipe8_wb_preg_vld    ),
     .mat_cfg_idu_ex1_pipe8_wb_preg        (mat_cfg_idu_ex1_pipe8_wb_preg        ),
     .mat_cfg_idu_ex1_pipe8_wb_preg_expand (mat_cfg_idu_ex1_pipe8_wb_preg_expand ),

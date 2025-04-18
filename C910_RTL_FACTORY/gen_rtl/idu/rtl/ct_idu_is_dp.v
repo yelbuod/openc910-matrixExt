@@ -5955,8 +5955,8 @@ assign dp_miq_bypass_data[MIQ_SRC0_VLD]                  = is_miq_create0_data[I
 assign dp_miq_bypass_data[MIQ_IID:BIQ_IID-6]             = is_miq_create0_iid[6:0];
 assign dp_miq_bypass_data[MIQ_OPCODE:BIQ_OPCODE-31]      = is_miq_create0_data[IS_OPCODE:IS_OPCODE-31];
 
-assign dp_miq_create_src0_rdy_for_bypass = is_miq_create0_data[IS_SRC0_BP_RDY]; // bypass ready
-assign dp_miq_create_src1_rdy_for_bypass = is_miq_create0_data[IS_SRC1_BP_RDY];
+assign dp_miq_create_src0_rdy_for_bypass = 1'b0; // 禁用bypass is_miq_create0_data[IS_SRC0_BP_RDY]; // bypass ready
+assign dp_miq_create_src1_rdy_for_bypass = 1'b0; // 禁用bypass is_miq_create0_data[IS_SRC1_BP_RDY];
 
 //----------------------------------------------------------
 //                  Create Data for LSIQ

@@ -354,6 +354,35 @@ extern "C" void hart_matrixMemAccess(
   printf("total bytes access: %d\n", total_bytes);
 }
 
+extern "C" void hart_matrixArithm(
+  uint16_t matrix_arith_type,
+  uint8_t matrix_sizeM,
+  uint8_t matrix_sizeN
+){
+  if(matrix_arith_type == 1) 
+    printf("matrix mov, sizeM=%d\n", matrix_sizeM);
+  else if(matrix_arith_type == 2)
+    printf("matrix fmmacc, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 4)
+    printf("matrix fwmmacc, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 8)
+    printf("matrix mmaqa, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 16)
+    printf("matrix madd, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 32)
+    printf("matrix msub, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 64)
+    printf("matrix msra, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 128)
+    printf("matrix mn4clip, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 256)
+    printf("matrix mn4clipu, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 512)
+    printf("matrix mmul, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  else if(matrix_arith_type == 1024)
+    printf("matrix mmulh, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+}
+
 // traverse all watchpoint elements in head link array
 void WP_trigcheck() {
   bool trigger = traverse_check_trigger();

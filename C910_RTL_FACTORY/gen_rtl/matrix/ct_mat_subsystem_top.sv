@@ -9,6 +9,7 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
   input         rtu_yy_xx_flush                      ,
   /* all matrix unit */
   input  [ 6:0] idu_mat_rf_pipe8_iid                 ,
+  input  [11:0] idu_mat_rf_pipe8_iq_entry            ,
   /* ALU */
   input         idu_mat_rf_alu_sel                   ,
   input         idu_mat_rf_alu_gateclk_sel           ,
@@ -29,6 +30,11 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
   input         idu_mat_rf_pipe8_cfg_dst_vld         ,
   input  [ 6:0] idu_mat_rf_pipe8_cfg_dst_preg        ,
   input  [63:0] idu_mat_rf_pipe8_cfg_src0            ,
+  // to miq
+  output        mat_lsu_ex_line_wakeup               ,
+  output [ 3:0] mat_lsu_ex_line_wakeup_entry_idx     ,
+  output        mat_lsu_ex_mat_finish                ,
+  output [ 3:0] mat_lsu_ex_mat_finish_entry_idx      ,
   /* write back to main pipeline GPR */
   // pipe8 标识矩阵来自/并入主流水线的序号
   output        mat_cfg_idu_ex1_pipe8_wb_preg_vld    , // for pregfile in idu
@@ -136,6 +142,10 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
     .x_sizeK                      (x_sizeK                      ),
     .x_sizeM                      (x_sizeM                      ),
     .x_sizeN                      (x_sizeN                      ),
+    .ex_mat_finish                (ex_mat_finish                ),
+    .ex_line_wakeup               (ex_line_wakeup               ),
+    .ex_mat_finish_entry_idx      (ex_mat_finish_entry_idx      ),
+    .ex_line_wakeup_entry_idx     (ex_line_wakeup_entry_idx     ),
     .mat_lsu_cbus_ex1_pipe8_sel   (mat_lsu_cbus_ex1_pipe8_sel   ),
     .mat_lsu_cbus_ex1_pipe8_iid   (mat_lsu_cbus_ex1_pipe8_iid   )
   );

@@ -20,6 +20,7 @@ module ct_mat_exu_ldst_unit (
   input         rtu_yy_xx_flush              ,
   /* from rf issue to LSU */
   input  [ 6:0] idu_mat_rf_pipe8_iid         ,
+  input  [11:0] idu_mat_rf_pipe8_iq_entry    ,
   input         idu_mat_rf_lsu_sel           ,
   input         idu_mat_rf_lsu_gateclk_sel   ,
   input  [15:0] idu_mat_rf_pipe8_lsu_meta    ,
@@ -30,6 +31,10 @@ module ct_mat_exu_ldst_unit (
   input  [15:0] x_sizeK                      ,
   input  [ 7:0] x_sizeM                      ,
   input  [ 7:0] x_sizeN                      ,
+  output mat_lsu_ex_line_wakeup,
+  output [3:0] mat_lsu_ex_line_wakeup_entry_idx,
+  output mat_lsu_ex_mat_finish,
+  output [3:0] mat_lsu_ex_mat_finish_entry_idx,
   /* commit to rtu retire */
   output        mat_lsu_cbus_ex1_pipe8_sel   ,
   output [ 6:0] mat_lsu_cbus_ex1_pipe8_iid
@@ -55,6 +60,7 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
 
   reg        mat_lsu_ex1_inst_vld;
   reg [ 6:0] mat_lsu_ex1_iid     ;
+  reg [11:0] mat_lsu_ex1_iq_entry;
   reg [63:0] mat_lsu_ex1_src0    ;
   reg        mat_lsu_ex1_src1_vld;
   reg [63:0] mat_lsu_ex1_src1    ;
@@ -115,6 +121,7 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
   always_ff @(posedge ex1_inst_clk or negedge cpurst_b) begin : proc_mat_lsu_ex1_data
     if(!cpurst_b) begin
       mat_lsu_ex1_iid[6:0]                          <= 7'b0;
+      mat_lsu_ex1_iq_entry[11:0]                    <= 12'b0;
       mat_lsu_ex1_src0[63:0]                        <= 64'b0;
       mat_lsu_ex1_src1_vld                          <= 1'b0;
       mat_lsu_ex1_src1[63:0]                        <= 64'b0;
@@ -128,6 +135,7 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
       mat_lsu_ex1_elem_data_width[1:0]              <= 2'b0;
     end else if(idu_mat_rf_lsu_gateclk_sel) begin
       mat_lsu_ex1_iid[6:0]                          <= idu_mat_rf_pipe8_iid[6:0];
+      mat_lsu_ex1_iq_entry[11:0]                    <= idu_mat_rf_pipe8_iq_entry[11:0];
       mat_lsu_ex1_src0[63:0]                        <= idu_mat_rf_pipe8_lsu_src0[63:0];
       mat_lsu_ex1_src1_vld                          <= idu_mat_rf_pipe8_lsu_src1_vld;
       mat_lsu_ex1_src1[63:0]                        <= idu_mat_rf_pipe8_lsu_src1[63:0];
@@ -145,6 +153,17 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
   // TODO: 暂时不执行直接提交查看通路正确性
   assign mat_lsu_cbus_ex1_pipe8_sel      = mat_lsu_ex1_inst_vld;
   assign mat_lsu_cbus_ex1_pipe8_iid[6:0] = mat_lsu_ex1_iid[6:0];
+
+  logic [3:0] mat_lsu_ex1_iq_entry_idx;
+  ct_mat_src_oh_binary i_ct_mat_src_oh_binary (
+    .x_num_oh(mat_lsu_ex1_iq_entry), 
+    .x_num_binary(mat_lsu_ex1_iq_entry_idx)
+  );
+
+  assign mat_lsu_ex_line_wakeup = mat_lsu_ex1_inst_vld;
+  assign mat_lsu_ex_mat_finish = mat_lsu_ex1_inst_vld;
+  assign mat_lsu_ex_line_wakeup_entry_idx[3:0] = mat_lsu_ex1_iq_entry_idx[3:0];
+  assign mat_lsu_ex_mat_finish_entry_idx[3:0] = mat_lsu_ex1_iq_entry_idx[3:0];
 
   // 计算总共需要load/store的byte数
   always@(posedge ex1_inst_clk) begin

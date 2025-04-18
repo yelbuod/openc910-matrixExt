@@ -1,3 +1,14 @@
+import "DPI-C" function void hart_matrixArithm(
+  byte unsigned mem_access_type, // memory access type
+  byte unsigned matrix_reg_idx, // load dest/store src
+  longint unsigned base_addr,
+  byte unsigned number_of_rows, // matrix rows to load, sizeM
+  longint unsigned row_stride, // matrix row stride to get next startline
+  shortint unsigned bytes_per_row, // bytes in each row, sizeK
+  byte unsigned whold_reg_mode, // whole register load/store, nf_vld
+  byte unsigned nf_filed // how many matrix reg groups to load/store
+);
+
 module ct_mat_exu_arithmetic_unit (
   /* common */
   input         cpurst_b                     ,
@@ -60,8 +71,8 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
   reg [63:0] mat_alu_ex1_src0    ;
   // alu execute info meta
   reg [10:0] mat_alu_ex1_optype         ;
-  reg        mat_alu_ex1_dstm_17_15_vld ;
-  reg [ 2:0] mat_alu_ex1_dstm_idx_17_15 ;
+  reg        mat_alu_ex1_dstm_vld ;
+  reg [ 2:0] mat_alu_ex1_dstm_idx ;
   reg        mat_alu_ex1_srcm1_vld      ;
   reg        mat_alu_ex1_srcm1_unsigned ;
   reg [ 2:0] mat_alu_ex1_srcm1_idx      ;
@@ -122,8 +133,8 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
       mat_alu_ex1_src0_vld                          <= 1'b0;
       mat_alu_ex1_src0[63:0]                        <= 64'b0;
       mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0] <= {MAT_ALU_OP_TYPE_WIDTH{1'b0}};
-      mat_alu_ex1_dstm_17_15_vld                    <= 1'b0;
-      mat_alu_ex1_dstm_idx_17_15[2:0]               <= 3'b0;
+      mat_alu_ex1_dstm_vld                          <= 1'b0;
+      mat_alu_ex1_dstm_idx[2:0]                     <= 3'b0;
       mat_alu_ex1_srcm1_vld                         <= 1'b0;
       mat_alu_ex1_srcm1_unsigned                    <= 1'b0;
       mat_alu_ex1_srcm1_idx[2:0]                    <= 3'b0;
@@ -138,8 +149,8 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
       mat_alu_ex1_src0_vld                          <= idu_mat_rf_pipe8_alu_src0_vld;
       mat_alu_ex1_src0[63:0]                        <= idu_mat_rf_pipe8_alu_src0[63:0];
       mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0] <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_OP:MAT_ALU_OP-(MAT_ALU_OP_TYPE_WIDTH-1)] ;
-      mat_alu_ex1_dstm_17_15_vld                    <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_DSTM_VLD]                                ;
-      mat_alu_ex1_dstm_idx_17_15[2:0]               <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_DSTM_IDX:MAT_ALU_DSTM_IDX-2]             ;
+      mat_alu_ex1_dstm_vld                          <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_DSTM_VLD]                                ;
+      mat_alu_ex1_dstm_idx[2:0]                     <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_DSTM_IDX:MAT_ALU_DSTM_IDX-2]             ;
       mat_alu_ex1_srcm1_vld                         <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_SRC1M_VLD]                               ;
       mat_alu_ex1_srcm1_unsigned                    <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_SRC1M_UNSIGNED]                          ;
       mat_alu_ex1_srcm1_idx[2:0]                    <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_SRC1M_IDX:MAT_ALU_SRC1M_IDX-2]           ;
@@ -151,7 +162,47 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
       mat_alu_ex1_elem_data_width[1:0]              <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_ELM_WIDTH:MAT_ALU_ELM_WIDTH-1]           ;
     end
   end
-  
+
+  always@(posedge ex1_inst_clk) begin
+    if(mat_alu_ex1_inst_vld) begin
+      case (mat_alu_ex1_optype[1:0])
+        MAT_CAL_MMOV: begin
+          hart_matrixArithm(MAT_CAL_MMOV, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_FMMACC: begin
+          hart_matrixArithm(MAT_CAL_FMMACC, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_FWMMACC: begin
+          hart_matrixArithm(MAT_CAL_FWMMACC, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MMAQA: begin
+          hart_matrixArithm(MAT_CAL_MMAQA, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MADD: begin
+          hart_matrixArithm(MAT_CAL_MADD, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MSUB: begin
+          hart_matrixArithm(MAT_CAL_MSUB, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MSRA: begin
+          hart_matrixArithm(MAT_CAL_MSRA, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MN4CLIP: begin
+          hart_matrixArithm(MAT_CAL_MN4CLIP, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MN4CLIPU: begin
+          hart_matrixArithm(MAT_CAL_MN4CLIPU, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MMUL: begin
+          hart_matrixArithm(MAT_CAL_MMUL, x_sizeM, x_sizeN);
+        end
+        MAT_CAL_MMULH: begin
+          hart_matrixArithm(MAT_CAL_MMULH, x_sizeM, x_sizeN);
+        end
+      endcase
+    end
+  end
+
   // TODO: 暂时不执行直接提交查看通路正确性
   assign mat_alu_cbus_ex1_pipe8_sel      = mat_alu_ex1_inst_vld;
   assign mat_alu_cbus_ex1_pipe8_iid[6:0] = mat_alu_ex1_iid[6:0];
