@@ -6,10 +6,10 @@ parameter MAT_SRC1M_IDX = 6 ; // 6:4
 parameter MAT_SRC0M_VLD = 3 ;
 parameter MAT_SRC0M_IDX = 2 ; // 2:0
 
-parameter MAT_CAL         = 4'b0001;
-parameter MAT_LSU         = 4'b0010;
-parameter MAT_CFG         = 4'b0100;
-parameter MAT_SPECIAL_MOV = 4'b1000;
+// parameter MAT_CAL         = 4'b0001;
+// parameter MAT_LSU         = 4'b0010;
+// parameter MAT_CFG         = 4'b0100;
+// parameter MAT_SPECIAL_MOV = 4'b1000;
 
 module ct_idu_is_mat_src_decd (
   input  [31:0] is_mat_decd_opcode,

@@ -35,6 +35,8 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
   output [ 3:0] mat_lsu_ex_line_wakeup_entry_idx     ,
   output        mat_lsu_ex_mat_finish                ,
   output [ 3:0] mat_lsu_ex_mat_finish_entry_idx      ,
+  output        mat_lsu_ex_mat_finish_dstm_vld,
+  output [2:0]  mat_lsu_ex_mat_finish_dstm_idx,
   /* write back to main pipeline GPR */
   // pipe8 标识矩阵来自/并入主流水线的序号
   output        mat_cfg_idu_ex1_pipe8_wb_preg_vld    , // for pregfile in idu
@@ -133,6 +135,7 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
     .pad_yy_icg_scan_en           (pad_yy_icg_scan_en           ),
     .rtu_yy_xx_flush              (rtu_yy_xx_flush              ),
     .idu_mat_rf_pipe8_iid         (idu_mat_rf_pipe8_iid         ),
+    .idu_mat_rf_pipe8_iq_entry    (idu_mat_rf_pipe8_iq_entry    ),
     .idu_mat_rf_lsu_sel           (idu_mat_rf_lsu_sel           ),
     .idu_mat_rf_lsu_gateclk_sel   (idu_mat_rf_lsu_gateclk_sel   ),
     .idu_mat_rf_pipe8_lsu_meta    (idu_mat_rf_pipe8_lsu_meta    ),
@@ -142,13 +145,18 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
     .x_sizeK                      (x_sizeK                      ),
     .x_sizeM                      (x_sizeM                      ),
     .x_sizeN                      (x_sizeN                      ),
-    .ex_mat_finish                (ex_mat_finish                ),
-    .ex_line_wakeup               (ex_line_wakeup               ),
-    .ex_mat_finish_entry_idx      (ex_mat_finish_entry_idx      ),
-    .ex_line_wakeup_entry_idx     (ex_line_wakeup_entry_idx     ),
+    .mat_lsu_ex_line_wakeup              (mat_lsu_ex_line_wakeup),
+    .mat_lsu_ex_line_wakeup_entry_idx    (mat_lsu_ex_line_wakeup_entry_idx),
+    .mat_lsu_ex_mat_finish               (mat_lsu_ex_mat_finish),
+    .mat_lsu_ex_mat_finish_entry_idx     (mat_lsu_ex_mat_finish_entry_idx),
+    .mat_lsu_ex_mat_finish_dstm_vld      (mat_lsu_ex_mat_finish_dstm_vld),
+    .mat_lsu_ex_mat_finish_dstm_idx      (mat_lsu_ex_mat_finish_dstm_idx),
     .mat_lsu_cbus_ex1_pipe8_sel   (mat_lsu_cbus_ex1_pipe8_sel   ),
     .mat_lsu_cbus_ex1_pipe8_iid   (mat_lsu_cbus_ex1_pipe8_iid   )
   );
-
+    
+    
+    
+    
 endmodule
 

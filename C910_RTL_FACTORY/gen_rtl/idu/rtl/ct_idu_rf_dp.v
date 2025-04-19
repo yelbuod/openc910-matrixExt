@@ -1833,7 +1833,7 @@ wire             viq1_xx_gateclk_issue_en;
 wire             viq1_xx_issue_en;                      
 
 output [6 :0] idu_mat_rf_pipe8_iid;
-input  [11:0] idu_mat_rf_pipe8_iq_entry;
+output [11:0] idu_mat_rf_pipe8_iq_entry;
 output [30:0] idu_mat_rf_pipe8_alu_meta;
 output        idu_mat_rf_pipe8_alu_src0_vld;
 output [63:0] idu_mat_rf_pipe8_alu_src0;

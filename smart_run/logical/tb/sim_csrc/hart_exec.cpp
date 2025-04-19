@@ -173,34 +173,34 @@ static struct {
 } IRStatus;
 
 void display_IRStatus() {
-    printf("IR inst valid: \n");
+    printf(ANSI_FMT("IR inst valid: \n", ANSI_FG_BLUE));
     printf("\tinst0: %u, inst1: %u, inst2: %u, inst3: %u\n",
            IRStatus.inst_pipeInst_vld.bitfield.inst0,
            IRStatus.inst_pipeInst_vld.bitfield.inst1,
            IRStatus.inst_pipeInst_vld.bitfield.inst2,
            IRStatus.inst_pipeInst_vld.bitfield.inst3);
-    printf("IR pipedown inst valid: \n");
+    printf(ANSI_FMT("IR pipedown inst valid: \n", ANSI_FG_BLUE));
     printf("\tinst0: %u, inst1: %u, inst2: %u, inst3: %u\n",
            IRStatus.inst_pipeInst_vld.bitfield.pipeinst0,
            IRStatus.inst_pipeInst_vld.bitfield.pipeinst1,
            IRStatus.inst_pipeInst_vld.bitfield.pipeinst2,
            IRStatus.inst_pipeInst_vld.bitfield.pipeinst3);
 
-    printf("IR inst packet opcode: \n");
+    printf(ANSI_FMT("IR inst packet opcode: \n", ANSI_FG_BLUE));
     printf("\tinst0: %08x, inst1: %08x, inst2: %08x, inst3: %08x\n", 
            IRStatus.instPacket.inst0,
            IRStatus.instPacket.inst1,
            IRStatus.instPacket.inst2,
            IRStatus.instPacket.inst3);
 
-    printf("IR inst rename physical regs: \n");
+    printf(ANSI_FMT("IR inst rename physical regs: \n", ANSI_FG_BLUE));
     printf("\tinst0: %02x, inst1: %02x, inst2: %02x, inst3: %02x\n",
            IRStatus.renamePhyRegs.bitfield.inst0,
            IRStatus.renamePhyRegs.bitfield.inst1,
            IRStatus.renamePhyRegs.bitfield.inst2,
            IRStatus.renamePhyRegs.bitfield.inst3);
 
-    printf("IR inst packet dependencies: \n");
+    printf(ANSI_FMT("IR inst packet dependencies: \n", ANSI_FG_BLUE));
     printf("\tinst01: %01x, inst02: %01x, inst03: %01x, inst12: %01x, inst13: %01x, inst23: %01x\n",
            IRStatus.dependencies.bitfield.inst01,
            IRStatus.dependencies.bitfield.inst02,
@@ -298,7 +298,7 @@ extern "C" void hart_IdRFStatus_InstSync(
 }
 
 void display_RFStatus() {
-    printf("RF pipedown inst: \n");
+    printf(ANSI_FMT("RF pipedown inst: \n", ANSI_FG_BLUE));
     printf("\tpipe0: %08x, pipe1: %08x, pipe2: %08x, pipe3: %08x\npipe4: %08x, pipe5: %08x, pipe6: %08x, pipe7: %08x, pipe8: %08x\n", 
             IdRFStatus.elem.pipe0_inst, IdRFStatus.elem.pipe1_inst, IdRFStatus.elem.pipe2_inst, 
             IdRFStatus.elem.pipe3_inst, IdRFStatus.elem.pipe4_inst, IdRFStatus.elem.pipe5_inst, 
@@ -334,9 +334,11 @@ extern "C" void hart_matrixMemAccess(
   uint64_t total_bytes;
 
   if(mem_access_type == 0) {
-    printf("MATRIX LOAD to m%d: base address: %08x, ", matrix_reg_idx, base_addr);
+    printf(ANSI_FMT("MATRIX LOAD", ANSI_FG_BLUE));
+    printf(" to m%d: base address: %08x, ", matrix_reg_idx, base_addr);
   } else {
-    printf("MATRIX STORE from m%d: base address: %08x, ", matrix_reg_idx, base_addr);
+    printf(ANSI_FMT("MATRIX STORE", ANSI_FG_BLUE));
+    printf(" from m%d: base address: %08x, ", matrix_reg_idx, base_addr);
   }
 
   if(whold_reg_mode == 0) {
@@ -359,28 +361,50 @@ extern "C" void hart_matrixArithm(
   uint8_t matrix_sizeM,
   uint8_t matrix_sizeN
 ){
-  if(matrix_arith_type == 1) 
-    printf("matrix mov, sizeM=%d\n", matrix_sizeM);
-  else if(matrix_arith_type == 2)
-    printf("matrix fmmacc, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 4)
-    printf("matrix fwmmacc, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 8)
-    printf("matrix mmaqa, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 16)
-    printf("matrix madd, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 32)
-    printf("matrix msub, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 64)
-    printf("matrix msra, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 128)
-    printf("matrix mn4clip, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 256)
-    printf("matrix mn4clipu, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 512)
-    printf("matrix mmul, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
-  else if(matrix_arith_type == 1024)
-    printf("matrix mmulh, sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  if(matrix_arith_type == 1)  {
+    printf(ANSI_FMT("matrix mov", ANSI_FG_BLUE));
+    printf(", sizeM=%d\n", matrix_sizeM);
+  }
+  else if(matrix_arith_type == 2) {
+    printf(ANSI_FMT("matrix fmmacc", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 4) {
+    printf(ANSI_FMT("matrix fwmmacc", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 8) {
+    printf(ANSI_FMT("matrix mmaqa", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 16) {
+    printf(ANSI_FMT("matrix madd", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 32) {
+    printf(ANSI_FMT("matrix msub", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 64) {
+    printf(ANSI_FMT("matrix msra", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 128) {
+    printf(ANSI_FMT("matrix mn4clip", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 256) {
+    printf(ANSI_FMT("matrix mn4clipu", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 512) {
+    printf(ANSI_FMT("matrix mmul", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
+  else if(matrix_arith_type == 1024) {
+    printf(ANSI_FMT("matrix mmulh", ANSI_FG_BLUE));
+    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+  }
 }
 
 // traverse all watchpoint elements in head link array

@@ -73,6 +73,7 @@ module ct_idu_is_miq_entry(
   id_dstm_idx_create1_match,
   x_rdy,
   x_read_data,
+  x_cfg,
   x_vld,
   x_vld_with_frz
 );
@@ -138,6 +139,7 @@ output id_dstm_idx_create1_match;
 output  [10:0]  x_agevec;                               
 output          x_rdy;                                  
 output  [72:0] x_read_data;                            
+output         x_cfg;
 output          x_vld;                                  
 output          x_vld_with_frz;                         
 
@@ -251,6 +253,7 @@ wire id_dstm_idx_create0_match;
 wire id_dstm_idx_create1_match;
 wire            x_rdy;                                  
 wire    [72:0] x_read_data;                            
+wire         x_cfg;
 wire            x_vld;                                  
 wire            x_vld_with_frz;                         
 
@@ -544,13 +547,15 @@ begin
   end
 end
 
-assign id_dstm_idx_create0_match = (srcm0_vld & (~|(id_dstm_idx_create0 ^ srcm0_idx))) |
-                                   (srcm1_vld & (~|(id_dstm_idx_create0 ^ srcm1_idx))) |
-                                   (srcm2_vld & (~|(id_dstm_idx_create0 ^ dstm_idx)));
+assign x_cfg = mat_type == MAT_CFG;
 
-assign id_dstm_idx_create1_match = (srcm0_vld & (~|(id_dstm_idx_create1 ^ srcm0_idx))) |
+assign id_dstm_idx_create0_match = vld & ((srcm0_vld & (~|(id_dstm_idx_create0 ^ srcm0_idx))) |
+                                   (srcm1_vld & (~|(id_dstm_idx_create0 ^ srcm1_idx))) |
+                                   (srcm2_vld & (~|(id_dstm_idx_create0 ^ dstm_idx))));
+
+assign id_dstm_idx_create1_match = vld & ((srcm0_vld & (~|(id_dstm_idx_create1 ^ srcm0_idx))) |
                                    (srcm1_vld & (~|(id_dstm_idx_create1 ^ srcm1_idx))) |
-                                   (srcm2_vld & (~|(id_dstm_idx_create1 ^ dstm_idx)));
+                                   (srcm2_vld & (~|(id_dstm_idx_create1 ^ dstm_idx))));
 
 //rename for read output
 assign x_read_data[MIQ_OPCODE:MIQ_OPCODE-31]     = opcode[31:0];

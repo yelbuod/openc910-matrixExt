@@ -493,3 +493,9 @@ ${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_exu_arithmetic_unit.sv
 ${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_exu_config_unit.sv
 ${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_exu_ldst_unit.sv
  
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_mux_onehot.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_src_expand_12.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_src_expand_8.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_mat_src_oh_binary.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/mreg_effected_mapping.sv
+${CODE_BASE_PATH}/gen_rtl/matrix/ct_idu_is_mat_src_decd.sv

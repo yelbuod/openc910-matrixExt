@@ -1,12 +1,7 @@
 import "DPI-C" function void hart_matrixArithm(
-  byte unsigned mem_access_type, // memory access type
-  byte unsigned matrix_reg_idx, // load dest/store src
-  longint unsigned base_addr,
-  byte unsigned number_of_rows, // matrix rows to load, sizeM
-  longint unsigned row_stride, // matrix row stride to get next startline
-  shortint unsigned bytes_per_row, // bytes in each row, sizeK
-  byte unsigned whold_reg_mode, // whole register load/store, nf_vld
-  byte unsigned nf_filed // how many matrix reg groups to load/store
+  shortint unsigned matrix_arith_type,
+  byte unsigned matrix_sizeM,
+  byte unsigned matrix_sizeN
 );
 
 module ct_mat_exu_arithmetic_unit (
@@ -165,7 +160,7 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
 
   always@(posedge ex1_inst_clk) begin
     if(mat_alu_ex1_inst_vld) begin
-      case (mat_alu_ex1_optype[1:0])
+      case (mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0])
         MAT_CAL_MMOV: begin
           hart_matrixArithm(MAT_CAL_MMOV, x_sizeM, x_sizeN);
         end

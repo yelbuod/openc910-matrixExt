@@ -411,6 +411,7 @@ module ct_idu_top(
   idu_mat_rf_cfg_sel,
   idu_mat_rf_cfg_gateclk_sel,
   idu_mat_rf_pipe8_iid,
+  idu_mat_rf_pipe8_iq_entry,
   idu_mat_rf_pipe8_alu_meta,
   idu_mat_rf_pipe8_alu_src0_vld,
   idu_mat_rf_pipe8_alu_src0,
@@ -822,7 +823,9 @@ module ct_idu_top(
   ex_line_wakeup,
   ex_line_wakeup_entry_idx,
   ex_mat_finish,
-  ex_mat_finish_entry_idx
+  ex_mat_finish_entry_idx,
+  mat_lsu_ex_mat_finish_dstm_vld,
+  mat_lsu_ex_mat_finish_dstm_idx
 );
 
 // &Ports; @25
@@ -1271,6 +1274,8 @@ input            ex_line_wakeup;
 input    [3:0]   ex_line_wakeup_entry_idx;
 input            ex_mat_finish;
 input    [3:0]   ex_mat_finish_entry_idx;
+input mat_lsu_ex_mat_finish_dstm_vld;
+input [2:0] mat_lsu_ex_mat_finish_dstm_idx;
 output  [6  :0]  idu_cp0_fesr_acc_updt_val;              
 output           idu_cp0_fesr_acc_updt_vld;              
 output  [4  :0]  idu_cp0_rf_func;                        
@@ -1643,6 +1648,7 @@ output        idu_mat_rf_lsu_gateclk_sel;
 output        idu_mat_rf_cfg_sel;
 output        idu_mat_rf_cfg_gateclk_sel;
 output [6 :0] idu_mat_rf_pipe8_iid;
+output [11:0] idu_mat_rf_pipe8_iq_entry;
 output [30:0] idu_mat_rf_pipe8_alu_meta;
 output        idu_mat_rf_pipe8_alu_src0_vld;
 output [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -5456,6 +5462,8 @@ wire            ex_line_wakeup;
 wire    [3:0]   ex_line_wakeup_entry_idx;
 wire            ex_mat_finish;
 wire    [3:0]   ex_mat_finish_entry_idx;
+wire mat_lsu_ex_mat_finish_dstm_vld;
+wire [2:0] mat_lsu_ex_mat_finish_dstm_idx;
 
 // TODO:
 // 与MIQ互联用于旁路的dup5信号暂时共用互联BIQ的dup4, 以实现功能
@@ -5559,7 +5567,9 @@ assign vfpu_idu_ex1_pipe7_preg_dup5[6:0]       = vfpu_idu_ex1_pipe7_preg_dup4[6:
     .ex_mat_finish                          (ex_mat_finish                          ),
     .ex_line_wakeup                         (ex_line_wakeup                         ),
     .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
-    .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               )
+    .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
+    .mat_lsu_ex_mat_finish_dstm_vld      (mat_lsu_ex_mat_finish_dstm_vld),
+    .mat_lsu_ex_mat_finish_dstm_idx      (mat_lsu_ex_mat_finish_dstm_idx)
   );
 
 
@@ -5993,6 +6003,7 @@ wire        idu_mat_rf_cfg_sel;
 wire        idu_mat_rf_cfg_gateclk_sel;
 // from RF dp to IDU output port
 wire [6 :0] idu_mat_rf_pipe8_iid;
+wire [11:0] idu_mat_rf_pipe8_iq_entry;
 wire [30:0] idu_mat_rf_pipe8_alu_meta;
 wire        idu_mat_rf_pipe8_alu_src0_vld;
 wire [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -6654,6 +6665,7 @@ ct_idu_rf_dp  x_ct_idu_rf_dp (
   .idu_vfpu_rf_pipe7_vmla_type            (idu_vfpu_rf_pipe7_vmla_type           ),
   /* to Matrix Unit */
   .idu_mat_rf_pipe8_iid                   (idu_mat_rf_pipe8_iid                  ),
+  .idu_mat_rf_pipe8_iq_entry              (idu_mat_rf_pipe8_iq_entry             ),
   .idu_mat_rf_pipe8_alu_meta              (idu_mat_rf_pipe8_alu_meta             ),
   .idu_mat_rf_pipe8_alu_src0_vld          (idu_mat_rf_pipe8_alu_src0_vld         ),
   .idu_mat_rf_pipe8_alu_src0              (idu_mat_rf_pipe8_alu_src0             ),

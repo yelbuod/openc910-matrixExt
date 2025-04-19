@@ -5,6 +5,8 @@ module mreg_effected_mapping (
   input [7:0] mreg_effected_mapping_wen_1,
   input [3:0] mreg_effected_mapping_widx_0,
   input [3:0] mreg_effected_mapping_widx_1,
+  input [7:0] mreg_effected_mapping_lsu_clr,
+  input [3:0] mreg_effected_mapping_lsu_clr_idx,
   input [7:0] mreg_effected_mapping_src0_create0_ren,
   input [7:0] mreg_effected_mapping_src1_create0_ren,
   input [7:0] mreg_effected_mapping_src2_create0_ren,
@@ -70,7 +72,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[0] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[0]) begin
       mreg_effected_map_table[0] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[0]) begin
+      mreg_effected_map_table[0] <= mreg_effected_map_table[0] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[0];
+    end
   end
 
   always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_1
@@ -80,7 +85,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[1] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[1]) begin
       mreg_effected_map_table[1] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[1]) begin
+      mreg_effected_map_table[1] <= mreg_effected_map_table[1] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[1];
+    end
   end
 
   always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_2
@@ -90,7 +98,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[2] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[2]) begin
       mreg_effected_map_table[2] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[2]) begin
+      mreg_effected_map_table[2] <= mreg_effected_map_table[2] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[2];
+    end
   end
 
   always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_3
@@ -100,7 +111,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[3] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[3]) begin
       mreg_effected_map_table[3] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[3]) begin
+      mreg_effected_map_table[3] <= mreg_effected_map_table[3] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[3];
+    end
   end
 
   always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_4
@@ -110,7 +124,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[4] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[4]) begin
       mreg_effected_map_table[4] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[4]) begin
+      mreg_effected_map_table[4] <= mreg_effected_map_table[4] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[4];
+    end
   end
 
   always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_5
@@ -120,7 +137,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[5] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[5]) begin
       mreg_effected_map_table[5] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[5]) begin
+      mreg_effected_map_table[5] <= mreg_effected_map_table[5] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[5];
+    end
   end
 
   always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_6
@@ -130,7 +150,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[6] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[6]) begin
       mreg_effected_map_table[6] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[6]) begin
+      mreg_effected_map_table[6] <= mreg_effected_map_table[6] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[6];
+    end
   end
 
   always_ff @(posedge forever_cpuclk or negedge cpurst_b) begin : proc_7
@@ -140,7 +163,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[7] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[7]) begin
       mreg_effected_map_table[7] <= {1'b1, mreg_effected_mapping_widx_0};
-    end 
+    end else if(mreg_effected_mapping_lsu_clr[7]) begin
+      mreg_effected_map_table[7] <= mreg_effected_map_table[7] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
+                                    5'b0 : mreg_effected_map_table[7];
+    end
   end
 
 

@@ -57,7 +57,7 @@ int main()
   mint32_t mb = __riscv_th_mld(y, stride, msize_m, msize_k);
   mint32_t ans = __riscv_th_mld(z, stride, msize_m, msize_k);
 
-  print_data("Initial value of matrix", ma, mb, ans, msize_m, msize_k);
+  // print_data("Initial value of matrix", ma, mb, ans, msize_m, msize_k);
 
   ans = __riscv_th_mmul_mm(ma, mb, msize_m, msize_k);
 

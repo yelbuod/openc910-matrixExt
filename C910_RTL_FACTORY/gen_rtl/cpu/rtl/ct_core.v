@@ -2687,6 +2687,7 @@ wire        idu_mat_rf_lsu_gateclk_sel;
 wire        idu_mat_rf_cfg_sel;
 wire        idu_mat_rf_cfg_gateclk_sel;
 wire [6 :0] idu_mat_rf_pipe8_iid;
+wire [11:0] idu_mat_rf_pipe8_iq_entry;
 wire [30:0] idu_mat_rf_pipe8_alu_meta;
 wire        idu_mat_rf_pipe8_alu_src0_vld;
 wire [63:0] idu_mat_rf_pipe8_alu_src0;
@@ -2709,6 +2710,10 @@ wire            ex_line_wakeup;
 wire    [3:0]   ex_line_wakeup_entry_idx;
 wire            ex_mat_finish;
 wire    [3:0]   ex_mat_finish_entry_idx;
+
+wire mat_lsu_ex_mat_finish_dstm_vld;
+wire [2:0] mat_lsu_ex_mat_finish_dstm_idx;
+
 //==========================================================
 //  Instance ct_idu_top sub module 
 //==========================================================
@@ -3110,6 +3115,7 @@ ct_idu_top  x_ct_idu_top (
   .idu_mat_rf_cfg_sel                      (idu_mat_rf_cfg_sel                     ),
   .idu_mat_rf_cfg_gateclk_sel              (idu_mat_rf_cfg_gateclk_sel             ),
   .idu_mat_rf_pipe8_iid                    (idu_mat_rf_pipe8_iid                   ),
+  .idu_mat_rf_pipe8_iq_entry               (idu_mat_rf_pipe8_iq_entry              ),
   .idu_mat_rf_pipe8_alu_meta               (idu_mat_rf_pipe8_alu_meta              ),
   .idu_mat_rf_pipe8_alu_src0_vld           (idu_mat_rf_pipe8_alu_src0_vld          ),
   .idu_mat_rf_pipe8_alu_src0               (idu_mat_rf_pipe8_alu_src0              ),
@@ -3519,7 +3525,9 @@ ct_idu_top  x_ct_idu_top (
   .ex_mat_finish                           (ex_mat_finish                          ),
   .ex_line_wakeup                          (ex_line_wakeup                         ),
   .ex_mat_finish_entry_idx                 (ex_mat_finish_entry_idx                ),
-  .ex_line_wakeup_entry_idx                (ex_line_wakeup_entry_idx               )
+  .ex_line_wakeup_entry_idx                (ex_line_wakeup_entry_idx               ),
+  .mat_lsu_ex_mat_finish_dstm_vld      (mat_lsu_ex_mat_finish_dstm_vld),
+  .mat_lsu_ex_mat_finish_dstm_idx      (mat_lsu_ex_mat_finish_dstm_idx)
 );
 
 // &Connect(.cpurst_b   (idu_rst_b)); @52
@@ -3544,6 +3552,7 @@ ct_idu_top  x_ct_idu_top (
     .pad_yy_icg_scan_en                   (pad_yy_icg_scan_en                   ),
     .rtu_yy_xx_flush                      (rtu_yy_xx_flush                      ),
     .idu_mat_rf_pipe8_iid                 (idu_mat_rf_pipe8_iid                 ),
+    .idu_mat_rf_pipe8_iq_entry            (idu_mat_rf_pipe8_iq_entry            ),
     .idu_mat_rf_alu_sel                   (idu_mat_rf_alu_sel                   ),
     .idu_mat_rf_alu_gateclk_sel           (idu_mat_rf_alu_gateclk_sel           ),
     .idu_mat_rf_pipe8_alu_meta            (idu_mat_rf_pipe8_alu_meta            ),
@@ -3565,6 +3574,8 @@ ct_idu_top  x_ct_idu_top (
     .mat_lsu_ex_line_wakeup               (ex_line_wakeup                       ),
     .mat_lsu_ex_mat_finish_entry_idx      (ex_mat_finish_entry_idx              ),
     .mat_lsu_ex_line_wakeup_entry_idx     (ex_line_wakeup_entry_idx             ),
+    .mat_lsu_ex_mat_finish_dstm_vld      (mat_lsu_ex_mat_finish_dstm_vld),
+    .mat_lsu_ex_mat_finish_dstm_idx      (mat_lsu_ex_mat_finish_dstm_idx),
     .mat_cfg_idu_ex1_pipe8_wb_preg_vld    (mat_cfg_idu_ex1_pipe8_wb_preg_vld    ),
     .mat_cfg_idu_ex1_pipe8_wb_preg        (mat_cfg_idu_ex1_pipe8_wb_preg        ),
     .mat_cfg_idu_ex1_pipe8_wb_preg_expand (mat_cfg_idu_ex1_pipe8_wb_preg_expand ),

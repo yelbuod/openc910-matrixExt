@@ -35,6 +35,8 @@ module ct_mat_exu_ldst_unit (
   output [3:0] mat_lsu_ex_line_wakeup_entry_idx,
   output mat_lsu_ex_mat_finish,
   output [3:0] mat_lsu_ex_mat_finish_entry_idx,
+  output mat_lsu_ex_mat_finish_dstm_vld,
+  output [2:0] mat_lsu_ex_mat_finish_dstm_idx,
   /* commit to rtu retire */
   output        mat_lsu_cbus_ex1_pipe8_sel   ,
   output [ 6:0] mat_lsu_cbus_ex1_pipe8_iid
@@ -164,6 +166,9 @@ parameter MAT_LSU_ELM_WIDTH  = 1 ; // 1:0
   assign mat_lsu_ex_mat_finish = mat_lsu_ex1_inst_vld;
   assign mat_lsu_ex_line_wakeup_entry_idx[3:0] = mat_lsu_ex1_iq_entry_idx[3:0];
   assign mat_lsu_ex_mat_finish_entry_idx[3:0] = mat_lsu_ex1_iq_entry_idx[3:0];
+
+  assign mat_lsu_ex_mat_finish_dstm_vld = mat_lsu_ex1_dstm_9_7_vld;
+  assign mat_lsu_ex_mat_finish_dstm_idx[2:0] = mat_lsu_ex1_dstm_idx_9_7[2:0];
 
   // 计算总共需要load/store的byte数
   always@(posedge ex1_inst_clk) begin
