@@ -408,12 +408,12 @@ begin
     src2_depd_vld      <= src2_depd_info[4];
   end
   else if(ex_line_wakeup) begin
-    src0_depd_vld      <= src0_depd_vld ? ~|(src0_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src0_depd_vld;
-    src2_depd_vld      <= src2_depd_vld ? ~|(src2_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src2_depd_vld;
+    src0_depd_vld      <= src0_depd_vld ? |(src0_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src0_depd_vld;
+    src2_depd_vld      <= src2_depd_vld ? |(src2_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src2_depd_vld;
   end
   else if(ex_mat_finish) begin
-    src0_depd_vld      <= src0_depd_vld ? ~|(src0_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src0_depd_vld;
-    src2_depd_vld      <= src2_depd_vld ? ~|(src2_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src2_depd_vld;
+    src0_depd_vld      <= src0_depd_vld ? |(src0_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src0_depd_vld;
+    src2_depd_vld      <= src2_depd_vld ? |(src2_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src2_depd_vld;
   end
   else begin
     src0_depd_vld      <= src0_depd_vld;
@@ -433,10 +433,10 @@ always @(posedge entry_clk or negedge cpurst_b)
       src1_depd_vld <= src1_depd_info[4];
     end
     else if(ex_line_wakeup) begin
-      src1_depd_vld <= src1_depd_vld&(!macc_type) ? ~|(src1_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src1_depd_vld;
+      src1_depd_vld <= src1_depd_vld&(!macc_type) ? |(src1_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src1_depd_vld;
     end
     else if(ex_mat_finish) begin
-      src1_depd_vld <= src1_depd_vld ? ~|(src1_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src1_depd_vld;
+      src1_depd_vld <= src1_depd_vld ? |(src1_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src1_depd_vld;
     end
     else begin
       src1_depd_vld <= src1_depd_vld;
