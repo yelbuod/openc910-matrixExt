@@ -358,52 +358,53 @@ extern "C" void hart_matrixMemAccess(
 
 extern "C" void hart_matrixArithm(
   uint16_t matrix_arith_type,
+  uint8_t matrix_dst_idx,
   uint8_t matrix_sizeM,
   uint8_t matrix_sizeN
 ){
   if(matrix_arith_type == 1)  {
     printf(ANSI_FMT("matrix mov", ANSI_FG_BLUE));
-    printf(", sizeM=%d\n", matrix_sizeM);
+    printf(" to m%d: sizeM=%d\n", matrix_dst_idx, matrix_sizeM);
   }
   else if(matrix_arith_type == 2) {
     printf(ANSI_FMT("matrix fmmacc", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 4) {
     printf(ANSI_FMT("matrix fwmmacc", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 8) {
     printf(ANSI_FMT("matrix mmaqa", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 16) {
     printf(ANSI_FMT("matrix madd", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 32) {
     printf(ANSI_FMT("matrix msub", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 64) {
     printf(ANSI_FMT("matrix msra", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 128) {
     printf(ANSI_FMT("matrix mn4clip", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 256) {
     printf(ANSI_FMT("matrix mn4clipu", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 512) {
     printf(ANSI_FMT("matrix mmul", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
   else if(matrix_arith_type == 1024) {
     printf(ANSI_FMT("matrix mmulh", ANSI_FG_BLUE));
-    printf(", sizeM=%d, sizeN=%d\n", matrix_sizeM, matrix_sizeN);
+    printf(" to m%d: sizeM=%d, sizeN=%d\n", matrix_dst_idx, matrix_sizeM, matrix_sizeN);
   }
 }
 

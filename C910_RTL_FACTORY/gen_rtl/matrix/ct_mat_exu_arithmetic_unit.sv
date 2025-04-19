@@ -1,5 +1,6 @@
 import "DPI-C" function void hart_matrixArithm(
   shortint unsigned matrix_arith_type,
+  byte unsigned matrix_dst_idx,
   byte unsigned matrix_sizeM,
   byte unsigned matrix_sizeN
 );
@@ -162,37 +163,37 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
     if(mat_alu_ex1_inst_vld) begin
       case (mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0])
         MAT_CAL_MMOV: begin
-          hart_matrixArithm(MAT_CAL_MMOV, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MMOV, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_FMMACC: begin
-          hart_matrixArithm(MAT_CAL_FMMACC, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_FMMACC, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_FWMMACC: begin
-          hart_matrixArithm(MAT_CAL_FWMMACC, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_FWMMACC, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MMAQA: begin
-          hart_matrixArithm(MAT_CAL_MMAQA, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MMAQA, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MADD: begin
-          hart_matrixArithm(MAT_CAL_MADD, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MADD, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MSUB: begin
-          hart_matrixArithm(MAT_CAL_MSUB, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MSUB, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MSRA: begin
-          hart_matrixArithm(MAT_CAL_MSRA, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MSRA, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MN4CLIP: begin
-          hart_matrixArithm(MAT_CAL_MN4CLIP, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MN4CLIP, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MN4CLIPU: begin
-          hart_matrixArithm(MAT_CAL_MN4CLIPU, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MN4CLIPU, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MMUL: begin
-          hart_matrixArithm(MAT_CAL_MMUL, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MMUL, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
         MAT_CAL_MMULH: begin
-          hart_matrixArithm(MAT_CAL_MMULH, x_sizeM, x_sizeN);
+          hart_matrixArithm(MAT_CAL_MMULH, mat_alu_ex1_dstm_idx, x_sizeM, x_sizeN);
         end
       endcase
     end
