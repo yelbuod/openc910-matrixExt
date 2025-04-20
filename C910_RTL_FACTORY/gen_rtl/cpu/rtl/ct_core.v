@@ -3547,7 +3547,7 @@ ct_idu_top x_ct_idu_top (
 //==========================================================
 //  Instance ct_mat_subsystem_top sub module 
 //==========================================================
-
+  
   wire cp0_mat_icg_en;
   assign cp0_mat_icg_en = cp0_iu_icg_en; // TODO: 暂时借用
 
@@ -3556,7 +3556,18 @@ ct_idu_top x_ct_idu_top (
   wire        mat_rtu_pipe8_cmplt                  ;
   wire [ 6:0] mat_rtu_pipe8_iid                    ;
 
-  ct_mat_subsystem_top #(.RLEN(512)) x_ct_mat_subsystem_top (
+  parameter MATRIX_LSIQ_ENTRY = 8;
+  // to lsu
+  wire        mat_lsq_lsu_ld_sel;
+  wire [MATRIX_LSIQ_ENTRY-1:0] mat_lsq_lsu_entry;
+  wire [ 6:0] mat_lsq_lsu_iid;
+  wire [63:0] mat_lsq_lsu_addr;
+  wire [ 1:0] mat_lsq_lsu_size;
+  // from lsu
+  wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay;
+  wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish;
+
+  ct_mat_subsystem_top #(.RLEN(256)) x_ct_mat_subsystem_top (
     .cpurst_b                             (idu_rst_b                            ),
     .forever_cpuclk                       (forever_cpuclk                       ),
     .cp0_mat_icg_en                       (cp0_mat_icg_en                       ),
@@ -3594,6 +3605,16 @@ ct_idu_top x_ct_idu_top (
     .mat_alu_ex_mat_finish_entry_idx      (mat_alu_ex_mat_finish_entry_idx      ),
     .mat_alu_ex_mat_finish_dstm_vld       (mat_alu_ex_mat_finish_dstm_vld       ),
     .mat_alu_ex_mat_finish_dstm_idx       (mat_alu_ex_mat_finish_dstm_idx       ),
+    // to lsu
+    .mat_lsq_lsu_ld_sel              (mat_lsq_lsu_ld_sel              ),
+    .mat_lsq_lsu_entry               (mat_lsq_lsu_entry               ),
+    .mat_lsq_lsu_iid                 (mat_lsq_lsu_iid                 ),
+    .mat_lsq_lsu_addr                (mat_lsq_lsu_addr                ),
+    .mat_lsq_lsu_size                (mat_lsq_lsu_size                ),
+    // from lsu
+    .lsu_mat_lsq_replay              (lsu_mat_lsq_replay              ),
+    .lsu_mat_lsq_mat_ld_finish       (lsu_mat_lsq_mat_ld_finish       ),
+    // wb
     .mat_cfg_idu_ex1_pipe8_wb_preg_vld    (mat_cfg_idu_ex1_pipe8_wb_preg_vld    ),
     .mat_cfg_idu_ex1_pipe8_wb_preg        (mat_cfg_idu_ex1_pipe8_wb_preg        ),
     .mat_cfg_idu_ex1_pipe8_wb_preg_expand (mat_cfg_idu_ex1_pipe8_wb_preg_expand ),
@@ -4269,6 +4290,16 @@ ct_lsu_top  x_ct_lsu_top (
   .idu_mat_rf_pipe8_lsu_src0              (idu_mat_rf_pipe8_lsu_src0),
   .idu_mat_rf_pipe8_iid                   (idu_mat_rf_pipe8_iid),
   .idu_mat_rf_pipe8_lsu_meta              (idu_mat_rf_pipe8_lsu_meta), // element width->size
+
+  // to lsu
+  .mat_lsq_lsu_ld_sel              (mat_lsq_lsu_ld_sel              ),
+  .mat_lsq_lsu_entry               (mat_lsq_lsu_entry               ),
+  .mat_lsq_lsu_iid                 (mat_lsq_lsu_iid                 ),
+  .mat_lsq_lsu_addr                (mat_lsq_lsu_addr                ),
+  .mat_lsq_lsu_size                (mat_lsq_lsu_size                ),
+  // from lsu
+  .lsu_mat_lsq_replay              (lsu_mat_lsq_replay              ),
+  .lsu_mat_lsq_mat_ld_finish       (lsu_mat_lsq_mat_ld_finish       ),
 
   .idu_lsu_vmb_create0_dp_en               (idu_lsu_vmb_create0_dp_en              ),
   .idu_lsu_vmb_create0_dst_ready           (idu_lsu_vmb_create0_dst_ready          ),

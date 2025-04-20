@@ -162,6 +162,16 @@ module ct_lsu_top#(parameter MATRIX_LSIQ_ENTRY = 8)(
   idu_mat_rf_pipe8_iid,
   idu_mat_rf_pipe8_lsu_meta,
 
+  /* from mat lsq */
+  mat_lsq_lsu_ld_sel,
+  mat_lsq_lsu_entry,
+  mat_lsq_lsu_iid,
+  mat_lsq_lsu_addr,
+  mat_lsq_lsu_size,
+  /* to mat lsq */
+  lsu_mat_lsq_replay,
+  lsu_mat_lsq_mat_ld_finish,
+
   idu_lsu_vmb_create0_dp_en,
   idu_lsu_vmb_create0_dst_ready,
   idu_lsu_vmb_create0_en,
@@ -1022,6 +1032,16 @@ output           lsu_rtu_wb_pipe4_spec_fail;
 output  [6  :0]  lsu_rtu_wb_pipe4_vstart;                
 output           lsu_rtu_wb_pipe4_vstart_vld;            
 output           lsu_yy_xx_no_op;                        
+
+/* from mat lsq */
+input        mat_lsq_lsu_ld_sel;
+input [MATRIX_LSIQ_ENTRY-1:0] mat_lsq_lsu_entry;
+input [ 6:0] mat_lsq_lsu_iid;
+input [63:0] mat_lsq_lsu_addr;
+input [ 1:0] mat_lsq_lsu_size;
+/* to mat lsq */
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay;
+output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish;
 
 // &Regs; @26
 
@@ -2806,23 +2826,12 @@ assign lsu_idu_vmb_full = 1'b0;
 assign lsu_idu_vmb_full_updt = 1'b0;
 assign lsu_idu_vmb_full_updt_clk_en = 1'b0;
 
-wire            idu_mat_rf_lsu_sel;
-wire            idu_mat_rf_lsu_gateclk_sel;
-wire    [63:0]  idu_mat_rf_pipe8_lsu_src0;
-wire    [6 :0]  idu_mat_rf_pipe8_iid;
-wire    [15:0]  idu_mat_rf_pipe8_lsu_meta;
 
-wire            ld_ag_pipe3;
-wire            ld_ag_pipe8;
-wire  idu_lsu_rf_pipe3_fire;
-wire  idu_lsu_rf_pipe8_fire;
-wire  [11:0]  ld_ag_no_fire_restart_entry;
-
-wire idu_mat_rf_lsu_ld_sel            ;
-wire idu_mat_rf_lsu_ld_gateclk_sel    ;
-
-assign idu_mat_rf_lsu_ld_sel            = idu_mat_rf_lsu_sel && idu_mat_rf_pipe8_lsu_meta[14];
-assign idu_mat_rf_lsu_ld_gateclk_sel    = idu_mat_rf_lsu_gateclk_sel && idu_mat_rf_pipe8_lsu_meta[14];
+// wire            idu_mat_rf_lsu_sel;
+// wire            idu_mat_rf_lsu_gateclk_sel;
+// wire    [63:0]  idu_mat_rf_pipe8_lsu_src0;
+// wire    [6 :0]  idu_mat_rf_pipe8_iid;
+// wire    [15:0]  idu_mat_rf_pipe8_lsu_meta;
 
 wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_mat_lsid;
 wire [MATRIX_LSIQ_ENTRY-1:0] ld_dc_mat_lsid;
@@ -2862,6 +2871,32 @@ wire                         lsu_mat_ldst_wait_fence_gateclk_en;
 wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_busy;
 wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_tlb_wakeup;
 wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_ldst_wakeup;
+
+wire            ld_ag_pipe3;
+wire            ld_ag_pipe8;
+wire  idu_lsu_rf_pipe3_fire;
+wire  idu_lsu_rf_pipe8_fire;
+wire  [11:0]  ld_ag_no_fire_restart_entry;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_no_fire_restart_mat_entry;
+
+/* from mat lsq */
+wire        mat_lsq_lsu_ld_sel;
+wire [MATRIX_LSIQ_ENTRY-1:0] mat_lsq_lsu_entry;
+wire [ 6:0] mat_lsq_lsu_iid;
+wire [63:0] mat_lsq_lsu_addr;
+wire [ 1:0] mat_lsq_lsu_size;
+/* to mat lsq */
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay;
+wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish;
+
+wire idu_mat_rf_lsu_ld_sel            ;
+wire idu_mat_rf_lsu_ld_gateclk_sel    ;
+
+assign idu_mat_rf_lsu_ld_sel            = mat_lsq_lsu_ld_sel;
+assign idu_mat_rf_lsu_ld_gateclk_sel    = mat_lsq_lsu_ld_sel;
+
+assign lsu_mat_lsq_replay[MATRIX_LSIQ_ENTRY-1:0] = lsu_mat_ldst_wakeup[MATRIX_LSIQ_ENTRY-1:0];
+assign lsu_mat_lsq_mat_ld_finish[MATRIX_LSIQ_ENTRY-1:0] = lsu_mat_ldst_lsiq_pop_entry[MATRIX_LSIQ_ENTRY-1:0];
 
 //==========================================================
 //                    AG/EX1 Stage
@@ -2974,9 +3009,10 @@ ct_lsu_ld_ag  x_ct_lsu_ld_ag (
   
   .idu_mat_rf_lsu_ld_sel            (idu_mat_rf_lsu_ld_sel            ),
   .idu_mat_rf_lsu_ld_gateclk_sel    (idu_mat_rf_lsu_ld_gateclk_sel    ),
-  .idu_mat_rf_pipe8_lsu_src0        (idu_mat_rf_pipe8_lsu_src0),
-  .idu_mat_rf_pipe8_iid             (idu_mat_rf_pipe8_iid),
-  .idu_mat_rf_pipe8_lsu_elem_width  (idu_mat_rf_pipe8_lsu_meta[1:0]),
+  .mat_lsq_lsu_entry                (mat_lsq_lsu_entry),
+  .mat_lsq_lsu_addr                 (mat_lsq_lsu_addr),
+  .mat_lsq_lsu_iid                  (mat_lsq_lsu_iid),
+  .mat_lsq_lsu_size                 (mat_lsq_lsu_size),
 
   // output to DC stage
   .ld_ag_mat_lsid                   (ld_ag_mat_lsid),
@@ -2986,6 +3022,7 @@ ct_lsu_ld_ag  x_ct_lsu_ld_ag (
   .idu_lsu_rf_pipe3_fire            (idu_lsu_rf_pipe3_fire),
   .idu_lsu_rf_pipe8_fire            (idu_lsu_rf_pipe8_fire),
   .ld_ag_no_fire_restart_entry      (ld_ag_no_fire_restart_entry),
+  .ld_ag_no_fire_restart_mat_entry  (ld_ag_no_fire_restart_mat_entry),
   .ld_ag_stall_restart_mat_entry    (ld_ag_stall_restart_mat_entry),
 
   .lsu_hpcp_ld_cross_4k_stall        (lsu_hpcp_ld_cross_4k_stall       ),
@@ -5975,8 +6012,10 @@ ct_lsu_ctrl  x_ct_lsu_ctrl (
   .idu_mat_rf_lsu_ld_gateclk_sel    (idu_mat_rf_lsu_ld_gateclk_sel),
   .idu_lsu_rf_pipe3_fire            (idu_lsu_rf_pipe3_fire),
   .ld_ag_no_fire_restart_entry      (ld_ag_no_fire_restart_entry),
-
+  .idu_lsu_rf_pipe8_fire            (idu_lsu_rf_pipe8_fire),
+  .ld_ag_no_fire_restart_mat_entry   (ld_ag_no_fire_restart_mat_entry),
   .ld_ag_stall_restart_mat_entry     (ld_ag_stall_restart_mat_entry),
+
   .ld_da_mat_ldst_already_da         (ld_da_mat_ldst_already_da),
   .ld_da_mat_ldst_rb_full            (ld_da_mat_ldst_rb_full),
   .ld_da_mat_ldst_wait_fence         (ld_da_mat_ldst_wait_fence),

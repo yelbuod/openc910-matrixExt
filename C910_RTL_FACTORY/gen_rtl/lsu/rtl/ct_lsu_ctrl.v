@@ -45,7 +45,9 @@ module ct_lsu_ctrl#(parameter MATRIX_LSIQ_ENTRY = 8)(
 
   ld_ag_pipe3,
   ld_ag_no_fire_restart_entry,
+  ld_ag_no_fire_restart_mat_entry,
   idu_lsu_rf_pipe3_fire,
+  idu_lsu_rf_pipe8_fire,
 
   ld_da_borrow_vld,
   ld_da_ecc_wakeup,
@@ -289,7 +291,9 @@ input   [11 :0]  ld_ag_stall_restart_entry;
 input [MATRIX_LSIQ_ENTRY-1:0] ld_ag_stall_restart_mat_entry;
 input            ld_ag_pipe3;
 input   [11 :0]  ld_ag_no_fire_restart_entry;        
+input  [MATRIX_LSIQ_ENTRY-1:0] ld_ag_no_fire_restart_mat_entry;
 input            idu_lsu_rf_pipe3_fire;
+input            idu_lsu_rf_pipe8_fire;
 
 input            ld_da_borrow_vld;                 
 input   [11 :0]  ld_da_ecc_wakeup;                 
@@ -558,8 +562,9 @@ wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_stall_restart_mat_entry;
 
 wire             ld_ag_pipe3;
 wire    [11 :0]  ld_ag_no_fire_restart_entry;        
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_no_fire_restart_mat_entry;
 wire             idu_lsu_rf_pipe3_fire;
-
+wire             idu_lsu_rf_pipe8_fire;
 wire             ld_da_borrow_vld;                 
 wire    [11 :0]  ld_da_ecc_wakeup;                 
 wire    [11 :0]  ld_da_idu_already_da;             
@@ -1046,6 +1051,13 @@ assign ld_rf_no_fire_restart_vld          = idu_lsu_rf_pipe3_sel // 真正的pip
 assign ld_rf_no_fire_imme_wakeup[LSIQ_ENTRY-1:0]  = ld_ag_no_fire_restart_entry[LSIQ_ENTRY-1:0]
                                             & {LSIQ_ENTRY{ld_rf_no_fire_restart_vld}};
 
+wire ld_rf_no_fire_restart_mat_vld;
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_rf_mat_no_fire_imme_wakeup;
+assign ld_rf_no_fire_restart_mat_vld          = idu_mat_rf_lsu_ld_sel // 真正的pipedown, 排除lch fail的表项
+                                            &&  !idu_lsu_rf_pipe8_fire;
+assign ld_rf_mat_no_fire_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]  = ld_ag_no_fire_restart_mat_entry[MATRIX_LSIQ_ENTRY-1:0]
+                                            & {MATRIX_LSIQ_ENTRY{ld_rf_no_fire_restart_mat_vld}};
+
 // 参考ld_rf_restart_vld
 wire [MATRIX_LSIQ_ENTRY-1:0] ld_rf_mat_imme_wakeup;
 assign ld_rf_mat_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]  = ld_ag_stall_restart_mat_entry[MATRIX_LSIQ_ENTRY-1:0]
@@ -1188,6 +1200,7 @@ assign lsu_idu_wait_old_gateclk_en = lsu_idu_ld_ag_wait_old_gateclk_en
 //       Matrix Imme & Buffer maintain restart
 //==========================================================
 assign lsu_mat_ldst_wakeup[MATRIX_LSIQ_ENTRY-1:0]       = ld_rf_mat_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]
+                                              | ld_rf_mat_no_fire_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]
                                               | ld_dc_mat_ldst_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]
                                               // | st_dc_imme_wakeup[MATRIX_LSIQ_ENTRY-1:0]
                                               | ld_da_mat_ldst_secd[MATRIX_LSIQ_ENTRY-1:0]

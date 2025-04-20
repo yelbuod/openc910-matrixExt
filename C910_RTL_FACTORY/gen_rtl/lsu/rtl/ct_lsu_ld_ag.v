@@ -66,9 +66,10 @@ module ct_lsu_ld_ag#(parameter MATRIX_LSIQ_ENTRY = 8)(
 // TODO: test
   idu_mat_rf_lsu_ld_sel,
   idu_mat_rf_lsu_ld_gateclk_sel,
-  idu_mat_rf_pipe8_lsu_src0,
-  idu_mat_rf_pipe8_iid,
-  idu_mat_rf_pipe8_lsu_elem_width,
+  mat_lsq_lsu_entry,
+  mat_lsq_lsu_addr,
+  mat_lsq_lsu_iid,
+  mat_lsq_lsu_size,
 
   ld_ag_addr1_to4,
   ld_ag_ahead_predict,
@@ -130,6 +131,7 @@ module ct_lsu_ld_ag#(parameter MATRIX_LSIQ_ENTRY = 8)(
   ld_ag_pipe3,
   ld_ag_pipe8,
   ld_ag_no_fire_restart_entry,
+  ld_ag_no_fire_restart_mat_entry,
   idu_lsu_rf_pipe3_fire,
   idu_lsu_rf_pipe8_fire,
   lsu_hpcp_ld_cross_4k_stall,
@@ -217,9 +219,10 @@ input   [6 :0]  idu_lsu_rf_pipe3_vreg;
 // TODO: test
 input           idu_mat_rf_lsu_ld_sel;
 input           idu_mat_rf_lsu_ld_gateclk_sel;
-input   [63:0]  idu_mat_rf_pipe8_lsu_src0;
-input   [6 :0]  idu_mat_rf_pipe8_iid;
-input   [1 :0]  idu_mat_rf_pipe8_lsu_elem_width;
+input [MATRIX_LSIQ_ENTRY-1:0] mat_lsq_lsu_entry;
+input   [63:0]  mat_lsq_lsu_addr;
+input   [6 :0]  mat_lsq_lsu_iid;
+input   [1 :0]  mat_lsq_lsu_size;
 
 output          idu_lsu_rf_pipe3_fire;
 output          idu_lsu_rf_pipe8_fire;
@@ -330,6 +333,7 @@ output  [63:0]  lsu_mmu_va0;
 output          lsu_mmu_va0_vld;                    
 
 output  [11:0]  ld_ag_no_fire_restart_entry;
+output [MATRIX_LSIQ_ENTRY-1:0] ld_ag_no_fire_restart_mat_entry;
 
 // &Regs; @30
 reg     [3 :0]  bank_en_low_ori;                    
@@ -433,9 +437,10 @@ wire    [6 :0]  idu_lsu_rf_pipe3_vreg;
 // TODO: test
 wire            idu_mat_rf_lsu_ld_sel;
 wire            idu_mat_rf_lsu_ld_gateclk_sel;
-wire    [63:0]  idu_mat_rf_pipe8_lsu_src0;
-wire    [6 :0]  idu_mat_rf_pipe8_iid;
-wire    [1 :0]  idu_mat_rf_pipe8_lsu_elem_width;
+wire [MATRIX_LSIQ_ENTRY-1:0] mat_lsq_lsu_entry;
+wire    [63:0]  mat_lsq_lsu_addr;
+wire    [6 :0]  mat_lsq_lsu_iid;
+wire    [1 :0]  mat_lsq_lsu_size;
 
 wire            ld_ag_4k_sum_12;                    
 wire    [12:0]  ld_ag_4k_sum_ori;                   
@@ -640,7 +645,7 @@ wire  idu_lsu_rf_pipe8_fire;
 
 ct_rtu_compare_iid  x_lsu_rf_compare_pipe3_pipe8_iid (
   .x_iid0                    (idu_lsu_rf_pipe3_iid[6:0]),
-  .x_iid1                    (idu_mat_rf_pipe8_iid[6:0]),
+  .x_iid1                    (mat_lsq_lsu_iid[6:0]),
   .x_iid0_older              (rf_pipe3_iid_older_than_pipe8)
 );
 // pipe3和pipe8_lsu同时请求时使用iid年龄信息来仲裁
@@ -755,7 +760,7 @@ begin
     ld_ag_pipe8                 <=  1'b1;
     ld_ag_split                 <=  1'b0;
     ld_ag_inst_type[1:0]        <=  2'b00; // load
-    ld_ag_inst_size[1:0]        <=  idu_mat_rf_pipe8_lsu_elem_width[1:0];
+    ld_ag_inst_size[1:0]        <=  mat_lsq_lsu_size[1:0];
     ld_ag_secd                  <=  1'b0;
     ld_ag_already_da            <=  1'b0;
     ld_ag_lsiq_spec_fail        <=  1'b0;
@@ -763,9 +768,9 @@ begin
     ld_ag_lsiq_bkptb_data       <=  1'b0;
     ld_ag_sign_extend           <=  1'b0;
     ld_ag_atomic                <=  1'b0;
-    ld_ag_iid[6:0]              <=  idu_mat_rf_pipe8_iid[6:0];
+    ld_ag_iid[6:0]              <=  mat_lsq_lsu_iid[6:0];
     ld_ag_lsid[LSIQ_ENTRY-1:0]  <=  {LSIQ_ENTRY{1'b0}};
-    ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] <= {MATRIX_LSIQ_ENTRY{1'b1}}; // TODO: all 1 for test
+    ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] <= mat_lsq_lsu_entry[MATRIX_LSIQ_ENTRY-1:0]; // TODO: all 1 for test
     ld_ag_old                   <=  1'b0;
     ld_ag_preg[6:0]             <=  7'b0; // 配合ld_dc_load_inst_vld_dup...用于操作数唤醒, 设置为0不用管
     ld_ag_preg_dup1[6:0]        <=  7'b0;
@@ -877,7 +882,7 @@ begin
   else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe3_fire)
     ld_ag_base[63:0]  <=  idu_lsu_rf_pipe3_src0[63:0];
   else if (!ld_ag_stall_vld &&  idu_lsu_rf_pipe8_fire)
-    ld_ag_base[63:0]  <=  idu_mat_rf_pipe8_lsu_src0[63:0];
+    ld_ag_base[63:0]  <=  mat_lsq_lsu_addr[63:0];
 end
 
 //==========================================================
@@ -1437,7 +1442,7 @@ ct_rtu_compare_iid  x_lsu_rf_compare_ld_ag_iid (
 
 wire mat_rf_iid_older_than_ld_ag;
 ct_rtu_compare_iid  x_lsu_mat_rf_compare_ld_ag_iid (
-  .x_iid0                    (idu_mat_rf_pipe8_iid[6:0]),
+  .x_iid0                    (mat_lsq_lsu_iid[6:0]),
   .x_iid0_older              (mat_rf_iid_older_than_ld_ag),
   .x_iid1                    (ld_ag_iid[6:0]           )
 );
@@ -1458,12 +1463,15 @@ assign ld_ag_stall_restart_entry[LSIQ_ENTRY-1:0] = ld_ag_stall_mask
 wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_stall_restart_mat_entry; // 重发引起stall且有更旧访存指令出现时的矩阵访存uop, 该阶段的信息被清除以容纳新指令
 assign ld_ag_stall_restart_mat_entry[MATRIX_LSIQ_ENTRY-1:0] = ld_ag_stall_mask
                                                               ? ld_ag_mat_lsid[MATRIX_LSIQ_ENTRY-1:0] // 无需筛选, 因为不是pipe8->AG的会为0, 不会唤醒任何表项
-                                                              : {MATRIX_LSIQ_ENTRY{1'b1}}; // TODO: all 1 for test
+                                                              : mat_lsq_lsu_entry[MATRIX_LSIQ_ENTRY-1:0]; // TODO: all 1 for test
 
 // 因为和矩阵访存冲突而no fire导致重发, 并且可能和ag_stall同时发生因此需要新增一个信号
 wire [11:0] ld_ag_no_fire_restart_entry;
 assign ld_ag_no_fire_restart_entry[LSIQ_ENTRY-1:0] = idu_lsu_rf_pipe3_lch_entry[LSIQ_ENTRY-1:0];
 
+// 因为和矩阵访存冲突而no fire导致重发, 并且可能和ag_stall同时发生因此需要新增一个信号
+wire [MATRIX_LSIQ_ENTRY-1:0] ld_ag_no_fire_restart_mat_entry;
+assign ld_ag_no_fire_restart_mat_entry[MATRIX_LSIQ_ENTRY-1:0] = mat_lsq_lsu_entry[MATRIX_LSIQ_ENTRY-1:0];
 //==========================================================
 //        Generage to DC stage signal
 //==========================================================

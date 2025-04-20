@@ -1,4 +1,4 @@
-module ct_mat_subsystem_top #(parameter RLEN = 512) (
+module ct_mat_subsystem_top #(parameter RLEN = 256,  parameter MATRIX_LSIQ_ENTRY = 8) (
   /* common */
   input         cpurst_b                             ,
   input         forever_cpuclk                       ,
@@ -43,6 +43,15 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
   output [ 3:0] mat_alu_ex_mat_finish_entry_idx      ,
   output        mat_alu_ex_mat_finish_dstm_vld       ,
   output [ 2:0] mat_alu_ex_mat_finish_dstm_idx       ,
+  // to lsu
+  output        mat_lsq_lsu_ld_sel  ,
+  output [MATRIX_LSIQ_ENTRY-1:0] mat_lsq_lsu_entry,
+  output [ 6:0] mat_lsq_lsu_iid ,
+  output [63:0] mat_lsq_lsu_addr,
+  output [ 1:0] mat_lsq_lsu_size,
+  // from lsu
+  input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay,
+  input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish,
   /* write back to main pipeline GPR */
   // pipe8 标识矩阵来自/并入主流水线的序号
   output        mat_cfg_idu_ex1_pipe8_wb_preg_vld    , // for pregfile in idu
@@ -164,6 +173,15 @@ module ct_mat_subsystem_top #(parameter RLEN = 512) (
     .mat_lsu_ex_mat_finish_entry_idx (mat_lsu_ex_mat_finish_entry_idx ),
     .mat_lsu_ex_mat_finish_dstm_vld  (mat_lsu_ex_mat_finish_dstm_vld  ),
     .mat_lsu_ex_mat_finish_dstm_idx  (mat_lsu_ex_mat_finish_dstm_idx  ),
+    // to lsu
+    .mat_lsq_lsu_ld_sel              (mat_lsq_lsu_ld_sel              ),
+    .mat_lsq_lsu_entry               (mat_lsq_lsu_entry               ),
+    .mat_lsq_lsu_iid                 (mat_lsq_lsu_iid                 ),
+    .mat_lsq_lsu_addr                (mat_lsq_lsu_addr                ),
+    .mat_lsq_lsu_size                (mat_lsq_lsu_size                ),
+    // from lsu
+    .lsu_mat_lsq_replay              (lsu_mat_lsq_replay              ),
+    .lsu_mat_lsq_mat_ld_finish       (lsu_mat_lsq_mat_ld_finish       ),
     .mat_lsu_cbus_ex1_pipe8_sel      (mat_lsu_cbus_ex1_pipe8_sel      ),
     .mat_lsu_cbus_ex1_pipe8_iid      (mat_lsu_cbus_ex1_pipe8_iid      )
   );
