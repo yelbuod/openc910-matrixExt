@@ -825,7 +825,13 @@ module ct_idu_top(
   ex_mat_finish,
   ex_mat_finish_entry_idx,
   mat_lsu_ex_mat_finish_dstm_vld,
-  mat_lsu_ex_mat_finish_dstm_idx
+  mat_lsu_ex_mat_finish_dstm_idx,
+  mat_alu_ex_line_wakeup,
+  mat_alu_ex_line_wakeup_entry_idx,
+  mat_alu_ex_mat_finish,
+  mat_alu_ex_mat_finish_entry_idx,
+  mat_alu_ex_mat_finish_dstm_vld,
+  mat_alu_ex_mat_finish_dstm_idx
 );
 
 // &Ports; @25
@@ -1274,8 +1280,14 @@ input            ex_line_wakeup;
 input    [3:0]   ex_line_wakeup_entry_idx;
 input            ex_mat_finish;
 input    [3:0]   ex_mat_finish_entry_idx;
-input mat_lsu_ex_mat_finish_dstm_vld;
+input       mat_lsu_ex_mat_finish_dstm_vld;
 input [2:0] mat_lsu_ex_mat_finish_dstm_idx;
+input            mat_alu_ex_line_wakeup;
+input [ 3:0]     mat_alu_ex_line_wakeup_entry_idx;
+input            mat_alu_ex_mat_finish;
+input [ 3:0]     mat_alu_ex_mat_finish_entry_idx;
+input            mat_alu_ex_mat_finish_dstm_vld;
+input [ 2:0]     mat_alu_ex_mat_finish_dstm_idx;
 output  [6  :0]  idu_cp0_fesr_acc_updt_val;              
 output           idu_cp0_fesr_acc_updt_vld;              
 output  [4  :0]  idu_cp0_rf_func;                        
@@ -5465,6 +5477,13 @@ wire    [3:0]   ex_mat_finish_entry_idx;
 wire mat_lsu_ex_mat_finish_dstm_vld;
 wire [2:0] mat_lsu_ex_mat_finish_dstm_idx;
 
+wire            mat_alu_ex_line_wakeup;
+wire [ 3:0]     mat_alu_ex_line_wakeup_entry_idx;
+wire            mat_alu_ex_mat_finish;
+wire [ 3:0]     mat_alu_ex_mat_finish_entry_idx;
+wire            mat_alu_ex_mat_finish_dstm_vld;
+wire [ 2:0]     mat_alu_ex_mat_finish_dstm_idx;
+
 // TODO:
 // 与MIQ互联用于旁路的dup5信号暂时共用互联BIQ的dup4, 以实现功能
 // 关于来自IU/LSU/VFPU的旁路信息均是由同一source duplicate多个寄存器后旁路的, 因此目前的做法可实现同样的功能
@@ -5568,8 +5587,14 @@ assign vfpu_idu_ex1_pipe7_preg_dup5[6:0]       = vfpu_idu_ex1_pipe7_preg_dup4[6:
     .ex_line_wakeup                         (ex_line_wakeup                         ),
     .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
     .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
-    .mat_lsu_ex_mat_finish_dstm_vld      (mat_lsu_ex_mat_finish_dstm_vld),
-    .mat_lsu_ex_mat_finish_dstm_idx      (mat_lsu_ex_mat_finish_dstm_idx)
+    .mat_lsu_ex_mat_finish_dstm_vld         (mat_lsu_ex_mat_finish_dstm_vld         ),
+    .mat_lsu_ex_mat_finish_dstm_idx         (mat_lsu_ex_mat_finish_dstm_idx         ),
+    .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+    .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+    .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+    .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
+    .mat_alu_ex_mat_finish_dstm_vld         (mat_alu_ex_mat_finish_dstm_vld         ),
+    .mat_alu_ex_mat_finish_dstm_idx         (mat_alu_ex_mat_finish_dstm_idx         )
   );
 
 

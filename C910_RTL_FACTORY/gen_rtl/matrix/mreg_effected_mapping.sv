@@ -7,6 +7,8 @@ module mreg_effected_mapping (
   input [3:0] mreg_effected_mapping_widx_1,
   input [7:0] mreg_effected_mapping_lsu_clr,
   input [3:0] mreg_effected_mapping_lsu_clr_idx,
+  input [7:0] mreg_effected_mapping_lsu_clr_1,
+  input [3:0] mreg_effected_mapping_lsu_clr_idx_1,
   input [7:0] mreg_effected_mapping_src0_create0_ren,
   input [7:0] mreg_effected_mapping_src1_create0_ren,
   input [7:0] mreg_effected_mapping_src2_create0_ren,
@@ -72,9 +74,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[0] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[0]) begin
       mreg_effected_map_table[0] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[0]) begin
-      mreg_effected_map_table[0] <= mreg_effected_map_table[0] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[0];
+    end else if(mreg_effected_mapping_lsu_clr[0] && (mreg_effected_map_table[0] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[0] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[0] && (mreg_effected_map_table[0] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[0] <=  5'b0;
     end
   end
 
@@ -85,9 +88,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[1] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[1]) begin
       mreg_effected_map_table[1] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[1]) begin
-      mreg_effected_map_table[1] <= mreg_effected_map_table[1] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[1];
+    end else if(mreg_effected_mapping_lsu_clr[1] && (mreg_effected_map_table[1] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[1] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[1] && (mreg_effected_map_table[1] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[1] <=  5'b0;
     end
   end
 
@@ -98,9 +102,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[2] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[2]) begin
       mreg_effected_map_table[2] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[2]) begin
-      mreg_effected_map_table[2] <= mreg_effected_map_table[2] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[2];
+    end else if(mreg_effected_mapping_lsu_clr[2] && (mreg_effected_map_table[2] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[2] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[2] && (mreg_effected_map_table[2] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[2] <=  5'b0;
     end
   end
 
@@ -111,9 +116,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[3] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[3]) begin
       mreg_effected_map_table[3] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[3]) begin
-      mreg_effected_map_table[3] <= mreg_effected_map_table[3] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[3];
+    end else if(mreg_effected_mapping_lsu_clr[3] && (mreg_effected_map_table[3] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[3] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[3] && (mreg_effected_map_table[3] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[3] <=  5'b0;
     end
   end
 
@@ -124,9 +130,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[4] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[4]) begin
       mreg_effected_map_table[4] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[4]) begin
-      mreg_effected_map_table[4] <= mreg_effected_map_table[4] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[4];
+    end else if(mreg_effected_mapping_lsu_clr[4] && (mreg_effected_map_table[4] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[4] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[4] && (mreg_effected_map_table[4] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[4] <=  5'b0;
     end
   end
 
@@ -137,9 +144,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[5] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[5]) begin
       mreg_effected_map_table[5] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[5]) begin
-      mreg_effected_map_table[5] <= mreg_effected_map_table[5] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[5];
+    end else if(mreg_effected_mapping_lsu_clr[5] && (mreg_effected_map_table[5] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[5] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[5] && (mreg_effected_map_table[5] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[5] <=  5'b0;
     end
   end
 
@@ -150,9 +158,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[6] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[6]) begin
       mreg_effected_map_table[6] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[6]) begin
-      mreg_effected_map_table[6] <= mreg_effected_map_table[6] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[6];
+    end else if(mreg_effected_mapping_lsu_clr[6] && (mreg_effected_map_table[6] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[6] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[6] && (mreg_effected_map_table[6] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[6] <=  5'b0;
     end
   end
 
@@ -163,9 +172,10 @@ ct_mat_mux_onehot #(.KEY_LEN(8), .DATA_LEN(5)) u_src2_crt1_mux_ridx_vld (
       mreg_effected_map_table[7] <= {1'b1, mreg_effected_mapping_widx_1};
     end else if(mreg_effected_mapping_wen_0[7]) begin
       mreg_effected_map_table[7] <= {1'b1, mreg_effected_mapping_widx_0};
-    end else if(mreg_effected_mapping_lsu_clr[7]) begin
-      mreg_effected_map_table[7] <= mreg_effected_map_table[7] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]} ?
-                                    5'b0 : mreg_effected_map_table[7];
+    end else if(mreg_effected_mapping_lsu_clr[7] && (mreg_effected_map_table[7] == {1'b1, mreg_effected_mapping_lsu_clr_idx[3:0]})) begin
+      mreg_effected_map_table[7] <= 5'b0;
+    end else if(mreg_effected_mapping_lsu_clr_1[7] && (mreg_effected_map_table[7] == {1'b1, mreg_effected_mapping_lsu_clr_idx_1[3:0]})) begin
+      mreg_effected_map_table[7] <=  5'b0;
     end
   end
 

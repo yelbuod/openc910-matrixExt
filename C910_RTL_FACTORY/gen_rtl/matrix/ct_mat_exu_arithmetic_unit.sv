@@ -7,27 +7,34 @@ import "DPI-C" function void hart_matrixArithm(
 
 module ct_mat_exu_arithmetic_unit (
   /* common */
-  input         cpurst_b                     ,
-  input         forever_cpuclk               ,
-  input         cp0_mat_icg_en               ,
-  input         cp0_yy_clk_en                ,
-  input         pad_yy_icg_scan_en           ,
+  input         cpurst_b                        ,
+  input         forever_cpuclk                  ,
+  input         cp0_mat_icg_en                  ,
+  input         cp0_yy_clk_en                   ,
+  input         pad_yy_icg_scan_en              ,
   /* RTU flush */
-  input         rtu_yy_xx_flush              ,
+  input         rtu_yy_xx_flush                 ,
   /* from rf issue to ALU */
-  input  [ 6:0] idu_mat_rf_pipe8_iid         ,
-  input         idu_mat_rf_alu_sel           ,
-  input         idu_mat_rf_alu_gateclk_sel   ,
-  input  [30:0] idu_mat_rf_pipe8_alu_meta    ,
-  input         idu_mat_rf_pipe8_alu_src0_vld,
-  input  [63:0] idu_mat_rf_pipe8_alu_src0    ,
+  input  [ 6:0] idu_mat_rf_pipe8_iid            ,
+  input  [11:0] idu_mat_rf_pipe8_iq_entry       ,
+  input         idu_mat_rf_alu_sel              ,
+  input         idu_mat_rf_alu_gateclk_sel      ,
+  input  [30:0] idu_mat_rf_pipe8_alu_meta       ,
+  input         idu_mat_rf_pipe8_alu_src0_vld   ,
+  input  [63:0] idu_mat_rf_pipe8_alu_src0       ,
   /* from CFG unit configuration */
-  input  [15:0] x_sizeK                      ,
-  input  [ 7:0] x_sizeM                      ,
-  input  [ 7:0] x_sizeN                      ,
+  input  [15:0] x_sizeK                         ,
+  input  [ 7:0] x_sizeM                         ,
+  input  [ 7:0] x_sizeN                         ,
   /* commit to rtu retire */
-  output        mat_alu_cbus_ex1_pipe8_sel   ,
-  output [ 6:0] mat_alu_cbus_ex1_pipe8_iid
+  output        mat_alu_cbus_ex1_pipe8_sel      ,
+  output [ 6:0] mat_alu_cbus_ex1_pipe8_iid      ,
+  output        mat_alu_ex_line_wakeup          ,
+  output [ 3:0] mat_alu_ex_line_wakeup_entry_idx,
+  output        mat_alu_ex_mat_finish           ,
+  output [ 3:0] mat_alu_ex_mat_finish_entry_idx ,
+  output        mat_alu_ex_mat_finish_dstm_vld  ,
+  output [ 2:0] mat_alu_ex_mat_finish_dstm_idx  
 );
 
 parameter MAT_ALU_OP_TYPE_WIDTH = 11               ;
@@ -63,6 +70,7 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
 
   reg        mat_alu_ex1_inst_vld;
   reg [ 6:0] mat_alu_ex1_iid     ;
+  reg [11:0] mat_alu_ex1_iq_entry;
   reg        mat_alu_ex1_src0_vld;
   reg [63:0] mat_alu_ex1_src0    ;
   // alu execute info meta
@@ -126,6 +134,7 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
   always_ff @(posedge ex1_inst_clk or negedge cpurst_b) begin : proc_mat_alu_ex1_data
     if(!cpurst_b) begin
       mat_alu_ex1_iid[6:0]                          <= 7'b0;
+      mat_alu_ex1_iq_entry[11:0]                    <= 12'b0;
       mat_alu_ex1_src0_vld                          <= 1'b0;
       mat_alu_ex1_src0[63:0]                        <= 64'b0;
       mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0] <= {MAT_ALU_OP_TYPE_WIDTH{1'b0}};
@@ -142,6 +151,7 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
       mat_alu_ex1_elem_data_width[1:0]              <= 2'b0;
     end else if(idu_mat_rf_alu_gateclk_sel) begin
       mat_alu_ex1_iid[6:0]                          <= idu_mat_rf_pipe8_iid[6:0];
+      mat_alu_ex1_iq_entry[11:0]                    <= idu_mat_rf_pipe8_iq_entry[11:0];
       mat_alu_ex1_src0_vld                          <= idu_mat_rf_pipe8_alu_src0_vld;
       mat_alu_ex1_src0[63:0]                        <= idu_mat_rf_pipe8_alu_src0[63:0];
       mat_alu_ex1_optype[MAT_ALU_OP_TYPE_WIDTH-1:0] <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_OP:MAT_ALU_OP-(MAT_ALU_OP_TYPE_WIDTH-1)] ;
@@ -158,6 +168,53 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
       mat_alu_ex1_elem_data_width[1:0]              <= idu_mat_rf_pipe8_alu_meta[MAT_ALU_ELM_WIDTH:MAT_ALU_ELM_WIDTH-1]           ;
     end
   end
+
+  logic [3:0] mat_alu_ex1_iq_entry_idx;
+  ct_mat_src_oh_binary i_ct_mat_src_oh_binary (
+    .x_num_oh(mat_alu_ex1_iq_entry), 
+    .x_num_binary(mat_alu_ex1_iq_entry_idx)
+  );
+
+  // TODO: 暂时不执行直接提交查看通路正确性
+  assign mat_alu_cbus_ex1_pipe8_sel      = mat_alu_ex1_inst_vld;
+  assign mat_alu_cbus_ex1_pipe8_iid[6:0] = mat_alu_ex1_iid[6:0];
+
+  // logic [1:0] ex_line_count;
+  // logic ex_line_count_end;
+  logic [7:0] ex_finish_count;
+  logic ex_finish_count_end;
+  logic ex_finish_en;
+
+  // assign ex_line_count_end = ex_line_count == 0;
+  assign ex_finish_count_end = ex_finish_count == 0;
+  assign ex_finish_en = ex_finish_count == 1;
+
+  // always_ff @(posedge ctrl_clk or negedge cpurst_b) begin : proc_mat_alu_ex_line_count_init
+  //   if(!cpurst_b) begin
+  //     ex_line_count[1:0] <= 2'b0;
+  //   end else if(idu_mat_rf_alu_gateclk_sel) begin
+  //     ex_line_count[1:0] <= 2'b11; // 3 cycle
+  //   end else if(!ex_line_count_end) begin
+  //     ex_line_count[1:0] <= ex_line_count - 1;
+  //   end
+  // end
+
+  always_ff @(posedge ctrl_clk or negedge cpurst_b) begin : proc_mat_alu_ex_count_init
+    if(!cpurst_b) begin
+      ex_finish_count[7:0] <= 8'b0;
+    end else if(idu_mat_rf_alu_gateclk_sel) begin
+      ex_finish_count[7:0] <= x_sizeM;
+    end else if(!ex_finish_count_end) begin
+      ex_finish_count[7:0] <= ex_finish_count - 1;
+    end
+  end
+
+  assign mat_alu_ex_line_wakeup                = mat_alu_ex1_inst_vld;
+  assign mat_alu_ex_line_wakeup_entry_idx[3:0] = mat_alu_ex1_iq_entry_idx[3:0];
+  assign mat_alu_ex_mat_finish                 = ex_finish_en;
+  assign mat_alu_ex_mat_finish_entry_idx[3:0]  = mat_alu_ex1_iq_entry_idx[3:0];
+  assign mat_alu_ex_mat_finish_dstm_vld        = mat_alu_ex1_dstm_vld;
+  assign mat_alu_ex_mat_finish_dstm_idx[2:0]   = mat_alu_ex1_dstm_idx[2:0];
 
   always@(posedge ex1_inst_clk) begin
     if(mat_alu_ex1_inst_vld) begin
@@ -198,9 +255,5 @@ parameter MAT_ALU_ELM_WIDTH      = 1 ; // 1:0
       endcase
     end
   end
-
-  // TODO: 暂时不执行直接提交查看通路正确性
-  assign mat_alu_cbus_ex1_pipe8_sel      = mat_alu_ex1_inst_vld;
-  assign mat_alu_cbus_ex1_pipe8_iid[6:0] = mat_alu_ex1_iid[6:0];
 
 endmodule : ct_mat_exu_arithmetic_unit

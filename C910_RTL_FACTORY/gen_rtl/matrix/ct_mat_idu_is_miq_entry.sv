@@ -65,6 +65,10 @@ module ct_idu_is_miq_entry(
   ex_line_wakeup_entry_idx,
   ex_mat_finish,
   ex_mat_finish_entry_idx,
+  mat_alu_ex_line_wakeup,
+  mat_alu_ex_line_wakeup_entry_idx,
+  mat_alu_ex_mat_finish,
+  mat_alu_ex_mat_finish_entry_idx,
   ex_pop_cur_entry,
   ex_pop_other_entry,
   id_dstm_idx_create0,
@@ -130,6 +134,10 @@ input           ex_line_wakeup;
 input [3:0]     ex_line_wakeup_entry_idx;
 input           ex_mat_finish;
 input [3:0]     ex_mat_finish_entry_idx;
+input           mat_alu_ex_line_wakeup;
+input [3:0]     mat_alu_ex_line_wakeup_entry_idx;
+input           mat_alu_ex_mat_finish;
+input [3:0]     mat_alu_ex_mat_finish_entry_idx;
 input ex_pop_cur_entry;
 input [10:0] ex_pop_other_entry;
 input [2:0] id_dstm_idx_create0;
@@ -245,6 +253,10 @@ wire            ex_line_wakeup;
 wire    [3:0]   ex_line_wakeup_entry_idx;
 wire            ex_mat_finish;
 wire    [3:0]   ex_mat_finish_entry_idx;
+wire            mat_alu_ex_line_wakeup;
+wire    [3:0]   mat_alu_ex_line_wakeup_entry_idx;
+wire            mat_alu_ex_mat_finish;
+wire    [3:0]   mat_alu_ex_mat_finish_entry_idx;
 wire  ex_pop_cur_entry;
 wire [10:0] ex_pop_other_entry;
 wire [2:0] id_dstm_idx_create0;
@@ -356,6 +368,8 @@ begin
     vld <= 1'b0;
   else if(ex_mat_finish && ex_pop_cur_entry) // 从ex阶段pop
     vld <= 1'b0; 
+  else if(mat_alu_ex_mat_finish && ex_pop_cur_entry) // 从ex阶段pop
+    vld <= 1'b0; 
   else
     vld <= vld;
 end
@@ -393,6 +407,8 @@ begin
     agevec[10:0] <= agevec[10:0] & ~x_pop_other_entry[10:0]; // 其他表项issue成功后, 对应的older-bit被清零
   else if(ex_mat_finish)
     agevec[10:0] <= agevec[10:0] & ~ex_pop_other_entry[10:0]; 
+  else if(mat_alu_ex_mat_finish)
+    agevec[10:0] <= agevec[10:0] & ~ex_pop_other_entry[10:0]; 
   else
     agevec[10:0] <= agevec[10:0];
 end
@@ -401,22 +417,48 @@ always @(posedge entry_clk or negedge cpurst_b)
 begin
   if(!cpurst_b) begin
     src0_depd_vld      <= 1'b0;
-    src2_depd_vld      <= 1'b0;
   end
   else if(x_create_en) begin
     src0_depd_vld      <= src0_depd_info[4];
-    src2_depd_vld      <= src2_depd_info[4];
   end
-  else if(ex_line_wakeup) begin
-    src0_depd_vld      <= src0_depd_vld ? |(src0_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src0_depd_vld;
-    src2_depd_vld      <= src2_depd_vld ? |(src2_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src2_depd_vld;
+  else if(ex_line_wakeup && src0_depd_vld && (~|(src0_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]))) begin
+    src0_depd_vld      <= 1'b0;
   end
-  else if(ex_mat_finish) begin
-    src0_depd_vld      <= src0_depd_vld ? |(src0_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src0_depd_vld;
-    src2_depd_vld      <= src2_depd_vld ? |(src2_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src2_depd_vld;
+  else if(mat_alu_ex_line_wakeup && src0_depd_vld && (~|(src0_depd_idx[3:0] ^ mat_alu_ex_line_wakeup_entry_idx[3:0]))) begin
+    src0_depd_vld      <= 1'b0;
+  end
+  else if(ex_mat_finish && src0_depd_vld && (~|(src0_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]))) begin
+    src0_depd_vld      <= 1'b0;
+  end
+  else if(mat_alu_ex_mat_finish && src0_depd_vld && (~|(src0_depd_idx[3:0] ^ mat_alu_ex_mat_finish_entry_idx[3:0]))) begin
+    src0_depd_vld      <= 1'b0;
   end
   else begin
     src0_depd_vld      <= src0_depd_vld;
+  end
+end
+
+always @(posedge entry_clk or negedge cpurst_b)
+begin
+  if(!cpurst_b) begin
+    src2_depd_vld      <= 1'b0;
+  end
+  else if(x_create_en) begin
+    src2_depd_vld      <= src2_depd_info[4];
+  end
+  else if(ex_line_wakeup && src2_depd_vld  && (~|(src2_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]))) begin
+    src2_depd_vld      <= 1'b0;
+  end
+  else if(mat_alu_ex_line_wakeup && src2_depd_vld  && (~|(src2_depd_idx[3:0] ^ mat_alu_ex_line_wakeup_entry_idx[3:0]))) begin
+    src2_depd_vld      <= 1'b0;
+  end
+  else if(ex_mat_finish && src2_depd_vld && (~|(src2_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]))) begin
+    src2_depd_vld      <= 1'b0;
+  end
+  else if(mat_alu_ex_mat_finish && src2_depd_vld && (~|(src2_depd_idx[3:0] ^ mat_alu_ex_mat_finish_entry_idx[3:0]))) begin
+    src2_depd_vld      <= 1'b0;
+  end
+  else begin
     src2_depd_vld      <= src2_depd_vld;
   end
 end
@@ -432,26 +474,41 @@ always @(posedge entry_clk or negedge cpurst_b)
     else if(x_create_en) begin
       src1_depd_vld <= src1_depd_info[4];
     end
-    else if(ex_line_wakeup) begin
-      src1_depd_vld <= src1_depd_vld&(!macc_type) ? |(src1_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]) : src1_depd_vld;
+    else if(ex_line_wakeup && src1_depd_vld && (!macc_type) && (~|(src1_depd_idx[3:0] ^ ex_line_wakeup_entry_idx[3:0]))) begin
+      src1_depd_vld <= 1'b0;
     end
-    else if(ex_mat_finish) begin
-      src1_depd_vld <= src1_depd_vld ? |(src1_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]) : src1_depd_vld;
+    else if(mat_alu_ex_line_wakeup && src1_depd_vld && (!macc_type) && (~|(src1_depd_idx[3:0] ^ mat_alu_ex_line_wakeup_entry_idx[3:0]))) begin
+      src1_depd_vld <= 1'b0;
+    end
+    else if(ex_mat_finish && src1_depd_vld && (~|(src1_depd_idx[3:0] ^ ex_mat_finish_entry_idx[3:0]))) begin
+      src1_depd_vld <= 1'b0;
+    end
+    else if(mat_alu_ex_mat_finish && src1_depd_vld && (~|(src1_depd_idx[3:0] ^ mat_alu_ex_mat_finish_entry_idx[3:0]))) begin
+      src1_depd_vld <= 1'b0;
     end
     else begin
       src1_depd_vld <= src1_depd_vld;
     end
   end
 
-logic   [11:0]  dstm_depd_vec;
+logic [11:0] dstm_depd_vec          ;
 logic [11:0] ex_line_wakeup_entry_oh;
-logic [11:0] ex_mat_finish_entry_oh;
+logic [11:0] ex_mat_finish_entry_oh ;
+logic [11:0] mat_alu_ex_line_wakeup_entry_oh;
+logic [11:0] mat_alu_ex_mat_finish_entry_oh ;
 
 ct_mat_expand_12 i_ct_mat_expand_12_ex_line_wakeup (
   .x_num(ex_line_wakeup_entry_idx), .x_num_expand(ex_line_wakeup_entry_oh)
 );
 ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_finish (
   .x_num(ex_mat_finish_entry_idx), .x_num_expand(ex_mat_finish_entry_oh)
+);
+
+ct_mat_expand_12 i_ct_mat_expand_12_ex_line_wakeup (
+  .x_num(mat_alu_ex_line_wakeup_entry_idx), .x_num_expand(mat_alu_ex_line_wakeup_entry_oh)
+);
+ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_finish (
+  .x_num(mat_alu_ex_mat_finish_entry_idx), .x_num_expand(mat_alu_ex_mat_finish_entry_oh)
 );
 
 always @(posedge entry_clk or negedge cpurst_b)
@@ -465,8 +522,14 @@ always @(posedge entry_clk or negedge cpurst_b)
     else if(ex_line_wakeup) begin
       dstm_depd_vec <= dstm_depd_vec & ~ex_line_wakeup_entry_oh; // 唤醒拉低
     end
+    else if(mat_alu_ex_line_wakeup) begin
+      dstm_depd_vec <= dstm_depd_vec & ~mat_alu_ex_line_wakeup_entry_oh; // 唤醒拉低
+    end
     else if(ex_mat_finish) begin
       dstm_depd_vec <= dstm_depd_vec & ~ex_mat_finish_entry_oh;
+    end
+    else if(mat_alu_ex_mat_finish) begin
+      dstm_depd_vec <= dstm_depd_vec & ~mat_alu_ex_mat_finish_entry_oh;
     end
     else begin
       dstm_depd_vec <= dstm_depd_vec;

@@ -65,7 +65,13 @@ module ct_idu_is_miq(
   ex_mat_finish,
   ex_mat_finish_entry_idx,
   mat_lsu_ex_mat_finish_dstm_vld,
-  mat_lsu_ex_mat_finish_dstm_idx
+  mat_lsu_ex_mat_finish_dstm_idx,
+  mat_alu_ex_line_wakeup,
+  mat_alu_ex_line_wakeup_entry_idx,
+  mat_alu_ex_mat_finish,
+  mat_alu_ex_mat_finish_entry_idx,
+  mat_alu_ex_mat_finish_dstm_vld,
+  mat_alu_ex_mat_finish_dstm_idx
 );
 
 // &Ports; @28
@@ -122,8 +128,14 @@ input            ex_line_wakeup;
 input    [3:0]   ex_line_wakeup_entry_idx;
 input            ex_mat_finish;
 input    [3:0]   ex_mat_finish_entry_idx;
-input mat_lsu_ex_mat_finish_dstm_vld;
+input       mat_lsu_ex_mat_finish_dstm_vld;
 input [2:0] mat_lsu_ex_mat_finish_dstm_idx;
+input            mat_alu_ex_line_wakeup;
+input [ 3:0]     mat_alu_ex_line_wakeup_entry_idx;
+input            mat_alu_ex_mat_finish;
+input [ 3:0]     mat_alu_ex_mat_finish_entry_idx;
+input            mat_alu_ex_mat_finish_dstm_vld;
+input [ 2:0]     mat_alu_ex_mat_finish_dstm_idx;
 output  [11 :0]  miq_aiq_create0_entry;                  
 output  [11 :0]  miq_aiq_create1_entry;                  
 output           miq_ctrl_1_left_updt;                   
@@ -473,6 +485,14 @@ wire [2:0] mat_lsu_ex_mat_finish_dstm_idx;
 
 wire [11:0] ex_mat_finish_entry_oh;
 
+wire            mat_alu_ex_line_wakeup;
+wire [ 3:0]     mat_alu_ex_line_wakeup_entry_idx;
+wire            mat_alu_ex_mat_finish;
+wire [ 3:0]     mat_alu_ex_mat_finish_entry_idx;
+wire            mat_alu_ex_mat_finish_dstm_vld;
+wire [ 2:0]     mat_alu_ex_mat_finish_dstm_idx;
+wire [11:0]     mat_alu_ex_mat_finish_entry_oh;
+
 wire        miq_entry0_ex_pop_cur_entry;
 wire [10:0] miq_entry0_ex_pop_other_entry;
 wire        miq_entry1_ex_pop_cur_entry;
@@ -502,40 +522,44 @@ ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_finish (
   .x_num(ex_mat_finish_entry_idx), .x_num_expand(ex_mat_finish_entry_oh)
 );
 
+ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_alu_finish (
+  .x_num(mat_alu_ex_mat_finish_entry_idx), .x_num_expand(mat_alu_ex_mat_finish_entry_oh)
+);
+
 assign {miq_entry0_ex_pop_other_entry[10:0],
-        miq_entry0_ex_pop_cur_entry}          = ex_mat_finish_entry_oh[11:0];
+        miq_entry0_ex_pop_cur_entry}          = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry1_ex_pop_other_entry[10:1],  
         miq_entry1_ex_pop_cur_entry,
-        miq_entry1_ex_pop_other_entry[0]}     = ex_mat_finish_entry_oh[11:0];
+        miq_entry1_ex_pop_other_entry[0]}     = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry2_ex_pop_other_entry[10:2],  
         miq_entry2_ex_pop_cur_entry,
-        miq_entry2_ex_pop_other_entry[1:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry2_ex_pop_other_entry[1:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry3_ex_pop_other_entry[10:3],  
         miq_entry3_ex_pop_cur_entry,
-        miq_entry3_ex_pop_other_entry[2:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry3_ex_pop_other_entry[2:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry4_ex_pop_other_entry[10:4],  
         miq_entry4_ex_pop_cur_entry,
-        miq_entry4_ex_pop_other_entry[3:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry4_ex_pop_other_entry[3:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry5_ex_pop_other_entry[10:5],  
         miq_entry5_ex_pop_cur_entry,
-        miq_entry5_ex_pop_other_entry[4:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry5_ex_pop_other_entry[4:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry6_ex_pop_other_entry[10:6],  
         miq_entry6_ex_pop_cur_entry,
-        miq_entry6_ex_pop_other_entry[5:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry6_ex_pop_other_entry[5:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry7_ex_pop_other_entry[10:7],  
         miq_entry7_ex_pop_cur_entry,
-        miq_entry7_ex_pop_other_entry[6:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry7_ex_pop_other_entry[6:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry8_ex_pop_other_entry[10:8],  
         miq_entry8_ex_pop_cur_entry,
-        miq_entry8_ex_pop_other_entry[7:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry8_ex_pop_other_entry[7:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry9_ex_pop_other_entry[10:9],  
         miq_entry9_ex_pop_cur_entry,
-        miq_entry9_ex_pop_other_entry[8:0]}   = ex_mat_finish_entry_oh[11:0];
+        miq_entry9_ex_pop_other_entry[8:0]}   = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry10_ex_pop_other_entry[10],
         miq_entry10_ex_pop_cur_entry,
-        miq_entry10_ex_pop_other_entry[9:0]}  = ex_mat_finish_entry_oh[11:0];
+        miq_entry10_ex_pop_other_entry[9:0]}  = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 assign {miq_entry11_ex_pop_cur_entry,
-        miq_entry11_ex_pop_other_entry[10:0]} = ex_mat_finish_entry_oh[11:0];
+        miq_entry11_ex_pop_other_entry[10:0]} = ex_mat_finish_entry_oh[11:0] & mat_alu_ex_mat_finish_entry_oh[11:0];
 
 
 parameter MIQ_WIDTH    = 73;
@@ -574,10 +598,10 @@ assign miq_entry_cnt_create[3:0]   = {3'b0,ctrl_miq_create0_en}
                                      + {3'b0,ctrl_miq_create1_en};
 //update valid and value
 assign miq_entry_cnt_updt_vld      = ctrl_miq_create0_en
-                                     || ctrl_miq_rf_pop_vld || ex_mat_finish;
+                                     || ctrl_miq_rf_pop_vld || ex_mat_finish || mat_alu_ex_mat_finish;
 assign miq_entry_cnt_updt_val[3:0] = miq_entry_cnt[3:0]
                                      + miq_entry_cnt_create[3:0]
-                                     - {3'b0,ctrl_miq_rf_pop_vld} - {3'b0, ex_mat_finish};
+                                     - {3'b0,ctrl_miq_rf_pop_vld} - {3'b0, ex_mat_finish} - {3'b0, mat_alu_ex_mat_finish};
 //implement entry counter
 always @(posedge cnt_clk or negedge cpurst_b)
 begin
@@ -602,8 +626,8 @@ assign miq_entry_cnt_create_2 =  ctrl_miq_create1_en;
 assign miq_entry_cnt_create_1 =  ctrl_miq_create0_en && !ctrl_miq_create1_en;
 assign miq_entry_cnt_create_0 = !ctrl_miq_create0_en;
 
-assign miq_entry_cnt_pop_1    =  ctrl_miq_rf_pop_vld | ex_mat_finish;
-assign miq_entry_cnt_pop_0    = !ctrl_miq_rf_pop_vld & !ex_mat_finish;
+assign miq_entry_cnt_pop_1    =  ctrl_miq_rf_pop_vld | ex_mat_finish | mat_alu_ex_mat_finish;
+assign miq_entry_cnt_pop_0    = !ctrl_miq_rf_pop_vld & !ex_mat_finish & !mat_alu_ex_mat_finish;
 
 assign miq_ctrl_full_updt     = (miq_entry_cnt[3:0] == 4'd10)
                                 && miq_entry_cnt_create_2
@@ -842,13 +866,17 @@ assign miq_entry_create0_agevec[11:0] = miq_entry_vld[11:0]
                                         & ~({12{ctrl_miq_rf_pop_vld}}
                                            & dp_miq_rf_lch_entry[11:0])
                                         & ~({12{ex_mat_finish}}
-                                           & ex_mat_finish_entry_oh[11:0]);
+                                           & ex_mat_finish_entry_oh[11:0])
+                                        & ~({12{mat_alu_ex_mat_finish}}
+                                           & mat_alu_ex_mat_finish_entry_oh[11:0]);
 
 assign miq_entry_create1_agevec[11:0] = miq_entry_vld[11:0]
                                         & ~({12{ctrl_miq_rf_pop_vld}}
                                            & dp_miq_rf_lch_entry[11:0])
                                         & ~({12{ex_mat_finish}}
                                            & ex_mat_finish_entry_oh[11:0])
+                                        & ~({12{mat_alu_ex_mat_finish}}
+                                           & mat_alu_ex_mat_finish_entry_oh[11:0])
                                         | miq_entry_create0_in[11:0];
 
 //create 0/1 select:
@@ -982,6 +1010,8 @@ logic [4:0] mreg_effected_mapping_src2_create1_ridx_vld;
 
 logic [7:0] mreg_effected_mapping_lsu_clr;
 logic [3:0] mreg_effected_mapping_lsu_clr_idx;
+logic [7:0] mreg_effected_mapping_lsu_clr_1;
+logic [3:0] mreg_effected_mapping_lsu_clr_idx_1;
 
 ct_mat_src_oh_binary i_ct_mat_src_oh_binary_0 (
   .x_num_oh(miq_entry_create0_in), .x_num_binary(miq_entry_create0_in_idx)
@@ -1014,6 +1044,15 @@ ct_mat_src_expand_8 i_ct_mat_dst_expand_8_mat_lsu (
 assign mreg_effected_mapping_lsu_clr[7:0] = {8{mat_lsu_ex_mat_finish_dstm_vld}} & mat_lsu_ex_mat_finish_dstm_idx_onehot[7:0];
 assign mreg_effected_mapping_lsu_clr_idx[3:0] = ex_mat_finish_entry_idx[3:0];
 
+wire [7:0] mat_alu_ex_mat_finish_dstm_idx_onehot;
+
+ct_mat_src_expand_8 i_ct_mat_dst_expand_8_mat_lsu (
+  .x_num(mat_alu_ex_mat_finish_dstm_idx), .x_num_expand(mat_alu_ex_mat_finish_dstm_idx_onehot)
+);
+
+assign mreg_effected_mapping_lsu_clr_1[7:0] = {8{mat_alu_ex_mat_finish_dstm_vld}} & mat_alu_ex_mat_finish_dstm_idx_onehot[7:0];
+assign mreg_effected_mapping_lsu_clr_idx_1[3:0] = mat_alu_ex_mat_finish_entry_idx[3:0];
+
 mreg_effected_mapping i_mreg_effected_mapping (
   .forever_cpuclk                             (forever_cpuclk                             ),
   .cpurst_b                                   (cpurst_b                                   ),
@@ -1021,8 +1060,10 @@ mreg_effected_mapping i_mreg_effected_mapping (
   .mreg_effected_mapping_wen_1                (mreg_effected_mapping_wen_1                ),
   .mreg_effected_mapping_widx_0               (mreg_effected_mapping_widx_0               ),
   .mreg_effected_mapping_widx_1               (mreg_effected_mapping_widx_1               ),
-  .mreg_effected_mapping_lsu_clr              (mreg_effected_mapping_lsu_clr),
-  .mreg_effected_mapping_lsu_clr_idx          (mreg_effected_mapping_lsu_clr_idx),
+  .mreg_effected_mapping_lsu_clr              (mreg_effected_mapping_lsu_clr              ),
+  .mreg_effected_mapping_lsu_clr_idx          (mreg_effected_mapping_lsu_clr_idx          ),
+  .mreg_effected_mapping_lsu_clr_1            (mreg_effected_mapping_lsu_clr_1            ),
+  .mreg_effected_mapping_lsu_clr_idx_1        (mreg_effected_mapping_lsu_clr_idx_1        ),
   .mreg_effected_mapping_src0_create0_ren     (mreg_effected_mapping_src0_create0_ren     ),
   .mreg_effected_mapping_src1_create0_ren     (mreg_effected_mapping_src1_create0_ren     ),
   .mreg_effected_mapping_src2_create0_ren     (mreg_effected_mapping_src2_create0_ren     ),
@@ -1753,6 +1794,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry0 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry0_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry0_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -1761,7 +1806,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry0 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[0]           ),
   .x_rdy                                  (miq_entry0_rdy                         ),
   .x_read_data                            (miq_entry0_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[0]),
+  .x_cfg                                  (miq_entry_mcfg[0]                      ),
   .x_vld                                  (miq_entry0_vld                         ),
   .x_vld_with_frz                         (miq_entry0_vld_with_frz                )
 );
@@ -1821,6 +1866,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry1 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry1_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry1_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -1829,7 +1878,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry1 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[1]           ),
   .x_rdy                                  (miq_entry1_rdy                         ),
   .x_read_data                            (miq_entry1_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[1]),
+  .x_cfg                                  (miq_entry_mcfg[1]                      ),
   .x_vld                                  (miq_entry1_vld                         ),
   .x_vld_with_frz                         (miq_entry1_vld_with_frz                )
 );
@@ -1889,6 +1938,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry2 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry2_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry2_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -1897,7 +1950,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry2 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[2]           ),
   .x_rdy                                  (miq_entry2_rdy                         ),
   .x_read_data                            (miq_entry2_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[2]),
+  .x_cfg                                  (miq_entry_mcfg[2]                      ),
   .x_vld                                  (miq_entry2_vld                         ),
   .x_vld_with_frz                         (miq_entry2_vld_with_frz                )
 );
@@ -1957,6 +2010,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry3 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry3_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry3_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -1965,7 +2022,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry3 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[3]           ),
   .x_rdy                                  (miq_entry3_rdy                         ),
   .x_read_data                            (miq_entry3_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[3]),
+  .x_cfg                                  (miq_entry_mcfg[3]                      ),
   .x_vld                                  (miq_entry3_vld                         ),
   .x_vld_with_frz                         (miq_entry3_vld_with_frz                )
 );
@@ -2025,6 +2082,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry4 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry4_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry4_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2033,7 +2094,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry4 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[4]           ),
   .x_rdy                                  (miq_entry4_rdy                         ),
   .x_read_data                            (miq_entry4_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[4]),
+  .x_cfg                                  (miq_entry_mcfg[4]                      ),
   .x_vld                                  (miq_entry4_vld                         ),
   .x_vld_with_frz                         (miq_entry4_vld_with_frz                )
 );
@@ -2093,6 +2154,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry5 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry5_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry5_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2101,7 +2166,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry5 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[5]           ),
   .x_rdy                                  (miq_entry5_rdy                         ),
   .x_read_data                            (miq_entry5_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[5]),
+  .x_cfg                                  (miq_entry_mcfg[5]                      ),
   .x_vld                                  (miq_entry5_vld                         ),
   .x_vld_with_frz                         (miq_entry5_vld_with_frz                )
 );
@@ -2161,6 +2226,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry6 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry6_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry6_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2169,7 +2238,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry6 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[6]           ),
   .x_rdy                                  (miq_entry6_rdy                         ),
   .x_read_data                            (miq_entry6_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[6]),
+  .x_cfg                                  (miq_entry_mcfg[6]                      ),
   .x_vld                                  (miq_entry6_vld                         ),
   .x_vld_with_frz                         (miq_entry6_vld_with_frz                )
 );
@@ -2229,6 +2298,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry7 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry7_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry7_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2237,7 +2310,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry7 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[7]           ),
   .x_rdy                                  (miq_entry7_rdy                         ),
   .x_read_data                            (miq_entry7_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[7]),
+  .x_cfg                                  (miq_entry_mcfg[7]                      ),
   .x_vld                                  (miq_entry7_vld                         ),
   .x_vld_with_frz                         (miq_entry7_vld_with_frz                )
 );
@@ -2297,6 +2370,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry8 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry8_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry8_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2305,7 +2382,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry8 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[8]           ),
   .x_rdy                                  (miq_entry8_rdy                         ),
   .x_read_data                            (miq_entry8_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[8]),
+  .x_cfg                                  (miq_entry_mcfg[8]                      ),
   .x_vld                                  (miq_entry8_vld                         ),
   .x_vld_with_frz                         (miq_entry8_vld_with_frz                )
 );
@@ -2363,6 +2440,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry9 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry9_ex_pop_cur_entry            ),
   .ex_pop_other_entry                     (miq_entry9_ex_pop_other_entry          ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2371,7 +2452,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry9 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[9]           ),
   .x_rdy                                  (miq_entry9_rdy                         ),
   .x_read_data                            (miq_entry9_read_data                   ),
-  .x_cfg                                  (miq_entry_mcfg[9]),
+  .x_cfg                                  (miq_entry_mcfg[9]                      ),
   .x_vld                                  (miq_entry9_vld                         ),
   .x_vld_with_frz                         (miq_entry9_vld_with_frz                )
 );
@@ -2431,6 +2512,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry10 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry10_ex_pop_cur_entry           ),
   .ex_pop_other_entry                     (miq_entry10_ex_pop_other_entry         ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2439,7 +2524,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry10 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[10]          ),
   .x_rdy                                  (miq_entry10_rdy                        ),
   .x_read_data                            (miq_entry10_read_data                  ),
-  .x_cfg                                  (miq_entry_mcfg[10]),
+  .x_cfg                                  (miq_entry_mcfg[10]                     ),
   .x_vld                                  (miq_entry10_vld                        ),
   .x_vld_with_frz                         (miq_entry10_vld_with_frz               )
 );
@@ -2499,6 +2584,10 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry11 (
   .ex_line_wakeup_entry_idx               (ex_line_wakeup_entry_idx               ),
   .ex_mat_finish                          (ex_mat_finish                          ),
   .ex_mat_finish_entry_idx                (ex_mat_finish_entry_idx                ),
+  .mat_alu_ex_line_wakeup                 (mat_alu_ex_line_wakeup                 ),
+  .mat_alu_ex_line_wakeup_entry_idx       (mat_alu_ex_line_wakeup_entry_idx       ),
+  .mat_alu_ex_mat_finish                  (mat_alu_ex_mat_finish                  ),
+  .mat_alu_ex_mat_finish_entry_idx        (mat_alu_ex_mat_finish_entry_idx        ),
   .ex_pop_cur_entry                       (miq_entry11_ex_pop_cur_entry           ),
   .ex_pop_other_entry                     (miq_entry11_ex_pop_other_entry         ),
   .id_dstm_idx_create0                    (id_dstm_idx_create0                    ),
@@ -2507,7 +2596,7 @@ ct_idu_is_miq_entry x_ct_idu_is_miq_entry11 (
   .id_dstm_idx_create1_match              (id_dstm_idx_create1_match[11]          ),
   .x_rdy                                  (miq_entry11_rdy                        ),
   .x_read_data                            (miq_entry11_read_data                  ),
-  .x_cfg                                  (miq_entry_mcfg[11]),
+  .x_cfg                                  (miq_entry_mcfg[11]                     ),
   .x_vld                                  (miq_entry11_vld                        ),
   .x_vld_with_frz                         (miq_entry11_vld_with_frz               )
 );
