@@ -1046,7 +1046,7 @@ assign mreg_effected_mapping_lsu_clr_idx[3:0] = ex_mat_finish_entry_idx[3:0];
 
 wire [7:0] mat_alu_ex_mat_finish_dstm_idx_onehot;
 
-ct_mat_src_expand_8 i_ct_mat_dst_expand_8_mat_lsu (
+ct_mat_src_expand_8 i_ct_mat_dst_expand_8_mat_alu (
   .x_num(mat_alu_ex_mat_finish_dstm_idx), .x_num_expand(mat_alu_ex_mat_finish_dstm_idx_onehot)
 );
 

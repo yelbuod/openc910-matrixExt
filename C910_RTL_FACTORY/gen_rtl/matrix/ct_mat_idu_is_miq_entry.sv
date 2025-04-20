@@ -504,10 +504,10 @@ ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_finish (
   .x_num(ex_mat_finish_entry_idx), .x_num_expand(ex_mat_finish_entry_oh)
 );
 
-ct_mat_expand_12 i_ct_mat_expand_12_ex_line_wakeup (
+ct_mat_expand_12 i_ct_mat_expand_12_mat_alu_ex_line_wakeup (
   .x_num(mat_alu_ex_line_wakeup_entry_idx), .x_num_expand(mat_alu_ex_line_wakeup_entry_oh)
 );
-ct_mat_expand_12 i_ct_mat_expand_12_ex_mat_finish (
+ct_mat_expand_12 i_ct_mat_expand_12_mat_alu_ex_mat_finish (
   .x_num(mat_alu_ex_mat_finish_entry_idx), .x_num_expand(mat_alu_ex_mat_finish_entry_oh)
 );
 
