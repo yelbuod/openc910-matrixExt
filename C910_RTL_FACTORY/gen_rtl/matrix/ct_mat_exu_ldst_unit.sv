@@ -256,7 +256,7 @@ genvar i;
   assign mat_lsq_create_en[MATRIX_LSIQ_ENTRY-1:0] = mat_lsq_create_in[MATRIX_LSIQ_ENTRY-1:0] & 
                                                     {MATRIX_LSIQ_ENTRY{idu_mat_rf_lsu_sel}};
 
-  assign mat_lsq_create_frz                  = mat_lsq_bypass_en;
+  assign mat_lsq_create_frz                  = mat_lsq_bypass_en & (~|lsu_mat_lsq_replay[MATRIX_LSIQ_ENTRY-1:0]); // 存在replay则当前旁路发射失败
 
   assign mat_lsq_rf_iid[6:0]                 = idu_mat_rf_pipe8_iid[6:0];
   assign mat_lsq_rf_iq_entry[11:0]           = idu_mat_rf_pipe8_iq_entry[11:0];
@@ -268,7 +268,7 @@ genvar i;
   generate
   for (i = 0; i < MATRIX_LSIQ_ENTRY; i++) begin
     if (i == 0) begin
-      assign mat_lsq_other_raw_rdy[i] = mat_lsq_raw_rdy[MATRIX_LSIQ_ENTRY-1 : i+1]
+      assign mat_lsq_other_raw_rdy[i] = mat_lsq_raw_rdy[MATRIX_LSIQ_ENTRY-1 : i+1];
     end
     else if (i == MATRIX_LSIQ_ENTRY-1) begin
       assign mat_lsq_other_raw_rdy[i] = mat_lsq_raw_rdy[i-1 : 0];
@@ -283,7 +283,7 @@ genvar i;
   generate
   for (i = 0; i < MATRIX_LSIQ_ENTRY; i++) begin
     if (i == 0) begin
-      assign mat_lsq_create_agevec[i] = mat_lsq_agevec[MATRIX_LSIQ_ENTRY-1 : i+1]
+      assign mat_lsq_create_agevec[i] = mat_lsq_agevec[MATRIX_LSIQ_ENTRY-1 : i+1];
     end
     else if (i == MATRIX_LSIQ_ENTRY-1) begin
       assign mat_lsq_create_agevec[i] = mat_lsq_agevec[i-1 : 0];
@@ -509,10 +509,10 @@ module mat_lsu_queue #(
   logic              src1_vld       ;
   logic [      63:0] src1           ;
   logic [TYPE_W-1:0] optype         ;
-  logic              dstm_9_7_vld   ;
-  logic [       2:0] dstm_idx_9_7   ;
-  logic              srcm2_vld      ;
-  logic [       2:0] srcm2_idx      ;
+  logic              dstm_vld   ;
+  logic [       2:0] dstm_idx   ;
+  logic              srcm_vld      ;
+  logic [       2:0] srcm_idx      ;
   logic              nf_vld         ;
   logic [       2:0] nf             ;
   logic [       1:0] elem_data_width;
@@ -564,10 +564,10 @@ module mat_lsu_queue #(
       vld <= vld;
   end
   
-  assign older_entry_rdy_mask = |(agevec[10:0] & x_other_raw_rdy[10:0]);
+  assign older_entry_rdy_mask = |(agevec[6:0] & x_other_raw_rdy[6:0]);
 
   assign o_raw_rdy = vld && !frz;
-  assing o_rdy = x_raw_rdy && !older_entry_rdy_mask;
+  assign o_rdy = o_raw_rdy && !older_entry_rdy_mask;
 
   always @(posedge entry_ctrl_clk or negedge cpurst_b)
   begin
@@ -608,17 +608,16 @@ module mat_lsu_queue #(
     if(!cpurst_b) begin
       sizeK                <= 16'b0;
       sizeM                <= 8'b0;
-      sizeN                <= 8'b0;
       iid[6:0]             <= 7'b0;
       iq_entry[11:0]       <= 12'b0;
       src0[63:0]           <= 64'b0;
       src1_vld             <= 1'b0;
       src1[63:0]           <= 64'b0;
       optype[TYPE_W-1:0]   <= {TYPE_W{1'b0}};
-      dstm_9_7_vld         <= 1'b0;
-      dstm_idx_9_7[2:0]    <= 3'b0;
-      srcm2_vld            <= 1'b0;
-      srcm2_idx[2:0]       <= 3'b0;
+      dstm_vld         <= 1'b0;
+      dstm_idx[2:0]    <= 3'b0;
+      srcm_vld            <= 1'b0;
+      srcm_idx[2:0]       <= 3'b0;
       nf_vld               <= 1'b0;
       nf[2:0]              <= 3'b0;
       elem_data_width[1:0] <= 2'b0;
@@ -648,13 +647,17 @@ module mat_lsu_queue #(
   logic col_byte_neq_0;
   logic row_cnt_equal_0;
   logic col_byte_equal_0;
+  logic row_cnt_neq_1;
   logic col_byte_gt_eq_8; // great or equal
+  logic col_byte_gt_8;
 
   assign row_cnt_neq_0 = row_cnt != 0;
   assign col_byte_neq_0 = col_byte_cnt != 0; 
   assign row_cnt_equal_0 = row_cnt == 0;
-  assign col_byte_equal_0 = col_byte_cnt == 0; 
+  assign col_byte_equal_0 = col_byte_cnt == 0;
+  assign row_cnt_neq_1 = row_cnt != 1; 
   assign col_byte_gt_eq_8 = col_byte_cnt >= 8;
+  assign col_byte_gt_8 = col_byte_cnt > 8;
 
   always @(posedge entry_ctrl_clk or negedge cpurst_b)
   begin
@@ -666,7 +669,7 @@ module mat_lsu_queue #(
       row_cnt[7:0] <= (x_sizeK >= 8) ? x_sizeM[15:0] : x_sizeM - 1;
     else if(x_create_en)
       row_cnt[7:0] <= x_sizeM[15:0];
-    else if(x_mat_ld_finish && row_cnt_neq_0 && col_byte_equal_0)
+    else if(x_mat_ld_finish && row_cnt_neq_0 && !col_byte_gt_8)
       row_cnt[7:0] <= row_cnt[7:0] - 1; // 减去 stribe row
   end
 
@@ -682,12 +685,13 @@ module mat_lsu_queue #(
       col_byte_cnt[15:0] <= x_sizeK[15:0];
     else if(x_mat_ld_finish && col_byte_gt_eq_8)
       col_byte_cnt[15:0] <= col_byte_cnt[15:0] - 8;
-    else if(x_mat_ld_finish && col_byte_neq_0)
-      col_byte_cnt[15:0] <= 16'b0;
-    else if(x_mat_ld_finish && row_cnt_neq_0 && col_byte_equal_0)
+    // else if(x_mat_ld_finish && col_byte_neq_0)
+    //   col_byte_cnt[15:0] <= 16'b0;
+    else if(x_mat_ld_finish && row_cnt_neq_0 && !col_byte_gt_8)
       col_byte_cnt[15:0] <= x_sizeK[15:0];
   end
 
+  // row_cnt和col_cnt均为0时说明最后一行矩阵访存的数据已返回, 访存生命周期结束
   assign ctrl_entry_finish = x_mat_ld_finish && row_cnt_equal_0 && col_byte_equal_0;
   assign o_ctrl_entry_finish = ctrl_entry_finish;
   
@@ -697,11 +701,12 @@ module mat_lsu_queue #(
       move_to_next <= 1'b0;
     else if(rtu_yy_xx_flush)
       move_to_next <= 1'b0;
-    else if(x_mat_ld_finish && col_byte_neq_0)
+    else if(x_mat_ld_finish && col_byte_gt_8) // 数据返回时看到col_cnt大于8说明这一行还未结束,继续发送
       move_to_next <= 1'b1;
-    else if(x_mat_ld_finish && row_cnt_neq_0 && col_byte_equal_0)
+    else if(x_mat_ld_finish && row_cnt_neq_1) // 数据返回时col_cnt小于8但是row_cnt大于1说明还有下一行,继续发送
       move_to_next <= 1'b1;
-    else if(x_issue_en)
+    // 数据返回时看到col_cnt小于8且row_cnt等于1, 说明发出请求并收到返回的已经是最后一行, 结束
+    else if(move_to_next == 1'b1) // 拉高后解冻frz, 随后立即拉低, 防止重复发出请求
       move_to_next <= 1'b0;
   end
 
@@ -711,14 +716,16 @@ module mat_lsu_queue #(
       curr_addr[63:0] <= 64'b0;
     else if(rtu_yy_xx_flush)
       curr_addr[63:0] <= 64'b0;
-    else if(x_create_en && x_create_frz)
-      curr_addr[63:0] <= (x_sizeK >= 8) ? x_rf_lsu_src0[63:0] + 8 : x_rf_lsu_src0[63:0] + x_sizeK[15:0];
+    // else if(x_create_en && x_create_frz)
+    //   curr_addr[63:0] <= (x_sizeK >= 8) ? x_rf_lsu_src0[63:0] + 8 : x_rf_lsu_src0[63:0] + x_sizeK[15:0];
     else if(x_create_en)
       curr_addr[63:0] <= x_rf_lsu_src0[63:0];
-    else if(x_mat_ld_finish && col_byte_neq_0)
+    else if(move_to_next)
       curr_addr[63:0] <= curr_addr[63:0] + 8; // 应该加实际字节数否则地址偏差, 这里简化成每次都发出8字节
-    else if(x_mat_ld_finish && row_cnt_neq_0 && col_byte_equal_0)
-      curr_addr[63:0] <= curr_addr[63:0] + 8;
+    // else if(x_mat_ld_finish && col_byte_neq_0)
+    //   curr_addr[63:0] <= curr_addr[63:0] + 8; // 应该加实际字节数否则地址偏差, 这里简化成每次都发出8字节
+    // else if(x_mat_ld_finish && row_cnt_neq_0 && col_byte_equal_0)
+    //   curr_addr[63:0] <= curr_addr[63:0] + 8;
   end
 
   assign o_mat_iid[6:0]   = iid[6:0];
