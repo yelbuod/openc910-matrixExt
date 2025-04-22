@@ -171,6 +171,8 @@ module ct_lsu_top#(parameter MATRIX_LSIQ_ENTRY = 8)(
   /* to mat lsq */
   lsu_mat_lsq_replay,
   lsu_mat_lsq_mat_ld_finish,
+  /* to mat reg */
+  lsu_mat_reg_ld_data,
 
   idu_lsu_vmb_create0_dp_en,
   idu_lsu_vmb_create0_dst_ready,
@@ -1042,8 +1044,8 @@ input [ 1:0] mat_lsq_lsu_size;
 /* to mat lsq */
 output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay;
 output [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish;
-
-// &Regs; @26
+/* to mat reg */
+output [63:0] lsu_mat_reg_ld_data;
 
 // &Wires; @27
 wire    [7  :0]  ag_dcache_arb_ld_data_gateclk_en;       
@@ -2888,6 +2890,8 @@ wire [ 1:0] mat_lsq_lsu_size;
 /* to mat lsq */
 wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay;
 wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish;
+/* to mat reg */
+wire [63:0] lsu_mat_reg_ld_data;
 
 wire idu_mat_rf_lsu_ld_sel            ;
 wire idu_mat_rf_lsu_ld_gateclk_sel    ;
@@ -2897,6 +2901,7 @@ assign idu_mat_rf_lsu_ld_gateclk_sel    = mat_lsq_lsu_ld_sel;
 
 assign lsu_mat_lsq_replay[MATRIX_LSIQ_ENTRY-1:0] = lsu_mat_ldst_wakeup[MATRIX_LSIQ_ENTRY-1:0];
 assign lsu_mat_lsq_mat_ld_finish[MATRIX_LSIQ_ENTRY-1:0] = lsu_mat_ldst_lsiq_pop_entry[MATRIX_LSIQ_ENTRY-1:0];
+assign lsu_mat_reg_ld_data[63:0] = ld_da_wb_data[63:0];
 
 //==========================================================
 //                    AG/EX1 Stage

@@ -3566,6 +3566,8 @@ ct_idu_top x_ct_idu_top (
   // from lsu
   wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay;
   wire [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish;
+  /* lsu to mat reg */
+  wire [63:0] lsu_mat_reg_ld_data;
 
   ct_mat_subsystem_top #(.RLEN(256)) x_ct_mat_subsystem_top (
     .cpurst_b                             (idu_rst_b                            ),
@@ -3614,6 +3616,7 @@ ct_idu_top x_ct_idu_top (
     // from lsu
     .lsu_mat_lsq_replay              (lsu_mat_lsq_replay              ),
     .lsu_mat_lsq_mat_ld_finish       (lsu_mat_lsq_mat_ld_finish       ),
+    .lsu_mat_reg_ld_data             (lsu_mat_reg_ld_data             ),
     // wb
     .mat_cfg_idu_ex1_pipe8_wb_preg_vld    (mat_cfg_idu_ex1_pipe8_wb_preg_vld    ),
     .mat_cfg_idu_ex1_pipe8_wb_preg        (mat_cfg_idu_ex1_pipe8_wb_preg        ),
@@ -4291,15 +4294,16 @@ ct_lsu_top  x_ct_lsu_top (
   .idu_mat_rf_pipe8_iid                   (idu_mat_rf_pipe8_iid),
   .idu_mat_rf_pipe8_lsu_meta              (idu_mat_rf_pipe8_lsu_meta), // element width->size
 
-  // to lsu
+  // from matrix subsystem
   .mat_lsq_lsu_ld_sel              (mat_lsq_lsu_ld_sel              ),
   .mat_lsq_lsu_entry               (mat_lsq_lsu_entry               ),
   .mat_lsq_lsu_iid                 (mat_lsq_lsu_iid                 ),
   .mat_lsq_lsu_addr                (mat_lsq_lsu_addr                ),
   .mat_lsq_lsu_size                (mat_lsq_lsu_size                ),
-  // from lsu
+  // to matrix subsystem
   .lsu_mat_lsq_replay              (lsu_mat_lsq_replay              ),
   .lsu_mat_lsq_mat_ld_finish       (lsu_mat_lsq_mat_ld_finish       ),
+  .lsu_mat_reg_ld_data             (lsu_mat_reg_ld_data             ),
 
   .idu_lsu_vmb_create0_dp_en               (idu_lsu_vmb_create0_dp_en              ),
   .idu_lsu_vmb_create0_dst_ready           (idu_lsu_vmb_create0_dst_ready          ),

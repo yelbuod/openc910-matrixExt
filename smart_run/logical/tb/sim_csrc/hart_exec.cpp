@@ -319,6 +319,22 @@ word_t get_rf_pipeinst(int pipe_idx, bool *success) {
   }
 }
 
+extern "C" void hart_matrixMemLoadWriteBack(
+  uint8_t ld_mreg_row_wen    ,
+  uint8_t ld_mreg_idx_wen    ,
+  uint64_t ld_mreg_wstride    ,
+  uint8_t ld_mreg_nf_mode    ,
+  uint64_t lsu_mat_reg_ld_data
+){
+  if(ld_mreg_nf_mode == 0) {
+    printf(ANSI_FMT("MATRIX REGFILE WB", ANSI_FG_BLUE));
+    printf(" to mreg%d row:%d, data:%08x, bytes:%d", ld_mreg_idx_wen, ld_mreg_row_wen, lsu_mat_reg_ld_data, ld_mreg_wstride);
+  } else {
+    printf(ANSI_FMT("MATRIX REGFILE WB", ANSI_FG_BLUE));
+    printf(" to mreg%d row:%d, data:%08x", ld_mreg_idx_wen, ld_mreg_row_wen, lsu_mat_reg_ld_data);
+  }
+}
+
 extern "C" void hart_matrixMemAccess(
   uint8_t mem_access_type, // memory access type
   uint8_t matrix_reg_idx, // load dest/store src

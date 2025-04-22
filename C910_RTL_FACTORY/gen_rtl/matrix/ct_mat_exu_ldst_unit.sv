@@ -46,6 +46,11 @@ module ct_mat_exu_ldst_unit #(parameter MATRIX_LSIQ_ENTRY = 8) (
   // from lsu
   input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay,
   input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish,
+  // to matrix regfile
+  output [ 7:0] ld_mreg_row_wen,
+  output [ 2:0] ld_mreg_idx_wen,
+  output [63:0] ld_mreg_wstride,
+  output        ld_mreg_nf_mode,
   /* commit to rtu retire */
   output        mat_lsu_cbus_ex1_pipe8_sel   ,
   output [ 6:0] mat_lsu_cbus_ex1_pipe8_iid
@@ -342,7 +347,7 @@ genvar i;
   ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(2)) i_mat_lsq_size_mux (
     .data_out   (mat_lsq_size_sel),
     .onehot_key (mat_lsq_issue_en),
-    .default_out(63'b0           ),
+    .default_out(2'b0           ),
     .data_list  (mat_lsq_mat_size)
   );
 
@@ -353,6 +358,14 @@ genvar i;
   assign mat_lsq_lsu_iid[6:0]   = mat_lsq_bypass_en ? idu_mat_rf_pipe8_iid[6:0] : mat_lsq_iid_sel[6:0];
   assign mat_lsq_lsu_addr[63:0] = mat_lsq_bypass_en ? idu_mat_rf_pipe8_lsu_src0[63:0] : mat_lsq_addr_sel[63:0];
   assign mat_lsq_lsu_size[1:0]  = mat_lsq_bypass_en ? 2'b11 : mat_lsq_size_sel[1:0];
+
+    //==========================================================
+    //      matrix load store queue output to matrix regfile
+    //==========================================================
+  logic [ 7:0] mat_lsq_mreg_row_wen[0:MATRIX_LSIQ_ENTRY-1];
+  logic [ 2:0] mat_lsq_mreg_idx_wen[0:MATRIX_LSIQ_ENTRY-1];
+  logic [63:0] mat_lsq_mreg_wstride[0:MATRIX_LSIQ_ENTRY-1];
+  logic        mat_lsq_mreg_nf_mode[0:MATRIX_LSIQ_ENTRY-1];
 
   generate
     for (i = 0; i < MATRIX_LSIQ_ENTRY; i++) begin
@@ -371,8 +384,8 @@ genvar i;
       .x_create_frz           (mat_lsq_create_frz           ),
       .x_other_raw_rdy        (mat_lsq_other_raw_rdy[i]     ),
       .x_issue_en             (mat_lsq_issue_en[i]          ),
-      .x_replay               (lsu_mat_lsq_replay[i]            ),
-      .x_mat_ld_finish        (lsu_mat_lsq_mat_ld_finish[i]     ),
+      .x_replay               (lsu_mat_lsq_replay[i]        ),
+      .x_mat_ld_finish        (lsu_mat_lsq_mat_ld_finish[i] ),
       .x_create_agevec        (mat_lsq_create_agevec[i]     ),
       .ctrl_entry_finish_exist(ctrl_entry_finish_exist      ),
       .x_other_finish_entry   (mat_lsq_other_finish_entry[i]),
@@ -392,15 +405,54 @@ genvar i;
       .o_mat_ld               (mat_lsq_mat_ld[i]            ),
       .o_mat_st               (mat_lsq_mat_st[i]            ),
       .o_mat_addr             (mat_lsq_mat_addr[i]          ),
-      .o_mat_size             (mat_lsq_mat_size[i]          )
+      .o_mat_size             (mat_lsq_mat_size[i]          ),
+      .o_row_wen              (mat_lsq_mreg_row_wen[i]      ),
+      .o_idx_wen              (mat_lsq_mreg_idx_wen[i]      ),
+      .o_wstride              (mat_lsq_mreg_wstride[i]      ),
+      .o_nf_mode              (mat_lsq_mreg_nf_mode[i]      )
     );
     end
   endgenerate
 
+  // logic [ 7:0] mat_lsq_mreg_row_wen[0:MATRIX_LSIQ_ENTRY-1];
+  // logic [ 2:0] mat_lsq_mreg_idx_wen[0:MATRIX_LSIQ_ENTRY-1];
+  // logic [63:0] mat_lsq_mreg_wstride[0:MATRIX_LSIQ_ENTRY-1];
+  // logic        mat_lsq_mreg_nf_mode[0:MATRIX_LSIQ_ENTRY-1];
+  // output [ 7:0] ld_mreg_row_wen,
+  // output [ 2:0] ld_mreg_idx_wen,
+  // output [63:0] ld_mreg_wstride,
+  // output        ld_mreg_nf_mode,
+  //==========================================================
+  //      matrix load store queue output to matrix regfile
+  //==========================================================
+  // lsu_mat_lsq_mat_ld_finish mux select
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(8)) i_mat_lsq_wrow_mux (
+    .data_out   (ld_mreg_row_wen ),
+    .onehot_key (lsu_mat_lsq_mat_ld_finish),
+    .default_out(8'b0            ),
+    .data_list  (mat_lsq_mreg_row_wen )
+  );
 
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(3)) i_mat_lsq_widx_mux (
+    .data_out   (ld_mreg_idx_wen  ),
+    .onehot_key (lsu_mat_lsq_mat_ld_finish),
+    .default_out(3'b0            ),
+    .data_list  (mat_lsq_mreg_idx_wen  )
+  );
 
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(64)) i_mat_lsq_wstride_mux (
+    .data_out   (ld_mreg_wstride),
+    .onehot_key (lsu_mat_lsq_mat_ld_finish),
+    .default_out(63'b0           ),
+    .data_list  (mat_lsq_mreg_wstride)
+  );
 
-
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(1)) i_mat_lsq_wnfmode_mux (
+    .data_out   (ld_mreg_nf_mode),
+    .onehot_key (lsu_mat_lsq_mat_ld_finish),
+    .default_out(1'b0           ),
+    .data_list  (mat_lsq_mreg_nf_mode)
+  );
 
 
   // 计算总共需要load/store的byte数
@@ -488,7 +540,12 @@ module mat_lsu_queue #(
   output                o_mat_ld               ,
   output                o_mat_st               ,
   output [        63:0] o_mat_addr             ,
-  output [         1:0] o_mat_size
+  output [         1:0] o_mat_size             ,
+  // output to mregfile write
+  output [         7:0] o_row_wen              ,
+  output [         2:0] o_idx_wen              ,
+  output [        63:0] o_wstride              ,
+  output                o_nf_mode
 );
 
   localparam TYPE_W = MAT_LSU_OP_TYPE_WIDTH;
@@ -734,5 +791,9 @@ module mat_lsu_queue #(
   assign o_mat_addr[63:0] = curr_addr[63:0];
   assign o_mat_size[1:0]  = 2'b11; // curr_size[1:0]; // 简化成每次都发出8字节
 
+  assign o_row_wen[7:0]  = row_cnt[7:0];
+  assign o_idx_wen[2:0]  = dstm_idx[2:0];
+  assign o_wstride[63:0] = src1[63:0];
+  assign o_nf_mode       = nf_vld;
 
 endmodule : mat_lsu_queue

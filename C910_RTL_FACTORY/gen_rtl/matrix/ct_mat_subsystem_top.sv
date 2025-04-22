@@ -52,6 +52,7 @@ module ct_mat_subsystem_top #(parameter RLEN = 256,  parameter MATRIX_LSIQ_ENTRY
   // from lsu
   input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay,
   input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish,
+  input [63:0] lsu_mat_reg_ld_data,
   /* write back to main pipeline GPR */
   // pipe8 标识矩阵来自/并入主流水线的序号
   output        mat_cfg_idu_ex1_pipe8_wb_preg_vld    , // for pregfile in idu
@@ -149,6 +150,13 @@ module ct_mat_subsystem_top #(parameter RLEN = 256,  parameter MATRIX_LSIQ_ENTRY
     .mat_alu_ex_mat_finish_dstm_idx  (mat_alu_ex_mat_finish_dstm_idx  )
   );
 
+  logic        ld_mreg_wb_en  ;
+  logic [ 7:0] ld_mreg_row_wen;
+  logic [ 2:0] ld_mreg_idx_wen;
+  logic [63:0] ld_mreg_wstride;
+  logic        ld_mreg_nf_mode;
+  // input [63:0] lsu_mat_reg_ld_data,
+
   ct_mat_exu_ldst_unit x_ct_mat_exu_ldst_unit (
     .cpurst_b                        (cpurst_b                        ),
     .forever_cpuclk                  (forever_cpuclk                  ),
@@ -182,12 +190,27 @@ module ct_mat_subsystem_top #(parameter RLEN = 256,  parameter MATRIX_LSIQ_ENTRY
     // from lsu
     .lsu_mat_lsq_replay              (lsu_mat_lsq_replay              ),
     .lsu_mat_lsq_mat_ld_finish       (lsu_mat_lsq_mat_ld_finish       ),
+    // output to mregfile
+    .ld_mreg_row_wen                 (ld_mreg_row_wen                 ),
+    .ld_mreg_idx_wen                 (ld_mreg_idx_wen                 ),
+    .ld_mreg_wstride                 (ld_mreg_wstride                 ),
+    .ld_mreg_nf_mode                 (ld_mreg_nf_mode                 ),
+    // commit
     .mat_lsu_cbus_ex1_pipe8_sel      (mat_lsu_cbus_ex1_pipe8_sel      ),
     .mat_lsu_cbus_ex1_pipe8_iid      (mat_lsu_cbus_ex1_pipe8_iid      )
   );
     
-    
-    
+  assign ld_mreg_wb_en = |lsu_mat_lsq_mat_ld_finish;
+  ct_mat_registerfile i_ct_mat_registerfile (
+    .cpurst_b           (cpurst_b           ),
+    .forever_cpuclk     (forever_cpuclk     ),
+    .ld_mreg_wb_en      (ld_mreg_wb_en      ),
+    .ld_mreg_row_wen    (ld_mreg_row_wen    ),
+    .ld_mreg_idx_wen    (ld_mreg_idx_wen    ),
+    .ld_mreg_wstride    (ld_mreg_wstride    ),
+    .ld_mreg_nf_mode    (ld_mreg_nf_mode    ),
+    .lsu_mat_reg_ld_data(lsu_mat_reg_ld_data)
+  );  
     
 endmodule
 
