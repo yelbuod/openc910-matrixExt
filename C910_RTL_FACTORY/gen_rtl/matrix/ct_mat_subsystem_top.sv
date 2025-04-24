@@ -195,12 +195,12 @@ module ct_mat_subsystem_top #(parameter RLEN = 256,  parameter MATRIX_LSIQ_ENTRY
     .ld_mreg_idx_wen                 (ld_mreg_idx_wen                 ),
     .ld_mreg_wstride                 (ld_mreg_wstride                 ),
     .ld_mreg_nf_mode                 (ld_mreg_nf_mode                 ),
+    .ld_mreg_wb_en                   (ld_mreg_wb_en                   ),
     // commit
     .mat_lsu_cbus_ex1_pipe8_sel      (mat_lsu_cbus_ex1_pipe8_sel      ),
     .mat_lsu_cbus_ex1_pipe8_iid      (mat_lsu_cbus_ex1_pipe8_iid      )
   );
     
-  assign ld_mreg_wb_en = |lsu_mat_lsq_mat_ld_finish;
   ct_mat_registerfile i_ct_mat_registerfile (
     .cpurst_b           (cpurst_b           ),
     .forever_cpuclk     (forever_cpuclk     ),

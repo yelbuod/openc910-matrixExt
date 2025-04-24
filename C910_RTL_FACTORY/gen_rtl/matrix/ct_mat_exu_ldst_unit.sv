@@ -47,6 +47,7 @@ module ct_mat_exu_ldst_unit #(parameter MATRIX_LSIQ_ENTRY = 8) (
   input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_replay,
   input [MATRIX_LSIQ_ENTRY-1:0] lsu_mat_lsq_mat_ld_finish,
   // to matrix regfile
+  output        ld_mreg_wb_en,
   output [ 7:0] ld_mreg_row_wen,
   output [ 2:0] ld_mreg_idx_wen,
   output [63:0] ld_mreg_wstride,
@@ -171,22 +172,6 @@ genvar i;
   // TODO: 暂时不执行直接提交查看通路正确性
   assign mat_lsu_cbus_ex1_pipe8_sel      = mat_lsu_ex1_inst_vld;
   assign mat_lsu_cbus_ex1_pipe8_iid[6:0] = mat_lsu_ex1_iid[6:0];
-
-  logic [3:0] mat_lsu_ex1_iq_entry_idx;
-  ct_mat_src_oh_binary i_ct_mat_src_oh_binary (
-    .x_num_oh(mat_lsu_ex1_iq_entry), 
-    .x_num_binary(mat_lsu_ex1_iq_entry_idx)
-  );
-
-  assign mat_lsu_ex_line_wakeup = mat_lsu_ex1_inst_vld;
-  assign mat_lsu_ex_mat_finish = mat_lsu_ex1_inst_vld;
-  assign mat_lsu_ex_line_wakeup_entry_idx[3:0] = mat_lsu_ex1_iq_entry_idx[3:0];
-  assign mat_lsu_ex_mat_finish_entry_idx[3:0] = mat_lsu_ex1_iq_entry_idx[3:0];
-
-  assign mat_lsu_ex_mat_finish_dstm_vld = mat_lsu_ex1_dstm_9_7_vld;
-  assign mat_lsu_ex_mat_finish_dstm_idx[2:0] = mat_lsu_ex1_dstm_idx_9_7[2:0];
-
-
 
   //==========================================================
   //                 matrix load store queue
@@ -363,9 +348,13 @@ genvar i;
     //      matrix load store queue output to matrix regfile
     //==========================================================
   logic [ 7:0] mat_lsq_mreg_row_wen[0:MATRIX_LSIQ_ENTRY-1];
-  logic [ 2:0] mat_lsq_mreg_idx_wen[0:MATRIX_LSIQ_ENTRY-1];
+  logic [ 2:0] mat_lsq_dstm_idx[0:MATRIX_LSIQ_ENTRY-1];
   logic [63:0] mat_lsq_mreg_wstride[0:MATRIX_LSIQ_ENTRY-1];
   logic        mat_lsq_mreg_nf_mode[0:MATRIX_LSIQ_ENTRY-1];
+    //==========================================================
+    //      matrix load store queue wakeup & finish 
+    //==========================================================
+  logic [11:0] mat_lsq_iq_entry_oh[0:MATRIX_LSIQ_ENTRY-1];
 
   generate
     for (i = 0; i < MATRIX_LSIQ_ENTRY; i++) begin
@@ -406,16 +395,19 @@ genvar i;
       .o_mat_st               (mat_lsq_mat_st[i]            ),
       .o_mat_addr             (mat_lsq_mat_addr[i]          ),
       .o_mat_size             (mat_lsq_mat_size[i]          ),
+      // for matrix regfile write
       .o_row_wen              (mat_lsq_mreg_row_wen[i]      ),
-      .o_idx_wen              (mat_lsq_mreg_idx_wen[i]      ),
+      .o_dstm_idx              (mat_lsq_dstm_idx[i]      ), // also for wakeup
       .o_wstride              (mat_lsq_mreg_wstride[i]      ),
-      .o_nf_mode              (mat_lsq_mreg_nf_mode[i]      )
+      .o_nf_mode              (mat_lsq_mreg_nf_mode[i]      ),
+      // for wakeup
+      .o_iq_entry             (mat_lsq_iq_entry_oh[i]       )
     );
     end
   endgenerate
 
   // logic [ 7:0] mat_lsq_mreg_row_wen[0:MATRIX_LSIQ_ENTRY-1];
-  // logic [ 2:0] mat_lsq_mreg_idx_wen[0:MATRIX_LSIQ_ENTRY-1];
+  // logic [ 2:0] mat_lsq_dstm_idx[0:MATRIX_LSIQ_ENTRY-1];
   // logic [63:0] mat_lsq_mreg_wstride[0:MATRIX_LSIQ_ENTRY-1];
   // logic        mat_lsq_mreg_nf_mode[0:MATRIX_LSIQ_ENTRY-1];
   // output [ 7:0] ld_mreg_row_wen,
@@ -426,6 +418,9 @@ genvar i;
   //      matrix load store queue output to matrix regfile
   //==========================================================
   // lsu_mat_lsq_mat_ld_finish mux select
+
+  assign ld_mreg_wb_en = |lsu_mat_lsq_mat_ld_finish;
+
   ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(8)) i_mat_lsq_wrow_mux (
     .data_out   (ld_mreg_row_wen ),
     .onehot_key (lsu_mat_lsq_mat_ld_finish),
@@ -437,7 +432,7 @@ genvar i;
     .data_out   (ld_mreg_idx_wen  ),
     .onehot_key (lsu_mat_lsq_mat_ld_finish),
     .default_out(3'b0            ),
-    .data_list  (mat_lsq_mreg_idx_wen  )
+    .data_list  (mat_lsq_dstm_idx  )
   );
 
   ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(64)) i_mat_lsq_wstride_mux (
@@ -454,6 +449,65 @@ genvar i;
     .data_list  (mat_lsq_mreg_nf_mode)
   );
 
+  //==========================================================
+  //      matrix load store queue wakeup & finish 
+  //==========================================================
+  logic [11:0] mat_lsu_line_wakeup_iq_entry_oh;
+  logic [3:0] mat_lsu_line_wakeup_iq_entry_idx;
+
+  logic [11:0] mat_lsu_ex_finish_iq_entry_oh;
+  logic [3:0] mat_lsu_ex_finish_iq_entry_idx;
+
+  logic mat_lsu_ex_finish_ld;
+  logic [2:0] mat_lsu_ex_finish_dstm_idx;
+
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(12)) i_mat_lsq_wakeup_iq_entry_mux (
+    .data_out   (mat_lsu_line_wakeup_iq_entry_oh),
+    .onehot_key (lsu_mat_lsq_mat_ld_finish),
+    .default_out(12'b0           ),
+    .data_list  (mat_lsq_iq_entry_oh)
+  );
+
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(12)) i_mat_lsq_finish_iq_entry_mux (
+    .data_out   (mat_lsu_ex_finish_iq_entry_oh),
+    .onehot_key (mat_lsq_ctrl_entry_finish),
+    .default_out(12'b0           ),
+    .data_list  (mat_lsq_iq_entry_oh)
+  );
+
+  ct_mat_src_oh_binary i_ct_mat_lwk_iq_entry_oh_binary (
+    .x_num_oh(mat_lsu_line_wakeup_iq_entry_oh), 
+    .x_num_binary(mat_lsu_line_wakeup_iq_entry_idx)
+  );
+
+  ct_mat_src_oh_binary i_ct_mat_exfinish_iq_entry_oh_binary (
+    .x_num_oh(mat_lsu_ex_finish_iq_entry_oh), 
+    .x_num_binary(mat_lsu_ex_finish_iq_entry_idx)
+  );
+
+
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(1)) i_mat_lsq_finish_ld_type_mux (
+    .data_out   (mat_lsu_ex_finish_ld),
+    .onehot_key (mat_lsq_ctrl_entry_finish),
+    .default_out(1'b0           ),
+    .data_list  (mat_lsq_mat_ld)
+  );
+
+  ct_mat_mux_onehot #(.KEY_LEN(MATRIX_LSIQ_ENTRY), .DATA_LEN(3)) i_mat_lsq_wakeup_dstm_mux (
+    .data_out   (mat_lsu_ex_finish_dstm_idx  ),
+    .onehot_key (mat_lsq_ctrl_entry_finish),
+    .default_out(3'b0            ),
+    .data_list  (mat_lsq_dstm_idx  )
+  );
+
+  assign mat_lsu_ex_line_wakeup = |lsu_mat_lsq_mat_ld_finish;
+  assign mat_lsu_ex_line_wakeup_entry_idx[3:0] = mat_lsu_line_wakeup_iq_entry_idx[3:0];
+
+  assign mat_lsu_ex_mat_finish = |mat_lsq_ctrl_entry_finish;
+  assign mat_lsu_ex_mat_finish_entry_idx[3:0] = mat_lsu_ex_finish_iq_entry_idx[3:0];
+
+  assign mat_lsu_ex_mat_finish_dstm_vld = mat_lsu_ex_finish_ld;
+  assign mat_lsu_ex_mat_finish_dstm_idx[2:0] = mat_lsu_ex_finish_dstm_idx[2:0];
 
   // 计算总共需要load/store的byte数
   always@(posedge ex1_inst_clk) begin
@@ -543,9 +597,11 @@ module mat_lsu_queue #(
   output [         1:0] o_mat_size             ,
   // output to mregfile write
   output [         7:0] o_row_wen              ,
-  output [         2:0] o_idx_wen              ,
+  output [         2:0] o_dstm_idx              ,// also for wakeup
   output [        63:0] o_wstride              ,
-  output                o_nf_mode
+  output                o_nf_mode,
+  // output to wakeup
+  output [11:0] o_iq_entry
 );
 
   localparam TYPE_W = MAT_LSU_OP_TYPE_WIDTH;
@@ -722,8 +778,8 @@ module mat_lsu_queue #(
       row_cnt[7:0] <= 8'b0;
     else if(rtu_yy_xx_flush)
       row_cnt[7:0] <= 8'b0;
-    else if(x_create_en && x_create_frz)
-      row_cnt[7:0] <= (x_sizeK >= 8) ? x_sizeM[15:0] : x_sizeM - 1;
+    // else if(x_create_en && x_create_frz)
+    //   row_cnt[7:0] <= (x_sizeK > 8) ? x_sizeM[15:0] : x_sizeM - 1;
     else if(x_create_en)
       row_cnt[7:0] <= x_sizeM[15:0];
     else if(x_mat_ld_finish && row_cnt_neq_0 && !col_byte_gt_8)
@@ -736,20 +792,22 @@ module mat_lsu_queue #(
       col_byte_cnt[15:0] <= 16'b0;
     else if(rtu_yy_xx_flush)
       col_byte_cnt[15:0] <= 16'b0;
-    else if(x_create_en && x_create_frz)
-      col_byte_cnt[15:0] <= (x_sizeK >= 8) ? x_sizeK - 8 : 0;
+    // else if(x_create_en && x_create_frz)
+    //   col_byte_cnt[15:0] <= (x_sizeK >= 8) ? x_sizeK - 8 : 0;
     else if(x_create_en)
       col_byte_cnt[15:0] <= x_sizeK[15:0];
-    else if(x_mat_ld_finish && col_byte_gt_eq_8)
+    else if(x_mat_ld_finish && col_byte_gt_8) // 数据返回时看到col_cnt大于8说明这一行还未结束
       col_byte_cnt[15:0] <= col_byte_cnt[15:0] - 8;
     // else if(x_mat_ld_finish && col_byte_neq_0)
     //   col_byte_cnt[15:0] <= 16'b0;
-    else if(x_mat_ld_finish && row_cnt_neq_0 && !col_byte_gt_8)
+    else if(x_mat_ld_finish && row_cnt_neq_1) // 数据返回时col_cnt小于8但是row_cnt大于1说明还有下一行
       col_byte_cnt[15:0] <= x_sizeK[15:0];
+    else if(x_mat_ld_finish)
+      col_byte_cnt[15:0] <= 16'h0;
   end
 
   // row_cnt和col_cnt均为0时说明最后一行矩阵访存的数据已返回, 访存生命周期结束
-  assign ctrl_entry_finish = x_mat_ld_finish && row_cnt_equal_0 && col_byte_equal_0;
+  assign ctrl_entry_finish = vld & row_cnt_equal_0 && col_byte_equal_0;
   assign o_ctrl_entry_finish = ctrl_entry_finish;
   
   always @(posedge entry_ctrl_clk or negedge cpurst_b)
@@ -791,9 +849,11 @@ module mat_lsu_queue #(
   assign o_mat_addr[63:0] = curr_addr[63:0];
   assign o_mat_size[1:0]  = 2'b11; // curr_size[1:0]; // 简化成每次都发出8字节
 
-  assign o_row_wen[7:0]  = row_cnt[7:0];
-  assign o_idx_wen[2:0]  = dstm_idx[2:0];
+  assign o_row_wen[7:0]  = sizeM[7:0] - row_cnt[7:0];
+  assign o_dstm_idx[2:0]  = dstm_idx[2:0];
   assign o_wstride[63:0] = src1[63:0];
   assign o_nf_mode       = nf_vld;
+
+  assign o_iq_entry[11:0] = iq_entry[11:0];
 
 endmodule : mat_lsu_queue

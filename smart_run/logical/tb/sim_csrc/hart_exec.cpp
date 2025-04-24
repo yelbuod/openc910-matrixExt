@@ -324,14 +324,19 @@ extern "C" void hart_matrixMemLoadWriteBack(
   uint8_t ld_mreg_idx_wen    ,
   uint64_t ld_mreg_wstride    ,
   uint8_t ld_mreg_nf_mode    ,
-  uint64_t lsu_mat_reg_ld_data
+  uint64_t lsu_mat_reg_ld_data_highbits,
+  uint64_t lsu_mat_reg_ld_data_lowbits
 ){
+  // uint64_t ld_wb_data = ((unsigned long long)lsu_mat_reg_ld_data_highbits << 32) | lsu_mat_reg_ld_data_lowbits;
+  // printf("high bits:%x, low bits:%x\n", (unsigned long long)lsu_mat_reg_ld_data_highbits << 32, lsu_mat_reg_ld_data_lowbits);
   if(ld_mreg_nf_mode == 0) {
     printf(ANSI_FMT("MATRIX REGFILE WB", ANSI_FG_BLUE));
-    printf(" to mreg%d row:%d, data:%08x, bytes:%d", ld_mreg_idx_wen, ld_mreg_row_wen, lsu_mat_reg_ld_data, ld_mreg_wstride);
+    printf(" to m%d row:%d, data:%08x%08x, bytes:%d\n", ld_mreg_idx_wen, ld_mreg_row_wen, 
+      lsu_mat_reg_ld_data_highbits, lsu_mat_reg_ld_data_lowbits, ld_mreg_wstride);
   } else {
     printf(ANSI_FMT("MATRIX REGFILE WB", ANSI_FG_BLUE));
-    printf(" to mreg%d row:%d, data:%08x", ld_mreg_idx_wen, ld_mreg_row_wen, lsu_mat_reg_ld_data);
+    printf(" to m%d row:%d, data:%08x%08x\n", ld_mreg_idx_wen, ld_mreg_row_wen, 
+      lsu_mat_reg_ld_data_highbits, lsu_mat_reg_ld_data_lowbits);
   }
 }
 
